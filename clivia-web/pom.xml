@@ -6,7 +6,7 @@
 
     <groupId>org.lpw.clivia</groupId>
     <artifactId>clivia-web</artifactId>
-    <version>0.1</version>
+    <version>0.2</version>
     <packaging>war</packaging>
 
     <name>clivia-web</name>
@@ -16,22 +16,22 @@
         <dependency>
             <groupId>org.lpw.clivia</groupId>
             <artifactId>clivia-category</artifactId>
-            <version>0.1</version>
+            <version>0.2</version>
         </dependency>
         <dependency>
             <groupId>org.lpw.clivia</groupId>
             <artifactId>clivia-user</artifactId>
-            <version>0.1</version>
+            <version>0.2</version>
         </dependency>
         <dependency>
             <groupId>org.lpw.clivia</groupId>
             <artifactId>clivia-console</artifactId>
-            <version>0.1</version>
+            <version>0.2</version>
         </dependency>
         <dependency>
             <groupId>org.lpw.photon</groupId>
             <artifactId>photon-web</artifactId>
-            <version>0.1</version>
+            <version>0.2</version>
             <type>war</type>
         </dependency>
     </dependencies>
