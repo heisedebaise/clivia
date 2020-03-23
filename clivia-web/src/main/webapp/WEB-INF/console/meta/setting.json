@@ -1,0 +1,22 @@
+{
+    "key": "setting",
+    "uri": "/setting/",
+    "global": {
+        "props": [
+            {
+                "name": "setting.global.console.title"
+            },
+            {
+                "name": "setting.global.console.logo",
+                "type": "image",
+                "upload": "clivia.keyvalue.image"
+            }
+        ],
+        "toolbar": [
+            {
+                "label": "saves",
+                "service": "/keyvalue/saves"
+            }
+        ]
+    }
+}

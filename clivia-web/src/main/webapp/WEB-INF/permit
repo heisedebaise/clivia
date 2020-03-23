@@ -1,0 +1,20 @@
+## 设置不需要校验权限的URI地址。
+## 每行一个配置，格式为：{uri}:{grade}。
+## * uri为URI地址；
+## * grade为最低等级，为空表示未登陆用户。
+/photon/ctrl/status
+/photon/ctrl/upload:0
+/photon/ctrl-http/upload:0
+/keyvalue/object
+/keyvalue/list
+/user/inviter
+/user/sign-in
+/user/sign-up
+/user/sign
+/user/modify:0
+/user/password:0
+/user/sign-out
+/user/crosier/grades:0
+/user/crosier/pathes:0
+/console/menu:0
+/console/meta:0

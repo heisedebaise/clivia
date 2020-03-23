@@ -1,0 +1,197 @@
+{
+    "key": "clivia.user",
+    "uri": "/user/",
+    "props": [
+        {
+            "name": "portrait",
+            "type": "image"
+        },
+        {
+            "name": "idcard"
+        },
+        {
+            "name": "name"
+        },
+        {
+            "name": "nick"
+        },
+        {
+            "name": "mobile"
+        },
+        {
+            "name": "email"
+        },
+        {
+            "name": "gender",
+            "labels": ".genders"
+        },
+        {
+            "name": "birthday",
+            "type": "date"
+        },
+        {
+            "name": "code",
+            "type": "read-only"
+        },
+        {
+            "name": "register",
+            "type": "read-only"
+        },
+        {
+            "name": "grade",
+            "type": "read-only"
+        },
+        {
+            "name": "state",
+            "labels": ".states"
+        }
+    ],
+    "query": {
+        "type": "grid",
+        "search": [
+            {
+                "name": "idcard"
+            },
+            {
+                "name": "name"
+            },
+            {
+                "name": "nick"
+            },
+            {
+                "name": "mobile"
+            },
+            {
+                "name": "email"
+            },
+            {
+                "name": "code"
+            },
+            {
+                "name": "register",
+                "type": "date-range"
+            },
+            {
+                "name": "state"
+            }
+        ],
+        "ops": [
+            {
+                "type": "modify",
+                "service": "update"
+            },
+            {
+                "label": ".state.enable",
+                "service": "state",
+                "parameter": {
+                    "state": 0
+                },
+                "reload": true,
+                "when": "model.state==1"
+            },
+            {
+                "label": ".state.disable",
+                "service": "state",
+                "parameter": {
+                    "state": 1
+                },
+                "reload": true,
+                "when": "model.state==0"
+            },
+            {
+                "label": ".manager",
+                "service": "grade",
+                "parameter": {
+                    "grade": 90
+                },
+                "reload": true,
+                "when": "model.grade<90"
+            },
+            {
+                "label": ".manager.cancel",
+                "service": "grade",
+                "parameter": {
+                    "grade": 0
+                },
+                "reload": true,
+                "when": "model.grade>=90"
+            }
+        ]
+    },
+    "update": {
+        "type": "form",
+        "toolbar": [
+            {
+                "type": "save",
+                "service": "update",
+                "success": "query"
+            }
+        ]
+    },
+    "sign": {
+        "type": "form",
+        "props": [
+            {
+                "name": "portrait"
+            },
+            {
+                "name": "idcard"
+            },
+            {
+                "name": "name"
+            },
+            {
+                "name": "nick"
+            },
+            {
+                "name": "mobile"
+            },
+            {
+                "name": "email"
+            },
+            {
+                "name": "gender"
+            },
+            {
+                "name": "birthday"
+            },
+            {
+                "name": "code"
+            },
+            {
+                "name": "register"
+            }
+        ],
+        "toolbar": [
+            {
+                "service": "modify"
+            }
+        ]
+    },
+    "password": {
+        "type": "form",
+        "props": [
+            {
+                "label": ".password.old",
+                "name": "old",
+                "type": "password"
+            },
+            {
+                "label": ".password.new",
+                "name": "new",
+                "type": "password"
+            },
+            {
+                "label": ".password.repeat",
+                "name": "repeat",
+                "type": "password"
+            }
+        ],
+        "toolbar": [
+            {
+                "label": "modify",
+                "service": "password"
+            }
+        ]
+    }
+}

@@ -1,0 +1,46 @@
+[
+    {
+        "label": "文档",
+        "items": [
+            {
+                "label": "分类",
+                "service": "/category/query",
+                "parameter": {
+                    "key": "category"
+                }
+            }
+        ]
+    },
+    {
+        "label": "系统",
+        "items": [
+            {
+                "label": "全局设置",
+                "service": "/setting/global"
+            },
+            {
+                "label": "普通用户",
+                "service": "/user/query",
+                "parameter": {
+                    "maxGrade": 49
+                }
+            },
+            {
+                "label": "管理员",
+                "service": "/user/query",
+                "parameter": {
+                    "minGrade": 50,
+                    "maxGrade": 98
+                }
+            },
+            {
+                "label": "权限设置",
+                "service": "/user/crosier/query"
+            },
+            {
+                "label": "在线用户",
+                "service": "/user/online/query"
+            }
+        ]
+    }
+]

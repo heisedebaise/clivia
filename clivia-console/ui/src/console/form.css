@@ -1,0 +1,16 @@
+.console-form-item {
+    margin: 0;
+    padding: 8px 0;
+}
+
+.console-form-item-odd {
+    background-color: #f8f8f8;
+}
+
+.console-form-toolbar label {
+    display: none;
+}
+
+.console-form-toolbar button {
+    margin: 8px 4px 8px 0;
+}

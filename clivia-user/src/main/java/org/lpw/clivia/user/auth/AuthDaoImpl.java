@@ -1,0 +1,37 @@
+package org.lpw.clivia.user.auth;
+
+import org.lpw.photon.dao.orm.PageList;
+import org.lpw.photon.dao.orm.lite.LiteOrm;
+import org.lpw.photon.dao.orm.lite.LiteQuery;
+import org.springframework.stereotype.Repository;
+
+import javax.inject.Inject;
+
+/**
+ * @author lpw
+ */
+@Repository(AuthModel.NAME + ".dao")
+class AuthDaoImpl implements AuthDao {
+    @Inject
+    private LiteOrm liteOrm;
+
+    @Override
+    public PageList<AuthModel> query(String user) {
+        return liteOrm.query(new LiteQuery(AuthModel.class).where("c_user=?"), new Object[]{user});
+    }
+
+    @Override
+    public AuthModel findByUid(String uid) {
+        return liteOrm.findOne(new LiteQuery(AuthModel.class).where("c_uid=?"), new Object[]{uid});
+    }
+
+    @Override
+    public void save(AuthModel auth) {
+        liteOrm.save(auth);
+    }
+
+    @Override
+    public void delete(AuthModel auth) {
+        liteOrm.delete(auth);
+    }
+}
