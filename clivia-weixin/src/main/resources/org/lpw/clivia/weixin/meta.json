@@ -1,0 +1,74 @@
+{
+    "key": "clivia.weixin",
+    "uri": "/weixin/",
+    "props": [
+        {
+            "name": "key"
+        },
+        {
+            "name": "name"
+        },
+        {
+            "name": "appId"
+        },
+        {
+            "name": "secret"
+        },
+        {
+            "name": "token"
+        },
+        {
+            "name": "mchId"
+        },
+        {
+            "name": "mchKey"
+        },
+        {
+            "name": "accessToken",
+            "type": "read-only"
+        },
+        {
+            "name": "jsapiTicket",
+            "type": "read-only"
+        },
+        {
+            "name": "time",
+            "type": "read-only"
+        }
+    ],
+    "query": {
+        "type": "grid",
+        "ops": [
+            {
+                "type": "modify"
+            },
+            {
+                "type": "delete",
+                "success": ".query"
+            }
+        ],
+        "toolbar": [
+            {
+                "type": "create"
+            }
+        ]
+    },
+    "create": {
+        "type": "form",
+        "toolbar": [
+            {
+                "type": "save",
+                "success": ".query"
+            }
+        ]
+    },
+    "modify": {
+        "type": "form",
+        "toolbar": [
+            {
+                "type": "save",
+                "success": ".query"
+            }
+        ]
+    }
+}
