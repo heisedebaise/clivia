@@ -16,7 +16,9 @@
         <module>clivia-user</module>
         <module>clivia-account</module>
         <module>clivia-payment</module>
+        <module>clivia-transfer</module>
         <module>clivia-weixin</module>
+        <module>clivia-alipay</module>
         <module>clivia-console</module>
         <module>clivia-web</module>
     </modules>

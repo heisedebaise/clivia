@@ -1,0 +1,22 @@
+package org.lpw.clivia.transfer;
+
+/**
+ * 转账监听器。
+ *
+ * @author lpw
+ */
+public interface TransferListener {
+    /**
+     * 获取转账类型。
+     *
+     * @return 付款类型。
+     */
+    String transferType();
+
+    /**
+     * 重置转账订单状态。
+     *
+     * @param transfer 订单信息。
+     */
+    void resetTransferState(TransferModel transfer);
+}
