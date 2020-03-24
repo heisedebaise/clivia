@@ -14,6 +14,7 @@
         <module>clivia-category</module>
         <module>clivia-popular</module>
         <module>clivia-shortcut</module>
+        <module>clivia-chrome</module>
         <module>clivia-user</module>
         <module>clivia-account</module>
         <module>clivia-payment</module>
