@@ -2,7 +2,6 @@ package org.lpw.clivia.weixin;
 
 import com.alibaba.fastjson.JSONObject;
 import org.lpw.clivia.user.UserService;
-import org.lpw.clivia.user.helper.UserHelper;
 import org.lpw.photon.ctrl.Forward;
 import org.lpw.photon.ctrl.context.Request;
 import org.lpw.photon.ctrl.context.Response;
@@ -153,14 +152,6 @@ public class WeixinCtrl {
     public Object authMini() {
         return weixinService.auth(request.get("key"), request.get("code"), request.get("iv"), request.get("message"),
                 request.get("iv2"), request.get("message2"));
-    }
-
-    @Execute(name = "redirect")
-    public Object redirect() {
-        userHelper.signIn(request.get("code"), request.get("key"), 2);
-        forward.redirectTo(request.get("to"));
-
-        return "";
     }
 
     @Execute(name = "prepay-qr-code", validates = {

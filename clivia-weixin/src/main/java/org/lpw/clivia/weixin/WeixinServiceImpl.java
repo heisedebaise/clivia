@@ -4,7 +4,7 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.lpw.clivia.lock.LockHelper;
-import org.lpw.clivia.payment.helper.PaymentHelper;
+import org.lpw.clivia.payment.PaymentService;
 import org.lpw.clivia.temporary.Temporary;
 import org.lpw.clivia.weixin.info.InfoModel;
 import org.lpw.clivia.weixin.info.InfoService;
@@ -21,8 +21,21 @@ import org.lpw.photon.dao.model.ModelHelper;
 import org.lpw.photon.scheduler.HourJob;
 import org.lpw.photon.scheduler.MinuteJob;
 import org.lpw.photon.storage.Storages;
-import org.lpw.photon.util.*;
+import org.lpw.photon.util.Coder;
+import org.lpw.photon.util.Context;
+import org.lpw.photon.util.Converter;
+import org.lpw.photon.util.DateTime;
+import org.lpw.photon.util.Generator;
+import org.lpw.photon.util.Http;
+import org.lpw.photon.util.Io;
+import org.lpw.photon.util.Json;
+import org.lpw.photon.util.Logger;
+import org.lpw.photon.util.Numeric;
+import org.lpw.photon.util.QrCode;
 import org.lpw.photon.util.Thread;
+import org.lpw.photon.util.TimeUnit;
+import org.lpw.photon.util.Validator;
+import org.lpw.photon.util.Xml;
 import org.lpw.photon.wormhole.WormholeHelper;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -103,7 +116,7 @@ public class WeixinServiceImpl implements WeixinService, ContextRefreshedListene
     @Inject
     private LockHelper lockHelper;
     @Inject
-    private PaymentHelper paymentHelper;
+    private PaymentService paymentService;
     @Inject
     private InfoService infoService;
     @Inject
@@ -561,8 +574,9 @@ public class WeixinServiceImpl implements WeixinService, ContextRefreshedListene
             return null;
         }
 
-        String orderNo = paymentHelper.create("weixin", weixin.getAppId(), user, amount, billNo, notice, map);
-        if (validator.isEmpty(orderNo)) {
+        JSONObject object = paymentService.create("weixin", weixin.getAppId(), user, amount, billNo, notice, map);
+        String orderNo;
+        if (!json.containsKey(object, "orderNo") || validator.isEmpty(orderNo = object.getString("orderNo"))) {
             logger.warn(null, "创建支付订单[{}:{}:{}:{}:{}:{}]失败！", weixin.getAppId(), user, amount, billNo, notice, map);
 
             return null;
@@ -623,7 +637,7 @@ public class WeixinServiceImpl implements WeixinService, ContextRefreshedListene
             return false;
         }
 
-        return orderNo.equals(paymentHelper.complete(orderNo, numeric.toInt(amount), tradeNo, 1, map));
+        return json.has(paymentService.complete(orderNo, numeric.toInt(amount), tradeNo, 1, map), "orderNo", orderNo);
     }
 
     private String sign(Map<String, String> map, String mchKey) {

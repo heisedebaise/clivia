@@ -2,7 +2,7 @@ package org.lpw.clivia.weixin.reply;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import org.lpw.clivia.popular.helper.PopularHelper;
+import org.lpw.clivia.popular.PopularService;
 import org.lpw.clivia.util.Pagination;
 import org.lpw.clivia.weixin.WeixinModel;
 import org.lpw.clivia.weixin.WeixinService;
@@ -36,7 +36,7 @@ public class ReplyServiceImpl implements ReplyService {
     @Inject
     private Pagination pagination;
     @Inject
-    private PopularHelper popularHelper;
+    private PopularService popularService;
     @Inject
     private WeixinService weixinService;
     @Inject
@@ -140,7 +140,7 @@ public class ReplyServiceImpl implements ReplyService {
         });
 
         if (receiveType.equals("text")) {
-            popularHelper.increase(ReplyModel.NAME + ".text", receiveMessage);
+            popularService.increase(ReplyModel.NAME + ".text", receiveMessage);
             questions.ifPresent(set -> set.forEach(question -> question.question(openId, receiveMessage, !list.isEmpty())));
         }
     }

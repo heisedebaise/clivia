@@ -12,6 +12,7 @@
         <module>clivia-base</module>
         <module>clivia-keyvalue</module>
         <module>clivia-category</module>
+        <module>clivia-popular</module>
         <module>clivia-user</module>
         <module>clivia-account</module>
         <module>clivia-payment</module>

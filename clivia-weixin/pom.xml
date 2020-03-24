@@ -24,7 +24,12 @@
         </dependency>
         <dependency>
             <groupId>org.lpw.clivia</groupId>
-            <artifactId>clivia-user</artifactId>
+            <artifactId>clivia-popular</artifactId>
+            <version>0.2</version>
+        </dependency>
+        <dependency>
+            <groupId>org.lpw.clivia</groupId>
+            <artifactId>clivia-payment</artifactId>
             <version>0.2</version>
         </dependency>
     </dependencies>
