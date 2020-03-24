@@ -1,6 +1,6 @@
 package org.lpw.clivia.payment;
 
-import org.lpw.clivia.user.helper.UserHelper;
+import org.lpw.clivia.user.UserService;
 import org.lpw.photon.ctrl.context.Request;
 import org.lpw.photon.ctrl.execute.Execute;
 import org.lpw.photon.ctrl.validate.Validate;
@@ -15,7 +15,7 @@ import javax.inject.Inject;
  * @author lpw
  */
 @Controller(PaymentModel.NAME + ".ctrl")
-@Execute(name = "/payment/", key = PaymentModel.NAME, code = "125")
+@Execute(name = "/payment/", key = PaymentModel.NAME, code = "153")
 public class PaymentCtrl {
     @Inject
     private Validator validator;
@@ -24,7 +24,7 @@ public class PaymentCtrl {
     @Inject
     private Request request;
     @Inject
-    private UserHelper userHelper;
+    private UserService userService;
     @Inject
     private PaymentService paymentService;
 
@@ -36,10 +36,10 @@ public class PaymentCtrl {
     }
 
     @Execute(name = "uquery", validates = {
-            @Validate(validator = UserHelper.VALIDATOR_SIGN_IN)
+            @Validate(validator = UserService.VALIDATOR_SIGN)
     })
     public Object uquery() {
-        return query(userHelper.id());
+        return query(userService.id());
     }
 
     private Object query(String user) {
@@ -73,7 +73,7 @@ public class PaymentCtrl {
             @Validate(validator = Validators.MAX_LENGTH, number = {100}, parameter = "appId", failureCode = 13),
             @Validate(validator = Validators.GREATER_THAN, number = {0}, parameter = "amount", failureCode = 4),
             @Validate(validator = Validators.MAX_LENGTH, number = {100}, parameter = "billNo", failureCode = 14),
-            @Validate(validator = UserHelper.VALIDATOR_EXISTS_OR_SIGN_IN, parameter = "user", failureCode = 5)
+            @Validate(validator = UserService.VALIDATOR_EXISTS_SIGN, parameter = "user", failureCode = 5)
     })
     public Object create() {
         return paymentService.create(request.get("type"), request.get("appId"), request.get("user"), request.getAsInt("amount"),

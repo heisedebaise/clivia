@@ -13,11 +13,11 @@
         <module>clivia-keyvalue</module>
         <module>clivia-category</module>
         <module>clivia-user</module>
+        <module>clivia-account</module>
+        <module>clivia-payment</module>
+        <module>clivia-weixin</module>
         <module>clivia-console</module>
         <module>clivia-web</module>
-        <module>clivia-weixin</module>
-        <module>clivia-payment</module>
-        <module>clivia-account</module>
     </modules>
 
     <name>clivia</name>

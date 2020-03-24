@@ -1,26 +1,19 @@
 package org.lpw.clivia.payment;
 
 import com.alibaba.fastjson.JSONObject;
-import org.lpw.clivia.account.helper.AccountHelper;
+import org.lpw.clivia.account.AccountService;
+import org.lpw.clivia.account.log.LogService;
 import org.lpw.clivia.lock.LockHelper;
-import org.lpw.clivia.user.helper.UserHelper;
-import org.lpw.clivia.util.Carousel;
+import org.lpw.clivia.user.UserService;
+import org.lpw.clivia.user.auth.AuthService;
 import org.lpw.clivia.util.Pagination;
 import org.lpw.photon.dao.model.ModelHelper;
-import org.lpw.photon.util.DateTime;
-import org.lpw.photon.util.Generator;
-import org.lpw.photon.util.Http;
-import org.lpw.photon.util.Json;
-import org.lpw.photon.util.Numeric;
-import org.lpw.photon.util.Validator;
+import org.lpw.photon.util.*;
 import org.springframework.stereotype.Service;
 
 import javax.inject.Inject;
 import java.sql.Timestamp;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * @author lpw
@@ -48,11 +41,15 @@ public class PaymentServiceImpl implements PaymentService {
     @Inject
     private LockHelper lockHelper;
     @Inject
-    private Carousel carousel;
+    private UserService userService;
     @Inject
-    private UserHelper userHelper;
+    private AuthService authService;
     @Inject
-    private AccountHelper accountHelper;
+    private AccountService accountService;
+    @Inject
+    private LogService logService;
+    @Inject
+    private Optional<Set<PaymentNotice>> notices;
     @Inject
     private PaymentDao paymentDao;
     private Set<String> ignores;
@@ -76,10 +73,10 @@ public class PaymentServiceImpl implements PaymentService {
     @Override
     public JSONObject query(String type, String appId, String user, String orderNo, String billNo, String tradeNo,
                             int state, String start, String end) {
-        JSONObject object = paymentDao.query(type, appId, userHelper.findIdByUid(user, user), orderNo, billNo, tradeNo,
+        JSONObject object = paymentDao.query(type, appId, authService.findUser(user, user), orderNo, billNo, tradeNo,
                 state, dateTime.getStart(start),
                 dateTime.getEnd(end), pagination.getPageSize(20), pagination.getPageNum()).toJson();
-        userHelper.fill(object.getJSONArray("list"), new String[]{"user"});
+        userService.fill(object.getJSONArray("list"), new String[]{"user"});
 
         return object;
     }
@@ -112,7 +109,7 @@ public class PaymentServiceImpl implements PaymentService {
         PaymentModel payment = new PaymentModel();
         payment.setType(type);
         payment.setAppId(appId);
-        payment.setUser(validator.isEmpty(user) ? userHelper.id() : user);
+        payment.setUser(validator.isEmpty(user) ? userService.id() : user);
         payment.setAmount(amount);
         payment.setStart(dateTime.now());
         payment.setOrderNo(newOrderNo(payment.getStart()));
@@ -159,9 +156,11 @@ public class PaymentServiceImpl implements PaymentService {
         JSONObject json = this.json.toObject(payment.getJson());
         json.put(name, putToJson(new JSONObject(), map));
         payment.setJson(json.toJSONString());
-        if (state == 1)
-            accountHelper.deposit(payment.getUser(), "", 0, payment.getType(), payment.getAmount(), true,
-                    merge(json.getJSONObject("create"), map));
+        if (state == 1) {
+            JSONObject object = accountService.deposit(payment.getUser(), "", 0, payment.getType(), payment.getAmount(), merge(json.getJSONObject("create"), map));
+            if (this.json.containsKey(object, "logId"))
+                logService.pass(new String[]{object.getString("logId")});
+        }
         paymentDao.save(payment);
         notice(payment);
     }
@@ -193,27 +192,7 @@ public class PaymentServiceImpl implements PaymentService {
             return;
 
         JSONObject notice = json.toObject(payment.getNotice());
-        if (notice == null)
-            return;
-
-        Map<String, String> parameters = new HashMap<>();
-        parameters.put("type", payment.getType());
-        parameters.put("user", payment.getUser());
-        parameters.put("amount", numeric.toString(payment.getAmount(), "0"));
-        parameters.put("orderNo", payment.getOrderNo());
-        parameters.put("state", numeric.toString(payment.getState(), "0"));
-        parameters.put("start", dateTime.toString(payment.getStart()));
-        parameters.put("end", dateTime.toString(payment.getEnd()));
-
-        JSONObject params = notice.getJSONObject("params");
-        if (!validator.isEmpty(params))
-            for (String key : params.keySet())
-                parameters.put(key, params.getString(key));
-
-        if (!validator.isEmpty(notice.getString("service")))
-            carousel.service(notice.getString("service"), null, parameters, false);
-
-        if (!validator.isEmpty(notice.getString("http")))
-            http.post(notice.getString("http"), null, parameters);
+        if (notice != null)
+            notices.ifPresent(set -> set.forEach(pn -> pn.paymentDone(payment, notice)));
     }
 }

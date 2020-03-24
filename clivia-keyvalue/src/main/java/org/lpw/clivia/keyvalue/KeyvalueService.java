@@ -19,6 +19,8 @@ public interface KeyvalueService {
 
     int valueAsInt(String key, int defaultValue);
 
+    double valueAsDouble(String key, double defaultValue);
+
     void save(KeyvalueModel keyvalue);
 
     void saves(JSONArray array);

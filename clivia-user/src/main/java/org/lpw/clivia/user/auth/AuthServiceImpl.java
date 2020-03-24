@@ -55,6 +55,13 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
+    public String findUser(String uid, String defaultUser) {
+        AuthModel auth = findByUid(uid);
+
+        return auth == null ? defaultUser : auth.getUser();
+    }
+
+    @Override
     public void delete() {
         AuthModel auth = findByUid(userService.uidFromSession());
         authDao.delete(auth);

@@ -5,9 +5,10 @@ import com.alibaba.fastjson.JSONObject;
 import org.lpw.clivia.account.log.LogModel;
 import org.lpw.clivia.account.log.LogService;
 import org.lpw.clivia.account.type.AccountTypes;
-import org.lpw.clivia.classify.helper.ClassifyHelper;
+import org.lpw.clivia.keyvalue.KeyvalueService;
 import org.lpw.clivia.lock.LockHelper;
-import org.lpw.clivia.user.helper.UserHelper;
+import org.lpw.clivia.user.UserService;
+import org.lpw.clivia.user.auth.AuthService;
 import org.lpw.clivia.util.Pagination;
 import org.lpw.photon.crypto.Digest;
 import org.lpw.photon.dao.model.ModelHelper;
@@ -41,9 +42,10 @@ public class AccountServiceImpl implements AccountService {
     @Inject
     private Pagination pagination;
     @Inject
-    private UserHelper userHelper;
+    private KeyvalueService keyvalueService;
     @Inject
-    private ClassifyHelper classifyHelper;
+    private UserService userService;
+    @Inject private AuthService authService;
     @Inject
     private AccountTypes accountTypes;
     @Inject
@@ -55,12 +57,12 @@ public class AccountServiceImpl implements AccountService {
     public JSONObject query(String uid, String owner, int type, int minBalance, int maxBalance) {
         String user = null;
         if (!validator.isEmpty(uid))
-            user = userHelper.findIdByUid(uid, uid);
+            user = authService.findUser(uid, uid);
         if ("all".equals(owner))
             owner = null;
         JSONObject object = accountDao.query(user, owner, type, minBalance, maxBalance,
                 pagination.getPageSize(20), pagination.getPageNum()).toJson();
-        userHelper.fill(object.getJSONArray("list"), new String[]{"user"});
+        userService.fill(object.getJSONArray("list"), new String[]{"user"});
 
         return object;
     }
@@ -69,7 +71,7 @@ public class AccountServiceImpl implements AccountService {
     public JSONArray queryUser(String user, String owner, boolean fill) {
         JSONArray array = modelHelper.toJson(queryPageList(user, owner).getList());
 
-        return fill ? userHelper.fill(array, new String[]{"user"}) : array;
+        return fill ? userService.fill(array, new String[]{"user"}) : array;
     }
 
     @Override
@@ -89,7 +91,7 @@ public class AccountServiceImpl implements AccountService {
             if (model.equals(account))
                 continue;
 
-            double rate = classifyHelper.valueAsDouble(AccountModel.NAME, "merge.rate." + model.getType(), 1.0D);
+            double rate = keyvalueService.valueAsDouble(AccountModel.NAME + ".merge.rate." + model.getType(), 1.0D);
             account.setBalance(account.getBalance() + rate(rate, model.getBalance()));
             account.setDeposit(account.getDeposit() + rate(rate, model.getDeposit()));
             account.setWithdraw(account.getWithdraw() + rate(rate, model.getWithdraw()));
@@ -102,7 +104,7 @@ public class AccountServiceImpl implements AccountService {
         }
 
         JSONObject object = modelHelper.toJson(account);
-        object.put("user", fill ? userHelper.get(user) : user);
+        object.put("user", fill ? userService.get(user) : user);
 
         return object;
     }
@@ -113,16 +115,16 @@ public class AccountServiceImpl implements AccountService {
 
     private PageList<AccountModel> queryPageList(String user, String owner) {
         if (validator.isEmpty(user))
-            user = userHelper.id();
+            user = userService.id();
         if (validator.isEmpty(owner))
             owner = "";
         PageList<AccountModel> pl = queryFromDao(user, owner);
         if (pl.getList().isEmpty()) {
             save(find(user, owner, 0));
-            int amount = classifyHelper.valueAsInt(AccountModel.NAME, "reward.sign-up.amount", 0);
+            int amount = keyvalueService.valueAsInt(AccountModel.NAME + ".reward.sign-up.amount", 0);
             if (amount > 0)
-                logService.pass(new String[]{reward(user, owner, classifyHelper.valueAsInt(AccountModel.NAME,
-                        "reward.sign-up.type", 0), "sign-up", amount).getString("logId")});
+                logService.pass(new String[]{reward(user, owner, keyvalueService.valueAsInt(AccountModel.NAME + ".reward.sign-up.type", 0),
+                        "sign-up", amount).getString("logId")});
             pl = queryFromDao(user, owner);
         }
 
@@ -195,7 +197,7 @@ public class AccountServiceImpl implements AccountService {
 
     private AccountModel find(String user, String owner, int type) {
         if (validator.isEmpty(user))
-            user = userHelper.id();
+            user = userService.id();
         if (validator.isEmpty(owner))
             owner = "";
         String lockId = lockHelper.lock(LOCK_USER + user + "-" + owner + "-" + type, 1000L, 0);
@@ -230,6 +232,9 @@ public class AccountServiceImpl implements AccountService {
     }
 
     private void save(AccountModel account) {
+        if (account == null)
+            return;
+
         account.setChecksum(digest.md5(CHECKSUM + "&" + account.getUser() + "&" + account.getOwner()
                 + "&" + account.getType() + "&" + account.getBalance() + "&" + account.getDeposit() + "&" + account.getWithdraw()
                 + "&" + account.getReward() + "&" + account.getProfit() + "&" + account.getConsume()

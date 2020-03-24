@@ -1,7 +1,7 @@
 package org.lpw.clivia.account;
 
 import com.alibaba.fastjson.JSONObject;
-import org.lpw.clivia.user.helper.UserHelper;
+import org.lpw.clivia.user.UserService;
 import org.lpw.photon.ctrl.context.Request;
 import org.lpw.photon.ctrl.execute.Execute;
 import org.lpw.photon.ctrl.template.Templates;
@@ -34,14 +34,14 @@ public class AccountCtrl {
     }
 
     @Execute(name = "query-user", validates = {
-            @Validate(validator = UserHelper.VALIDATOR_EXISTS_OR_SIGN_IN, parameter = "user", failureCode = 5)
+            @Validate(validator = UserService.VALIDATOR_EXISTS_SIGN, parameter = "user", failureCode = 5)
     })
     public Object queryUser() {
         return accountService.queryUser(request.get("user"), request.get("owner"), request.getAsBoolean("fill"));
     }
 
     @Execute(name = "merge", validates = {
-            @Validate(validator = UserHelper.VALIDATOR_EXISTS_OR_SIGN_IN, parameter = "user", failureCode = 5)
+            @Validate(validator = UserService.VALIDATOR_EXISTS_SIGN, parameter = "user", failureCode = 5)
     })
     public Object merge() {
         return accountService.merge(request.get("user"), request.get("owner"), request.getAsBoolean("fill"));
@@ -52,7 +52,7 @@ public class AccountCtrl {
             @Validate(validator = Validators.BETWEEN, number = {0, 9}, parameter = "type", failureCode = 2),
             @Validate(validator = Validators.MAX_LENGTH, number = {100}, parameter = "channel", failureCode = 3),
             @Validate(validator = Validators.GREATER_THAN, number = {0}, parameter = "amount", failureCode = 4),
-            @Validate(validator = UserHelper.VALIDATOR_EXISTS_OR_SIGN_IN, parameter = "user", failureCode = 5)
+            @Validate(validator = UserService.VALIDATOR_EXISTS_SIGN, parameter = "user", failureCode = 5)
     })
     public Object deposit() {
         return execute(accountService.deposit(request.get("user"), request.get("owner"), request.getAsInt("type"),
@@ -64,7 +64,7 @@ public class AccountCtrl {
             @Validate(validator = Validators.BETWEEN, number = {0, 9}, parameter = "type", failureCode = 2),
             @Validate(validator = Validators.MAX_LENGTH, number = {100}, parameter = "channel", failureCode = 3),
             @Validate(validator = Validators.GREATER_THAN, number = {0}, parameter = "amount", failureCode = 4),
-            @Validate(validator = UserHelper.VALIDATOR_EXISTS_OR_SIGN_IN, parameter = "user", failureCode = 5)
+            @Validate(validator = UserService.VALIDATOR_EXISTS_SIGN, parameter = "user", failureCode = 5)
     })
     public Object withdraw() {
         return execute(accountService.withdraw(request.get("user"), request.get("owner"), request.getAsInt("type"),
@@ -76,7 +76,7 @@ public class AccountCtrl {
             @Validate(validator = Validators.BETWEEN, number = {0, 9}, parameter = "type", failureCode = 2),
             @Validate(validator = Validators.MAX_LENGTH, number = {100}, parameter = "channel", failureCode = 3),
             @Validate(validator = Validators.GREATER_THAN, number = {0}, parameter = "amount", failureCode = 4),
-            @Validate(validator = UserHelper.VALIDATOR_EXISTS_OR_SIGN_IN, parameter = "user", failureCode = 5)
+            @Validate(validator = UserService.VALIDATOR_EXISTS_SIGN, parameter = "user", failureCode = 5)
     })
     public Object reward() {
         return execute(accountService.reward(request.get("user"), request.get("owner"), request.getAsInt("type"),
@@ -88,7 +88,7 @@ public class AccountCtrl {
             @Validate(validator = Validators.BETWEEN, number = {0, 9}, parameter = "type", failureCode = 2),
             @Validate(validator = Validators.MAX_LENGTH, number = {100}, parameter = "channel", failureCode = 3),
             @Validate(validator = Validators.GREATER_THAN, number = {0}, parameter = "amount", failureCode = 4),
-            @Validate(validator = UserHelper.VALIDATOR_EXISTS_OR_SIGN_IN, parameter = "user", failureCode = 5)
+            @Validate(validator = UserService.VALIDATOR_EXISTS_SIGN, parameter = "user", failureCode = 5)
     })
     public Object profit() {
         return execute(accountService.profit(request.get("user"), request.get("owner"), request.getAsInt("type"),
@@ -100,7 +100,7 @@ public class AccountCtrl {
             @Validate(validator = Validators.BETWEEN, number = {0, 9}, parameter = "type", failureCode = 2),
             @Validate(validator = Validators.MAX_LENGTH, number = {100}, parameter = "channel", failureCode = 3),
             @Validate(validator = Validators.GREATER_THAN, number = {0}, parameter = "amount", failureCode = 4),
-            @Validate(validator = UserHelper.VALIDATOR_EXISTS_OR_SIGN_IN, parameter = "user", failureCode = 5)
+            @Validate(validator = UserService.VALIDATOR_EXISTS_SIGN, parameter = "user", failureCode = 5)
     })
     public Object consume() {
         return execute(accountService.consume(request.get("user"), request.get("owner"), request.getAsInt("type"),
@@ -112,7 +112,7 @@ public class AccountCtrl {
             @Validate(validator = Validators.BETWEEN, number = {0, 9}, parameter = "type", failureCode = 2),
             @Validate(validator = Validators.MAX_LENGTH, number = {100}, parameter = "channel", failureCode = 3),
             @Validate(validator = Validators.GREATER_THAN, number = {0}, parameter = "amount", failureCode = 4),
-            @Validate(validator = UserHelper.VALIDATOR_EXISTS_OR_SIGN_IN, parameter = "user", failureCode = 5)
+            @Validate(validator = UserService.VALIDATOR_EXISTS_SIGN, parameter = "user", failureCode = 5)
     })
     public Object remitIn() {
         return execute(accountService.remitIn(request.get("user"), request.get("owner"), request.getAsInt("type"),
@@ -124,7 +124,7 @@ public class AccountCtrl {
             @Validate(validator = Validators.BETWEEN, number = {0, 9}, parameter = "type", failureCode = 2),
             @Validate(validator = Validators.MAX_LENGTH, number = {100}, parameter = "channel", failureCode = 3),
             @Validate(validator = Validators.GREATER_THAN, number = {0}, parameter = "amount", failureCode = 4),
-            @Validate(validator = UserHelper.VALIDATOR_EXISTS_OR_SIGN_IN, parameter = "user", failureCode = 5)
+            @Validate(validator = UserService.VALIDATOR_EXISTS_SIGN, parameter = "user", failureCode = 5)
     })
     public Object remitOut() {
         return execute(accountService.remitOut(request.get("user"), request.get("owner"), request.getAsInt("type"),
@@ -136,7 +136,7 @@ public class AccountCtrl {
             @Validate(validator = Validators.BETWEEN, number = {0, 9}, parameter = "type", failureCode = 2),
             @Validate(validator = Validators.MAX_LENGTH, number = {100}, parameter = "channel", failureCode = 3),
             @Validate(validator = Validators.GREATER_THAN, number = {0}, parameter = "amount", failureCode = 4),
-            @Validate(validator = UserHelper.VALIDATOR_EXISTS_OR_SIGN_IN, parameter = "user", failureCode = 5)
+            @Validate(validator = UserService.VALIDATOR_EXISTS_SIGN, parameter = "user", failureCode = 5)
     })
     public Object refund() {
         return execute(accountService.refund(request.get("user"), request.get("owner"), request.getAsInt("type"),

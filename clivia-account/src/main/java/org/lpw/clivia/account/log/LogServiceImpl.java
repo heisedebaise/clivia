@@ -5,7 +5,8 @@ import com.alibaba.fastjson.JSONObject;
 import org.lpw.clivia.account.AccountModel;
 import org.lpw.clivia.account.AccountService;
 import org.lpw.clivia.lock.LockHelper;
-import org.lpw.clivia.user.helper.UserHelper;
+import org.lpw.clivia.user.UserService;
+import org.lpw.clivia.user.auth.AuthService;
 import org.lpw.clivia.util.Pagination;
 import org.lpw.photon.dao.model.ModelHelper;
 import org.lpw.photon.scheduler.SecondsJob;
@@ -38,7 +39,9 @@ public class LogServiceImpl implements LogService, SecondsJob {
     @Inject
     private LockHelper lockHelper;
     @Inject
-    private UserHelper userHelper;
+    private UserService userService;
+    @Inject
+    private AuthService authService;
     @Inject
     private AccountService accountService;
     @Inject
@@ -62,19 +65,13 @@ public class LogServiceImpl implements LogService, SecondsJob {
 
     @Override
     public JSONObject query(String uid, String owner, String type, String channel, int state, Date start, Date end) {
-        String userId = null;
-        if (!validator.isEmpty(uid)) {
-            JSONObject user = userHelper.findByUid(uid);
-            userId = user.isEmpty() ? uid : user.getString("id");
-        }
-
-        return logDao.query(userId, owner, type, channel, state, dateTime.getStart(start),
+        return logDao.query(authService.findUser(uid, uid), owner, type, channel, state, dateTime.getStart(start),
                 dateTime.getEnd(end), pagination.getPageSize(20), pagination.getPageNum()).toJson(this::toJson);
     }
 
     private JSONObject toJson(LogModel log) {
         JSONObject object = modelHelper.toJson(log);
-        object.put("user", userHelper.get(log.getUser()));
+        object.put("user", userService.get(log.getUser()));
         if (!validator.isEmpty(log.getJson())) {
             JSONObject obj = json.toObject(log.getJson());
             if (obj != null) {

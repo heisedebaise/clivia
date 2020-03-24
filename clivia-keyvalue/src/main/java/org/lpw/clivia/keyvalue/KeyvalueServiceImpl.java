@@ -71,6 +71,11 @@ public class KeyvalueServiceImpl implements KeyvalueService {
     }
 
     @Override
+    public double valueAsDouble(String key, double defaultValue) {
+        return numeric.toDouble(value(key), defaultValue);
+    }
+
+    @Override
     public void save(KeyvalueModel keyvalue) {
         if (validator.isEmpty(keyvalue.getId()) || keyvalueDao.findById(keyvalue.getId()) == null)
             keyvalue.setId(null);

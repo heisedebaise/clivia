@@ -1,5 +1,6 @@
 package org.lpw.clivia.user;
 
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 
 /**
@@ -22,6 +23,7 @@ public interface UserService {
      * 用户信息是否存在验证器Bean名称。
      */
     String VALIDATOR_EXISTS = UserModel.NAME + ".validator.exists";
+    String VALIDATOR_EXISTS_SIGN = VALIDATOR_EXISTS + "-sign";
 
     /**
      * 邀请人。
@@ -56,6 +58,8 @@ public interface UserService {
      * @return 当前用户登入信息；如果未登入则返回空JSON数据。
      */
     JSONObject sign();
+
+    String id();
 
     int grade();
 
@@ -156,6 +160,8 @@ public interface UserService {
      * @return 用户信息，不存在且未登入则返回空JSON{}。
      */
     JSONObject findOrSign(String idUidCode);
+
+    JSONArray fill(JSONArray array, String[] names);
 
     /**
      * 检索用户信息集。

@@ -1,6 +1,7 @@
 package org.lpw.clivia.weixin;
 
 import com.alibaba.fastjson.JSONObject;
+import org.lpw.clivia.user.UserService;
 import org.lpw.clivia.user.helper.UserHelper;
 import org.lpw.photon.ctrl.Forward;
 import org.lpw.photon.ctrl.context.Request;
@@ -21,7 +22,7 @@ import java.util.Map;
  * @author lpw
  */
 @Controller(WeixinModel.NAME + ".ctrl")
-@Execute(name = "/weixin/", key = WeixinModel.NAME, code = "124")
+@Execute(name = "/weixin/", key = WeixinModel.NAME, code = "154")
 public class WeixinCtrl {
     @Inject
     private Validator validator;
@@ -38,7 +39,7 @@ public class WeixinCtrl {
     @Inject
     private Forward forward;
     @Inject
-    private UserHelper userHelper;
+    private UserService userService;
     @Inject
     private WeixinService weixinService;
 
@@ -166,7 +167,7 @@ public class WeixinCtrl {
             @Validate(validator = Validators.NOT_EMPTY, parameter = "key", failureCode = 2),
             @Validate(validator = Validators.NOT_EMPTY, parameter = "subject", failureCode = 21),
             @Validate(validator = Validators.GREATER_THAN, number = {0}, parameter = "amount", failureCode = 22),
-            @Validate(validator = UserHelper.VALIDATOR_EXISTS_OR_SIGN_IN, parameter = "user", failureCode = 23),
+            @Validate(validator = UserService.VALIDATOR_EXISTS_SIGN, parameter = "user", failureCode = 23),
             @Validate(validator = WeixinService.VALIDATOR_EXISTS, parameter = "key", failureCode = 24)
     })
     public Object prepayQrCode() {
@@ -181,7 +182,7 @@ public class WeixinCtrl {
             @Validate(validator = Validators.NOT_EMPTY, parameter = "key", failureCode = 2),
             @Validate(validator = Validators.NOT_EMPTY, parameter = "subject", failureCode = 21),
             @Validate(validator = Validators.GREATER_THAN, number = {0}, parameter = "amount", failureCode = 22),
-            @Validate(validator = UserHelper.VALIDATOR_EXISTS_OR_SIGN_IN, parameter = "user", failureCode = 23),
+            @Validate(validator = UserService.VALIDATOR_EXISTS_SIGN, parameter = "user", failureCode = 23),
             @Validate(validator = WeixinService.VALIDATOR_EXISTS, parameter = "key", failureCode = 24)
     })
     public Object prepayQrCodeBase64() {
@@ -194,7 +195,7 @@ public class WeixinCtrl {
             @Validate(validator = Validators.NOT_EMPTY, parameter = "key", failureCode = 2),
             @Validate(validator = Validators.NOT_EMPTY, parameter = "subject", failureCode = 21),
             @Validate(validator = Validators.GREATER_THAN, number = {0}, parameter = "amount", failureCode = 22),
-            @Validate(validator = UserHelper.VALIDATOR_EXISTS_OR_SIGN_IN, parameter = "user", failureCode = 23),
+            @Validate(validator = UserService.VALIDATOR_EXISTS_SIGN, parameter = "user", failureCode = 23),
             @Validate(validator = WeixinService.VALIDATOR_EXISTS, parameter = "key", failureCode = 24)
     })
     public Object prepayApp() {
@@ -206,7 +207,7 @@ public class WeixinCtrl {
             @Validate(validator = Validators.NOT_EMPTY, parameter = "key", failureCode = 2),
             @Validate(validator = Validators.NOT_EMPTY, parameter = "subject", failureCode = 21),
             @Validate(validator = Validators.GREATER_THAN, number = {0}, parameter = "amount", failureCode = 22),
-            @Validate(validator = UserHelper.VALIDATOR_EXISTS_OR_SIGN_IN, parameter = "user", failureCode = 23),
+            @Validate(validator = UserService.VALIDATOR_EXISTS_SIGN, parameter = "user", failureCode = 23),
             @Validate(validator = WeixinService.VALIDATOR_EXISTS, parameter = "key", failureCode = 24)
     })
     public Object prepayMini() {

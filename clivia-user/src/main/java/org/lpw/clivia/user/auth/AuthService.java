@@ -45,6 +45,8 @@ public interface AuthService {
      */
     AuthModel findByUid(String uid);
 
+    String findUser(String uid, String defaultUser);
+
     /**
      * 删除当前认证。
      */

@@ -1,5 +1,6 @@
 package org.lpw.clivia.user;
 
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import org.lpw.clivia.keyvalue.KeyvalueService;
 import org.lpw.clivia.user.auth.AuthModel;
@@ -14,12 +15,7 @@ import org.lpw.photon.crypto.Digest;
 import org.lpw.photon.ctrl.context.Session;
 import org.lpw.photon.dao.model.ModelHelper;
 import org.lpw.photon.dao.orm.PageList;
-import org.lpw.photon.util.Converter;
-import org.lpw.photon.util.DateTime;
-import org.lpw.photon.util.Generator;
-import org.lpw.photon.util.Numeric;
-import org.lpw.photon.util.TimeUnit;
-import org.lpw.photon.util.Validator;
+import org.lpw.photon.util.*;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -228,7 +224,7 @@ public class UserServiceImpl implements UserService {
             return true;
         }
 
-        if(user.getCode().equals("99999999")&&validator.isEmpty(user.getPassword())&&userDao.count()==2){
+        if (user.getCode().equals("99999999") && validator.isEmpty(user.getPassword()) && userDao.count() == 2) {
             user.setPassword(password(password));
             save(user);
 
@@ -252,12 +248,22 @@ public class UserServiceImpl implements UserService {
             return new JSONObject();
 
         UserModel user = fromSession();
+        if (user == null)
+            return new JSONObject();
+
         JSONObject object = getJson(user.getId(), user);
         JSONObject auth3 = session.get(SESSION_AUTH3);
         if (auth3 != null)
             object.put("auth3", auth3);
 
         return object;
+    }
+
+    @Override
+    public String id() {
+        UserModel user = fromSession();
+
+        return user == null ? null : user.getId();
     }
 
     @Override
@@ -387,6 +393,17 @@ public class UserServiceImpl implements UserService {
             user = userDao.findByCode(idUidCode);
 
         return user == null ? sign() : modelHelper.toJson(user);
+    }
+
+    @Override
+    public JSONArray fill(JSONArray array, String[] names) {
+        for (int i = 0, size = array.size(); i < size; i++) {
+            JSONObject object = array.getJSONObject(i);
+            for (String name : names)
+                object.put(name, getJson(object.getString(name), null));
+        }
+
+        return array;
     }
 
     private JSONObject getJson(String id, UserModel user) {
