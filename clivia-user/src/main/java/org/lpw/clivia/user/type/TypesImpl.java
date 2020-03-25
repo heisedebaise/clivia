@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * @author lpw
@@ -27,7 +28,7 @@ public class TypesImpl implements Types, ContextRefreshedListener {
     }
 
     @Override
-    public String[] getUid(String key, String uid, String password) {
+    public Set<String> getUid(String key, String uid, String password) {
         return map.get(key).getUid(uid, password);
     }
 

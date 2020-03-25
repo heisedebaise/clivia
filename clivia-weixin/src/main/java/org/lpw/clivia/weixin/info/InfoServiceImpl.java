@@ -14,6 +14,7 @@ import javax.inject.Inject;
 import java.sql.Timestamp;
 import java.util.Calendar;
 import java.util.HashMap;
+import java.util.List;
 
 /**
  * @author lpw
@@ -39,6 +40,11 @@ public class InfoServiceImpl implements InfoService, MinuteJob {
         calendar.add(Calendar.MINUTE, -10);
 
         return modelHelper.toJson(infoDao.query(new Timestamp(calendar.getTimeInMillis())).getList());
+    }
+
+    @Override
+    public List<InfoModel> query(String unionId) {
+        return infoDao.query(unionId).getList();
     }
 
     @Override

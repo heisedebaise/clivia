@@ -22,6 +22,11 @@ class InfoDaoImpl implements InfoDao {
     }
 
     @Override
+    public PageList<InfoModel> query(String unionId) {
+        return liteOrm.query(new LiteQuery(InfoModel.class).where("c_union_id=?"), new Object[]{unionId});
+    }
+
+    @Override
     public InfoModel find(String openId) {
         return liteOrm.findOne(new LiteQuery(InfoModel.class).where("c_open_id=?"), new Object[]{openId});
     }

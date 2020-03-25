@@ -3,6 +3,8 @@ package org.lpw.clivia.user.type;
 import com.alibaba.fastjson.JSONObject;
 import org.lpw.clivia.user.UserModel;
 
+import java.util.Set;
+
 /**
  * 认证类型处理器。
  *
@@ -40,7 +42,7 @@ public interface Types {
      * @param password 密码。
      * @return UID，如果获取失败则返回null。
      */
-    String[] getUid(String key, String uid, String password);
+    Set<String> getUid(String key, String uid, String password);
 
     /**
      * 获取第三方认证手机号。

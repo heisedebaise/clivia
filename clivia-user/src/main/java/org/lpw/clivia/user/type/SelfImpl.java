@@ -14,12 +14,13 @@ import org.lpw.photon.util.Validator;
 import org.springframework.stereotype.Service;
 
 import javax.inject.Inject;
+import java.util.Set;
 
 /**
  * @author lpw
  */
 @Service("clivia.user.type.self")
-public class SelfImpl extends TypeSupport implements Type {
+public class SelfImpl extends TypeSupport {
     private static final String PREFIX = "clivia.user.type.";
     private static final String CACHE_PASS = PREFIX + "pass:";
 
@@ -80,8 +81,8 @@ public class SelfImpl extends TypeSupport implements Type {
     }
 
     @Override
-    public String[] getUid(String uid, String password) {
-        return new String[]{uid};
+    public Set<String> getUid(String uid, String password) {
+        return Set.of(uid);
     }
 
     @Override

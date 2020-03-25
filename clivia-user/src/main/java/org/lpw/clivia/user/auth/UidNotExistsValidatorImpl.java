@@ -6,6 +6,7 @@ import org.lpw.photon.ctrl.validate.ValidatorSupport;
 import org.springframework.stereotype.Controller;
 
 import javax.inject.Inject;
+import java.util.Set;
 
 /**
  * @author lpw
@@ -19,9 +20,12 @@ public class UidNotExistsValidatorImpl extends ValidatorSupport {
 
     @Override
     public boolean validate(ValidateWrapper validate, String[] parameters) {
-        String[] uid = types.getUid(parameters[0], parameters[1], parameters[2]);
+        if (!Types.Self.equals(parameters[2]))
+            return false;
 
-        return !validator.isEmpty(uid) && authService.findByUid(uid[0]) == null;
+        Set<String> uid = types.getUid(Types.Self, parameters[0], parameters[1]);
+
+        return !validator.isEmpty(uid) && authService.findByUid(uid.iterator().next()) == null;
     }
 
     @Override

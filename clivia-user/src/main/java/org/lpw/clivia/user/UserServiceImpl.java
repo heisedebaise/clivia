@@ -77,7 +77,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void signUp(String uid, String password, String type) {
+    public UserModel signUp(String uid, String password, String type) {
         UserModel user = fromSession();
         if (user == null)
             user = new UserModel();
@@ -113,6 +113,8 @@ public class UserServiceImpl implements UserService {
                 authService.create(user.getId(), ruid, type, mobile, email, nick, portrait);
         clearCache(user);
         signIn(user, uid);
+
+        return user;
     }
 
     private void setInviter(UserModel user) {

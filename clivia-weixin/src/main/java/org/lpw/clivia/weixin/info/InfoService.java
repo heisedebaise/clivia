@@ -2,6 +2,8 @@ package org.lpw.clivia.weixin.info;
 
 import com.alibaba.fastjson.JSONArray;
 
+import java.util.List;
+
 /**
  * @author lpw
  */
@@ -12,6 +14,8 @@ public interface InfoService {
      * @return 数据集。
      */
     JSONArray query();
+
+    List<InfoModel> query(String unionId);
 
     /**
      * 查找Open ID。

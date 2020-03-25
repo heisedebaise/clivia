@@ -40,8 +40,9 @@ public interface UserService {
      * @param uid      UID值。
      * @param password 密码。
      * @param type     认证类型。
+     * @return 用户信息。
      */
-    void signUp(String uid, String password, String type);
+    UserModel signUp(String uid, String password, String type);
 
     /**
      * 登入验证。
