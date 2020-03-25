@@ -7,7 +7,7 @@
     <groupId>org.lpw.clivia</groupId>
     <artifactId>clivia</artifactId>
     <packaging>pom</packaging>
-    <version>0.2</version>
+    <version>0.3</version>
     <modules>
         <module>clivia-base</module>
         <module>clivia-keyvalue</module>

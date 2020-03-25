@@ -6,7 +6,7 @@
 
     <groupId>org.lpw.clivia</groupId>
     <artifactId>clivia-user</artifactId>
-    <version>0.2</version>
+    <version>0.3</version>
 
     <name>clivia-user</name>
     <url>https://github.com/heisedebaise/clivia</url>
@@ -15,7 +15,7 @@
         <dependency>
             <groupId>org.lpw.clivia</groupId>
             <artifactId>clivia-keyvalue</artifactId>
-            <version>0.2</version>
+            <version>0.3</version>
         </dependency>
     </dependencies>
 </project>
