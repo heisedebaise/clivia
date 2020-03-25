@@ -7,6 +7,7 @@ import com.alibaba.fastjson.JSONObject;
  * @author lpw
  */
 public interface UserService {
+    String VALIDATOR_EXISTS_TYPE = UserModel.NAME + ".validator.exists-type";
     /**
      * 登入验证器Bean名称。
      */
@@ -40,7 +41,7 @@ public interface UserService {
      * @param password 密码。
      * @param type     认证类型。
      */
-    void signUp(String uid, String password, int type);
+    void signUp(String uid, String password, String type);
 
     /**
      * 登入验证。
@@ -50,7 +51,7 @@ public interface UserService {
      * @param type     认证类型。
      * @return 认证成功则返回true；否则返回false。
      */
-    boolean signIn(String uid, String password, int type);
+    boolean signIn(String uid, String password, String type);
 
     /**
      * 获取当前用户登入信息。
@@ -204,6 +205,8 @@ public interface UserService {
      * @param state 状态值。
      */
     void state(String id, int state);
+
+    boolean root(UserModel user, String password);
 
     /**
      * 统计用户数。

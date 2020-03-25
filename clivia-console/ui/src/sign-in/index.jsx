@@ -16,6 +16,7 @@ class SignIn extends React.Component {
     }
 
     finish = values => {
+        values.type = '';
         service('/user/sign-' + (this.state.up ? 'up' : 'in'), values).then(data => {
             if (data != null) {
                 window.location.reload();

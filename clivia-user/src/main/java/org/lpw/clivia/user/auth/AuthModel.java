@@ -23,10 +23,12 @@ public class AuthModel extends ModelSupport {
 
     private String user; // 用户ID
     private String uid; // 认证ID
-    private Timestamp time; // 绑定时间
-    private int type; // 类型：0-自有账号；1-微信公众号；2-微信小程序
+    private String type; // 类型
+    private String mobile; // 第三方账号手机号
+    private String email; // 第三方账号Email
     private String nick; // 第三方账号昵称
     private String portrait; // 第三方头像URL
+    private Timestamp time; // 绑定时间
 
     @Jsonable
     @Column(name = "c_user")
@@ -49,23 +51,33 @@ public class AuthModel extends ModelSupport {
     }
 
     @Jsonable
-    @Column(name = "c_time")
-    public Timestamp getTime() {
-        return time;
-    }
-
-    public void setTime(Timestamp time) {
-        this.time = time;
-    }
-
-    @Jsonable
     @Column(name = "c_type")
-    public int getType() {
+    public String getType() {
         return type;
     }
 
-    public void setType(int type) {
+    public void setType(String type) {
         this.type = type;
+    }
+
+    @Jsonable
+    @Column(name = "c_mobile")
+    public String getMobile() {
+        return mobile;
+    }
+
+    public void setMobile(String mobile) {
+        this.mobile = mobile;
+    }
+
+    @Jsonable
+    @Column(name = "c_email")
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     @Jsonable
@@ -86,5 +98,15 @@ public class AuthModel extends ModelSupport {
 
     public void setPortrait(String portrait) {
         this.portrait = portrait;
+    }
+
+    @Jsonable
+    @Column(name = "c_time")
+    public Timestamp getTime() {
+        return time;
+    }
+
+    public void setTime(Timestamp time) {
+        this.time = time;
     }
 }

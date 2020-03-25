@@ -36,14 +36,16 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
-    public AuthModel create(String userId, String uid, int type, String nick, String portrait) {
+    public AuthModel create(String userId, String uid, String type, String mobile, String email, String nick, String portrait) {
         AuthModel auth = new AuthModel();
         auth.setUser(userId);
         auth.setUid(uid);
-        auth.setTime(dateTime.now());
         auth.setType(type);
+        auth.setMobile(mobile);
+        auth.setEmail(email);
         auth.setNick(nick);
         auth.setPortrait(portrait);
+        auth.setTime(dateTime.now());
         authDao.save(auth);
 
         return auth;

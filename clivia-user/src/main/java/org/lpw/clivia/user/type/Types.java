@@ -10,91 +10,85 @@ import org.lpw.clivia.user.UserModel;
  */
 public interface Types {
     /**
-     * 自有。
+     * 自有账号类型KEY。
      */
-    int SELF = 0;
+    String Self = "";
+
     /**
-     * 微信公众号。
+     * 是否支持类型KEY。
+     *
+     * @param key 类型KEY。
+     * @return 支持则返回true，否则返回false。
      */
-    int WEIXIN = 1;
+    boolean hasKey(String key);
+
     /**
-     * 微信小程序。
+     * 认证。
+     *
+     * @param key      类型KEY。
+     * @param uid      UID。
+     * @param password 密码。
+     * @return 认证通过则返回用户信息；否则返回null。
      */
-    int WEIXIN_MINI = 2;
-    /**
-     * Facebook。
-     */
-    int FACEBOOK = 3;
-    /**
-     * Linkedin。
-     */
-    int LINKEDIN = 4;
-    /**
-     * Google。
-     */
-    int GOOGLE = 5;
-    /**
-     * 类型最大值。
-     */
-    int MAX = 5;
+    UserModel auth(String key, String uid, String password);
 
     /**
      * 获取UID。
      *
+     * @param key      类型KEY。
      * @param uid      UID。
      * @param password 密码。
-     * @param type     类型。
      * @return UID，如果获取失败则返回null。
      */
-    String getUid(String uid, String password, int type);
+    String[] getUid(String key, String uid, String password);
 
     /**
-     * 获取UID。
+     * 获取第三方认证手机号。
      *
+     * @param key      类型KEY。
      * @param uid      UID。
      * @param password 密码。
-     * @param type     类型。
-     * @return UID，如果获取失败则返回null。
+     * @return 手机号，不存在则返回null。
      */
-    String getUid2(String uid, String password, int type);
+    String getMobile(String key, String uid, String password);
 
     /**
-     * 注册。
+     * 获取第三方认证Email。
      *
-     * @param user     用户。
+     * @param key      类型KEY。
      * @param uid      UID。
      * @param password 密码。
-     * @param type     类型。
+     * @return Email，不存在则返回null。
      */
-    void signUp(UserModel user, String uid, String password, int type);
+    String getEmail(String key, String uid, String password);
 
     /**
      * 获取第三方认证昵称。
      *
+     * @param key      类型KEY。
      * @param uid      UID。
      * @param password 密码。
-     * @param type     类型。
      * @return 昵称，不存在则返回null。
      */
-    String getNick(String uid, String password, int type);
+    String getNick(String key, String uid, String password);
 
     /**
      * 获取第三方头像URL。
      *
+     * @param key      类型KEY。
      * @param uid      UID。
      * @param password 密码。
-     * @param type     类型。
      * @return 头像URL，不存在则返回null。
      */
-    String getPortrait(String uid, String password, int type);
+    String getPortrait(String key, String uid, String password);
 
     /**
      * 获取第三方认证信息。
      *
+     * @param key      类型KEY。
      * @param uid      UID。
      * @param password 密码。
-     * @param type     类型。
      * @return 认证信息，不存在则返回null。
      */
-    JSONObject getAuth(String uid, String password, int type);
+    JSONObject getAuth(String key, String uid, String password);
 }

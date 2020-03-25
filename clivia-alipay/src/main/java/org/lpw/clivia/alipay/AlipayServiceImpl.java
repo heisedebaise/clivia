@@ -144,7 +144,7 @@ public class AlipayServiceImpl implements AlipayService, TransferListener {
     private String getBizContent(String appId, String user, String subject, int amount, String billNo, String notice, String code) {
         if (validator.isEmpty(user))
             user = userService.id();
-        JSONObject object = paymentService.create(transferType(), appId, user, amount, billNo, notice, null);
+        JSONObject object = paymentService.create(getTransferType(), appId, user, amount, billNo, notice, null);
         String orderNo;
         if (!json.containsKey(object, "orderNo") || validator.isEmpty(orderNo = object.getString("orderNo")))
             return null;
@@ -212,7 +212,7 @@ public class AlipayServiceImpl implements AlipayService, TransferListener {
     public boolean transfer(String key, String user, String account, int amount, String billNo, String realName, String showName,
                             String remark, String notice, Map<String, String> map) {
         AlipayModel alipay = alipayDao.findByKey(key);
-        JSONObject object = transferService.create(transferType(), alipay.getAppId(), validator.isEmpty(user) ? userService.id() : user,
+        JSONObject object = transferService.create(getTransferType(), alipay.getAppId(), validator.isEmpty(user) ? userService.id() : user,
                 account, amount, billNo, notice, map);
         String orderNo;
         if (!json.containsKey(object, "orderNo") || validator.isEmpty(orderNo = object.getString("orderNo")))
@@ -241,7 +241,7 @@ public class AlipayServiceImpl implements AlipayService, TransferListener {
     }
 
     @Override
-    public String transferType() {
+    public String getTransferType() {
         return "alipay";
     }
 

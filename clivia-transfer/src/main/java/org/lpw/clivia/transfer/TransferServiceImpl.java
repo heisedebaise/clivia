@@ -214,6 +214,6 @@ public class TransferServiceImpl implements ContextRefreshedListener, SecondsJob
         ignores.add("sign-time");
 
         listeners = new HashMap<>();
-        BeanFactory.getBeans(TransferListener.class).forEach(listener -> listeners.put(listener.transferType(), listener));
+        BeanFactory.getBeans(TransferListener.class).forEach(listener -> listeners.put(listener.getTransferType(), listener));
     }
 }

@@ -14,41 +14,51 @@ import java.util.Map;
  */
 @Service("clivia.user.types")
 public class TypesImpl implements Types, ContextRefreshedListener {
-    private Map<Integer, Type> map;
+    private Map<String, Type> map;
 
     @Override
-    public String getUid(String uid, String password, int type) {
-        return map.get(type).getUid(uid, password);
+    public boolean hasKey(String key) {
+        return map.containsKey(key);
     }
 
     @Override
-    public String getUid2(String uid, String password, int type) {
-        return map.get(type).getUid2(uid, password);
+    public UserModel auth(String key, String uid, String password) {
+        return map.get(key).auth(uid, password);
     }
 
     @Override
-    public void signUp(UserModel user, String uid, String password, int type) {
-        map.get(type).signUp(user, uid, password);
+    public String[] getUid(String key, String uid, String password) {
+        return map.get(key).getUid(uid, password);
     }
 
     @Override
-    public String getNick(String uid, String password, int type) {
-        return map.get(type).getNick(uid, password);
+    public String getMobile(String key, String uid, String password) {
+        return map.get(key).getMobile(uid, password);
     }
 
     @Override
-    public String getPortrait(String uid, String password, int type) {
-        return map.get(type).getPortrait(uid, password);
+    public String getEmail(String key, String uid, String password) {
+        return map.get(key).getEmail(uid, password);
     }
 
     @Override
-    public JSONObject getAuth(String uid, String password, int type) {
-        return map.get(type).getAuth(uid, password);
+    public String getNick(String key, String uid, String password) {
+        return map.get(key).getNick(uid, password);
+    }
+
+    @Override
+    public String getPortrait(String key, String uid, String password) {
+        return map.get(key).getPortrait(uid, password);
+    }
+
+    @Override
+    public JSONObject getAuth(String key, String uid, String password) {
+        return map.get(key).getAuth(uid, password);
     }
 
     @Override
     public int getContextRefreshedSort() {
-        return 15;
+        return 151;
     }
 
     @Override

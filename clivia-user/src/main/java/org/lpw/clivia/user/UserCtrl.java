@@ -1,7 +1,6 @@
 package org.lpw.clivia.user;
 
 import org.lpw.clivia.user.auth.AuthService;
-import org.lpw.clivia.user.type.Types;
 import org.lpw.photon.ctrl.Forward;
 import org.lpw.photon.ctrl.context.Request;
 import org.lpw.photon.ctrl.execute.Execute;
@@ -38,20 +37,20 @@ public class UserCtrl {
     @Execute(name = "sign-up", validates = {
             @Validate(validator = Validators.NOT_EMPTY, parameter = "uid", failureCode = 1),
             @Validate(validator = Validators.MAX_LENGTH, number = {100}, parameter = "uid", failureCode = 2),
+            @Validate(validator = UserService.VALIDATOR_EXISTS_TYPE, parameter = "type", failureCode = 27),
             @Validate(validator = UserService.VALIDATOR_PASSWORD, parameters = {"password", "type"}, failureCode = 3),
-            @Validate(validator = Validators.BETWEEN, number = {0, Types.MAX}, parameter = "type", failureCode = 27),
             @Validate(validator = AuthService.VALIDATOR_UID_NOT_EXISTS, parameters = {"uid", "password", "type"}, failureCode = 4)
     })
     public Object signUp() {
-        userService.signUp(request.get("uid"), request.get("password"), request.getAsInt("type"));
+        userService.signUp(request.get("uid"), request.get("password"), request.get("type"));
 
         return sign();
     }
 
     @Execute(name = "sign-in", validates = {
             @Validate(validator = Validators.NOT_EMPTY, parameter = "uid", failureCode = 1),
+            @Validate(validator = UserService.VALIDATOR_EXISTS_TYPE, parameter = "type", failureCode = 27),
             @Validate(validator = UserService.VALIDATOR_PASSWORD, parameters = {"password", "type"}, failureCode = 3),
-            @Validate(validator = Validators.BETWEEN, number = {0, Types.MAX}, parameter = "type", failureCode = 27),
             @Validate(validator = UserService.VALIDATOR_SIGN_IN, parameters = {"uid", "password", "type"}, failureCode = 6)
     })
     public Object signIn() {

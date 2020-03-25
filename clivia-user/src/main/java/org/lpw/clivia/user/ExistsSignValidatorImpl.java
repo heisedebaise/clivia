@@ -21,6 +21,6 @@ public class ExistsSignValidatorImpl extends ValidatorSupport {
 
     @Override
     protected String getDefaultFailureMessageKey() {
-        return UserModel.NAME + ".not-exists";
+        return UserModel.NAME + ".not-exists-sign";
     }
 }

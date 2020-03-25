@@ -19,9 +19,9 @@ public class UidNotExistsValidatorImpl extends ValidatorSupport {
 
     @Override
     public boolean validate(ValidateWrapper validate, String[] parameters) {
-        String uid = types.getUid(parameters[0], parameters[1], numeric.toInt(parameters[2]));
+        String[] uid = types.getUid(parameters[0], parameters[1], parameters[2]);
 
-        return uid != null && authService.findByUid(uid) == null;
+        return !validator.isEmpty(uid) && authService.findByUid(uid[0]) == null;
     }
 
     @Override

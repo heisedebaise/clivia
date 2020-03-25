@@ -43,8 +43,7 @@
                 "type": "modify"
             },
             {
-                "type": "delete",
-                "success": ".query"
+                "type": "delete"
             }
         ],
         "toolbar": [
@@ -58,7 +57,7 @@
         "toolbar": [
             {
                 "type": "save",
-                "success": ".query"
+                "success": "query"
             }
         ]
     },
@@ -67,7 +66,7 @@
         "toolbar": [
             {
                 "type": "save",
-                "success": ".query"
+                "success": "query"
             }
         ]
     }

@@ -9,7 +9,7 @@ import com.alibaba.fastjson.JSONObject;
  */
 public interface TransferNotice {
     /**
-     * 支付完成。
+     * 转账完成。
      *
      * @param transfer 转账信息。
      * @param notice   通知配置。

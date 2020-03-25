@@ -1,5 +1,6 @@
 {
     "key": "clivia.account",
+    "uri": "/account/",
     "props": [
         {
             "name": "user.auth.uid",
@@ -66,7 +67,7 @@
                 "name": "type"
             },
             {
-                "label": "clivia.account.balance",
+                "label": "balance",
                 "min": "minBalance",
                 "max": "maxBalance"
             }

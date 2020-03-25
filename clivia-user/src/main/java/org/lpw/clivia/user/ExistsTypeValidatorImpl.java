@@ -5,18 +5,23 @@ import org.lpw.photon.ctrl.validate.ValidateWrapper;
 import org.lpw.photon.ctrl.validate.ValidatorSupport;
 import org.springframework.stereotype.Controller;
 
+import javax.inject.Inject;
+
 /**
  * @author lpw
  */
-@Controller(UserService.VALIDATOR_PASSWORD)
-public class PasswordValidatorImpl extends ValidatorSupport {
+@Controller(UserService.VALIDATOR_EXISTS_TYPE)
+public class ExistsTypeValidatorImpl extends ValidatorSupport {
+    @Inject
+    private Types types;
+
     @Override
-    public boolean validate(ValidateWrapper validate, String[] parameters) {
-        return !validator.isEmpty(parameters[0]) || !Types.Self.equals(parameters[1]);
+    public boolean validate(ValidateWrapper validate, String parameter) {
+        return types.hasKey(parameter);
     }
 
     @Override
     protected String getDefaultFailureMessageKey() {
-        return UserModel.NAME + ".password.empty";
+        return UserModel.NAME + ".type.not-exists";
     }
 }

@@ -11,7 +11,7 @@ public interface TransferListener {
      *
      * @return 付款类型。
      */
-    String transferType();
+    String getTransferType();
 
     /**
      * 重置转账订单状态。

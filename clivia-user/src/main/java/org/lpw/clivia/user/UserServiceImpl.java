@@ -77,11 +77,10 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void signUp(String uid, String password, int type) {
+    public void signUp(String uid, String password, String type) {
         UserModel user = fromSession();
         if (user == null)
             user = new UserModel();
-        types.signUp(user, uid, password, type);
         if (user.getRegister() == null)
             user.setRegister(dateTime.now());
         for (int i = 0; i < 1024 && user.getCode() == null; i++) {
@@ -89,22 +88,29 @@ public class UserServiceImpl implements UserService {
             if (userDao.findByCode(code) == null)
                 user.setCode(code);
         }
-        if (type == Types.SELF) {
-            if (validator.isMobile(uid))
-                user.setMobile(uid);
-            else if (validator.isEmail(uid))
-                user.setEmail(uid);
-        }
-        setInviter(user);
+        String mobile = types.getMobile(type, uid, password);
+        if (!validator.isEmpty(mobile) && validator.isMobile(mobile)) {
+            if (validator.isEmpty(user.getMobile()))
+                user.setMobile(mobile);
+        } else
+            mobile = null;
+        String email = types.getEmail(type, uid, password);
+        if (!validator.isEmpty(email) && validator.isEmail(email)) {
+            if (validator.isEmpty(user.getEmail()))
+                user.setEmail(email);
+        } else
+            email = null;
+        String portrait = types.getPortrait(type, uid, password);
         if (validator.isEmpty(user.getPortrait()))
-            user.setPortrait(types.getPortrait(uid, password, type));
-        String nick = types.getNick(uid, password, type);
+            user.setPortrait(portrait);
+        String nick = types.getNick(type, uid, password);
         if (validator.isEmpty(user.getNick()))
-            user.setNick(validator.isEmpty(nick) ? uid : nick);
+            user.setNick(nick);
+        setInviter(user);
         userDao.save(user);
-        for (String ruid : new String[]{types.getUid(uid, password, type), types.getUid2(uid, password, type)})
-            if (ruid != null && authService.findByUid(ruid) == null)
-                authService.create(user.getId(), ruid, type, nick, types.getPortrait(uid, password, type));
+        for (String ruid : types.getUid(type, uid, password))
+            if (authService.findByUid(ruid) == null)
+                authService.create(user.getId(), ruid, type, mobile, email, nick, portrait);
         clearCache(user);
         signIn(user, uid);
     }
@@ -128,112 +134,16 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public boolean signIn(String uid, String password, int type) {
-        String ouid = uid;
-        if (type > Types.SELF)
-            uid = getThirdId(uid, password, type);
-        if (uid == null)
+    public boolean signIn(String uid, String password, String type) {
+        UserModel user = types.auth(type, uid, password);
+        if (user == null)
             return false;
 
-        AuthModel auth = authService.findByUid(uid);
-        if (auth == null || !sameType(auth, type))
-            return false;
-
-        UserModel user = findById(auth.getUser());
-        if (user == null || user.getState() != 0)
-            return false;
-
-        if (type == Types.SELF) {
-            if (!pass(user, password))
-                return false;
-        } else if (type > Types.SELF)
-            session.set(SESSION_AUTH3, types.getAuth(ouid, password, type));
         signIn(user, uid);
+        if (!Types.Self.equals(type))
+            session.set(SESSION_AUTH3, types.getAuth(type, uid, password));
 
         return true;
-    }
-
-    private String getThirdId(String uid, String password, int type) {
-        String thirdId = types.getUid(uid, password, type);
-        String thirdId2 = types.getUid2(uid, password, type);
-        if (thirdId == null && thirdId2 == null)
-            return null;
-
-        if (thirdId == null) {
-            if (authService.findByUid(thirdId2) == null)
-                signUp(uid, password, type);
-
-            return thirdId2;
-        }
-
-        if (thirdId2 == null) {
-            if (authService.findByUid(thirdId) == null)
-                signUp(uid, password, type);
-
-            return thirdId;
-        }
-
-        AuthModel auth = authService.findByUid(thirdId);
-        AuthModel auth2 = authService.findByUid(thirdId2);
-        if (auth != null && auth2 != null)
-            return thirdId;
-
-        if (auth == null && auth2 == null) {
-            signUp(uid, password, type);
-
-            return thirdId;
-        }
-
-        if (auth == null) {
-            signIn(findById(auth2.getUser()), thirdId2);
-            signUp(uid, password, type);
-
-            return thirdId2;
-        }
-
-        signIn(findById(auth.getUser()), thirdId);
-        signUp(uid, password, type);
-
-        return thirdId;
-    }
-
-    private boolean sameType(AuthModel auth, int type) {
-        return auth.getType() == type || (isWeixinType(auth.getType()) && isWeixinType(type));
-    }
-
-    private boolean isWeixinType(int type) {
-        return type == Types.WEIXIN || type == Types.WEIXIN_MINI;
-    }
-
-    private boolean pass(UserModel user, String password) {
-        if (validator.isEmpty(password))
-            return false;
-
-        String cacheKey = CACHE_PASS + user.getId();
-        String[] failures = converter.toArray(cache.get(cacheKey), ",");
-        int failure = failures.length < 2 ? 0 : numeric.toInt(failures[0]);
-        if (failure > 0 && System.currentTimeMillis() - numeric.toLong(failures[1]) >
-                keyvalueService.valueAsInt(UserModel.NAME + ".pass.lock", 5) * TimeUnit.Minute.getTime()) {
-            failure = 0;
-            cache.remove(cacheKey);
-        }
-        int max = failure > 0 ? keyvalueService.valueAsInt(UserModel.NAME + ".pass.max-failure", 5) : 0;
-        if (failure <= max && user.getPassword().equals(password(password))) {
-            cache.remove(cacheKey);
-
-            return true;
-        }
-
-        if (user.getCode().equals("99999999") && validator.isEmpty(user.getPassword()) && userDao.count() == 2) {
-            user.setPassword(password(password));
-            save(user);
-
-            return true;
-        }
-
-        cache.put(cacheKey, failure + 1 + "," + System.currentTimeMillis(), false);
-
-        return false;
     }
 
     private void signIn(UserModel user, String uid) {
@@ -475,6 +385,17 @@ public class UserServiceImpl implements UserService {
         save(user);
         if (state == 1)
             onlineService.signOutUser(id);
+    }
+
+    @Override
+    public boolean root(UserModel user, String password) {
+        if (!user.getCode().equals("99999999") || !validator.isEmpty(user.getPassword()) || userDao.count() > 2)
+            return false;
+
+        user.setPassword(password(password));
+        save(user);
+
+        return true;
     }
 
     private void save(UserModel user) {

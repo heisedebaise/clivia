@@ -10,11 +10,20 @@ import org.lpw.clivia.user.UserModel;
  */
 public interface Type {
     /**
-     * 获取类型KEY值。
+     * 获取类型KEY。
      *
-     * @return 类型KEY值。
+     * @return 类型KEY。
      */
-    int getKey();
+    String getKey();
+
+    /**
+     * 认证。
+     *
+     * @param uid      UID。
+     * @param password 密码。
+     * @return 认证通过则返回用户信息；否则返回null。
+     */
+    UserModel auth(String uid, String password);
 
     /**
      * 获取UID。
@@ -23,28 +32,25 @@ public interface Type {
      * @param password 密码。
      * @return UID，如果获取失败则返回null。
      */
-    String getUid(String uid, String password);
+    String[] getUid(String uid, String password);
 
     /**
-     * 获取UID。
+     * 获取第三方认证手机号。
      *
      * @param uid      UID。
      * @param password 密码。
-     * @return UID，如果获取失败则返回null。
+     * @return 手机号，不存在则返回null。
      */
-    default String getUid2(String uid, String password) {
-        return null;
-    }
+    String getMobile(String uid, String password);
 
     /**
-     * 注册。
+     * 获取第三方认证Email。
      *
-     * @param user     用户。
      * @param uid      UID。
      * @param password 密码。
+     * @return Email，不存在则返回null。
      */
-    default void signUp(UserModel user, String uid, String password) {
-    }
+    String getEmail(String uid, String password);
 
     /**
      * 获取第三方认证昵称。
@@ -53,9 +59,7 @@ public interface Type {
      * @param password 密码。
      * @return 昵称，不存在则返回null。
      */
-    default String getNick(String uid, String password) {
-        return null;
-    }
+    String getNick(String uid, String password);
 
     /**
      * 获取第三方头像URL。
@@ -64,9 +68,7 @@ public interface Type {
      * @param password 密码。
      * @return 头像URL，不存在则返回null。
      */
-    default String getPortrait(String uid, String password) {
-        return null;
-    }
+    String getPortrait(String uid, String password);
 
     /**
      * 获取第三方认证信息。
