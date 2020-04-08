@@ -3,6 +3,7 @@ import { Form, Radio, Select, DatePicker, Input, Button, message } from 'antd';
 import moment from 'moment';
 import { service } from '../http';
 import meta from './meta';
+import { toMoney, fromMoney } from './numeric';
 import Image from './image';
 import Editor from './editor';
 import './form.css';
@@ -34,6 +35,7 @@ class Base extends React.Component {
 
         this.form = React.createRef();
         this.state = props.data || {};
+        this.format(this.state);
         this.values = {};
     }
 
@@ -46,20 +48,27 @@ class Base extends React.Component {
                 for (let key in values) {
                     values[key] = data[key];
                 }
-                for (let prop of meta.props(this.props.props, this.props.meta.props)) {
-                    let value = values[prop.name];
-                    if (!value) continue;
-
-                    if (prop.labels)
-                        values[prop.name] = '' + value;
-                    else if (prop.type === 'date')
-                        values[prop.name] = moment(value, 'YYYY-MM-DD');
-                    else if (prop.type === 'datetime')
-                        values[prop.name] = moment(value, 'YYYY-MM-DD HH:mm:ss');
-                }
+                this.format(values);
                 this.form.current.setFieldsValue(values);
                 this.setState(data);
             });
+        }
+    }
+
+    format = (values) => {
+        for (let prop of meta.props(this.props.props, this.props.meta.props)) {
+            let value = values[prop.name];
+            if (!value) continue;
+
+            if (prop.labels)
+                values[prop.name] = '' + value;
+            else if (prop.type === 'date')
+                values[prop.name] = moment(value, 'YYYY-MM-DD');
+            else if (prop.type === 'datetime')
+                values[prop.name] = moment(value, 'YYYY-MM-DD HH:mm:ss');
+            else if (prop.type === 'money') {
+                values[prop.name] = toMoney(value);
+            }
         }
     }
 
@@ -79,6 +88,8 @@ class Base extends React.Component {
                 values[prop.name] = value.format("YYYY-MM-DD");
             else if (prop.type === 'datetime')
                 values[prop.name] = value.format("YYYY-MM-DD HH:mm:ss");
+            else if (prop.type === 'money')
+                values[prop.name] = fromMoney(value);
         }
         if (this.props.data)
             for (let key in this.props.data)

@@ -2,6 +2,7 @@ import React from 'react';
 import { Form, Row, Col, Radio, Select, DatePicker, Input, Button, Table, Divider, Menu, Dropdown, Modal } from 'antd';
 import { service, url } from '../http';
 import meta from './meta';
+import { toMoney } from './numeric';
 import './grid.css';
 
 const { Option } = Select;
@@ -27,6 +28,8 @@ class Grid extends React.Component {
             let column = { key: prop.name, title: prop.label };
             if (prop.labels) {
                 column.render = model => prop.labels[this.value(model, prop.name)];
+            } else if (prop.type === 'money') {
+                column.render = model => toMoney(this.value(model, prop.name));
             } else if (prop.type === 'image') {
                 column.render = model => {
                     let value = this.value(model, prop.name);
