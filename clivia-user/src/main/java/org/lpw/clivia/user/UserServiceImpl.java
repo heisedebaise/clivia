@@ -28,9 +28,8 @@ import javax.inject.Inject;
 public class UserServiceImpl implements UserService {
     private static final String CACHE_MODEL = UserModel.NAME + ".service.model:";
     private static final String CACHE_JSON = UserModel.NAME + ".service.json:";
-    private static final String CACHE_PASS = UserModel.NAME + ".service.pass:";
     private static final String SESSION = UserModel.NAME + ".service.session";
-    private static final String SESSION_INSTRODUCER = UserModel.NAME + ".service.session.inviter";
+    private static final String SESSION_INVITER = UserModel.NAME + ".service.session.inviter";
     private static final String SESSION_AUTH3 = UserModel.NAME + ".service.session.auth3";
     private static final String SESSION_UID = UserModel.NAME + ".service.session.uid";
 
@@ -64,16 +63,14 @@ public class UserServiceImpl implements UserService {
     private OnlineService onlineService;
     @Inject
     private UserDao userDao;
-    @Value("${photon.ctrl.service-root:}")
-    private String root;
     private int codeLength = 8;
 
     @Override
     public String inviter(String code) {
         if (!validator.isEmpty(code))
-            session.set(SESSION_INSTRODUCER, code);
+            session.set(SESSION_INVITER, code);
 
-        return session.get(SESSION_INSTRODUCER);
+        return session.get(SESSION_INVITER);
     }
 
     @Override
