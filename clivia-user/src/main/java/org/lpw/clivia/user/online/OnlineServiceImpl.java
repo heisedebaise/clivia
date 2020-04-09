@@ -5,7 +5,7 @@ import org.lpw.clivia.user.UserModel;
 import org.lpw.clivia.user.UserService;
 import org.lpw.clivia.user.auth.AuthModel;
 import org.lpw.clivia.user.auth.AuthService;
-import org.lpw.clivia.util.Pagination;
+import org.lpw.clivia.page.Pagination;
 import org.lpw.photon.ctrl.context.Header;
 import org.lpw.photon.ctrl.context.Session;
 import org.lpw.photon.dao.model.ModelHelper;

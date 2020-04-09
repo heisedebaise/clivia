@@ -3,7 +3,7 @@ package org.lpw.clivia.weixin.reply;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import org.lpw.clivia.popular.PopularService;
-import org.lpw.clivia.util.Pagination;
+import org.lpw.clivia.page.Pagination;
 import org.lpw.clivia.weixin.WeixinModel;
 import org.lpw.clivia.weixin.WeixinService;
 import org.lpw.clivia.weixin.info.InfoService;

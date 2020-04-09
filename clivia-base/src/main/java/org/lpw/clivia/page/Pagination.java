@@ -1,4 +1,4 @@
-package org.lpw.clivia.util;
+package org.lpw.clivia.page;
 
 /**
  * 分页。

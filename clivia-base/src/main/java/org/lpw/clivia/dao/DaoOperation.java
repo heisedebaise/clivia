@@ -1,4 +1,4 @@
-package org.lpw.clivia.util;
+package org.lpw.clivia.dao;
 
 /**
  * DAO操作类型。

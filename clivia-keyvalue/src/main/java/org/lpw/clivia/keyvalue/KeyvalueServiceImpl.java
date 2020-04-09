@@ -2,7 +2,7 @@ package org.lpw.clivia.keyvalue;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import org.lpw.clivia.util.Pagination;
+import org.lpw.clivia.page.Pagination;
 import org.lpw.photon.cache.Cache;
 import org.lpw.photon.dao.model.ModelHelper;
 import org.lpw.photon.util.Generator;

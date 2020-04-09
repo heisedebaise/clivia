@@ -1,4 +1,4 @@
-package org.lpw.clivia.util;
+package org.lpw.clivia.page;
 
 import org.lpw.photon.ctrl.context.Request;
 import org.springframework.stereotype.Controller;

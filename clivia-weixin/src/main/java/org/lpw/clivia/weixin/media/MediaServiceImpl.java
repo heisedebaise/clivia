@@ -2,7 +2,7 @@ package org.lpw.clivia.weixin.media;
 
 import com.alibaba.fastjson.JSONObject;
 import org.lpw.clivia.temporary.Temporary;
-import org.lpw.clivia.util.Pagination;
+import org.lpw.clivia.page.Pagination;
 import org.lpw.clivia.weixin.WeixinModel;
 import org.lpw.clivia.weixin.WeixinService;
 import org.lpw.photon.util.Context;

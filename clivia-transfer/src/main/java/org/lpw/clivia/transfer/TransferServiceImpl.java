@@ -4,7 +4,7 @@ import com.alibaba.fastjson.JSONObject;
 import org.lpw.clivia.lock.LockHelper;
 import org.lpw.clivia.user.UserService;
 import org.lpw.clivia.user.auth.AuthService;
-import org.lpw.clivia.util.Pagination;
+import org.lpw.clivia.page.Pagination;
 import org.lpw.photon.bean.BeanFactory;
 import org.lpw.photon.bean.ContextRefreshedListener;
 import org.lpw.photon.dao.model.ModelHelper;

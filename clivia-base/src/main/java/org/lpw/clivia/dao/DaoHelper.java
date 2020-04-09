@@ -1,4 +1,4 @@
-package org.lpw.clivia.util;
+package org.lpw.clivia.dao;
 
 import java.sql.Date;
 import java.sql.Timestamp;
@@ -11,6 +11,7 @@ import java.util.Set;
  * @author lpw
  */
 public interface DaoHelper {
+
     /**
      * 添加WHERE语句。
      *

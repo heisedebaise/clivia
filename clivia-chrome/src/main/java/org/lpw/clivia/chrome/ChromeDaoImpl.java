@@ -1,6 +1,6 @@
 package org.lpw.clivia.chrome;
 
-import org.lpw.clivia.util.DaoHelper;
+import org.lpw.clivia.dao.DaoHelper;
 import org.lpw.photon.dao.orm.PageList;
 import org.lpw.photon.dao.orm.lite.LiteOrm;
 import org.lpw.photon.dao.orm.lite.LiteQuery;

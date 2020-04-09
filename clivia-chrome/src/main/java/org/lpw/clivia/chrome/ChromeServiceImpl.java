@@ -3,7 +3,7 @@ package org.lpw.clivia.chrome;
 import com.alibaba.fastjson.JSONObject;
 import org.lpw.clivia.async.AsyncService;
 import org.lpw.clivia.temporary.Temporary;
-import org.lpw.clivia.util.Pagination;
+import org.lpw.clivia.page.Pagination;
 import org.lpw.photon.cache.Cache;
 import org.lpw.photon.chrome.ChromeHelper;
 import org.lpw.photon.dao.model.ModelHelper;

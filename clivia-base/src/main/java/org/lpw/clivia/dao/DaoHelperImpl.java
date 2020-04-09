@@ -1,4 +1,4 @@
-package org.lpw.clivia.util;
+package org.lpw.clivia.dao;
 
 import org.lpw.photon.dao.jdbc.DataSource;
 import org.lpw.photon.util.Validator;

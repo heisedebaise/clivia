@@ -1,7 +1,7 @@
 package org.lpw.clivia.weixin.qrcode;
 
 import com.alibaba.fastjson.JSONObject;
-import org.lpw.clivia.util.Pagination;
+import org.lpw.clivia.page.Pagination;
 import org.lpw.clivia.weixin.WeixinModel;
 import org.lpw.clivia.weixin.WeixinService;
 import org.lpw.photon.cache.Cache;

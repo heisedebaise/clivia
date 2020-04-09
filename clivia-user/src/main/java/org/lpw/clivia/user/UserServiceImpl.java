@@ -8,7 +8,7 @@ import org.lpw.clivia.user.auth.AuthService;
 import org.lpw.clivia.user.online.OnlineModel;
 import org.lpw.clivia.user.online.OnlineService;
 import org.lpw.clivia.user.type.Types;
-import org.lpw.clivia.util.Pagination;
+import org.lpw.clivia.page.Pagination;
 import org.lpw.photon.bean.BeanFactory;
 import org.lpw.photon.cache.Cache;
 import org.lpw.photon.crypto.Digest;
@@ -16,7 +16,6 @@ import org.lpw.photon.ctrl.context.Session;
 import org.lpw.photon.dao.model.ModelHelper;
 import org.lpw.photon.dao.orm.PageList;
 import org.lpw.photon.util.*;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import javax.inject.Inject;
