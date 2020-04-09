@@ -7,6 +7,16 @@
     flex: 1;
 }
 
+.console-grid-search-range .ant-input {
+    width: calc(50% - 10px);
+}
+
+.console-grid-search-range .range-minus {
+    display: inline-block;
+    width: 20px;
+    padding-top: 5px;
+    text-align: center;
+}
 
 .console-grid-search-btn {
     width: auto;

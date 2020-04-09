@@ -1,5 +1,6 @@
 import React from 'react';
 import { Form, Row, Col, Radio, Select, DatePicker, Input, Button, Table, Divider, Menu, Dropdown, Modal } from 'antd';
+import { MinusOutlined } from '@ant-design/icons';
 import { service, url } from '../http';
 import meta from './meta';
 import { toMoney } from './numeric';
@@ -226,6 +227,16 @@ class Search extends React.Component {
 
         if (column.type === 'date-range')
             return <RangePicker />;
+
+        if (column.type === 'range') {
+            return (
+                <Input.Group className="console-grid-search-range" compact>
+                    <Input />
+                    <span className="range-minus"><MinusOutlined /></span>
+                    <Input />
+                </Input.Group>
+            );
+        }
 
         return <Input />
     }
