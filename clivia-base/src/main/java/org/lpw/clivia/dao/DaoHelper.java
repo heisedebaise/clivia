@@ -105,6 +105,29 @@ public interface DaoHelper {
     void where(StringBuilder where, List<Object> args, String column, DaoOperation operation, Timestamp value, boolean and);
 
     /**
+     * 添加WHERE BETWEEN语句。
+     *
+     * @param where  目标WHERE片段。
+     * @param args   目标参数集。
+     * @param column 字段名。
+     * @param type   字段类型。
+     * @param value  值。
+     */
+    void between(StringBuilder where, List<Object> args, String column, ColumnType type, String value);
+
+    /**
+     * 添加WHERE BETWEEN语句。
+     *
+     * @param where  目标WHERE片段。
+     * @param args   目标参数集。
+     * @param column 字段名。
+     * @param type   字段类型。
+     * @param value  值。
+     * @param and    是否必须添加AND。
+     */
+    void between(StringBuilder where, List<Object> args, String column, ColumnType type, String value, boolean and);
+
+    /**
      * 添加WHERE IN语句。
      *
      * @param where  目标WHERE片段。
