@@ -13,9 +13,9 @@ public enum ColumnType {
      */
     Int,
     /**
-     * 长整数。
+     * 金额。
      */
-    Long,
+    Money,
     /**
      * 日期。
      */

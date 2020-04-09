@@ -92,37 +92,72 @@ public class DaoHelperImpl implements DaoHelper {
             return;
 
         String[] array = converter.toArray(value, ",");
+        Object start;
+        Object end;
         switch (type) {
             case Int:
                 int[] ns = numeric.toInts(array, -1);
-                if (ns[0] == -1 && ns[1] == -1)
-                    return;
-
-                if (ns[0] == -1)
-                    appendWhere(where, args, column, DaoOperation.LessEquals, ns[1], and);
-                else if (ns[1] == -1)
-                    appendWhere(where, args, column, DaoOperation.GreaterEquals, ns[0], and);
-                else {
-                    if (ns[0] > ns[1]) {
-                        int n = ns[0];
-                        ns[0] = ns[1];
-                        ns[1] = n;
-                    }
-                    between(where, args, column, ns[0], ns[1], and);
+                if (ns[0] == -1 || ns[1] == -1) {
+                    start = ns[0] == -1 ? null : ns[0];
+                    end = ns[1] == -1 ? null : ns[1];
+                    break;
                 }
 
-                return;
-            case Long:
+                if (ns[0] > ns[1]) {
+                    start = ns[1];
+                    end = ns[0];
+                } else {
+                    start = ns[0];
+                    end = ns[1];
+                }
+                break;
+            case Money:
+                double[] ms = numeric.toDoubles(array, -1.0D);
+                if (ms[0] == -1.0D || ms[1] == -1.0D) {
+                    start = ms[0] == -1.0D ? null : fromMoney(ms[0]);
+                    end = ms[1] == -1.0D ? null : fromMoney(ms[1]);
+                    break;
+                }
+
+                if (ms[0] > ms[1]) {
+                    start = fromMoney(ms[1]);
+                    end = fromMoney(ms[0]);
+                } else {
+                    start = fromMoney(ms[0]);
+                    end = fromMoney(ms[1]);
+                }
+                break;
             case Date:
+                Date[] ds = dateTime.toDateRange(array);
+                start = ds[0];
+                end = ds[1];
+                break;
             case Timestamp:
+                Timestamp[] ts = dateTime.toTimeRange(array);
+                start = ts[0];
+                end = ts[1];
+                break;
+            default:
+                return;
+        }
+
+        if (start == null && end == null)
+            return;
+
+        if (start == null)
+            appendWhere(where, args, column, DaoOperation.LessEquals, end, and);
+        else if (end == null)
+            appendWhere(where, args, column, DaoOperation.GreaterEquals, start, and);
+        else {
+            appendColumn(where, args, column, and);
+            where.append(" BETWEEN ? AND ?");
+            args.add(start);
+            args.add(end);
         }
     }
 
-    private void between(StringBuilder where, List<Object> args, String column, Object start, Object end, boolean and) {
-        appendColumn(where, args, column, and);
-        where.append(" BETWEEN ? AND ?");
-        args.add(start);
-        args.add(end);
+    private long fromMoney(double money) {
+        return numeric.toInt(money * 100);
     }
 
     @Override
@@ -184,23 +219,6 @@ public class DaoHelperImpl implements DaoHelper {
         appendColumn(where, args, column, and);
         where.append(" LIKE ?");
         args.add(this.dataSource.getDialect(dataSource).getLike(value, prefix, suffix));
-    }
-
-    private Object convert(ColumnType type, String value) {
-        switch (type) {
-            case Int:
-                int n = numeric.toInt(value, -1);
-                return n == -1 ? null : n;
-            case Long:
-                long l = numeric.toLong(value, -1L);
-                return l == -1L ? null : l;
-            case Date:
-                return dateTime.toSqlDate(value);
-            case Timestamp:
-                return dateTime.toTime(value);
-            default:
-                return validator.isEmpty(value) ? null : value;
-        }
     }
 
     private void appendWhere(StringBuilder where, List<Object> args, String column, DaoOperation operation, Object value, boolean and) {
