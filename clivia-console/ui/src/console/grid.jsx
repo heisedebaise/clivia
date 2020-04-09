@@ -183,9 +183,12 @@ class Search extends React.Component {
     render = () => {
         let cols = [];
         for (let column of this.props.props) {
+            let item = { label: column.label };
+            if (column.type !== 'range')
+                item.name = column.name;
             cols.push(
                 <Col span={6} key={column.name}>
-                    <Form.Item name={column.name} label={column.label}>{this.input(column)}</Form.Item>
+                    <Form.Item {...item}>{this.input(column)}</Form.Item>
                 </Col>
             );
         }
@@ -231,9 +234,9 @@ class Search extends React.Component {
         if (column.type === 'range') {
             return (
                 <Input.Group className="console-grid-search-range" compact>
-                    <Input />
+                    <Form.Item name={column.name + 'Start'} noStyle><Input /></Form.Item>
                     <span className="range-minus"><MinusOutlined /></span>
-                    <Input />
+                    <Form.Item name={column.name + 'End'} noStyle><Input /></Form.Item>
                 </Input.Group>
             );
         }
@@ -242,14 +245,23 @@ class Search extends React.Component {
     }
 
     finish = values => {
+        console.log(values);
         for (let column of this.props.props) {
+            if (column.type === 'range') {
+                values[column.name] = (values[column.name + "Start"] || '') + ',' + (values[column.name + "End"] || '');
+                delete values[column.name + "Start"];
+                delete values[column.name + "End"];
+
+                continue;
+            }
+
             let value = values[column.name];
+            console.log(column);
             if (!value) continue;
 
             if (column.type === 'date') {
                 values[column.name] = value.format('YYYY-MM-DD');
-            }
-            else if (column.type === 'date-range') {
+            } else if (column.type === 'date-range') {
                 if (value.length === 0)
                     values[column.name] = '';
                 else
