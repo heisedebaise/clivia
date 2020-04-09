@@ -3,19 +3,23 @@ package org.lpw.clivia.user;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import org.lpw.clivia.keyvalue.KeyvalueService;
+import org.lpw.clivia.page.Pagination;
 import org.lpw.clivia.user.auth.AuthModel;
 import org.lpw.clivia.user.auth.AuthService;
 import org.lpw.clivia.user.online.OnlineModel;
 import org.lpw.clivia.user.online.OnlineService;
 import org.lpw.clivia.user.type.Types;
-import org.lpw.clivia.page.Pagination;
 import org.lpw.photon.bean.BeanFactory;
 import org.lpw.photon.cache.Cache;
 import org.lpw.photon.crypto.Digest;
 import org.lpw.photon.ctrl.context.Session;
 import org.lpw.photon.dao.model.ModelHelper;
 import org.lpw.photon.dao.orm.PageList;
-import org.lpw.photon.util.*;
+import org.lpw.photon.util.Converter;
+import org.lpw.photon.util.DateTime;
+import org.lpw.photon.util.Generator;
+import org.lpw.photon.util.Numeric;
+import org.lpw.photon.util.Validator;
 import org.springframework.stereotype.Service;
 
 import javax.inject.Inject;
@@ -334,9 +338,9 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public JSONObject query(String uid, String idcard, String name, String nick, String mobile, String email, String code,
-                            int minGrade, int maxGrade, int state, String[] register) {
+                            int minGrade, int maxGrade, int state, String register) {
         if (validator.isEmpty(uid))
-            return userDao.query(idcard, name, nick, mobile, email, code, minGrade, maxGrade, state, dateTime.toTimeRange(register),
+            return userDao.query(idcard, name, nick, mobile, email, code, minGrade, maxGrade, state, register,
                     pagination.getPageSize(20), pagination.getPageNum()).toJson();
 
         AuthModel auth = authService.findByUid(uid);

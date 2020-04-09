@@ -5,12 +5,9 @@ import org.lpw.clivia.dao.DaoOperation;
 import org.lpw.photon.dao.orm.PageList;
 import org.lpw.photon.dao.orm.lite.LiteOrm;
 import org.lpw.photon.dao.orm.lite.LiteQuery;
-import org.lpw.photon.util.Validator;
 import org.springframework.stereotype.Repository;
 
 import javax.inject.Inject;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * @author lpw
@@ -18,24 +15,19 @@ import java.util.List;
 @Repository(AccountModel.NAME + ".dao")
 class AccountDaoImpl implements AccountDao {
     @Inject
-    private Validator validator;
-    @Inject
     private LiteOrm liteOrm;
     @Inject
     private DaoHelper daoHelper;
 
     @Override
     public PageList<AccountModel> query(String user, String owner, int type, int minBalance, int maxBalance, int pageSize, int pageNum) {
-        StringBuilder where = new StringBuilder();
-        List<Object> args = new ArrayList<>();
-        daoHelper.where(where, args, "c_user", DaoOperation.Equals, user);
-        daoHelper.where(where, args, "c_owner", DaoOperation.Equals, owner);
-        daoHelper.where(where, args, "c_type", DaoOperation.Equals, type);
-        daoHelper.where(where, args, "c_balance", DaoOperation.GreaterEquals, minBalance);
-        daoHelper.where(where, args, "c_balance", DaoOperation.LessEquals, maxBalance);
-
-        return liteOrm.query(new LiteQuery(AccountModel.class).where(where.toString()).order("c_user,c_owner,c_type")
-                .size(pageSize).page(pageNum), args.toArray());
+        return daoHelper.newQueryBuilder().where("c_user", DaoOperation.Equals, user)
+                .where("c_owner", DaoOperation.Equals, owner)
+                .where("c_type", DaoOperation.Equals, type)
+                .where("c_balance", DaoOperation.GreaterEquals, minBalance)
+                .where("c_balance", DaoOperation.LessEquals, maxBalance)
+                .order("c_user,c_owner,c_type")
+                .query(AccountModel.class, pageSize, pageNum);
     }
 
     @Override

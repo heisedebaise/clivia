@@ -4,12 +4,9 @@ import org.lpw.clivia.dao.DaoHelper;
 import org.lpw.clivia.dao.DaoOperation;
 import org.lpw.photon.dao.orm.PageList;
 import org.lpw.photon.dao.orm.lite.LiteOrm;
-import org.lpw.photon.dao.orm.lite.LiteQuery;
 import org.springframework.stereotype.Repository;
 
 import javax.inject.Inject;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * @author lpw
@@ -23,15 +20,12 @@ class ReplyDaoImpl implements ReplyDao {
 
     @Override
     public PageList<ReplyModel> query(String key, String receiveType, String receiveMessage, int state, int pageSize, int pageNum) {
-        StringBuilder where = new StringBuilder();
-        List<Object> args = new ArrayList<>();
-        daoHelper.where(where, args, "c_key", DaoOperation.Equals, key);
-        daoHelper.where(where, args, "c_receive_type", DaoOperation.Equals, receiveType);
-        daoHelper.where(where, args, "c_receive_message", DaoOperation.Equals, receiveMessage);
-        daoHelper.where(where, args, "c_state", DaoOperation.Equals, state);
-
-        return liteOrm.query(new LiteQuery(ReplyModel.class).where(where.toString()).order("c_key,c_receive_type,c_receive_message,c_sort")
-                .size(pageSize).page(pageNum), args.toArray());
+        return daoHelper.newQueryBuilder().where("c_key", DaoOperation.Equals, key)
+                .where("c_receive_type", DaoOperation.Equals, receiveType)
+                .where("c_receive_message", DaoOperation.Equals, receiveMessage)
+                .where("c_state", DaoOperation.Equals, state)
+                .order("c_key,c_receive_type,c_receive_message,c_sort")
+                .query(ReplyModel.class, pageSize, pageNum);
     }
 
     @Override

@@ -4,12 +4,9 @@ import org.lpw.clivia.dao.DaoHelper;
 import org.lpw.photon.dao.orm.PageList;
 import org.lpw.photon.dao.orm.lite.LiteOrm;
 import org.lpw.photon.dao.orm.lite.LiteQuery;
-import org.lpw.photon.util.Validator;
 import org.springframework.stereotype.Repository;
 
 import javax.inject.Inject;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * @author lpw
@@ -17,20 +14,15 @@ import java.util.List;
 @Repository(ChromeModel.NAME + ".dao")
 class ChromeDaoImpl implements ChromeDao {
     @Inject
-    private Validator validator;
-    @Inject
     private LiteOrm liteOrm;
     @Inject
     private DaoHelper daoHelper;
 
     @Override
     public PageList<ChromeModel> query(String key, String name, int pageSize, int pageNum) {
-        StringBuilder where = new StringBuilder();
-        List<Object> args = new ArrayList<>();
-        daoHelper.like(null, where, args, "c_key", key);
-        daoHelper.like(null, where, args, "c_name", name);
-
-        return liteOrm.query(new LiteQuery(ChromeModel.class).where(where.toString()).size(pageSize).page(pageNum), args.toArray());
+        return daoHelper.newQueryBuilder().like(null, "c_key", key)
+                .like(null, "c_name", name)
+                .query(ChromeModel.class, pageSize, pageNum);
     }
 
     @Override

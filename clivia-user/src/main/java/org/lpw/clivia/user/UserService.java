@@ -182,7 +182,7 @@ public interface UserService {
      * @return 用户信息集。
      */
     JSONObject query(String uid, String idcard, String name, String nick, String mobile, String email, String code,
-                     int minGrade, int maxGrade, int state, String[] register);
+                     int minGrade, int maxGrade, int state, String register);
 
     /**
      * 更新用户信息。

@@ -1,6 +1,7 @@
 package org.lpw.clivia.dao;
 
 import org.lpw.photon.dao.jdbc.DataSource;
+import org.lpw.photon.dao.orm.lite.LiteOrm;
 import org.lpw.photon.util.Converter;
 import org.lpw.photon.util.DateTime;
 import org.lpw.photon.util.Numeric;
@@ -28,6 +29,13 @@ public class DaoHelperImpl implements DaoHelper {
     private DateTime dateTime;
     @Inject
     private DataSource dataSource;
+    @Inject
+    private LiteOrm liteOrm;
+
+    @Override
+    public QueryBuilder newQueryBuilder() {
+        return new QueryBuilder(liteOrm, this);
+    }
 
     @Override
     public void where(StringBuilder where, List<Object> args, String column, DaoOperation operation, String value) {

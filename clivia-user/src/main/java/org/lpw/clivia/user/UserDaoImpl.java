@@ -1,5 +1,6 @@
 package org.lpw.clivia.user;
 
+import org.lpw.clivia.dao.ColumnType;
 import org.lpw.clivia.dao.DaoHelper;
 import org.lpw.clivia.dao.DaoOperation;
 import org.lpw.photon.dao.orm.PageList;
@@ -8,9 +9,6 @@ import org.lpw.photon.dao.orm.lite.LiteQuery;
 import org.springframework.stereotype.Repository;
 
 import javax.inject.Inject;
-import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * @author lpw
@@ -24,23 +22,19 @@ class UserDaoImpl implements UserDao {
 
     @Override
     public PageList<UserModel> query(String idcard, String name, String nick, String mobile, String email, String code,
-                                     int minGrade, int maxGrade, int state, Timestamp[] register, int pageSize, int pageNum) {
-        StringBuilder where = new StringBuilder();
-        List<Object> args = new ArrayList<>();
-        daoHelper.where(where, args, "c_code", DaoOperation.Equals, code);
-        daoHelper.where(where, args, "c_mobile", DaoOperation.Equals, mobile);
-        daoHelper.where(where, args, "c_idcard", DaoOperation.Equals, idcard);
-        daoHelper.like(null, where, args, "c_name", name);
-        daoHelper.like(null, where, args, "c_nick", nick);
-        daoHelper.like(null, where, args, "c_email", email);
-        daoHelper.where(where, args, "c_grade", DaoOperation.GreaterEquals, minGrade);
-        daoHelper.where(where, args, "c_grade", DaoOperation.LessEquals, maxGrade);
-        daoHelper.where(where, args, "c_state", DaoOperation.Equals, state);
-        daoHelper.where(where, args, "c_register", DaoOperation.GreaterEquals, register[0]);
-        daoHelper.where(where, args, "c_register", DaoOperation.LessEquals, register[1]);
-
-        return liteOrm.query(new LiteQuery(UserModel.class).where(where.toString()).order("c_register desc")
-                .size(pageSize).page(pageNum), args.toArray());
+                                     int minGrade, int maxGrade, int state, String register, int pageSize, int pageNum) {
+        return daoHelper.newQueryBuilder().where("c_code", DaoOperation.Equals, code)
+                .where("c_mobile", DaoOperation.Equals, mobile)
+                .where("c_idcard", DaoOperation.Equals, idcard)
+                .like(null, "c_name", name)
+                .like(null, "c_nick", nick)
+                .like(null, "c_email", email)
+                .where("c_grade", DaoOperation.GreaterEquals, minGrade)
+                .where("c_grade", DaoOperation.LessEquals, maxGrade)
+                .where("c_state", DaoOperation.Equals, state)
+                .between("c_register", ColumnType.Timestamp, register)
+                .order("c_register desc")
+                .query(UserModel.class, pageSize, pageNum);
     }
 
     @Override

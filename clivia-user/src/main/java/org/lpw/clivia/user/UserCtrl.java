@@ -137,8 +137,7 @@ public class UserCtrl {
     public Object query() {
         return userService.query(request.get("uid"), request.get("idcard"), request.get("name"), request.get("nick"),
                 request.get("mobile"), request.get("email"), request.get("code"), request.getAsInt("minGrade", -1),
-                request.getAsInt("maxGrade", -1), request.getAsInt("state", -1),
-                request.getAsArray("register"));
+                request.getAsInt("maxGrade", -1), request.getAsInt("state", -1), request.get("register"));
     }
 
     @Execute(name = "update", validates = {

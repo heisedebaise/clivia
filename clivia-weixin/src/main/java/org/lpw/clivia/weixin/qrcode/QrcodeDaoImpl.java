@@ -9,8 +9,6 @@ import org.springframework.stereotype.Repository;
 
 import javax.inject.Inject;
 import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * @author lpw
@@ -25,18 +23,15 @@ class QrcodeDaoImpl implements QrcodeDao {
     @Override
     public PageList<QrcodeModel> query(String key, String appId, String user, String name, String scene, Timestamp[] time,
                                        int pageSize, int pageNum) {
-        StringBuilder where = new StringBuilder();
-        List<Object> args = new ArrayList<>();
-        daoHelper.where(where, args, "c_key", DaoOperation.Equals, key);
-        daoHelper.where(where, args, "c_app_id", DaoOperation.Equals, appId);
-        daoHelper.where(where, args, "c_user", DaoOperation.Equals, user);
-        daoHelper.where(where, args, "c_time", DaoOperation.GreaterEquals, time[0]);
-        daoHelper.where(where, args, "c_time", DaoOperation.LessEquals, time[1]);
-        daoHelper.like(null, where, args, "c_name", name);
-        daoHelper.like(null, where, args, "c_scene", scene);
-
-        return liteOrm.query(new LiteQuery(QrcodeModel.class).where(where.toString()).order("c_time desc")
-                .size(pageSize).page(pageNum), args.toArray());
+        return daoHelper.newQueryBuilder().where("c_key", DaoOperation.Equals, key)
+                .where("c_app_id", DaoOperation.Equals, appId)
+                .where("c_user", DaoOperation.Equals, user)
+                .where("c_time", DaoOperation.GreaterEquals, time[0])
+                .where("c_time", DaoOperation.LessEquals, time[1])
+                .like(null, "c_name", name)
+                .like(null, "c_scene", scene)
+                .order("c_time desc")
+                .query(QrcodeModel.class, pageSize, pageNum);
     }
 
     @Override

@@ -5,13 +5,10 @@ import org.lpw.clivia.dao.DaoOperation;
 import org.lpw.photon.dao.orm.PageList;
 import org.lpw.photon.dao.orm.lite.LiteOrm;
 import org.lpw.photon.dao.orm.lite.LiteQuery;
-import org.lpw.photon.util.Validator;
 import org.springframework.stereotype.Repository;
 
 import javax.inject.Inject;
 import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * @author lpw
@@ -19,22 +16,17 @@ import java.util.List;
 @Repository(OnlineModel.NAME + ".dao")
 class OnlineDaoImpl implements OnlineDao {
     @Inject
-    private Validator validator;
-    @Inject
     private LiteOrm liteOrm;
     @Inject
     private DaoHelper daoHelper;
 
     @Override
     public PageList<OnlineModel> query(String user, String ip, int pageSize, int pageNum) {
-        StringBuilder where = new StringBuilder();
-        List<Object> args = new ArrayList<>();
-        daoHelper.where(where, args, "c_user", DaoOperation.Equals, user);
-        daoHelper.where(where, args, "c_ip", DaoOperation.Equals, ip);
-        daoHelper.where(where, args, "c_grade", DaoOperation.Less, 99);
-
-        return liteOrm.query(new LiteQuery(OnlineModel.class).where(where.toString()).order("c_last_visit desc")
-                .size(pageSize).page(pageNum), args.toArray());
+        return daoHelper.newQueryBuilder().where("c_user", DaoOperation.Equals, user)
+                .where("c_ip", DaoOperation.Equals, ip)
+                .where("c_grade", DaoOperation.Less, 99)
+                .order("c_last_visit desc")
+                .query(OnlineModel.class, pageSize, pageNum);
     }
 
     @Override

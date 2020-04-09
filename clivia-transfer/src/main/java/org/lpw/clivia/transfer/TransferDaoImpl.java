@@ -5,21 +5,16 @@ import org.lpw.clivia.dao.DaoOperation;
 import org.lpw.photon.dao.orm.PageList;
 import org.lpw.photon.dao.orm.lite.LiteOrm;
 import org.lpw.photon.dao.orm.lite.LiteQuery;
-import org.lpw.photon.util.Validator;
 import org.springframework.stereotype.Repository;
 
 import javax.inject.Inject;
 import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * @author lpw
  */
 @Repository(TransferModel.NAME + ".dao")
 class TransferDaoImpl implements TransferDao {
-    @Inject
-    private Validator validator;
     @Inject
     private LiteOrm liteOrm;
     @Inject
@@ -28,20 +23,17 @@ class TransferDaoImpl implements TransferDao {
     @Override
     public PageList<TransferModel> query(String type, String appId, String user, String orderNo, String billNo, String tradeNo,
                                          int state, Timestamp start, Timestamp end, int pageSize, int pageNum) {
-        StringBuilder where = new StringBuilder();
-        List<Object> args = new ArrayList<>();
-        daoHelper.where(where, args, "c_start", DaoOperation.GreaterEquals, start);
-        daoHelper.where(where, args, "c_start", DaoOperation.LessEquals, end);
-        daoHelper.where(where, args, "c_type", DaoOperation.Equals, type);
-        daoHelper.where(where, args, "c_app_id", DaoOperation.Equals, appId);
-        daoHelper.where(where, args, "c_user", DaoOperation.Equals, user);
-        daoHelper.where(where, args, "c_order_no", DaoOperation.Equals, orderNo);
-        daoHelper.where(where, args, "c_bill_no", DaoOperation.Equals, billNo);
-        daoHelper.where(where, args, "c_trade_no", DaoOperation.Equals, tradeNo);
-        daoHelper.where(where, args, "c_state", DaoOperation.Equals, state);
-
-        return liteOrm.query(new LiteQuery(TransferModel.class).where(where.toString()).order("c_start desc")
-                .size(pageSize).page(pageNum), args.toArray());
+        return daoHelper.newQueryBuilder().where("c_start", DaoOperation.GreaterEquals, start)
+                .where("c_start", DaoOperation.LessEquals, end)
+                .where("c_type", DaoOperation.Equals, type)
+                .where("c_app_id", DaoOperation.Equals, appId)
+                .where("c_user", DaoOperation.Equals, user)
+                .where("c_order_no", DaoOperation.Equals, orderNo)
+                .where("c_bill_no", DaoOperation.Equals, billNo)
+                .where("c_trade_no", DaoOperation.Equals, tradeNo)
+                .where("c_state", DaoOperation.Equals, state)
+                .order("c_start desc")
+                .query(TransferModel.class, pageSize, pageNum);
     }
 
     @Override

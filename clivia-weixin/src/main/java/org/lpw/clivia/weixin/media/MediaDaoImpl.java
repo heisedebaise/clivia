@@ -4,13 +4,10 @@ import org.lpw.clivia.dao.DaoHelper;
 import org.lpw.clivia.dao.DaoOperation;
 import org.lpw.photon.dao.orm.PageList;
 import org.lpw.photon.dao.orm.lite.LiteOrm;
-import org.lpw.photon.dao.orm.lite.LiteQuery;
 import org.springframework.stereotype.Repository;
 
 import javax.inject.Inject;
 import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * @author lpw
@@ -24,17 +21,14 @@ class MediaDaoImpl implements MediaDao {
 
     @Override
     public PageList<MediaModel> query(String key, String appId, String type, String name, Timestamp[] time, int pageSize, int pageNum) {
-        StringBuilder where = new StringBuilder();
-        List<Object> args = new ArrayList<>();
-        daoHelper.where(where, args, "c_key", DaoOperation.Equals, key);
-        daoHelper.where(where, args, "c_app_id", DaoOperation.Equals, appId);
-        daoHelper.where(where, args, "c_type", DaoOperation.Equals, type);
-        daoHelper.where(where, args, "c_time", DaoOperation.GreaterEquals, time[0]);
-        daoHelper.where(where, args, "c_time", DaoOperation.LessEquals, time[1]);
-        daoHelper.like(null, where, args, "c_name", name);
-
-        return liteOrm.query(new LiteQuery(MediaModel.class).where(where.toString()).order("c_time desc")
-                .size(pageSize).page(pageNum), args.toArray());
+        return daoHelper.newQueryBuilder().where("c_key", DaoOperation.Equals, key)
+                .where("c_app_id", DaoOperation.Equals, appId)
+                .where("c_type", DaoOperation.Equals, type)
+                .where("c_time", DaoOperation.GreaterEquals, time[0])
+                .where("c_time", DaoOperation.LessEquals, time[1])
+                .like(null, "c_name", name)
+                .order("c_time desc")
+                .query(MediaModel.class, pageSize, pageNum);
     }
 
     @Override

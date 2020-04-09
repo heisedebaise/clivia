@@ -8,8 +8,6 @@ import org.lpw.photon.dao.orm.lite.LiteQuery;
 import org.springframework.stereotype.Repository;
 
 import javax.inject.Inject;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * @author lpw
@@ -23,16 +21,13 @@ class TemplateDaoImpl implements TemplateDao {
 
     @Override
     public PageList<TemplateModel> query(String key, String weixinKey, int type, String templateId, int state, int pageSize, int pageNum) {
-        StringBuilder where = new StringBuilder();
-        List<Object> args = new ArrayList<>();
-        daoHelper.where(where, args, "c_key", DaoOperation.Equals, key);
-        daoHelper.where(where, args, "c_weixin_key", DaoOperation.Equals, weixinKey);
-        daoHelper.where(where, args, "c_type", DaoOperation.Equals, type);
-        daoHelper.where(where, args, "c_template_id", DaoOperation.Equals, templateId);
-        daoHelper.where(where, args, "c_state", DaoOperation.Equals, state);
-
-        return liteOrm.query(new LiteQuery(TemplateModel.class).where(where.toString())
-                .order("c_state desc,c_type").size(pageSize).page(pageNum), args.toArray());
+        return daoHelper.newQueryBuilder().where("c_key", DaoOperation.Equals, key)
+                .where("c_weixin_key", DaoOperation.Equals, weixinKey)
+                .where("c_type", DaoOperation.Equals, type)
+                .where("c_template_id", DaoOperation.Equals, templateId)
+                .where("c_state", DaoOperation.Equals, state)
+                .order("c_state desc,c_type")
+                .query(TemplateModel.class, pageSize, pageNum);
     }
 
     @Override

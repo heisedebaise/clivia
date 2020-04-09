@@ -11,6 +11,12 @@ import java.util.Set;
  * @author lpw
  */
 public interface DaoHelper {
+    /**
+     * 创建QueryBuilder。
+     *
+     * @return QueryBuilder实例。
+     */
+    QueryBuilder newQueryBuilder();
 
     /**
      * 添加WHERE语句。
@@ -196,6 +202,5 @@ public interface DaoHelper {
      * @param suffix     是否模糊匹配尾部字符串，即是否在参数值末添加%。
      * @param and        是否必须添加AND。
      */
-    void like(String dataSource, StringBuilder where, List<Object> args, String column, String value,
-              boolean prefix, boolean suffix, boolean and);
+    void like(String dataSource, StringBuilder where, List<Object> args, String column, String value, boolean prefix, boolean suffix, boolean and);
 }
