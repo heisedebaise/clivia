@@ -8,7 +8,7 @@ import java.sql.Timestamp;
  * @author lpw
  */
 interface MediaDao {
-    PageList<MediaModel> query(String key, String appId, String type, String name, Timestamp[] time, int pageSize, int pageNum);
+    PageList<MediaModel> query(String key, String appId, String type, String name, String time, int pageSize, int pageNum);
 
     MediaModel findById(String id);
 

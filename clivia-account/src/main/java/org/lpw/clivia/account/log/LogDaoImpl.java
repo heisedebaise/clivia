@@ -1,5 +1,6 @@
 package org.lpw.clivia.account.log;
 
+import org.lpw.clivia.dao.ColumnType;
 import org.lpw.clivia.dao.DaoHelper;
 import org.lpw.clivia.dao.DaoOperation;
 import org.lpw.photon.dao.orm.PageList;
@@ -8,7 +9,6 @@ import org.lpw.photon.dao.orm.lite.LiteQuery;
 import org.springframework.stereotype.Repository;
 
 import javax.inject.Inject;
-import java.sql.Timestamp;
 
 /**
  * @author lpw
@@ -21,15 +21,13 @@ class LogDaoImpl implements LogDao {
     private DaoHelper daoHelper;
 
     @Override
-    public PageList<LogModel> query(String user, String owner, String type, String channel, int state, Timestamp start,
-                                    Timestamp end, int pageSize, int pageNum) {
+    public PageList<LogModel> query(String user, String owner, String type, String channel, int state, String start, int pageSize, int pageNum) {
         return daoHelper.newQueryBuilder().where("c_user", DaoOperation.Equals, user)
                 .where("c_owner", DaoOperation.Equals, owner)
                 .where("c_type", DaoOperation.Equals, type)
                 .where("c_channel", DaoOperation.Equals, channel)
                 .where("c_state", DaoOperation.Equals, state)
-                .where("c_start", DaoOperation.GreaterEquals, start)
-                .where("c_start", DaoOperation.LessEquals, end)
+                .between("c_start", ColumnType.Timestamp, start)
                 .order("c_start desc,c_index desc")
                 .query(LogModel.class, pageSize, pageNum);
     }

@@ -15,43 +15,43 @@
         },
         {
             "name": "balance",
-            "format": "number"
+            "format": "money"
         },
         {
             "name": "deposit",
-            "format": "number"
+            "format": "money"
         },
         {
             "name": "withdraw",
-            "format": "number"
+            "format": "money"
         },
         {
             "name": "reward",
-            "format": "number"
+            "format": "money"
         },
         {
             "name": "profit",
-            "format": "number"
+            "format": "money"
         },
         {
             "name": "consume",
-            "format": "number"
+            "format": "money"
         },
         {
             "name": "remitIn",
-            "format": "number"
+            "format": "money"
         },
         {
             "name": "remitOut",
-            "format": "number"
+            "format": "money"
         },
         {
             "name": "refund",
-            "format": "number"
+            "format": "money"
         },
         {
             "name": "pending",
-            "format": "number"
+            "format": "money"
         }
     ],
     "query": {

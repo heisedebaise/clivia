@@ -35,7 +35,7 @@ public class TransferCtrl {
             state = "-1";
 
         return transferService.query(request.get("type"), request.get("appId"), request.get("user"), request.get("orderNo"),
-                request.get("billNo"), request.get("tradeNo"), numeric.toInt(state), request.get("start"), request.get("end"));
+                request.get("billNo"), request.get("tradeNo"), numeric.toInt(state), request.get("start"));
     }
 
     @Execute(name = "success", validates = {

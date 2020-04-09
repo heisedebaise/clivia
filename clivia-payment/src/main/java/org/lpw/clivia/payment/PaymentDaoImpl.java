@@ -1,5 +1,6 @@
 package org.lpw.clivia.payment;
 
+import org.lpw.clivia.dao.ColumnType;
 import org.lpw.clivia.dao.DaoHelper;
 import org.lpw.clivia.dao.DaoOperation;
 import org.lpw.photon.dao.orm.PageList;
@@ -8,7 +9,6 @@ import org.lpw.photon.dao.orm.lite.LiteQuery;
 import org.springframework.stereotype.Repository;
 
 import javax.inject.Inject;
-import java.sql.Timestamp;
 
 /**
  * @author lpw
@@ -22,9 +22,8 @@ class PaymentDaoImpl implements PaymentDao {
 
     @Override
     public PageList<PaymentModel> query(String type, String appId, String user, String orderNo, String billNo, String tradeNo,
-                                        int state, Timestamp start, Timestamp end, int pageSize, int pageNum) {
-        return daoHelper.newQueryBuilder().where("c_start", DaoOperation.GreaterEquals, start)
-                .where("c_start", DaoOperation.LessEquals, end)
+                                        int state, String start, int pageSize, int pageNum) {
+        return daoHelper.newQueryBuilder().between("c_start", ColumnType.Timestamp, start)
                 .where("c_type", DaoOperation.Equals, type)
                 .where("c_app_id", DaoOperation.Equals, appId)
                 .where("c_user", DaoOperation.Equals, user)

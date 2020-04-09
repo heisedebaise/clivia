@@ -17,11 +17,11 @@
         },
         {
             "name": "amount",
-            "format": "number"
+            "format": "money"
         },
         {
             "name": "balance",
-            "format": "number"
+            "format": "money"
         },
         {
             "name": "state",

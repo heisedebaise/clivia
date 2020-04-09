@@ -1,5 +1,6 @@
 package org.lpw.clivia.weixin.media;
 
+import org.lpw.clivia.dao.ColumnType;
 import org.lpw.clivia.dao.DaoHelper;
 import org.lpw.clivia.dao.DaoOperation;
 import org.lpw.photon.dao.orm.PageList;
@@ -7,7 +8,6 @@ import org.lpw.photon.dao.orm.lite.LiteOrm;
 import org.springframework.stereotype.Repository;
 
 import javax.inject.Inject;
-import java.sql.Timestamp;
 
 /**
  * @author lpw
@@ -20,12 +20,11 @@ class MediaDaoImpl implements MediaDao {
     private DaoHelper daoHelper;
 
     @Override
-    public PageList<MediaModel> query(String key, String appId, String type, String name, Timestamp[] time, int pageSize, int pageNum) {
+    public PageList<MediaModel> query(String key, String appId, String type, String name, String time, int pageSize, int pageNum) {
         return daoHelper.newQueryBuilder().where("c_key", DaoOperation.Equals, key)
                 .where("c_app_id", DaoOperation.Equals, appId)
                 .where("c_type", DaoOperation.Equals, type)
-                .where("c_time", DaoOperation.GreaterEquals, time[0])
-                .where("c_time", DaoOperation.LessEquals, time[1])
+                .between("c_time", ColumnType.Timestamp, time)
                 .like(null, "c_name", name)
                 .order("c_time desc")
                 .query(MediaModel.class, pageSize, pageNum);

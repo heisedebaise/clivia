@@ -1,8 +1,8 @@
 package org.lpw.clivia.weixin.media;
 
 import com.alibaba.fastjson.JSONObject;
-import org.lpw.clivia.temporary.Temporary;
 import org.lpw.clivia.page.Pagination;
+import org.lpw.clivia.temporary.Temporary;
 import org.lpw.clivia.weixin.WeixinModel;
 import org.lpw.clivia.weixin.WeixinService;
 import org.lpw.photon.util.Context;
@@ -45,9 +45,8 @@ public class MediaServiceImpl implements MediaService {
     private MediaDao mediaDao;
 
     @Override
-    public JSONObject query(String key, String appId, String type, String name, String[] time) {
-        return mediaDao.query(key, appId, type, name, dateTime.toTimeRange(time),
-                pagination.getPageSize(20), pagination.getPageNum()).toJson();
+    public JSONObject query(String key, String appId, String type, String name, String time) {
+        return mediaDao.query(key, appId, type, name, time, pagination.getPageSize(20), pagination.getPageNum()).toJson();
     }
 
     @Override

@@ -29,8 +29,7 @@ public class AccountCtrl {
 
     @Execute(name = "query")
     public Object query() {
-        return accountService.query(request.get("uid"), request.get("owner"), request.getAsInt("type", -1),
-                request.getAsInt("minBalance", -1), request.getAsInt("maxBalance", -1));
+        return accountService.query(request.get("uid"), request.get("owner"), request.getAsInt("type", -1), request.get("balance"));
     }
 
     @Execute(name = "query-user", validates = {

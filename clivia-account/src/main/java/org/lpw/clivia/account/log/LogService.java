@@ -4,7 +4,6 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import org.lpw.clivia.account.AccountModel;
 
-import java.sql.Date;
 import java.util.Map;
 
 /**
@@ -37,11 +36,10 @@ public interface LogService {
      * @param type    类型。
      * @param channel 渠道。
      * @param state   状态：0-待处理；1-审核通过；2-审核不通过；3-已完成。
-     * @param start   开始日期。
-     * @param end     结束日期。
+     * @param start   开始时间范围。
      * @return 操作日志集。
      */
-    JSONObject query(String uid, String owner, String type, String channel, int state, Date start, Date end);
+    JSONObject query(String uid, String owner, String type, String channel, int state, String start);
 
     /**
      * 新增日志。
@@ -60,7 +58,7 @@ public interface LogService {
      * 设置审核通过。
      *
      * @param ids ID集。
-     *            @return 已完成的日志
+     * @return 已完成的日志
      */
     JSONArray pass(String[] ids);
 

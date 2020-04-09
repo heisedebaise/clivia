@@ -5,9 +5,9 @@ import com.alibaba.fastjson.JSONObject;
 import org.lpw.clivia.account.AccountModel;
 import org.lpw.clivia.account.AccountService;
 import org.lpw.clivia.lock.LockHelper;
+import org.lpw.clivia.page.Pagination;
 import org.lpw.clivia.user.UserService;
 import org.lpw.clivia.user.auth.AuthService;
-import org.lpw.clivia.page.Pagination;
 import org.lpw.photon.dao.model.ModelHelper;
 import org.lpw.photon.scheduler.SecondsJob;
 import org.lpw.photon.util.DateTime;
@@ -16,7 +16,6 @@ import org.lpw.photon.util.Validator;
 import org.springframework.stereotype.Service;
 
 import javax.inject.Inject;
-import java.sql.Date;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
@@ -64,9 +63,9 @@ public class LogServiceImpl implements LogService, SecondsJob {
     }
 
     @Override
-    public JSONObject query(String uid, String owner, String type, String channel, int state, Date start, Date end) {
-        return logDao.query(authService.findUser(uid, uid), owner, type, channel, state, dateTime.getStart(start),
-                dateTime.getEnd(end), pagination.getPageSize(20), pagination.getPageNum()).toJson(this::toJson);
+    public JSONObject query(String uid, String owner, String type, String channel, int state, String start) {
+        return logDao.query(authService.findUser(uid, uid), owner, type, channel, state, start,
+                pagination.getPageSize(20), pagination.getPageNum()).toJson(this::toJson);
     }
 
     private JSONObject toJson(LogModel log) {

@@ -8,7 +8,7 @@ import java.sql.Timestamp;
  * @author lpw
  */
 interface QrcodeDao {
-    PageList<QrcodeModel> query(String key, String appId, String user, String name, String scene, Timestamp[] time, int pageSize, int pageNum);
+    PageList<QrcodeModel> query(String key, String appId, String user, String name, String scene, String time, int pageSize, int pageNum);
 
     QrcodeModel find(String key, String user, String name);
 

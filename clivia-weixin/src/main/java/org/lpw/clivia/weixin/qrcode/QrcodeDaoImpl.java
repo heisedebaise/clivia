@@ -1,5 +1,6 @@
 package org.lpw.clivia.weixin.qrcode;
 
+import org.lpw.clivia.dao.ColumnType;
 import org.lpw.clivia.dao.DaoHelper;
 import org.lpw.clivia.dao.DaoOperation;
 import org.lpw.photon.dao.orm.PageList;
@@ -8,7 +9,6 @@ import org.lpw.photon.dao.orm.lite.LiteQuery;
 import org.springframework.stereotype.Repository;
 
 import javax.inject.Inject;
-import java.sql.Timestamp;
 
 /**
  * @author lpw
@@ -21,13 +21,11 @@ class QrcodeDaoImpl implements QrcodeDao {
     private DaoHelper daoHelper;
 
     @Override
-    public PageList<QrcodeModel> query(String key, String appId, String user, String name, String scene, Timestamp[] time,
-                                       int pageSize, int pageNum) {
+    public PageList<QrcodeModel> query(String key, String appId, String user, String name, String scene, String time, int pageSize, int pageNum) {
         return daoHelper.newQueryBuilder().where("c_key", DaoOperation.Equals, key)
                 .where("c_app_id", DaoOperation.Equals, appId)
                 .where("c_user", DaoOperation.Equals, user)
-                .where("c_time", DaoOperation.GreaterEquals, time[0])
-                .where("c_time", DaoOperation.LessEquals, time[1])
+                .between("c_time", ColumnType.Timestamp, time)
                 .like(null, "c_name", name)
                 .like(null, "c_scene", scene)
                 .order("c_time desc")

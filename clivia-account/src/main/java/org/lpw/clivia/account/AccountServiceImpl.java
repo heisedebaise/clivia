@@ -7,9 +7,9 @@ import org.lpw.clivia.account.log.LogService;
 import org.lpw.clivia.account.type.AccountTypes;
 import org.lpw.clivia.keyvalue.KeyvalueService;
 import org.lpw.clivia.lock.LockHelper;
+import org.lpw.clivia.page.Pagination;
 import org.lpw.clivia.user.UserService;
 import org.lpw.clivia.user.auth.AuthService;
-import org.lpw.clivia.page.Pagination;
 import org.lpw.photon.crypto.Digest;
 import org.lpw.photon.dao.model.ModelHelper;
 import org.lpw.photon.dao.orm.PageList;
@@ -45,7 +45,8 @@ public class AccountServiceImpl implements AccountService {
     private KeyvalueService keyvalueService;
     @Inject
     private UserService userService;
-    @Inject private AuthService authService;
+    @Inject
+    private AuthService authService;
     @Inject
     private AccountTypes accountTypes;
     @Inject
@@ -54,14 +55,13 @@ public class AccountServiceImpl implements AccountService {
     private AccountDao accountDao;
 
     @Override
-    public JSONObject query(String uid, String owner, int type, int minBalance, int maxBalance) {
+    public JSONObject query(String uid, String owner, int type, String balance) {
         String user = null;
         if (!validator.isEmpty(uid))
             user = authService.findUser(uid, uid);
         if ("all".equals(owner))
             owner = null;
-        JSONObject object = accountDao.query(user, owner, type, minBalance, maxBalance,
-                pagination.getPageSize(20), pagination.getPageNum()).toJson();
+        JSONObject object = accountDao.query(user, owner, type, balance, pagination.getPageSize(20), pagination.getPageNum()).toJson();
         userService.fill(object.getJSONArray("list"), new String[]{"user"});
 
         return object;
@@ -132,7 +132,7 @@ public class AccountServiceImpl implements AccountService {
     }
 
     private PageList<AccountModel> queryFromDao(String user, String owner) {
-        return accountDao.query(user, owner, -1, -1, -1, 0, 0);
+        return accountDao.query(user, owner, -1, null, 0, 0);
     }
 
     @Override

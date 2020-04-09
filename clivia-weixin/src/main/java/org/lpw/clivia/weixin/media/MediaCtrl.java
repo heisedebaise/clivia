@@ -24,8 +24,7 @@ public class MediaCtrl {
             @Validate(validator = Validators.SIGN)
     })
     public Object query() {
-        return mediaService.query(request.get("key"), request.get("appId"), request.get("type"), request.get("name"),
-                request.getAsArray("time"));
+        return mediaService.query(request.get("key"), request.get("appId"), request.get("type"), request.get("name"), request.get("time"));
     }
 
     @Execute(name = "save", validates = {

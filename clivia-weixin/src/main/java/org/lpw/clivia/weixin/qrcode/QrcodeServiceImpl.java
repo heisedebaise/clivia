@@ -36,9 +36,8 @@ public class QrcodeServiceImpl implements QrcodeService {
     private QrcodeDao qrcodeDao;
 
     @Override
-    public JSONObject query(String key, String appId, String user, String name, String scene, String[] time) {
-        return qrcodeDao.query(key, appId, user, name, scene, dateTime.toTimeRange(time),
-                pagination.getPageSize(20), pagination.getPageNum()).toJson();
+    public JSONObject query(String key, String appId, String user, String name, String scene, String time) {
+        return qrcodeDao.query(key, appId, user, name, scene, time, pagination.getPageSize(20), pagination.getPageNum()).toJson();
     }
 
     @Override

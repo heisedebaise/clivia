@@ -4,16 +4,25 @@ import com.alibaba.fastjson.JSONObject;
 import org.lpw.clivia.account.AccountService;
 import org.lpw.clivia.account.log.LogService;
 import org.lpw.clivia.lock.LockHelper;
+import org.lpw.clivia.page.Pagination;
 import org.lpw.clivia.user.UserService;
 import org.lpw.clivia.user.auth.AuthService;
-import org.lpw.clivia.page.Pagination;
 import org.lpw.photon.dao.model.ModelHelper;
-import org.lpw.photon.util.*;
+import org.lpw.photon.util.DateTime;
+import org.lpw.photon.util.Generator;
+import org.lpw.photon.util.Http;
+import org.lpw.photon.util.Json;
+import org.lpw.photon.util.Numeric;
+import org.lpw.photon.util.Validator;
 import org.springframework.stereotype.Service;
 
 import javax.inject.Inject;
 import java.sql.Timestamp;
-import java.util.*;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
 
 /**
  * @author lpw
@@ -72,10 +81,9 @@ public class PaymentServiceImpl implements PaymentService {
 
     @Override
     public JSONObject query(String type, String appId, String user, String orderNo, String billNo, String tradeNo,
-                            int state, String start, String end) {
+                            int state, String start) {
         JSONObject object = paymentDao.query(type, appId, authService.findUser(user, user), orderNo, billNo, tradeNo,
-                state, dateTime.getStart(start),
-                dateTime.getEnd(end), pagination.getPageSize(20), pagination.getPageNum()).toJson();
+                state, start, pagination.getPageSize(20), pagination.getPageNum()).toJson();
         userService.fill(object.getJSONArray("list"), new String[]{"user"});
 
         return object;

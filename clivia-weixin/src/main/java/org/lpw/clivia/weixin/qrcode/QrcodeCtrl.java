@@ -30,8 +30,7 @@ public class QrcodeCtrl {
             @Validate(validator = Validators.SIGN)
     })
     public Object query() {
-        return qrcodeService.query(request.get("key"), request.get("appId"), request.get("user"), request.get("name"),
-                request.get("scene"), request.getAsArray("time"));
+        return qrcodeService.query(request.get("key"), request.get("appId"), request.get("user"), request.get("name"), request.get("scene"), request.get("time"));
     }
 
     @Execute(name = "find", validates = {

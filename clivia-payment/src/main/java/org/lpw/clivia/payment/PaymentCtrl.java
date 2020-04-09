@@ -44,8 +44,7 @@ public class PaymentCtrl {
 
     private Object query(String user) {
         return paymentService.query(request.get("type"), request.get("appId"), user, request.get("orderNo"),
-                request.get("billNo"), request.get("tradeNo"), request.getAsInt("state", -1),
-                request.get("start"), request.get("end"));
+                request.get("billNo"), request.get("tradeNo"), request.getAsInt("state", -1), request.get("start"));
     }
 
     @Execute(name = "success", validates = {

@@ -31,14 +31,13 @@ public interface AccountService {
     /**
      * 检索账户信息集。
      *
-     * @param uid        用户ID或UID，为空表示全部。
-     * @param owner      所有者ID，null或all表示所有。
-     * @param type       类型，-1表示全部。
-     * @param minBalance 最小余额，-1表示不限制。
-     * @param maxBalance 最大余额，-1表示不限制。
+     * @param uid     用户ID或UID，为空表示全部。
+     * @param owner   所有者ID，null或all表示所有。
+     * @param type    类型，-1表示全部。
+     * @param balance 余额范围。
      * @return 账户信息集。
      */
-    JSONObject query(String uid, String owner, int type, int minBalance, int maxBalance);
+    JSONObject query(String uid, String owner, int type, String balance);
 
     /**
      * 检索用户账户信息集。

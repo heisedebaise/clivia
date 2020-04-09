@@ -29,11 +29,10 @@ public interface TransferService {
      * @param billNo  单据号，为空则表示全部。
      * @param tradeNo 网关订单号，为空则表示全部。
      * @param state   状态，-1则表示全部。
-     * @param start   开始日期，格式yyyy-MM-dd，为空则表示全部。
-     * @param end     结束日期，格式yyyy-MM-dd，为空则表示全部。
+     * @param start   开始时间范围。
      * @return 订单信息集。
      */
-    JSONObject query(String type, String appId, String user, String orderNo, String billNo, String tradeNo, int state, String start, String end);
+    JSONObject query(String type, String appId, String user, String orderNo, String billNo, String tradeNo, int state, String start);
 
     /**
      * 设置订单信息为成功。

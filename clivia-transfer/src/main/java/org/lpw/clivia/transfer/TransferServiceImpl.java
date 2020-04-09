@@ -2,9 +2,9 @@ package org.lpw.clivia.transfer;
 
 import com.alibaba.fastjson.JSONObject;
 import org.lpw.clivia.lock.LockHelper;
+import org.lpw.clivia.page.Pagination;
 import org.lpw.clivia.user.UserService;
 import org.lpw.clivia.user.auth.AuthService;
-import org.lpw.clivia.page.Pagination;
 import org.lpw.photon.bean.BeanFactory;
 import org.lpw.photon.bean.ContextRefreshedListener;
 import org.lpw.photon.dao.model.ModelHelper;
@@ -65,10 +65,9 @@ public class TransferServiceImpl implements ContextRefreshedListener, SecondsJob
     private Map<String, TransferListener> listeners;
 
     @Override
-    public JSONObject query(String type, String appId, String user, String orderNo, String billNo, String tradeNo,
-                            int state, String start, String end) {
+    public JSONObject query(String type, String appId, String user, String orderNo, String billNo, String tradeNo, int state, String start) {
         JSONObject object = transferDao.query(type, appId, authService.findUser(user, user), orderNo, billNo, tradeNo,
-                state, dateTime.getStart(start), dateTime.getEnd(end), pagination.getPageSize(20), pagination.getPageNum()).toJson();
+                state, start, pagination.getPageSize(20), pagination.getPageNum()).toJson();
         userService.fill(object.getJSONArray("list"), new String[]{"user"});
 
         return object;

@@ -26,7 +26,7 @@ public class LogCtrl {
             @Validate(validator = Validators.SIGN)
     })
     public Object query() {
-        return logService.query(request.get("uid"), request.get("owner"), request.get("type"), request.get("channel"), validator.isEmpty(request.get("state")) ? -1 : request.getAsInt("state"), request.getAsSqlDate("start"), request.getAsSqlDate("end"));
+        return logService.query(request.get("uid"), request.get("owner"), request.get("type"), request.get("channel"), request.getAsInt("state", -1), request.get("start"));
     }
 
     @Execute(name = "pass", validates = {

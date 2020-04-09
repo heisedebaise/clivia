@@ -1,5 +1,6 @@
 package org.lpw.clivia.account;
 
+import org.lpw.clivia.dao.ColumnType;
 import org.lpw.clivia.dao.DaoHelper;
 import org.lpw.clivia.dao.DaoOperation;
 import org.lpw.photon.dao.orm.PageList;
@@ -20,12 +21,11 @@ class AccountDaoImpl implements AccountDao {
     private DaoHelper daoHelper;
 
     @Override
-    public PageList<AccountModel> query(String user, String owner, int type, int minBalance, int maxBalance, int pageSize, int pageNum) {
+    public PageList<AccountModel> query(String user, String owner, int type, String balance, int pageSize, int pageNum) {
         return daoHelper.newQueryBuilder().where("c_user", DaoOperation.Equals, user)
                 .where("c_owner", DaoOperation.Equals, owner)
                 .where("c_type", DaoOperation.Equals, type)
-                .where("c_balance", DaoOperation.GreaterEquals, minBalance)
-                .where("c_balance", DaoOperation.LessEquals, maxBalance)
+                .between("c_balance", ColumnType.Money, balance)
                 .order("c_user,c_owner,c_type")
                 .query(AccountModel.class, pageSize, pageNum);
     }
