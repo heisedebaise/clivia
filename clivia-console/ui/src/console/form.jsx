@@ -58,16 +58,16 @@ class Base extends React.Component {
     format = (values) => {
         for (let prop of meta.props(this.props.props, this.props.meta.props)) {
             let value = values[prop.name];
-            if (!value) continue;
 
             if (prop.labels)
                 values[prop.name] = '' + value;
-            else if (prop.type === 'date')
-                values[prop.name] = moment(value, 'YYYY-MM-DD');
-            else if (prop.type === 'datetime')
-                values[prop.name] = moment(value, 'YYYY-MM-DD HH:mm:ss');
-            else if (prop.type === 'money') {
+            else if (prop.type === 'money')
                 values[prop.name] = toMoney(value);
+            else if (value) {
+                if (prop.type === 'date')
+                    values[prop.name] = moment(value, 'YYYY-MM-DD');
+                else if (prop.type === 'datetime')
+                    values[prop.name] = moment(value, 'YYYY-MM-DD HH:mm:ss');
             }
         }
     }
@@ -155,7 +155,7 @@ class Base extends React.Component {
             if (prop.labels.length < 5) {
                 let radios = [];
                 for (let index in prop.labels) {
-                    radios.push(<Radio key={index} value={'' + index}>{prop.labels[index]}</Radio>);
+                    radios.push(<Radio key={index} value={index}>{prop.labels[index]}</Radio>);
                 }
 
                 return <Radio.Group>{radios}</Radio.Group>;
@@ -163,7 +163,7 @@ class Base extends React.Component {
 
             let options = [];
             for (let index in prop.labels) {
-                options.push(<Option key={index} value={'' + index}>{prop.labels[index]}</Option>);
+                options.push(<Option key={index} value={index}>{prop.labels[index]}</Option>);
             }
 
             return <Select>{options}</Select>
