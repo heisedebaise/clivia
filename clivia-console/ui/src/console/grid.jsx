@@ -83,7 +83,7 @@ class Grid extends React.Component {
 
     value = (model, name) => {
         if (name.indexOf('.') === -1)
-            return model[name];
+            return model[name] || '';
 
         let m = model;
         for (let n of name.split('.')) {
