@@ -155,7 +155,7 @@ class Base extends React.Component {
             if (prop.labels.length < 5) {
                 let radios = [];
                 for (let index in prop.labels) {
-                    radios.push(<Radio key={index} value={index}>{prop.labels[index]}</Radio>);
+                    radios.push(<Radio key={index} value={'' + index}>{prop.labels[index]}</Radio>);
                 }
 
                 return <Radio.Group>{radios}</Radio.Group>;
@@ -163,7 +163,7 @@ class Base extends React.Component {
 
             let options = [];
             for (let index in prop.labels) {
-                options.push(<Option key={index} value={index}>{prop.labels[index]}</Option>);
+                options.push(<Option key={index} value={'' + index}>{prop.labels[index]}</Option>);
             }
 
             return <Select>{options}</Select>
