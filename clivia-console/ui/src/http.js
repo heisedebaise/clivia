@@ -9,7 +9,7 @@ const service = (uri, body) => post(uri, body).then(json => {
 
     if (json.code === 0) {
         if (json.message)
-            message.info(json.message);
+            message.success(json.message);
 
         return json.data;
     }
