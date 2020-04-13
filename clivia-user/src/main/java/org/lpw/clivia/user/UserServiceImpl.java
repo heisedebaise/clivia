@@ -374,6 +374,16 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public String resetPassword(String id) {
+        String password = generator.random(8);
+        UserModel user = findById(id);
+        user.setPassword(password(password));
+        save(user);
+
+        return password;
+    }
+
+    @Override
     public void grade(String id, int grade) {
         UserModel user = findById(id);
         user.setGrade(grade);

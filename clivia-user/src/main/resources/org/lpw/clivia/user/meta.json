@@ -77,8 +77,12 @@
         ],
         "ops": [
             {
-                "type": "modify",
+                "label": "modify",
                 "service": "update"
+            },
+            {
+                "service": "reset-password",
+                "reload": true
             },
             {
                 "label": ".state.enable",

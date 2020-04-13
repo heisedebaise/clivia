@@ -151,6 +151,15 @@ public class UserCtrl {
         return "";
     }
 
+    @Execute(name = "reset-password", validates = {
+            @Validate(validator = Validators.ID, parameter = "id", failureCode = 22),
+            @Validate(validator = Validators.SIGN),
+            @Validate(validator = UserService.VALIDATOR_EXISTS, parameter = "id", failureCode = 25)
+    })
+    public Object resetPassword() {
+        return templates.get().success("", UserModel.NAME + ".reset-password.success", userService.resetPassword(request.get("id")));
+    }
+
     @Execute(name = "grade", validates = {
             @Validate(validator = Validators.ID, parameter = "id", failureCode = 22),
             @Validate(validator = Validators.BETWEEN, number = {0, 99}, parameter = "grade", failureCode = 23),

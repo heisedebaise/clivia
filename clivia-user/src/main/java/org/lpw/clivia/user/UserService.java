@@ -191,6 +191,8 @@ public interface UserService {
      */
     void update(UserModel user);
 
+    String resetPassword(String id);
+
     /**
      * 设置用户等级。
      *
