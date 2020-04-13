@@ -138,13 +138,14 @@ class Base extends React.Component {
 
     readonly = prop => {
         let value = this.state[prop.name];
-        if (prop.type === 'read-only:money') {
+        if (prop.type === 'read-only:money')
             return toMoney(value);
-        }
 
-        if (prop.labels) {
+        if (prop.labels)
             return prop.labels[value] || '';
-        }
+
+        if (value === 0)
+            return 0;
 
         return value || '';
     }
