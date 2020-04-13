@@ -117,8 +117,8 @@ class Base extends React.Component {
                 className: 'console-form-item console-form-item-' + (items.length % 2 === 0 ? 'even' : 'odd'),
                 label: prop.label
             };
-            if (prop.type === 'read-only') {
-                items.push(<Form.Item {...item}>{this.state[prop.name] || ''}</Form.Item>);
+            if (prop.type.startsWith('read-only')) {
+                items.push(<Form.Item {...item}>{this.readonly(prop)}</Form.Item>);
             } else if (prop.type === 'image') {
                 items.push(<Form.Item {...item}><Image name={prop.name} upload={prop.upload} size={prop.size || 1} value={this.state[prop.name] || ''} form={this} /></Form.Item>);
             } else if (prop.type === 'editor') {
@@ -134,6 +134,19 @@ class Base extends React.Component {
                 <Form.Item className="console-form-toolbar" label="toolbar">{this.toolbar()}</Form.Item>
             </Form>
         );
+    }
+
+    readonly = prop => {
+        let value = this.state[prop.name];
+        if (prop.type === 'read-only:money') {
+            return toMoney(value);
+        }
+
+        if (prop.labels) {
+            return prop.labels[value] || '';
+        }
+
+        return value || '';
     }
 
     input = prop => {
