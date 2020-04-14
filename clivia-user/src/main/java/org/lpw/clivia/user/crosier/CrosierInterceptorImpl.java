@@ -32,7 +32,7 @@ public class CrosierInterceptorImpl implements Interceptor {
 
     @Override
     public int getSort() {
-        return 115;
+        return 151;
     }
 
     @Override

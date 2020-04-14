@@ -37,7 +37,7 @@ public class UserModel extends ModelSupport {
     private String code; // 唯一编码
     private Timestamp register; // 注册时间
     private int grade; // 等级：<50为用户；>=50为管理员；99为超级管理员
-    private int state; // 状态：0-正常；1-禁用
+    private int state; // 状态：0-禁用；1-正常
 
     @Column(name = "c_password")
     public String getPassword() {

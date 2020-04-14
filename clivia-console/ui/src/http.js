@@ -2,7 +2,7 @@ import {
     message
 } from 'antd';
 
-const root = 'http://192.168.6.80:8080';
+const root = 'http://192.168.6.122:8080';
 
 const service = (uri, body) => post(uri, body).then(json => {
     if (json === null) return null;
@@ -15,7 +15,7 @@ const service = (uri, body) => post(uri, body).then(json => {
     }
 
     message.warn('[' + json.code + ']' + json.message);
-    if (json.code === 151901) {
+    if (json.code === 151901 || json.code === 999996) {
         window.location.reload();
     }
 

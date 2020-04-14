@@ -8,12 +8,7 @@ import org.lpw.clivia.user.crosier.CrosierValid;
 import org.lpw.photon.bean.ContextRefreshedListener;
 import org.lpw.photon.cache.Cache;
 import org.lpw.photon.dao.model.Model;
-import org.lpw.photon.util.Context;
-import org.lpw.photon.util.Io;
-import org.lpw.photon.util.Json;
-import org.lpw.photon.util.Logger;
-import org.lpw.photon.util.Message;
-import org.lpw.photon.util.Validator;
+import org.lpw.photon.util.*;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -21,12 +16,7 @@ import javax.inject.Inject;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.InputStream;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -56,9 +46,9 @@ public class MetaHelperImpl implements MetaHelper, ContextRefreshedListener, Cro
     private CrosierService crosierService;
     @Value("${" + ConsoleModel.NAME + ".console:/WEB-INF/console/}")
     private String console;
-    private Map<String, String> map = new ConcurrentHashMap<>();
-    private Map<Integer, Set<String>> cacheKeys = new ConcurrentHashMap<>();
-    private String[] actions = {"ops", "toolbar"};
+    private final Map<String, String> map = new ConcurrentHashMap<>();
+    private final Map<Integer, Set<String>> cacheKeys = new ConcurrentHashMap<>();
+    private final String[] actions = {"ops", "toolbar"};
 
     @Override
     public JSONObject get(String key, boolean all) {
@@ -76,37 +66,41 @@ public class MetaHelperImpl implements MetaHelper, ContextRefreshedListener, Cro
             String[] prefixOp = new String[]{prefix[0], ConsoleModel.NAME + ".op"};
             String[] ln = new String[]{"label", "name"};
             String[] lst = new String[]{"label", "service", "type"};
-            setLabel(true, uri, prefix, meta, "props", ln);
+            setLabel(all, false, uri, prefix, meta, "props", ln);
             for (String mk : meta.keySet()) {
                 if (mk.equals("key") || mk.equals("uri") || mk.equals("props"))
                     continue;
 
                 JSONObject object = meta.getJSONObject(mk);
-                setLabel(true, uri, prefix, object, "props", ln);
-                setLabel(true, uri, prefix, object, "search", ln);
+                setLabel(all, false, uri, prefix, object, "props", ln);
+                setLabel(true, false, uri, prefix, object, "search", ln);
                 for (String action : actions)
-                    setLabel(all, uri, prefixOp, object, action, lst);
+                    setLabel(all, true, uri, prefixOp, object, action, lst);
             }
 
             return meta;
         }, false);
     }
 
-    private void setLabel(boolean all, String uri, String[] prefix, JSONObject object, String key, String[] k) {
+    private void setLabel(boolean all, boolean type, String uri, String[] prefix, JSONObject object, String key, String[] k) {
         if (!object.containsKey(key))
             return;
 
         JSONArray array = object.getJSONArray(key);
         for (int i = array.size() - 1; i >= 0; i--) {
             JSONObject obj = array.getJSONObject(i);
-            String service = obj.getString(obj.containsKey("service") ? "service" : "type");
+            String service = obj.getString(type && !obj.containsKey("service") ? "type" : "service");
             if (!all && !validator.isEmpty(service)) {
                 if (service.charAt(0) != '/')
                     service = uri + service;
                 if (!crosierService.permit(service, obj.containsKey("parameter") ? json.toMap(obj.getJSONObject("parameter")) : new HashMap<>())) {
-                    array.remove(i);
+                    if (json.has(obj, "type", "switch"))
+                        obj.remove("service");
+                    else {
+                        array.remove(i);
 
-                    continue;
+                        continue;
+                    }
                 }
             }
 

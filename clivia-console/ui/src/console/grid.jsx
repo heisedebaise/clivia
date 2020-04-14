@@ -1,5 +1,5 @@
 import React from 'react';
-import { Form, Row, Col, Radio, Select, DatePicker, Input, Button, Table, Divider, Menu, Dropdown, Modal } from 'antd';
+import { Form, Row, Col, Radio, Select, DatePicker, Input, Button, Table, Divider, Menu, Dropdown, Modal, Switch } from 'antd';
 import { MinusOutlined } from '@ant-design/icons';
 import { service, url } from '../http';
 import meta from './meta';
@@ -36,6 +36,16 @@ class Grid extends React.Component {
                     let value = this.value(model, prop.name);
 
                     return value === '' ? '' : <img src={url(value)} alt="" onClick={this.preview} />;
+                }
+            } else if (prop.type === 'switch') {
+                column.render = model => {
+                    let s = { defaultChecked: this.value(model, prop.name) === 1 };
+                    if (prop.service)
+                        s.onChange = this.switch.bind(this, prop, model);
+                    else
+                        s.disabled = true;
+
+                    return <Switch {...s} />;
                 }
             } else {
                 column.dataIndex = prop.name.split('.');
@@ -82,17 +92,16 @@ class Grid extends React.Component {
     }
 
     value = (model, name) => {
-        if (name.indexOf('.') === -1)
-            return model[name] || '';
-
         let m = model;
         for (let n of name.split('.')) {
-            if (n in m) {
+            if (n in m)
                 m = m[n];
-            } else {
+            else
                 return '';
-            }
         }
+
+        if (m === 0)
+            return 0;
 
         return m || '';
     }
@@ -109,16 +118,7 @@ class Grid extends React.Component {
         }
 
         if (op.type === 'delete' || op.reload) {
-            let parameter = { id: model.id };
-            if (op.parameter)
-                parameter = { ...parameter, ...op.parameter };
-            if (this.props.parameter)
-                parameter = { ...parameter, ...this.props.parameter };
-            service(this.props.body.uri(this.props.uri, op.service || op.type), parameter).then(data => {
-                if (data === null) return;
-
-                this.load({ current: this.pageNum || 1 });
-            });
+            this.serviceReload(op, model, {});
 
             return;
         }
@@ -130,6 +130,25 @@ class Grid extends React.Component {
     preview = e => this.setState({ preview: e.currentTarget.src });
 
     cancel = () => this.setState({ preview: null });
+
+    switch = (op, model, check) => {
+        console.log(op);
+        console.log(model);
+        this.serviceReload(op, model, { state: check ? 1 : 0 })
+    }
+
+    serviceReload = (op, model, parameter) => {
+        parameter.id = model.id;
+        if (op.parameter)
+            parameter = { ...parameter, ...op.parameter };
+        if (this.props.parameter)
+            parameter = { ...parameter, ...this.props.parameter };
+        service(this.props.body.uri(this.props.uri, op.service || op.type), parameter).then(data => {
+            if (data === null) return;
+
+            this.load({ current: this.pageNum || 1 });
+        });
+    }
 
     load = pagination => {
         let parameter = {};
@@ -245,7 +264,6 @@ class Search extends React.Component {
     }
 
     finish = values => {
-        console.log(values);
         for (let column of this.props.props) {
             if (column.type === 'range') {
                 values[column.name] = (values[column.name + "Start"] || '') + ',' + (values[column.name + "End"] || '');

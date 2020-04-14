@@ -66,7 +66,7 @@ public class SelfImpl extends TypeSupport {
             cache.remove(cacheKey);
         }
         int max = failure > 0 ? keyvalueService.valueAsInt(PREFIX + "pass.max-failure", 5) : 0;
-        if (failure <= max && user.getPassword().equals(userService.password(password))) {
+        if (failure <= max && userService.password(password).equals(user.getPassword())) {
             cache.remove(cacheKey);
 
             return user;

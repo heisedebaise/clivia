@@ -17,7 +17,7 @@ CREATE TABLE t_user
   c_code CHAR(8) NOT NULL COMMENT '唯一编码',
   c_register DATETIME DEFAULT NULL COMMENT '注册时间',
   c_grade INT DEFAULT 0 COMMENT '等级：<50为用户；>=50为管理员；99为超级管理员',
-  c_state INT DEFAULT 0 COMMENT '状态：0-正常；1-禁用',
+  c_state INT DEFAULT 0 COMMENT '状态：0-禁用；1-正常',
 
   PRIMARY KEY pk(c_id) USING HASH,
   KEY k_mobile(c_mobile) USING HASH,
@@ -26,4 +26,4 @@ CREATE TABLE t_user
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 INSERT INTO t_user(c_id,c_password,c_code,c_grade) VALUES('00000000-0000-0000-0000-000000000000','','00000000',99);
-INSERT INTO t_user(c_id,c_password,c_code,c_grade) VALUES('99999999-9999-9999-9999-999999999999','','99999999',99);
+INSERT INTO t_user(c_id,c_password,c_code,c_grade,c_state) VALUES('99999999-9999-9999-9999-999999999999','','99999999',99,1);

@@ -8,24 +8,14 @@ import org.lpw.photon.bean.ContextRefreshedListener;
 import org.lpw.photon.cache.Cache;
 import org.lpw.photon.storage.StorageListener;
 import org.lpw.photon.storage.Storages;
-import org.lpw.photon.util.Context;
-import org.lpw.photon.util.Converter;
-import org.lpw.photon.util.Json;
-import org.lpw.photon.util.Logger;
-import org.lpw.photon.util.Message;
-import org.lpw.photon.util.Numeric;
-import org.lpw.photon.util.Validator;
+import org.lpw.photon.util.*;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import javax.inject.Inject;
 import java.io.BufferedReader;
 import java.io.FileReader;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -124,7 +114,7 @@ public class CrosierServiceImpl implements CrosierService, StorageListener, Cont
             return grade == -1 || (user != null && user.getGrade() >= grade);
         }
 
-        if (user == null)
+        if (user == null || user.getState() != 1)
             return false;
 
         if (user.getCode().equals("99999999"))

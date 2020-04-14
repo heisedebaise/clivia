@@ -43,7 +43,8 @@
         },
         {
             "name": "state",
-            "labels": ".states"
+            "type": "switch",
+            "service": "state"
         }
     ],
     "query": {
@@ -72,7 +73,8 @@
                 "type": "date-range"
             },
             {
-                "name": "state"
+                "name": "state",
+                "labels": ".states"
             }
         ],
         "ops": [
@@ -83,24 +85,6 @@
             {
                 "service": "reset-password",
                 "reload": true
-            },
-            {
-                "label": ".state.enable",
-                "service": "state",
-                "parameter": {
-                    "state": 0
-                },
-                "reload": true,
-                "when": "model.state==1"
-            },
-            {
-                "label": ".state.disable",
-                "service": "state",
-                "parameter": {
-                    "state": 1
-                },
-                "reload": true,
-                "when": "model.state==0"
             },
             {
                 "label": ".manager",

@@ -15,11 +15,7 @@ import org.lpw.photon.crypto.Digest;
 import org.lpw.photon.ctrl.context.Session;
 import org.lpw.photon.dao.model.ModelHelper;
 import org.lpw.photon.dao.orm.PageList;
-import org.lpw.photon.util.Converter;
-import org.lpw.photon.util.DateTime;
-import org.lpw.photon.util.Generator;
-import org.lpw.photon.util.Numeric;
-import org.lpw.photon.util.Validator;
+import org.lpw.photon.util.*;
 import org.springframework.stereotype.Service;
 
 import javax.inject.Inject;
@@ -81,6 +77,8 @@ public class UserServiceImpl implements UserService {
         UserModel user = fromSession();
         if (user == null)
             user = new UserModel();
+        if (Types.Self.equals(type) && validator.isEmpty(user.getPassword()))
+            user.setPassword(password(password));
         if (user.getRegister() == null)
             user.setRegister(dateTime.now());
         for (int i = 0; i < 1024 && user.getCode() == null; i++) {
@@ -107,6 +105,7 @@ public class UserServiceImpl implements UserService {
         if (validator.isEmpty(user.getNick()))
             user.setNick(nick);
         setInviter(user);
+        user.setState(1);
         userDao.save(user);
         for (String ruid : types.getUid(type, uid, password))
             if (authService.findByUid(ruid) == null)
@@ -138,7 +137,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public boolean signIn(String uid, String password, String type) {
         UserModel user = types.auth(type, uid, password);
-        if (user == null)
+        if (user == null || user.getState() != 1)
             return false;
 
         signIn(user, uid);
@@ -202,7 +201,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void modify(UserModel user) {
-        session.set(SESSION, save(fromSession().getId(), user));
+        session.set(SESSION, save(fromSession().getId(), user, false));
     }
 
     @Override
@@ -355,10 +354,10 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void update(UserModel user) {
-        save(user.getId(), user);
+        save(user.getId(), user, true);
     }
 
-    private UserModel save(String id, UserModel user) {
+    private UserModel save(String id, UserModel user, boolean manage) {
         UserModel model = findById(id);
         model.setIdcard(user.getIdcard());
         model.setName(user.getName());
@@ -368,6 +367,8 @@ public class UserServiceImpl implements UserService {
         model.setPortrait(user.getPortrait());
         model.setGender(user.getGender());
         model.setBirthday(user.getBirthday());
+        if (manage)
+            model.setState(user.getState());
         save(model);
 
         return model;
@@ -395,8 +396,7 @@ public class UserServiceImpl implements UserService {
         UserModel user = findById(id);
         user.setState(state);
         save(user);
-        if (state == 1)
-            onlineService.signOutUser(id);
+        onlineService.signOutUser(id);
     }
 
     @Override

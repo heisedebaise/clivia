@@ -1,5 +1,5 @@
 import React from 'react';
-import { Form, Radio, Select, DatePicker, Input, Button, message } from 'antd';
+import { Form, Radio, Select, DatePicker, Switch, Input, Button, message } from 'antd';
 import moment from 'moment';
 import { service } from '../http';
 import meta from './meta';
@@ -8,8 +8,6 @@ import Image from './image';
 import Editor from './editor';
 import './form.css';
 
-const { Option } = Select;
-const { TextArea } = Input;
 const layout = {
     labelCol: {
         xs: {
@@ -58,11 +56,12 @@ class Base extends React.Component {
     format = (values) => {
         for (let prop of meta.props(this.props.props, this.props.meta.props)) {
             let value = values[prop.name];
-
             if (prop.labels)
                 values[prop.name] = '' + value;
             else if (prop.type === 'money')
                 values[prop.name] = toMoney(value);
+            else if (prop.type === 'switch')
+                values[prop.name] = value === 1;
             else if (value) {
                 if (prop.type === 'date')
                     values[prop.name] = moment(value, 'YYYY-MM-DD');
@@ -78,6 +77,12 @@ class Base extends React.Component {
         let values = this.form.current.getFieldsValue();
         for (let prop of meta.props(this.props.props, this.props.meta.props)) {
             let value = values[prop.name];
+            if (prop.type === 'switch') {
+                values[prop.name] = value ? 1 : 0;
+
+                continue;
+            }
+
             if (!value) {
                 delete values[prop.name];
 
@@ -124,6 +129,8 @@ class Base extends React.Component {
             } else if (prop.type === 'editor') {
                 items.push(<Form.Item {...item}><Editor name={prop.name} value={this.state[prop.name] || ''} form={this} /></Form.Item>);
             } else {
+                if (prop.type === 'switch')
+                    item.valuePropName = 'checked';
                 items.push(<Form.Item {...item} name={prop.name}>{this.input(prop)}</Form.Item>);
             }
         }
@@ -163,21 +170,27 @@ class Base extends React.Component {
 
             let options = [];
             for (let index in prop.labels) {
-                options.push(<Option key={index} value={index}>{prop.labels[index]}</Option>);
+                options.push(<Select.Option key={index} value={index}>{prop.labels[index]}</Select.Option>);
             }
 
-            return <Select>{options}</Select>
+            return <Select>{options}</Select>;
         }
 
         if (prop.type === 'date') return <DatePicker />;
 
         if (prop.type === 'datetime') return <DatePicker showTime={true} />;
 
-        if (prop.type === 'text-area') return <TextArea />;
+        if (prop.type === 'switch') return <Switch disabled={!prop.service} onChange={this.switch.bind(this, prop)} />;
+
+        if (prop.type === 'text-area') return <Input.TextArea />;
 
         if (prop.type === 'password') return <Input.Password />;
 
         return <Input />
+    }
+
+    switch = (prop, check) => {
+        this.value(prop.name, check ? 1 : 0);
     }
 
     toolbar = () => {
