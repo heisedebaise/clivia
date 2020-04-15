@@ -38,16 +38,15 @@ class SignIn extends React.Component {
                             <Form.Item name="uid"><Input prefix={<UserOutlined style={{ color: 'rgba(0,0,0,.25)' }} />} placeholder="用户名" /></Form.Item>
                             <Form.Item name="password"><Input.Password prefix={<LockOutlined style={{ color: 'rgba(0,0,0,.25)' }} />} placeholder="密码" /></Form.Item>
                             <Form.Item>
-                                <Button type="primary" htmlType="submit" className="sign-in-button">{this.state.up ? '注册' : '登入'}</Button>
+                                <Button type="primary" htmlType="submit" className="sign-in-up-button">{this.state.up ? '提交注册' : '登录'}</Button>
                             </Form.Item>
                             <Form.Item>
-                                <Button className="sign-in-button" onClick={this.change}>{this.state.up ? '登录' : '注册'}</Button>
-                            </Form.Item>
-                            <Form.Item className="sign-in-third">
-                                <WechatOutlined />
-                                <AlipayOutlined />
-                                <WeiboOutlined />
-                                <GithubOutlined />
+                                <Button type="link" className="sign-in-up-link" onClick={this.change}>{this.state.up ? '使用已有账户登录' : '注册新账户'}</Button>
+                                <span>其他登录方式</span>
+                                <WechatOutlined className="sign-in-third" />
+                                <AlipayOutlined className="sign-in-third" />
+                                <WeiboOutlined className="sign-in-third" />
+                                <GithubOutlined className="sign-in-third" />
                             </Form.Item>
                         </Form>
                     </div>

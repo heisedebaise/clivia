@@ -11,17 +11,17 @@
     margin: 0 auto;
 }
 
-.sign-in-form .sign-in-button {
+.sign-in-form .sign-in-up-button {
     width: 100%;
 }
 
-.sign-in-third {
-    text-align: center;
-    font-size: 32px;
+.sign-in-form .sign-in-up-link {
+    float: right;
+    padding: 0;
 }
 
-.sign-in-third .anticon {
-    padding: 0 16px;
+.sign-in-form .sign-in-third {
+    padding-left: 8px;
 }
 
 .sign-in-footer {

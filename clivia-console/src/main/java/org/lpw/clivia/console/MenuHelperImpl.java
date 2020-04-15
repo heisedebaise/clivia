@@ -6,13 +6,7 @@ import org.lpw.clivia.user.UserService;
 import org.lpw.clivia.user.crosier.CrosierService;
 import org.lpw.clivia.user.crosier.CrosierValid;
 import org.lpw.photon.cache.Cache;
-import org.lpw.photon.util.Context;
-import org.lpw.photon.util.Converter;
-import org.lpw.photon.util.Io;
-import org.lpw.photon.util.Json;
-import org.lpw.photon.util.Logger;
-import org.lpw.photon.util.Numeric;
-import org.lpw.photon.util.Validator;
+import org.lpw.photon.util.*;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -60,7 +54,7 @@ public class MenuHelperImpl implements MenuHelper, CrosierValid {
             });
         }
 
-        return map.computeIfAbsent(numeric.toString(userService.grade(), "0"), key -> permit(get()));
+        return map.computeIfAbsent(numeric.toString(userService.grade(), "0"), key -> permit("", get()));
     }
 
     private JSONArray get() {
@@ -85,7 +79,7 @@ public class MenuHelperImpl implements MenuHelper, CrosierValid {
                 continue;
 
             JSONArray items = new JSONArray();
-            operation(metaHelper.get(service.substring(0, index), true), service.substring(index), new String[]{"toolbar", "ops"}, items, 0);
+            operation(metaHelper.get(service.substring(0, index), true), service.substring(index), new String[]{"props", "toolbar", "ops"}, items, 0);
             if (!items.isEmpty())
                 menu.put("items", items);
         }
@@ -96,6 +90,15 @@ public class MenuHelperImpl implements MenuHelper, CrosierValid {
             return;
 
         JSONObject m = meta.getJSONObject(name);
+        if (json.has(m, "type", "grid") && meta.containsKey("props")) {
+            JSONArray props = meta.getJSONArray("props");
+            for (int i = 0, size = props.size(); i < size; i++) {
+                JSONObject prop = props.getJSONObject(i);
+                if (json.has(prop, "type", "switch") && prop.containsKey("service"))
+                    items.add(prop);
+            }
+        }
+
         for (String op : ops) {
             if (!m.containsKey(op))
                 continue;
@@ -109,16 +112,22 @@ public class MenuHelperImpl implements MenuHelper, CrosierValid {
         }
     }
 
-    private JSONArray permit(JSONArray menus) {
+    private JSONArray permit(String path, JSONArray menus) {
         JSONArray array = new JSONArray();
         for (int i = 0, size = menus.size(); i < size; i++) {
             JSONObject object = menus.getJSONObject(i);
-            Map<String, String> parameter = object.containsKey("parameter") ? json.toMap(object.getJSONObject("parameter")) : new HashMap<>();
-            if (object.containsKey("service") && !crosierService.permit(object.getString("service"), parameter))
+            String p = validator.isEmpty(path) ? "" : (path + ";");
+            if (object.containsKey("service")) {
+                p += object.getString("service");
+                if (object.containsKey("parameter"))
+                    p += object.getJSONObject("parameter").toJSONString();
+            } else
+                p += object.getString("label");
+            if (!crosierService.permit(p, new HashMap<>()))
                 continue;
 
             if (object.containsKey("items")) {
-                JSONArray items = permit(object.getJSONArray("items"));
+                JSONArray items = permit(p, object.getJSONArray("items"));
                 if (!items.isEmpty()) {
                     object.put("items", items);
                     array.add(object);

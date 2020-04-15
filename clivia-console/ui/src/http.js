@@ -15,9 +15,6 @@ const service = (uri, body) => post(uri, body).then(json => {
     }
 
     message.warn('[' + json.code + ']' + json.message);
-    if (json.code === 151901 || json.code === 999996) {
-        window.location.reload();
-    }
 
     return null;
 });

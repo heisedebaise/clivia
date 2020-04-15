@@ -194,6 +194,7 @@ public class CrosierServiceImpl implements CrosierService, StorageListener, Cont
             Set<Map<String, String>> set = map.computeIfAbsent(crosier.getUri(), key -> new HashSet<>());
             if (!validator.isEmpty(crosier.getParameter()))
                 set.add(json.toMap(json.toObject(crosier.getParameter())));
+            map.put(crosier.getPath(), new HashSet<>());
         });
         this.map.put(grade, map);
         valids.ifPresent(set -> set.forEach(valid -> valid.crosierValid(grade)));

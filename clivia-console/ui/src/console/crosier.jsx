@@ -16,7 +16,7 @@ class Crosier extends React.Component {
                 grade: 0
             }, () => this.grade(0));
         });
-        service('/console/menu', { domain: "console", all: true }).then(data => {
+        service('/console/menu', { all: true }).then(data => {
             if (data === null) return;
 
             this.setState({ menu: data });
@@ -102,7 +102,6 @@ class Crosier extends React.Component {
             if (key in keys) continue;
 
             keys[key] = true;
-            // nodes.push(<Tree.TreeNode title={menu.label} key={key}>{this.nodes(menu.items, key + ';')}</Tree.TreeNode>);
             nodes.push({
                 key: key,
                 title: menu.label,
