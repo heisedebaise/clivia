@@ -132,8 +132,6 @@ class Grid extends React.Component {
     cancel = () => this.setState({ preview: null });
 
     switch = (op, model, check) => {
-        console.log(op);
-        console.log(model);
         this.serviceReload(op, model, { state: check ? 1 : 0 })
     }
 
@@ -211,10 +209,10 @@ class Search extends React.Component {
                 </Col>
             );
         }
-        cols.push(<Col span={2} key="search" className="console-grid-search-btn"><Form.Item><Button type="primary" htmlType="submit">搜索</Button></Form.Item></Col>);
+        cols.push(<Col span={2} key="search" className="console-grid-search-btn"><Form.Item noStyle><Button type="primary" htmlType="submit">搜索</Button></Form.Item></Col>);
         if (this.props.toolbar && this.props.toolbar.length > 0) {
             for (let toolbar of this.props.toolbar) {
-                cols.push(<Col span={2} key={toolbar.label} className="console-grid-search-btn"><Form.Item>{this.props.grid.button(toolbar)}</Form.Item></Col>);
+                cols.push(<Form.Item noStyle>{this.props.grid.button(toolbar)}</Form.Item>);
             }
         }
 
