@@ -122,6 +122,47 @@ class Grid extends React.Component {
             return;
         }
 
+        if (op.type === 'upload') {
+            let input = document.createElement("input");
+            input.type = 'file';
+            input.style.display = 'none';
+            input.onchange = e => {
+                if (!e.target.files || e.target.files.length === 0) return;
+
+                let reader = new FileReader();
+                reader.onload = () => {
+                    if (!reader.result || typeof reader.result !== 'string') {
+                        return;
+                    }
+
+                    service('/photon/ctrl/upload', {
+                        // name: this.props.upload,
+                        // fileName: uploader.file.name,
+                        // contentType: uploader.file.type,
+                        base64: reader.result.substring(reader.result.indexOf(',') + 1)
+                    }).then(data => {
+                        document.body.removeChild(input);
+                        if (data === null) return;
+
+                        // let uri = this.state.changed ? this.state.uri : this.props.value;
+                        // uri = uri ? (uri + ',' + data.path) : data.path;
+                        // this.setState({
+                        //     uri: uri,
+                        //     changed: true,
+                        //     loading: false
+                        // }, () => {
+                        //     this.props.form.value(this.props.name, this.state.uri)
+                        // });
+                    });
+                };
+                reader.readAsDataURL(e.target.files[0]);
+            };
+            document.body.appendChild(input);
+            input.click();
+
+            return;
+        }
+
         delete model.children;
         this.props.body.load(this.props.body.uri(this.props.uri, op.service || op.type), this.props.parameter, model);
     }
@@ -215,7 +256,7 @@ class Search extends React.Component {
                 toolbar.push(this.props.grid.button(button));
             }
         }
-        cols.push(<span key="toolbar" class="console-grid-search-toolbar">{toolbar}</span>);
+        cols.push(<span key="toolbar" className="console-grid-search-toolbar">{toolbar}</span>);
 
         return (
             <Form className="console-grid-search-form" onFinish={this.finish}>

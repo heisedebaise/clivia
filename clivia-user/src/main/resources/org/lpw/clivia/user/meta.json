@@ -104,6 +104,12 @@
                 "reload": true,
                 "when": "model.grade>=90"
             }
+        ],
+        "toolbar": [
+            {
+                "type": "upload",
+                "upload": "portrait"
+            }
         ]
     },
     "update": {
