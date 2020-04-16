@@ -17,11 +17,10 @@ class Grid extends React.Component {
         if (props.meta.search && props.meta.search.length > 0) {
             this.search = <Search key="search" props={meta.props(columns, props.meta.search)} toolbar={props.meta.toolbar} grid={this} />;
         } else if (props.meta.toolbar && props.meta.toolbar.length > 0) {
-            let buttons = [];
+            this.toolbar = [];
             for (let toolbar of props.meta.toolbar) {
-                buttons.push(this.button(toolbar));
+                this.toolbar.push(this.button(toolbar));
             }
-            this.toolbar = <div key="toolbar" className="console-grid-toolbar">{buttons}</div>
         }
 
         this.columns = [];
@@ -183,7 +182,7 @@ class Grid extends React.Component {
     render = () => {
         let elements = [];
         if (this.search) elements.push(this.search);
-        if (this.toolbar) elements.push(this.toolbar);
+        else if (this.toolbar) elements.push(<div key="toolbar" className="console-grid-toolbar">{this.toolbar}</div>);
         elements.push(<Table key="table" columns={this.columns} dataSource={this.state.list} rowKey="id" pagination={this.state.pagination}
             onChange={this.load} className="console-grid" />);
         elements.push(
@@ -209,15 +208,17 @@ class Search extends React.Component {
                 </Col>
             );
         }
-        cols.push(<Col span={2} key="search" className="console-grid-search-btn"><Form.Item noStyle><Button type="primary" htmlType="submit">搜索</Button></Form.Item></Col>);
+        let toolbar = [];
+        toolbar.push(<Button key="search" type="primary" htmlType="submit">搜索</Button>);
         if (this.props.toolbar && this.props.toolbar.length > 0) {
-            for (let toolbar of this.props.toolbar) {
-                cols.push(<Form.Item noStyle>{this.props.grid.button(toolbar)}</Form.Item>);
+            for (let button of this.props.toolbar) {
+                toolbar.push(this.props.grid.button(button));
             }
         }
+        cols.push(<span key="toolbar" class="console-grid-search-toolbar">{toolbar}</span>);
 
         return (
-            <Form className="console-grid-search" onFinish={this.finish}>
+            <Form className="console-grid-search-form" onFinish={this.finish}>
                 <Row gutter={24}>{cols}</Row>
             </Form>
         );
