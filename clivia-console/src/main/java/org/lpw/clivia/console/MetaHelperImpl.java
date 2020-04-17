@@ -48,6 +48,7 @@ public class MetaHelperImpl implements MetaHelper, ContextRefreshedListener, Cro
     private String console;
     private final Map<String, String> map = new ConcurrentHashMap<>();
     private final Map<Integer, Set<String>> cacheKeys = new ConcurrentHashMap<>();
+    private final Set<String> kup = Set.of("key", "uri", "props");
     private final String[] actions = {"ops", "toolbar"};
 
     @Override
@@ -68,7 +69,7 @@ public class MetaHelperImpl implements MetaHelper, ContextRefreshedListener, Cro
             String[] lst = new String[]{"label", "service", "type"};
             setLabel(all, false, uri, prefix, meta, "props", ln);
             for (String mk : meta.keySet()) {
-                if (mk.equals("key") || mk.equals("uri") || mk.equals("props"))
+                if (kup.contains(mk))
                     continue;
 
                 JSONObject object = meta.getJSONObject(mk);
@@ -197,14 +198,16 @@ public class MetaHelperImpl implements MetaHelper, ContextRefreshedListener, Cro
         if (object == null)
             return;
 
-        if (object.containsKey("props")) {
-            String prefix = object.getString("key") + ".";
-            JSONArray props = object.getJSONArray("props");
-            for (int i = 0, size = props.size(); i < size; i++) {
-                JSONObject prop = props.getJSONObject(i);
-                if (json.has(prop, "type", "image") && !prop.containsKey("upload"))
-                    prop.put("upload", prefix + prop.getString("name"));
-            }
+        String prefix = object.getString("key") + ".";
+        if (object.containsKey("props"))
+            upload(prefix, "image", object.getJSONArray("props"));
+        for (String key : object.keySet()) {
+            if (kup.contains(key))
+                continue;
+
+            JSONObject obj = object.getJSONObject(key);
+            if (json.containsKey(obj, "toolbar"))
+                upload(prefix, "upload", obj.getJSONArray("toolbar"));
         }
 
         string = object.toJSONString();
@@ -212,6 +215,19 @@ public class MetaHelperImpl implements MetaHelper, ContextRefreshedListener, Cro
             map.put(object.getString("key"), string);
         if (object.containsKey("uri"))
             map.put(object.getString("uri"), string);
+    }
+
+    private void upload(String prefix, String type, JSONArray array) {
+        for (int i = 0, size = array.size(); i < size; i++) {
+            JSONObject prop = array.getJSONObject(i);
+            if (json.has(prop, "type", type)) {
+                String upload = prop.containsKey("upload") ? prop.getString("upload") : null;
+                if (validator.isEmpty(upload))
+                    prop.put("upload", prefix + prop.getString("name"));
+                else if (upload.indexOf('.') == -1)
+                    prop.put("upload", prefix + upload);
+            }
+        }
     }
 
     @Override

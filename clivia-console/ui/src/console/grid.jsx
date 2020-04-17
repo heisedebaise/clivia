@@ -126,19 +126,21 @@ class Grid extends React.Component {
             let input = document.createElement("input");
             input.type = 'file';
             input.style.display = 'none';
+            console.log(op);
             input.onchange = e => {
                 if (!e.target.files || e.target.files.length === 0) return;
 
                 let reader = new FileReader();
+                let file = e.target.files[0];
                 reader.onload = () => {
                     if (!reader.result || typeof reader.result !== 'string') {
                         return;
                     }
 
                     service('/photon/ctrl/upload', {
-                        // name: this.props.upload,
-                        // fileName: uploader.file.name,
-                        // contentType: uploader.file.type,
+                        name: op.upload,
+                        fileName: file.name,
+                        contentType: file.type,
                         base64: reader.result.substring(reader.result.indexOf(',') + 1)
                     }).then(data => {
                         document.body.removeChild(input);
@@ -155,7 +157,7 @@ class Grid extends React.Component {
                         // });
                     });
                 };
-                reader.readAsDataURL(e.target.files[0]);
+                reader.readAsDataURL(file);
             };
             document.body.appendChild(input);
             input.click();
