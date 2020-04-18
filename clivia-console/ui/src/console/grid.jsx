@@ -146,15 +146,7 @@ class Grid extends React.Component {
                         document.body.removeChild(input);
                         if (data === null) return;
 
-                        // let uri = this.state.changed ? this.state.uri : this.props.value;
-                        // uri = uri ? (uri + ',' + data.path) : data.path;
-                        // this.setState({
-                        //     uri: uri,
-                        //     changed: true,
-                        //     loading: false
-                        // }, () => {
-                        //     this.props.form.value(this.props.name, this.state.uri)
-                        // });
+                        this.load({ current: this.pageNum || 1 });
                     });
                 };
                 reader.readAsDataURL(file);
