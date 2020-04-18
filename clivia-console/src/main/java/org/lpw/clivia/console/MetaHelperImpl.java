@@ -8,7 +8,12 @@ import org.lpw.clivia.user.crosier.CrosierValid;
 import org.lpw.photon.bean.ContextRefreshedListener;
 import org.lpw.photon.cache.Cache;
 import org.lpw.photon.dao.model.Model;
-import org.lpw.photon.util.*;
+import org.lpw.photon.util.Context;
+import org.lpw.photon.util.Io;
+import org.lpw.photon.util.Json;
+import org.lpw.photon.util.Logger;
+import org.lpw.photon.util.Message;
+import org.lpw.photon.util.Validator;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -16,7 +21,12 @@ import javax.inject.Inject;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.InputStream;
-import java.util.*;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -131,20 +141,21 @@ public class MetaHelperImpl implements MetaHelper, ContextRefreshedListener, Cro
         }
 
         for (String k : key) {
-            for (String p : prefix) {
-                if (object.containsKey(k)) {
-                    String label = object.getString(k);
-                    int index = label.indexOf('.');
-                    if (index == -1)
-                        label = p + "." + label;
-                    else if (index == 0)
-                        label = p + label;
-                    String msg = message.get(label);
-                    if (!msg.equals(label)) {
-                        object.put("label", msg);
+            if (!object.containsKey(k))
+                continue;
 
-                        return;
-                    }
+            String label = object.getString(k);
+            for (String p : prefix) {
+                int index = label.indexOf('.');
+                if (index == -1)
+                    label = p + "." + label;
+                else if (index == 0)
+                    label = p + label;
+                String msg = message.get(label);
+                if (!msg.equals(label)) {
+                    object.put("label", msg);
+
+                    return;
                 }
             }
         }
