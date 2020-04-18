@@ -144,8 +144,8 @@ public class MetaHelperImpl implements MetaHelper, ContextRefreshedListener, Cro
             if (!object.containsKey(k))
                 continue;
 
-            String label = object.getString(k);
             for (String p : prefix) {
+                String label = object.getString(k);
                 int index = label.indexOf('.');
                 if (index == -1)
                     label = p + "." + label;
