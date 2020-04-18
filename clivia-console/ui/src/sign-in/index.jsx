@@ -16,7 +16,7 @@ class SignIn extends React.Component {
     }
 
     finish = values => {
-        if (values.repeat !== values.password) {
+        if (this.state.up && values.repeat !== values.password) {
             message.warn('重复密码与密码必须相同！');
 
             return;
