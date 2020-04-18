@@ -51,16 +51,23 @@ public class MenuHelperImpl implements MenuHelper, CrosierValid {
 
     @Override
     public JSONArray get(boolean all) {
-        if (all) {
-            return map.computeIfAbsent("all", key -> {
-                JSONArray menus = get();
-                operation(menus);
+//        if (all) {
+//            return map.computeIfAbsent("all", key -> {
+//                JSONArray menus = get();
+//                operation(menus);
+//
+//                return menus;
+//            });
+//        }
 
-                return menus;
-            });
-        }
+        return map.computeIfAbsent(all?"all": numeric.toString(userService.grade(), "0"), key -> {
+            JSONArray menus = get();
+            operation(menus);
+            if(!all)
+            permit("", menus);
 
-        return map.computeIfAbsent(numeric.toString(userService.grade(), "0"), key -> permit("", get()));
+            return menus;
+        });
     }
 
     private JSONArray get() {
