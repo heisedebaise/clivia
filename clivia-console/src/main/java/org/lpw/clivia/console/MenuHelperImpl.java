@@ -47,7 +47,7 @@ public class MenuHelperImpl implements MenuHelper, CrosierValid {
     private MetaHelper metaHelper;
     @Value("${" + ConsoleModel.NAME + ".console:/WEB-INF/console/}")
     private String console;
-    private Map<String, JSONArray> map = new ConcurrentHashMap<>();
+    private final Map<String, JSONArray> map = new ConcurrentHashMap<>();
 
     @Override
     public JSONArray get(boolean all) {
