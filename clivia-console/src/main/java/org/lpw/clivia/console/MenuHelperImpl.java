@@ -6,7 +6,13 @@ import org.lpw.clivia.user.UserService;
 import org.lpw.clivia.user.crosier.CrosierService;
 import org.lpw.clivia.user.crosier.CrosierValid;
 import org.lpw.photon.cache.Cache;
-import org.lpw.photon.util.*;
+import org.lpw.photon.util.Context;
+import org.lpw.photon.util.Converter;
+import org.lpw.photon.util.Io;
+import org.lpw.photon.util.Json;
+import org.lpw.photon.util.Logger;
+import org.lpw.photon.util.Numeric;
+import org.lpw.photon.util.Validator;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -79,7 +85,7 @@ public class MenuHelperImpl implements MenuHelper, CrosierValid {
                 continue;
 
             JSONArray items = new JSONArray();
-            operation(metaHelper.get(service.substring(0, index), true), service.substring(index), new String[]{"props", "toolbar", "ops"}, items, 0);
+            operation(metaHelper.get(service.substring(0, index), true), service.substring(index), new String[]{"toolbar", "ops"}, items, 0);
             if (!items.isEmpty())
                 menu.put("items", items);
         }
