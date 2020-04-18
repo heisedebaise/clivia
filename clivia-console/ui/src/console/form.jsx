@@ -103,8 +103,10 @@ class Base extends React.Component {
         this.submit(mt, { ...values, ...this.values }).then(data => {
             if (data === null) return;
 
-            if (mt.success)
-                this.props.body.load(this.props.body.uri(this.props.uri, mt.success), this.props.parameter);
+            if (mt.reload)
+                this.props.body.load(this.props.uri, this.props.parameter, this.props.data);
+            else if (mt.success)
+                this.props.body.load(this.props.body.uri(this.props.uri, mt.success), this.props.parameter, this.props.data);
             else
                 message.success('操作已完成！');
         });
