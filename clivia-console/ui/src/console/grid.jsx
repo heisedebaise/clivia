@@ -233,7 +233,10 @@ class Grid extends React.Component {
 class Search extends React.Component {
     render = () => {
         let cols = [];
+        let initialValues = {};
         for (let column of this.props.props) {
+            if (column.labels) initialValues[column.name] = '';
+
             let item = { label: column.label };
             if (column.type !== 'range')
                 item.name = column.name;
@@ -253,7 +256,7 @@ class Search extends React.Component {
         cols.push(<span key="toolbar" className="console-grid-search-toolbar">{toolbar}</span>);
 
         return (
-            <Form className="console-grid-search-form" onFinish={this.finish}>
+            <Form className="console-grid-search-form" initialValues={initialValues} onFinish={this.finish}>
                 <Row gutter={24}>{cols}</Row>
             </Form>
         );
