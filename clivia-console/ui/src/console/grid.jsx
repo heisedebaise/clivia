@@ -28,7 +28,7 @@ class Grid extends React.Component {
             let column = { key: prop.name, title: prop.label };
             if (prop.labels) {
                 column.render = model => prop.labels[this.value(model, prop.name)];
-            } else if (prop.type === 'money') {
+            } else if (prop.type === 'money' || prop.type === 'read-only:money') {
                 column.render = model => toMoney(this.value(model, prop.name));
             } else if (prop.type === 'image') {
                 column.render = model => {
