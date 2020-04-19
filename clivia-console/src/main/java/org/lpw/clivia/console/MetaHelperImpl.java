@@ -164,7 +164,7 @@ public class MetaHelperImpl implements MetaHelper, ContextRefreshedListener, Cro
 
     @Override
     public int getContextRefreshedSort() {
-        return 11;
+        return 191;
     }
 
     @Override
