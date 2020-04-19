@@ -3,7 +3,7 @@ import { Form, Radio, Select, DatePicker, Switch, Input, Button, message } from 
 import moment from 'moment';
 import { service } from '../http';
 import meta from './meta';
-import { toMoney, fromMoney } from './numeric';
+import { toMoney, fromMoney, toPercent, fromPercent } from './numeric';
 import Image from './image';
 import Editor from './editor';
 import './form.css';
@@ -60,6 +60,8 @@ class Base extends React.Component {
                 values[prop.name] = '' + value;
             else if (prop.type === 'money')
                 values[prop.name] = toMoney(value);
+            else if (prop.type === 'percent')
+                values[prop.name] = toPercent(value);
             else if (prop.type === 'switch')
                 values[prop.name] = value === 1;
             else if (value) {
@@ -95,6 +97,8 @@ class Base extends React.Component {
                 values[prop.name] = value.format("YYYY-MM-DD HH:mm:ss");
             else if (prop.type === 'money')
                 values[prop.name] = fromMoney(value);
+            else if (prop.type === 'percent')
+                values[prop.name] = fromPercent(value);
         }
         if (this.props.data)
             for (let key in this.props.data)
@@ -149,6 +153,9 @@ class Base extends React.Component {
         let value = this.state[prop.name];
         if (prop.type === 'read-only:money')
             return toMoney(value);
+
+        if (prop.type === 'read-only:percent')
+            return toPercent(value);
 
         if (prop.labels)
             return prop.labels[value] || '';

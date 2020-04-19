@@ -14,7 +14,34 @@ const fromMoney = function (value) {
     }
 }
 
+const toPercent = function (value) {
+    if (!value) return '0.00 %';
+
+    try {
+        return (parseInt(value) / 100).toFixed(2) + ' %';
+    } catch (e) {
+        return '0.00 %';
+    }
+}
+
+const fromPercent = function (value) {
+    if (!value) return 0;
+
+    try {
+        value = value.trim();
+        let length = value.length;
+        if (length > 1 && value.substring(length - 1) === '%')
+            value = value.substring(0, length - 1).trim();
+
+        return Math.floor(parseFloat(value) * 100);
+    } catch (e) {
+        return 0;
+    }
+}
+
 export {
     toMoney,
-    fromMoney
+    fromMoney,
+    toPercent,
+    fromPercent
 };

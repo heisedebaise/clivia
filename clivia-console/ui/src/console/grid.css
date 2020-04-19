@@ -36,6 +36,10 @@
     white-space: nowrap;
 }
 
+.console-grid td{
+    word-break: break-all;
+}
+
 .console-grid td img {
     max-width: 128px;
     max-height: 96px;

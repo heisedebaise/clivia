@@ -3,7 +3,7 @@ import { Form, Row, Col, Radio, Select, DatePicker, Input, Button, Table, Divide
 import { MinusOutlined } from '@ant-design/icons';
 import { service, url } from '../http';
 import meta from './meta';
-import { toMoney } from './numeric';
+import { toMoney, toPercent } from './numeric';
 import './grid.css';
 
 const { Option } = Select;
@@ -30,6 +30,8 @@ class Grid extends React.Component {
                 column.render = model => prop.labels[this.value(model, prop.name)];
             } else if (prop.type === 'money' || prop.type === 'read-only:money') {
                 column.render = model => toMoney(this.value(model, prop.name));
+            } else if (prop.type === 'percent' || prop.type === 'read-only:percent') {
+                column.render = model => toPercent(this.value(model, prop.name));
             } else if (prop.type === 'image') {
                 column.render = model => {
                     let value = this.value(model, prop.name);
@@ -126,7 +128,6 @@ class Grid extends React.Component {
             let input = document.createElement("input");
             input.type = 'file';
             input.style.display = 'none';
-            console.log(op);
             input.onchange = e => {
                 if (!e.target.files || e.target.files.length === 0) return;
 
@@ -311,7 +312,6 @@ class Search extends React.Component {
             }
 
             let value = values[column.name];
-            console.log(column);
             if (!value) continue;
 
             if (column.type === 'date') {
