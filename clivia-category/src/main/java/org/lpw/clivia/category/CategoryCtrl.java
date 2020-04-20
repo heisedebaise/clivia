@@ -50,4 +50,9 @@ public class CategoryCtrl {
 
         return "";
     }
+
+    @Execute(name = "index")
+    public Object index() {
+        return categoryService.query(request.get("key"));
+    }
 }
