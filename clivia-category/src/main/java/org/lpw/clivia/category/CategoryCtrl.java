@@ -51,8 +51,8 @@ public class CategoryCtrl {
         return "";
     }
 
-    @Execute(name = "index")
-    public Object index() {
+    @Execute(name = "list")
+    public Object list() {
         return categoryService.query(request.get("key"));
     }
 }
