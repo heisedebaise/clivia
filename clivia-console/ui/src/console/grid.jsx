@@ -197,21 +197,25 @@ class Grid extends React.Component {
         service(this.props.uri, parameter).then(data => {
             if (data === null) return;
 
-            if (data instanceof Array) {
-                this.setState({
-                    list: data
-                });
-            } else {
-                this.pageNum = data.number;
-                this.setState({
-                    list: data.list,
-                    pagination: data.count <= data.size ? false : {
-                        total: data.count,
-                        pageSize: data.size,
-                        current: data.number
-                    }
-                });
-            }
+            this.setState({
+                list: []
+            }, () => {
+                if (data instanceof Array) {
+                    this.setState({
+                        list: data
+                    });
+                } else {
+                    this.pageNum = data.number;
+                    this.setState({
+                        list: data.list,
+                        pagination: data.count <= data.size ? false : {
+                            total: data.count,
+                            pageSize: data.size,
+                            current: data.number
+                        }
+                    });
+                }
+            });
         });
     }
 
