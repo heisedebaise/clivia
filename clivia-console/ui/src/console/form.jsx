@@ -59,7 +59,7 @@ class Base extends React.Component {
             if (prop.labels)
                 values[prop.name] = '' + value;
             else if (prop.type === 'money')
-                values[prop.name] = toMoney(value);
+                values[prop.name] = toMoney(value, prop.empty);
             else if (prop.type === 'percent')
                 values[prop.name] = toPercent(value);
             else if (prop.type === 'switch')
@@ -152,7 +152,7 @@ class Base extends React.Component {
     readonly = prop => {
         let value = this.state[prop.name];
         if (prop.type === 'read-only:money')
-            return toMoney(value);
+            return toMoney(value, prop.empty);
 
         if (prop.type === 'read-only:percent')
             return toPercent(value);

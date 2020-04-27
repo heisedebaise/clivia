@@ -1,4 +1,6 @@
-const toMoney = function (value) {
+const toMoney = function (value, empty) {
+    if (!value) return empty || '';
+    
     try {
         return (parseInt(value) / 100).toFixed(2);
     } catch (e) {
