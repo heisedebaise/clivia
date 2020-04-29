@@ -49,7 +49,7 @@ class Grid extends React.Component {
                     return <Switch {...s} />;
                 }
             } else {
-                column.dataIndex = prop.name.split('.');
+                column.dataIndex = (prop.name || '').split('.');
             }
             this.columns.push(column);
         }

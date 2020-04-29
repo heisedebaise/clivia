@@ -8,12 +8,7 @@ import org.lpw.clivia.user.crosier.CrosierValid;
 import org.lpw.photon.bean.ContextRefreshedListener;
 import org.lpw.photon.cache.Cache;
 import org.lpw.photon.dao.model.Model;
-import org.lpw.photon.util.Context;
-import org.lpw.photon.util.Io;
-import org.lpw.photon.util.Json;
-import org.lpw.photon.util.Logger;
-import org.lpw.photon.util.Message;
-import org.lpw.photon.util.Validator;
+import org.lpw.photon.util.*;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -21,12 +16,7 @@ import javax.inject.Inject;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.InputStream;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -38,6 +28,8 @@ public class MetaHelperImpl implements MetaHelper, ContextRefreshedListener, Cro
     private Cache cache;
     @Inject
     private Context context;
+    @Inject
+    private Converter converter;
     @Inject
     private Message message;
     @Inject
@@ -121,24 +113,16 @@ public class MetaHelperImpl implements MetaHelper, ContextRefreshedListener, Cro
 
     private void setLabel(String[] prefix, JSONObject object, String[] key) {
         if (object.containsKey("labels")) {
-            String labels = object.getString("labels");
-            if (labels.charAt(0) == '.')
-                labels = prefix[0] + labels;
             JSONArray array = new JSONArray();
-            array.addAll(Arrays.asList(message.getAsArray(labels)));
+            array.addAll(Arrays.asList(converter.toArray(getMessage(prefix[0], object.getString("labels")), ",")));
             object.put("labels", array);
         } else if (object.containsKey("values")) {
             JSONObject values = object.getJSONObject("values");
-            for (String k : values.keySet()) {
-                String v = values.getString(k);
-                int index = v.indexOf('.');
-                if (index == -1)
-                    v = prefix[0] + "." + v;
-                else if (index == 0)
-                    v = prefix[0] + v;
-                values.put(k, message.get(v));
-            }
+            for (String k : values.keySet())
+                values.put(k, getMessage(prefix[0], values.getString(k)));
         }
+        if (object.containsKey("message"))
+            object.put("message", getMessage(prefix[0], object.getString("message")));
 
         for (String k : key) {
             if (!object.containsKey(k))
@@ -146,20 +130,25 @@ public class MetaHelperImpl implements MetaHelper, ContextRefreshedListener, Cro
 
             for (String p : prefix) {
                 String label = object.getString(k);
-                int index = label.indexOf('.');
-                if (index == -1)
-                    label = p + "." + label;
-                else if (index == 0)
-                    label = p + label;
-                String msg = message.get(label);
-                if (!msg.equals(label)) {
-                    object.put("label", msg);
+                String message = getMessage(p, label);
+                if (!message.equals(label)) {
+                    object.put("label", message);
 
                     return;
                 }
             }
         }
         object.put("label", "");
+    }
+
+    private String getMessage(String prefix, String key) {
+        int index = key.indexOf('.');
+        if (index == -1)
+            key = prefix + "." + key;
+        else if (index == 0)
+            key = prefix + key;
+
+        return message.get((key));
     }
 
     @Override

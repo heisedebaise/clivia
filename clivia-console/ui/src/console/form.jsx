@@ -134,6 +134,8 @@ class Base extends React.Component {
                 items.push(<Form.Item {...item}><Image name={prop.name} upload={prop.upload} size={prop.size || 1} value={this.state[prop.name] || ''} form={this} /></Form.Item>);
             } else if (prop.type === 'editor') {
                 items.push(<Form.Item {...item}><Editor name={prop.name} value={this.state[prop.name] || ''} form={this} /></Form.Item>);
+            } else if (prop.message) {
+                items.push(<Form.Item {...item}>{prop.message}</Form.Item>);
             } else {
                 if (prop.type === 'switch')
                     item.valuePropName = 'checked';
