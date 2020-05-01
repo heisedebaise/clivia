@@ -14,7 +14,7 @@
         ],
         "toolbar": [
             {
-                "label": "saves",
+                "label": "save",
                 "service": "/keyvalue/saves"
             }
         ]

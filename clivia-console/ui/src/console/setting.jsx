@@ -15,10 +15,10 @@ class Setting extends Base {
 
     submit = (mt, values) => {
         let array = [];
-        for (let prop of mt.props) {
+        for (let name in values) {
             array.push({
-                key: prop.name,
-                value: values[prop.name] || ''
+                key: name,
+                value: values[name] || ''
             });
         }
 
