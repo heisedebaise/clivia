@@ -14,7 +14,8 @@
         {
             "name": "image",
             "type": "image"
-        },{
+        },
+        {
             "label": "msg",
             "message": ".message"
         }
