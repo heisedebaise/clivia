@@ -87,7 +87,7 @@
                 "reload": true
             },
             {
-                "label": ".manager",
+                "label": ".crosier.grade.90",
                 "service": "grade",
                 "parameter": {
                     "grade": 90
@@ -96,13 +96,13 @@
                 "when": "model.grade<90"
             },
             {
-                "label": ".manager.cancel",
+                "label": ".crosier.grade.0",
                 "service": "grade",
                 "parameter": {
                     "grade": 0
                 },
                 "reload": true,
-                "when": "model.grade>=90"
+                "when": "model.grade>0"
             }
         ]
     },
