@@ -21,7 +21,7 @@ public class UserTypeMiniImpl extends UserTypeSupport {
 
     @Override
     public String getMobile(String uid, String password) {
-        return get(uid,password,"phoneNumber");
+        return get(uid, password, "phoneNumber");
     }
 
     @Override
