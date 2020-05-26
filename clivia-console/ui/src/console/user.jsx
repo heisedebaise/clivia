@@ -2,6 +2,9 @@ import React from 'react';
 
 class User extends React.Component {
     render = () => {
+        if (!this.props.data)
+            return null;
+
         let uids = this.uids();
 
         return (
