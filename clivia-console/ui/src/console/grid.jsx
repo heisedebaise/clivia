@@ -4,6 +4,7 @@ import { MinusOutlined } from '@ant-design/icons';
 import { service, url } from '../http';
 import meta from './meta';
 import { toMoney, toPercent } from './numeric';
+import User from './user';
 import './grid.css';
 
 const { Option } = Select;
@@ -48,6 +49,8 @@ class Grid extends React.Component {
 
                     return <Switch {...s} />;
                 }
+            } else if (prop.type === 'user') {
+                column.render = model => <User data={this.value(model, prop.name)} />;
             } else {
                 column.dataIndex = (prop.name || '').split('.');
             }

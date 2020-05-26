@@ -6,6 +6,7 @@ import meta from './meta';
 import { toMoney, fromMoney, toPercent, fromPercent } from './numeric';
 import Image from './image';
 import Editor from './editor';
+import User from './user';
 import './form.css';
 
 const layout = {
@@ -136,6 +137,8 @@ class Base extends React.Component {
                 items.push(<Form.Item {...item}><Editor name={prop.name} value={this.state[prop.name] || ''} form={this} /></Form.Item>);
             } else if (prop.message) {
                 items.push(<Form.Item {...item}>{prop.message}</Form.Item>);
+            } else if (prop.type === 'user') {
+                items.push(<Form.Item {...item}><User data={this.state[prop.name]} /></Form.Item>);
             } else {
                 if (prop.type === 'switch')
                     item.valuePropName = 'checked';
@@ -206,6 +209,9 @@ class Base extends React.Component {
 
     toolbar = () => {
         let buttons = [];
+        if (!this.props.meta.toolbar || this.props.meta.toolbar.length <= 0)
+            return buttons;
+
         let one = this.props.meta.toolbar.length === 1;
         if (this.props.meta.toolbar) {
             for (let toolbar of this.props.meta.toolbar) {
