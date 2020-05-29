@@ -1,4 +1,7 @@
 import React from 'react';
+import { Avatar } from 'antd';
+import { url } from '../http';
+import './user.css'
 
 class User extends React.Component {
     render = () => {
@@ -9,12 +12,23 @@ class User extends React.Component {
 
         return (
             <div className="user">
-                {uids.map(uid => <div className="user-uid">{uid}</div>)}
-                {this.line(uids, 'nick')}
-                {this.line(uids, 'mobile')}
-                {this.line(uids, 'email')}
+                {this.portrait()}
+                <div className="user-info">
+                    {uids.map(uid => <div className="user-uid">{uid}</div>)}
+                    {this.line(uids, 'nick')}
+                    {this.line(uids, 'name')}
+                    {this.line(uids, 'mobile')}
+                    {this.line(uids, 'email')}
+                </div>
             </div>
         );
+    }
+
+    portrait = () => {
+        if (!this.props.data.portrait)
+            return null;
+
+        return <div className="user-avatar"><Avatar src={url(this.props.data.portrait)} /></div>;
     }
 
     uids = () => {

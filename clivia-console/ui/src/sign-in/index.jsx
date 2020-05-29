@@ -36,7 +36,7 @@ class SignIn extends React.Component {
 
     render() {
         return (
-            <Layout style={{ minHeight: '100vh' }}>
+            <Layout className="sign-in-layout">
                 <Content>
                     <div className="sign-in-header">{document.title}</div>
                     <div className="sign-in-form">

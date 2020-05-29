@@ -3,25 +3,8 @@
     "uri": "/user/online/",
     "props": [
         {
-            "name": "user.portrait",
-            "label": "clivia.user.portrait",
-            "type": "image"
-        },
-        {
-            "name": "user.name",
-            "label": "clivia.user.name"
-        },
-        {
-            "name": "user.nick",
-            "label": "clivia.user.nick"
-        },
-        {
-            "name": "user.mobile",
-            "label": "clivia.user.mobile"
-        },
-        {
-            "name": "user.email",
-            "label": "clivia.user.email"
+            "name": "user",
+            "type": "user"
         },
         {
             "name": "user.register",
