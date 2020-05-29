@@ -2,6 +2,7 @@ import React from 'react';
 import { Upload, Button, message } from 'antd';
 import { UploadOutlined, LoadingOutlined } from '@ant-design/icons';
 import { url, service } from '../http';
+import { toArray } from './json';
 
 class File extends React.Component {
     state = {
@@ -70,7 +71,7 @@ class File extends React.Component {
         if (this.state.list !== null)
             return this.state.list;
 
-        let list = this.props.value ? JSON.parse(this.props.value) : [];
+        let list = this.props.value ? toArray(this.props.value) : [];
         for (let i = 0; i < list.length; i++) {
             list[i].uid = '' + i;
             list[i].url = url(list[i].uri);

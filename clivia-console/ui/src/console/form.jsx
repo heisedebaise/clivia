@@ -1,9 +1,11 @@
 import React from 'react';
 import { Form, Radio, Select, DatePicker, Switch, Input, Button, message } from 'antd';
+import { PaperClipOutlined } from '@ant-design/icons';
 import moment from 'moment';
-import { service } from '../http';
+import { service, url } from '../http';
 import meta from './meta';
 import { toMoney, fromMoney, toPercent, fromPercent } from './numeric';
+import { toArray } from './json';
 import Image from './image';
 import File from './file';
 import Editor from './editor';
@@ -164,6 +166,20 @@ class Base extends React.Component {
 
         if (prop.type === 'read-only:percent')
             return toPercent(value);
+
+        if (prop.type === 'read-only:file') {
+            let files = [];
+            try {
+                for (let file of toArray(value)) {
+                    files.push(<div key={'file-' + files.length} className="console-form-file">
+                        <PaperClipOutlined />
+                        <a href={url(file.uri)} target="_blank" rel="noopener noreferrer">{file.name}</a>
+                    </div>);
+                }
+            } catch (e) { }
+
+            return files;
+        }
 
         if (prop.labels)
             return prop.labels[value] || '';

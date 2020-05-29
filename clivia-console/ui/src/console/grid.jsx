@@ -4,6 +4,7 @@ import { MinusOutlined, PaperClipOutlined } from '@ant-design/icons';
 import { service, url } from '../http';
 import meta from './meta';
 import { toMoney, toPercent } from './numeric';
+import { toArray } from './json';
 import User from './user';
 import './grid.css';
 
@@ -39,10 +40,10 @@ class Grid extends React.Component {
 
                     return value === '' ? '' : <img src={url(value)} alt="" onClick={this.preview} />;
                 }
-            } else if (prop.type === 'file') {
+            } else if (prop.type === 'file' || prop.type === 'read-only:file') {
                 column.render = model => {
                     let files = [];
-                    for (let file of JSON.parse(this.value(model, prop.name))) {
+                    for (let file of toArray(this.value(model, prop.name))) {
                         files.push(<div key={'file-' + files.length} className="file">
                             <PaperClipOutlined />
                             <a href={url(file.uri)} target="_blank" rel="noopener noreferrer">{file.name}</a>
