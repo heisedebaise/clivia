@@ -13,7 +13,7 @@ class Image extends React.Component {
         remove: 0
     };
 
-    upload = (uploader) => {
+    upload = uploader => {
         this.setState({ loading: true });
 
         let reader = new FileReader();

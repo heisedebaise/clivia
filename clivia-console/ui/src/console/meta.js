@@ -33,16 +33,18 @@ class Meta {
 
         let ps = [];
         for (let s of sub) {
+            let fn = {}
             for (let f of full) {
                 if (f.name === s.name) {
-                    ps.push({
-                        ...f,
-                        ...s
-                    });
+                    fn = f;
 
                     break;
                 }
             }
+            ps.push({
+                ...fn,
+                ...s
+            });
         }
 
         return ps.length === 0 ? sub : ps;

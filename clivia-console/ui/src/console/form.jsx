@@ -5,6 +5,7 @@ import { service } from '../http';
 import meta from './meta';
 import { toMoney, fromMoney, toPercent, fromPercent } from './numeric';
 import Image from './image';
+import File from './file';
 import Editor from './editor';
 import User from './user';
 import './form.css';
@@ -133,10 +134,12 @@ class Base extends React.Component {
                 items.push(<Form.Item {...item}>{this.readonly(prop)}</Form.Item>);
             } else if (prop.type === 'image') {
                 items.push(<Form.Item {...item}><Image name={prop.name} upload={prop.upload} size={prop.size || 1} value={this.state[prop.name] || ''} form={this} /></Form.Item>);
+            } else if (prop.type === 'file') {
+                items.push(<Form.Item {...item}><File name={prop.name} upload={prop.upload} size={prop.size || 1} value={this.state[prop.name] || ''} form={this} /></Form.Item>);
             } else if (prop.type === 'editor') {
                 items.push(<Form.Item {...item}><Editor name={prop.name} value={this.state[prop.name] || ''} form={this} /></Form.Item>);
-            } else if (prop.message) {
-                items.push(<Form.Item {...item}>{prop.message}</Form.Item>);
+            } else if (prop.type === 'html') {
+                items.push(<Form.Item {...item}><div dangerouslySetInnerHTML={{ __html: this.state[prop.name] || '' }} /></Form.Item>);
             } else if (prop.type === 'user') {
                 items.push(<Form.Item {...item}><User data={this.state[prop.name]} /></Form.Item>);
             } else {

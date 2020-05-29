@@ -1,6 +1,6 @@
 import React from 'react';
 import { Form, Row, Col, Radio, Select, DatePicker, Input, Button, Table, Divider, Menu, Dropdown, Modal, Switch } from 'antd';
-import { MinusOutlined } from '@ant-design/icons';
+import { MinusOutlined, PaperClipOutlined } from '@ant-design/icons';
 import { service, url } from '../http';
 import meta from './meta';
 import { toMoney, toPercent } from './numeric';
@@ -39,6 +39,18 @@ class Grid extends React.Component {
 
                     return value === '' ? '' : <img src={url(value)} alt="" onClick={this.preview} />;
                 }
+            } else if (prop.type === 'file') {
+                column.render = model => {
+                    let files = [];
+                    for (let file of JSON.parse(this.value(model, prop.name))) {
+                        files.push(<div key={'file-' + files.length} className="file">
+                            <PaperClipOutlined />
+                            <a href={url(file.uri)} target="_blank" rel="noopener noreferrer">{file.name}</a>
+                        </div>);
+                    }
+
+                    return files;
+                }
             } else if (prop.type === 'switch') {
                 column.render = model => {
                     let s = { defaultChecked: this.value(model, prop.name) === 1 };
@@ -49,6 +61,8 @@ class Grid extends React.Component {
 
                     return <Switch {...s} />;
                 }
+            } else if (prop.type === 'editor' || prop.type === 'html') {
+                column.render = model => <div dangerouslySetInnerHTML={{ __html: this.value(model, prop.name) }} />;
             } else if (prop.type === 'user') {
                 column.render = model => <User data={this.value(model, prop.name)} />;
             } else {

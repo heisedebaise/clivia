@@ -36,7 +36,7 @@
     white-space: nowrap;
 }
 
-.console-grid td{
+.console-grid td {
     word-break: break-all;
 }
 
@@ -44,6 +44,10 @@
     max-width: 128px;
     max-height: 96px;
     cursor: pointer;
+}
+
+.console-grid td .file a {
+    color: rgba(0, 0, 0, 0.65);
 }
 
 .console-grid-op {

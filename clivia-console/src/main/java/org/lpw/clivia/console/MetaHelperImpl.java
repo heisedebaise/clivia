@@ -210,15 +210,19 @@ public class MetaHelperImpl implements MetaHelper, ContextRefreshedListener, Cro
             return;
 
         String prefix = object.getString("key") + ".";
-        if (object.containsKey("props"))
+        if (object.containsKey("props")) {
             upload(prefix, "image", object.getJSONArray("props"));
+            upload(prefix, "file", object.getJSONArray("props"));
+        }
         for (String key : object.keySet()) {
             if (kup.contains(key))
                 continue;
 
             JSONObject obj = object.getJSONObject(key);
-            if (json.containsKey(obj, "props"))
+            if (json.containsKey(obj, "props")) {
                 upload(prefix, "image", obj.getJSONArray("props"));
+                upload(prefix, "file", obj.getJSONArray("props"));
+            }
             if (json.containsKey(obj, "toolbar"))
                 upload(prefix, "upload", obj.getJSONArray("toolbar"));
         }
