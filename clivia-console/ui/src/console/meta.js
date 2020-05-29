@@ -47,7 +47,7 @@ class Meta {
             });
         }
 
-        return ps.length === 0 ? sub : ps;
+        return ps;
     }
 }
 
