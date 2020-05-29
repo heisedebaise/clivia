@@ -2,7 +2,6 @@ import React from 'react';
 import { Upload, Button, message } from 'antd';
 import { UploadOutlined, LoadingOutlined } from '@ant-design/icons';
 import { url, service } from '../http';
-import './file.css';
 
 class File extends React.Component {
     state = {
