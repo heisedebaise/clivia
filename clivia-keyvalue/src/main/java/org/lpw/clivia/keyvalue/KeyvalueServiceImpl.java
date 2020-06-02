@@ -80,6 +80,7 @@ public class KeyvalueServiceImpl implements KeyvalueService {
         if (validator.isEmpty(keyvalue.getId()) || keyvalueDao.findById(keyvalue.getId()) == null)
             keyvalue.setId(null);
         keyvalueDao.save(keyvalue);
+        cleanCache();
     }
 
     @Override
@@ -104,6 +105,7 @@ public class KeyvalueServiceImpl implements KeyvalueService {
             keyvalue.setValue(object.getString("value"));
             keyvalueDao.save(keyvalue);
         }
+        cleanCache();
     }
 
     @Override
