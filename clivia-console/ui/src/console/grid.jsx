@@ -255,6 +255,10 @@ class Grid extends React.Component {
 }
 
 class Search extends React.Component {
+    values = {};
+
+    value = (name, value) => this.values[name] = value;
+
     render = () => {
         let cols = [];
         let initialValues = {};
@@ -320,7 +324,7 @@ class Search extends React.Component {
         }
 
         if (column.type === 'category')
-            return <Category list={column.category} />;
+            return <Category name={column.name} list={column.category} form={this} />;
 
         return <Input />
     }
@@ -347,7 +351,7 @@ class Search extends React.Component {
                     values[column.name] = value[0].format('YYYY-MM-DD') + ',' + value[1].format('YYYY-MM-DD')
             }
         }
-        this.props.grid.searchValues = values;
+        this.props.grid.searchValues = { ...values, ...this.values };
         this.props.grid.load(null);
     }
 }

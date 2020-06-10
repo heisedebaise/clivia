@@ -81,6 +81,7 @@ class Base extends React.Component {
     value = (name, value) => this.values[name] = value;
 
     button = mt => {
+        console.log(this.values)
         let values = this.form.current.getFieldsValue();
         for (let prop of meta.props(this.props.props, this.props.meta.props)) {
             let value = values[prop.name];
@@ -143,6 +144,8 @@ class Base extends React.Component {
                 items.push(<Form.Item {...item}><Editor name={prop.name} value={this.state[prop.name] || ''} form={this} /></Form.Item>);
             } else if (prop.type === 'html') {
                 items.push(<Form.Item {...item}><div dangerouslySetInnerHTML={{ __html: this.state[prop.name] || '' }} /></Form.Item>);
+            } else if (prop.type === 'category') {
+                items.push(<Form.Item {...item}><Category name={prop.name} list={prop.category} value={this.state[prop.name]} form={this} /></Form.Item>);
             } else if (prop.type === 'user') {
                 items.push(<Form.Item {...item}><User data={this.state[prop.name]} /></Form.Item>);
             } else {
@@ -219,8 +222,6 @@ class Base extends React.Component {
         if (prop.type === 'text-area') return <Input.TextArea />;
 
         if (prop.type === 'password') return <Input.Password />;
-
-        if (prop.type === 'category') return <Category key={prop.category} />;
 
         return <Input />
     }

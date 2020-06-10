@@ -1,7 +1,6 @@
 package org.lpw.clivia.category;
 
 import com.alibaba.fastjson.JSONArray;
-import com.alibaba.fastjson.JSONObject;
 import org.lpw.photon.cache.Cache;
 import org.lpw.photon.dao.model.ModelHelper;
 import org.lpw.photon.util.Validator;
@@ -37,11 +36,20 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    public JSONObject find(String id) {
-        return cache.computeIfAbsent(CategoryModel.NAME + id, key -> {
-            CategoryModel category = categoryDao.findById(id);
+    public String name(String id) {
+        return cache.computeIfAbsent(CategoryModel.NAME + ":name:" + id, key -> {
+            String name = "";
+            String pid = id;
+            while (!validator.isEmpty(pid)) {
+                CategoryModel category = categoryDao.findById(id);
+                if (category == null)
+                    break;
 
-            return category == null ? new JSONObject() : modelHelper.toJson(category);
+                name = "/" + category.getName() + name;
+                pid = category.getParent();
+            }
+
+            return validator.isEmpty(name) ? "" : name.substring(1);
         }, false);
     }
 
@@ -52,8 +60,7 @@ public class CategoryServiceImpl implements CategoryService {
         if (validator.isEmpty(category.getParent()) || categoryDao.findById(category.getParent()) == null)
             category.setParent("");
         categoryDao.save(category);
-        cache.remove(CategoryModel.NAME + category.getKey());
-        cache.remove(CategoryModel.NAME + category.getId());
+        clean(category.getKey(), category.getId());
     }
 
     @Override
@@ -63,7 +70,11 @@ public class CategoryServiceImpl implements CategoryService {
             return;
 
         categoryDao.delete(id);
-        cache.remove(CategoryModel.NAME + category.getKey());
-        cache.remove(CategoryModel.NAME + category.getId());
+        clean(category.getKey(), id);
+    }
+
+    private void clean(String key, String id) {
+        cache.remove(CategoryModel.NAME + key);
+        cache.remove(CategoryModel.NAME + ":name:" + id);
     }
 }

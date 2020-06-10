@@ -18,13 +18,6 @@
     ],
     "query": {
         "type": "grid",
-        "search": [
-            {
-                "name": "parent",
-                "type": "category",
-                "category": "category"
-            }
-        ],
         "ops": [
             {
                 "type": "create"

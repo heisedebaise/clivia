@@ -1,26 +1,31 @@
 import React from 'react';
 import { TreeSelect } from 'antd';
 import { service } from '../http';
+import './category.css';
 
 class Category extends React.Component {
     constructor(props) {
         super(props);
 
         this.state = {
-            data: []
+            list: [],
+            value: ''
         };
+        props.form.value(props.name, props.value);
         service('/category/list', { key: props.list }).then(data => {
             if (data === null)
                 return;
 
-            let list = [];
-            this.format(list, data);
-            this.setState({ data: list });
+            let state = {
+                list: [],
+                value: props.value
+            };
+            this.format(state.list, data);
+            this.setState(state);
         });
     }
 
     format = (target, source) => {
-        console.log(source);
         if (source.length === 0)
             return;
 
@@ -37,7 +42,14 @@ class Category extends React.Component {
         }
     }
 
-    render = () => <TreeSelect dropdownStyle={{ maxHeight: 400, overflow: 'auto' }} treeData={this.state.data} defaultValue="74fd6625-307e-455d-b0b7-192d7beadd28" />;
+    change = value => {
+        this.setState({
+            value: value
+        });
+        this.props.form.value(this.props.name, value);
+    }
+
+    render = () => <TreeSelect dropdownClassName="category-dropdown" treeData={this.state.list} value={this.state.value} onChange={this.change} />;
 }
 
 export default Category;
