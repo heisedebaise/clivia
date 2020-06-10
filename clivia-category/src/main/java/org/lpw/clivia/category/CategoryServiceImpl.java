@@ -1,6 +1,7 @@
 package org.lpw.clivia.category;
 
 import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import org.lpw.photon.cache.Cache;
 import org.lpw.photon.dao.model.ModelHelper;
 import org.lpw.photon.util.Validator;
@@ -36,6 +37,15 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
+    public JSONObject find(String id) {
+        return cache.computeIfAbsent(CategoryModel.NAME + id, key -> {
+            CategoryModel category = categoryDao.findById(id);
+
+            return category == null ? new JSONObject() : modelHelper.toJson(category);
+        }, false);
+    }
+
+    @Override
     public void save(CategoryModel category) {
         if (validator.isEmpty(category.getId()) || categoryDao.findById(category.getId()) == null)
             category.setId(null);
@@ -43,6 +53,7 @@ public class CategoryServiceImpl implements CategoryService {
             category.setParent("");
         categoryDao.save(category);
         cache.remove(CategoryModel.NAME + category.getKey());
+        cache.remove(CategoryModel.NAME + category.getId());
     }
 
     @Override
