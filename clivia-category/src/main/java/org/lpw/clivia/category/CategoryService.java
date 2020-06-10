@@ -7,7 +7,8 @@ import com.alibaba.fastjson.JSONObject;
  * @author lpw
  */
 public interface CategoryService {
-    String LEAF_VALIDATOR = CategoryModel.NAME + ".validator.leaf";
+    String VALIDATOR_EXISTS=CategoryModel.NAME+".validator.exists";
+    String VALIDATOR_LEAF = CategoryModel.NAME + ".validator.leaf";
 
     JSONArray query(String key);
 

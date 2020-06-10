@@ -64,5 +64,6 @@ public class CategoryServiceImpl implements CategoryService {
 
         categoryDao.delete(id);
         cache.remove(CategoryModel.NAME + category.getKey());
+        cache.remove(CategoryModel.NAME + category.getId());
     }
 }

@@ -6,18 +6,18 @@ import org.springframework.stereotype.Controller;
 
 import javax.inject.Inject;
 
-@Controller(CategoryService.VALIDATOR_LEAF)
-public class LeafValidatorImpl extends ValidatorSupport {
+@Controller(CategoryService.VALIDATOR_EXISTS)
+public class ExistsValidatorImpl extends ValidatorSupport {
     @Inject
     private CategoryDao categoryDao;
 
     @Override
-    public boolean validate(ValidateWrapper validate, String[] parameters) {
-        return categoryDao.count(parameters[0], parameters[1]) == 0;
+    public boolean validate(ValidateWrapper validate, String parameter) {
+        return categoryDao.findById(parameter) != null;
     }
 
     @Override
     protected String getDefaultFailureMessageKey() {
-        return CategoryModel.NAME + ".not-leaf";
+        return CategoryModel.NAME + ".not-exists";
     }
 }

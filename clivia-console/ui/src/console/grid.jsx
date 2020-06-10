@@ -5,6 +5,7 @@ import { service, url } from '../http';
 import meta from './meta';
 import { toMoney, toPercent } from './numeric';
 import { toArray } from './json';
+import Category from './category';
 import User from './user';
 import './grid.css';
 
@@ -289,17 +290,15 @@ class Search extends React.Component {
         if (column.labels) {
             if (column.labels.length <= 2) {
                 let radios = [<Radio key="" value={''}>全部</Radio>];
-                for (let index in column.labels) {
+                for (let index in column.labels)
                     radios.push(<Radio key={index} value={index}>{column.labels[index]}</Radio>);
-                }
 
                 return <Radio.Group initValue={''}>{radios}</Radio.Group>;
             }
 
             let options = [<Option key={''} value={''}>全部</Option>];
-            for (let index in column.labels) {
+            for (let index in column.labels)
                 options.push(<Option key={index} value={index}>{column.labels[index]}</Option>);
-            }
 
             return <Select>{options}</Select>
         }
@@ -319,6 +318,9 @@ class Search extends React.Component {
                 </Input.Group>
             );
         }
+
+        if (column.type === 'category')
+            return <Category list={column.category} />;
 
         return <Input />
     }

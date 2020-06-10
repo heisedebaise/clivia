@@ -9,6 +9,7 @@ import { toArray } from './json';
 import Image from './image';
 import File from './file';
 import Editor from './editor';
+import Category from './category';
 import User from './user';
 import './form.css';
 
@@ -218,6 +219,8 @@ class Base extends React.Component {
         if (prop.type === 'text-area') return <Input.TextArea />;
 
         if (prop.type === 'password') return <Input.Password />;
+
+        if (prop.type === 'category') return <Category key={prop.category} />;
 
         return <Input />
     }

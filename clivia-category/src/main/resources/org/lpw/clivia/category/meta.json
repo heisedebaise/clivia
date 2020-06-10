@@ -14,14 +14,17 @@
         {
             "name": "image",
             "type": "image"
-        },
-        {
-            "label": "msg",
-            "message": ".message"
         }
     ],
     "query": {
         "type": "grid",
+        "search": [
+            {
+                "name": "parent",
+                "type": "category",
+                "category": "category"
+            }
+        ],
         "ops": [
             {
                 "type": "create"

@@ -43,7 +43,7 @@ public class CategoryCtrl {
     @Execute(name = "delete", validates = {
             @Validate(validator = Validators.ID, parameter = "id", failureCode = 11),
             @Validate(validator = Validators.SIGN),
-            @Validate(validator = CategoryService.LEAF_VALIDATOR, parameters = {"key", "id"}, failureCode = 12)
+            @Validate(validator = CategoryService.VALIDATOR_LEAF, parameters = {"key", "id"}, failureCode = 12)
     })
     public Object delete() {
         categoryService.delete(request.get("id"));
