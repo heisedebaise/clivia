@@ -81,7 +81,6 @@ class Base extends React.Component {
     value = (name, value) => this.values[name] = value;
 
     button = mt => {
-        console.log(this.values)
         let values = this.form.current.getFieldsValue();
         for (let prop of meta.props(this.props.props, this.props.meta.props)) {
             let value = values[prop.name];

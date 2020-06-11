@@ -138,7 +138,7 @@ class Grid extends React.Component {
         }
 
         if (op.type === 'delete' || op.reload) {
-            this.serviceReload(op, model, {});
+            this.serviceReload(op, model, op.parameter);
 
             return;
         }
@@ -186,7 +186,9 @@ class Grid extends React.Component {
     cancel = () => this.setState({ preview: null });
 
     switch = (op, model, check) => {
-        this.serviceReload(op, model, { state: check ? 1 : 0 })
+        let parameter = {};
+        parameter[op.name] = check ? 1 : 0;
+        this.serviceReload(op, model, parameter);
     }
 
     serviceReload = (op, model, parameter) => {
@@ -320,6 +322,16 @@ class Search extends React.Component {
                     <span className="range-minus"><MinusOutlined /></span>
                     <Form.Item name={column.name + 'End'} noStyle><Input /></Form.Item>
                 </Input.Group>
+            );
+        }
+
+        if (column.type === 'switch') {
+            return (
+                <Radio.Group initValue={''}>
+                    <Radio value={''}>全部</Radio>
+                    <Radio value={'0'}>否</Radio>
+                    <Radio value={'1'}>是</Radio>
+                </Radio.Group>
             );
         }
 
