@@ -7,6 +7,9 @@ import org.lpw.photon.util.Validator;
 import org.springframework.stereotype.Service;
 
 import javax.inject.Inject;
+import java.util.HashSet;
+import java.util.Optional;
+import java.util.Set;
 
 /**
  * @author lpw
@@ -19,6 +22,8 @@ public class CategoryServiceImpl implements CategoryService {
     private Validator validator;
     @Inject
     private ModelHelper modelHelper;
+    @Inject
+    private Optional<Set<CategoryListener>> listeners;
     @Inject
     private CategoryDao categoryDao;
 
@@ -61,6 +66,26 @@ public class CategoryServiceImpl implements CategoryService {
             category.setParent("");
         categoryDao.save(category);
         clean(category.getKey(), category.getId());
+
+        listeners.ifPresent(set -> {
+            Set<String> parents = new HashSet<>();
+            for (String parent = category.getParent(); !validator.isEmpty(parent); ) {
+                parents.add(parent);
+                CategoryModel model = categoryDao.findById(parent);
+                if (model != null)
+                    parent = model.getParent();
+            }
+            Set<String> children = new HashSet<>();
+            children(children, category.getKey(), category.getId());
+            set.forEach(listener -> listener.categoryChanged(category.getId(), parents, children));
+        });
+    }
+
+    private void children(Set<String> set, String key, String id) {
+        categoryDao.query(key, id).getList().forEach(category -> {
+            set.add(category.getId());
+            children(set, key, category.getId());
+        });
     }
 
     @Override
