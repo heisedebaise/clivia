@@ -22,6 +22,7 @@
         <module>clivia-transfer</module>
         <module>clivia-weixin</module>
         <module>clivia-alipay</module>
+        <module>clivia-wps</module>
         <module>clivia-console</module>
         <module>clivia-web</module>
     </modules>
