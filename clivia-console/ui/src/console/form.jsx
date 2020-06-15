@@ -170,6 +170,10 @@ class Base extends React.Component {
         if (prop.type === 'read-only:percent')
             return toPercent(value);
 
+        if (prop.type === 'read-only:image') {
+            return <Image name={prop.name} upload={prop.upload} size={prop.size || 1} readonly={true} value={this.state[prop.name] || ''} form={this} />;
+        }
+
         if (prop.type === 'read-only:file') {
             let files = [];
             try {

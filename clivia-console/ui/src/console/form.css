@@ -7,6 +7,12 @@
     background-color: #f8f8f8;
 }
 
+.console-form-image {
+    max-width: 128px;
+    max-height: 96px;
+    cursor: pointer;
+}
+
 .console-form-file a {
     color: rgba(0, 0, 0, 0.65);
 }

@@ -53,6 +53,8 @@ class Image extends React.Component {
     }
 
     remove = file => {
+        if (this.props.readonly) return;
+
         let uri = this.state.changed ? this.state.uri : this.props.value;
         if (!uri) return;
 
@@ -91,7 +93,7 @@ class Image extends React.Component {
         return (
             <div className="clearfix">
                 <Upload listType="picture-card" fileList={list} className="image-uploader" customRequest={this.upload} onPreview={this.preview} onRemove={this.remove} >
-                    {this.props.size > 0 && list.length >= this.props.size ? null : (this.state.loading ? <LoadingOutlined /> : <PlusOutlined />)}
+                    {this.props.readonly || (this.props.size > 0 && list.length >= this.props.size) ? null : (this.state.loading ? <LoadingOutlined /> : <PlusOutlined />)}
                 </Upload>
                 <Modal visible={this.state.preview != null} footer={null} onCancel={this.cancel}>
                     <img alt="preview" style={{ width: '100%' }} src={this.state.preview} />
