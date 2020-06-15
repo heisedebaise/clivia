@@ -38,8 +38,15 @@ class Grid extends React.Component {
             } else if (prop.type === 'image') {
                 column.render = model => {
                     let value = this.value(model, prop.name);
+                    if (value === '') return '';
 
-                    return value === '' ? '' : <img src={url(value)} alt="" onClick={this.preview} />;
+                    if (value.indexOf(',') === -1) return <img src={url(value)} alt="" onClick={this.preview} />;
+
+                    let imgs = [];
+                    for (let img of value.split(','))
+                        imgs.push(<img key={prop.name + imgs.length} src={url(img)} alt="" onClick={this.preview} />);
+
+                    return imgs;
                 }
             } else if (prop.type === 'file' || prop.type === 'read-only:file') {
                 column.render = model => {
