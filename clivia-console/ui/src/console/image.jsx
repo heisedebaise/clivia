@@ -99,7 +99,6 @@ class Image extends React.Component {
         }
         if (!this.props.readonly)
             props.onRemove = this.remove;
-        console.log(props);
 
         return (
             <div className="clearfix">
