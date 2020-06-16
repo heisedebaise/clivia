@@ -12,7 +12,8 @@
             "name": "name"
         },
         {
-            "name": "resource"
+            "name": "image",
+            "type": "image"
         },
         {
             "name": "operation"
@@ -21,7 +22,8 @@
             "name": "target"
         },
         {
-            "name": "state"
+            "name": "state",
+            "labels": "states"
         }
     ],
     "query": {

@@ -10,14 +10,14 @@ import javax.inject.Inject;
 /**
  * @author lpw
  */
-@Controller(AdModel.NAME + ".upload-listener")
-public class UploadListenerImpl implements UploadListener {
+@Controller(AdModel.NAME + ".upload-listener.image")
+public class ImageUploadListenerImpl implements UploadListener {
     @Inject
     private Image image;
 
     @Override
     public String getKey() {
-        return AdModel.NAME;
+        return AdModel.NAME+".image";
     }
 
     @Override

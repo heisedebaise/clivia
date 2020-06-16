@@ -35,7 +35,7 @@ public class AdCtrl {
             @Validate(validator = Validators.NOT_EMPTY, parameter = "type", failureCode = 1),
             @Validate(validator = Validators.MAX_LENGTH, number = {100}, parameter = "type", failureCode = 2),
             @Validate(validator = Validators.MAX_LENGTH, number = {100}, parameter = "name", failureCode = 3),
-            @Validate(validator = Validators.NOT_EMPTY, parameter = "resource", failureCode = 4),
+            @Validate(validator = Validators.NOT_EMPTY, parameter = "image", failureCode = 4),
             @Validate(validator = Validators.MAX_LENGTH, number = {100}, parameter = "resouce", failureCode = 5),
             @Validate(validator = Validators.MAX_LENGTH, number = {100}, parameter = "operation", failureCode = 6),
             @Validate(validator = Validators.IN, number = {0, 1}, parameter = "state", failureCode = 7),

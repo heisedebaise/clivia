@@ -23,7 +23,7 @@ public class AdModel extends ModelSupport {
     private String type; // 类型
     private int sort; // 顺序
     private String name; // 名称
-    private String resource; // 资源地址
+    private String image; // 图片
     private String operation; // 操作
     private String target; // 目标地址
     private int state; // 状态：0-下线；1-上线
@@ -59,13 +59,13 @@ public class AdModel extends ModelSupport {
     }
 
     @Jsonable
-    @Column(name = "c_resource")
-    public String getResource() {
-        return resource;
+    @Column(name = "c_image")
+    public String getImage() {
+        return image;
     }
 
-    public void setResource(String resource) {
-        this.resource = resource;
+    public void setImage(String image) {
+        this.image = image;
     }
 
     @Jsonable

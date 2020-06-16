@@ -5,7 +5,7 @@ CREATE TABLE t_ad
   c_type VARCHAR(255) NOT NULL COMMENT '类型',
   c_sort INT DEFAULT 0 COMMENT '顺序',
   c_name VARCHAR(255) DEFAULT NULL COMMENT '名称',
-  c_resource VARCHAR(255) DEFAULT NULL COMMENT '资源地址',
+  c_image VARCHAR(255) DEFAULT NULL COMMENT '图片',
   c_operation VARCHAR(255) DEFAULT NULL COMMENT '操作',
   c_target TEXT DEFAULT NULL COMMENT '目标地址',
   c_state INT DEFAULT 0 COMMENT '状态：0-下线；1-上线',
