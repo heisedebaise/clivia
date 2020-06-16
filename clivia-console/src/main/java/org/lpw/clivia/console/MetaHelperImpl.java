@@ -128,9 +128,10 @@ public class MetaHelperImpl implements MetaHelper, ContextRefreshedListener, Cro
     }
 
     private void setLabel(String[] prefix, JSONObject object, String[] key) {
-        if (object.containsKey("labels")) {
+        String labels;
+        if (object.containsKey("labels") && (labels=object.getString("labels")).indexOf('[') == -1) {
             JSONArray array = new JSONArray();
-            array.addAll(Arrays.asList(converter.toArray(getMessage(prefix[0], object.getString("labels")), ",")));
+            array.addAll(Arrays.asList(converter.toArray(getMessage(prefix[0], labels), ",")));
             object.put("labels", array);
         } else if (object.containsKey("values")) {
             JSONObject values = object.getJSONObject("values");
