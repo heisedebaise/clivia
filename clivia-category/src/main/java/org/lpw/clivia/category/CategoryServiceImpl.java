@@ -46,7 +46,7 @@ public class CategoryServiceImpl implements CategoryService {
             String name = "";
             String pid = id;
             while (!validator.isEmpty(pid)) {
-                CategoryModel category = categoryDao.findById(id);
+                CategoryModel category = categoryDao.findById(pid);
                 if (category == null)
                     break;
 
