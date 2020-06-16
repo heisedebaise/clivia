@@ -90,9 +90,20 @@ class Image extends React.Component {
             }
         }
 
+        let props = {
+            listType: 'picture-card',
+            fileList: list,
+            className: 'image-uploader',
+            customRequest: this.upload,
+            onPreview: this.preview
+        }
+        if (!this.props.readonly)
+            props.onRemove = this.remove;
+        console.log(props);
+
         return (
             <div className="clearfix">
-                <Upload listType="picture-card" fileList={list} className="image-uploader" customRequest={this.upload} onPreview={this.preview} onRemove={this.remove} >
+                <Upload {...props} >
                     {this.props.readonly || (this.props.size > 0 && list.length >= this.props.size) ? null : (this.state.loading ? <LoadingOutlined /> : <PlusOutlined />)}
                 </Upload>
                 <Modal visible={this.state.preview != null} footer={null} onCancel={this.cancel}>

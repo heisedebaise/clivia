@@ -80,27 +80,32 @@ public class MetaHelperImpl implements MetaHelper, ContextRefreshedListener, Cro
             String[] prefixOp = new String[]{prefix[0], ConsoleModel.NAME + ".op"};
             String[] ln = new String[]{"label", "name"};
             String[] lst = new String[]{"label", "service", "type"};
-            setLabel(all, false, uri, prefix, meta, "props", ln);
+            if (meta.containsKey("props"))
+                setLabel(all, false, uri, prefix, meta.getJSONArray("props"), ln);
             for (String mk : meta.keySet()) {
                 if (kup.contains(mk))
                     continue;
 
                 JSONObject object = meta.getJSONObject(mk);
-                setLabel(all, false, uri, prefix, object, "props", ln);
-                setLabel(true, false, uri, prefix, object, "search", ln);
+                JSONArray props = props(meta, object);
+                if (!validator.isEmpty(props))
+                    object.put("props", props);
+                setLabel(all, false, uri, prefix, props, ln);
+                if (object.containsKey("search"))
+                    setLabel(true, false, uri, prefix, object.getJSONArray("search"), ln);
                 for (String action : actions)
-                    setLabel(all, true, uri, prefixOp, object, action, lst);
+                    if (object.containsKey(action))
+                        setLabel(all, true, uri, prefixOp, object.getJSONArray(action), lst);
             }
 
             return meta;
         }, false);
     }
 
-    private void setLabel(boolean all, boolean type, String uri, String[] prefix, JSONObject object, String key, String[] k) {
-        if (!object.containsKey(key))
+    private void setLabel(boolean all, boolean type, String uri, String[] prefix, JSONArray array, String[] k) {
+        if (validator.isEmpty(array))
             return;
 
-        JSONArray array = object.getJSONArray(key);
         for (int i = array.size() - 1; i >= 0; i--) {
             JSONObject obj = array.getJSONObject(i);
             String service = obj.getString(type && !obj.containsKey("service") ? "type" : "service");
@@ -160,6 +165,37 @@ public class MetaHelperImpl implements MetaHelper, ContextRefreshedListener, Cro
             key = prefix + key;
 
         return message.get((key));
+    }
+
+    @Override
+    public JSONArray props(JSONObject meta, JSONObject m) {
+        if (!json.containsKey(m, "props"))
+            return json.containsKey(meta, "props") ? meta.getJSONArray("props") : null;
+
+        JSONArray props = m.getJSONArray("props");
+        if (!json.containsKey(meta, "props"))
+            return props;
+
+        JSONArray array = new JSONArray();
+        JSONArray ps = meta.getJSONArray("props");
+        for (int i = 0, size = props.size(); i < size; i++) {
+            JSONObject prop = props.getJSONObject(i);
+            if (prop.containsKey("name")) {
+                for (int j = 0, s = ps.size(); j < s; j++) {
+                    JSONObject p = ps.getJSONObject(j);
+                    if (prop.getString("name").equals(p.getString("name"))) {
+                        JSONObject object = json.copy(p);
+                        object.putAll(prop);
+                        prop = object;
+
+                        break;
+                    }
+                }
+            }
+            array.add(prop);
+        }
+
+        return array;
     }
 
     @Override

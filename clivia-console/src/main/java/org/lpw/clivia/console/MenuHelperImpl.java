@@ -96,13 +96,14 @@ public class MenuHelperImpl implements MenuHelper, CrosierValid {
             return;
 
         JSONObject m = meta.getJSONObject(name);
-        boolean main;
-        if (json.has(m, "type", "grid") && ((main = meta.containsKey("props")) || m.containsKey("props"))) {
-            JSONArray props = main ? meta.getJSONArray("props") : m.getJSONArray("props");
-            for (int i = 0, size = props.size(); i < size; i++) {
-                JSONObject prop = props.getJSONObject(i);
-                if (json.has(prop, "type", "switch") && prop.containsKey("service"))
-                    items.add(prop);
+        if (json.has(m, "type", "grid")) {
+            JSONArray props = metaHelper.props(meta, m);
+            if (!validator.isEmpty(props)) {
+                for (int i = 0, size = props.size(); i < size; i++) {
+                    JSONObject prop = props.getJSONObject(i);
+                    if (json.has(prop, "type", "switch") && prop.containsKey("service"))
+                        items.add(prop);
+                }
             }
         }
 

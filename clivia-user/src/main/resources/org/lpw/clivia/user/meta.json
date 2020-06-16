@@ -87,15 +87,6 @@
                 "reload": true
             },
             {
-                "label": ".crosier.grade.90",
-                "service": "grade",
-                "parameter": {
-                    "grade": 90
-                },
-                "reload": true,
-                "when": "model.grade<90"
-            },
-            {
                 "label": ".crosier.grade.0",
                 "service": "grade",
                 "parameter": {
@@ -103,6 +94,15 @@
                 },
                 "reload": true,
                 "when": "model.grade>0"
+            },
+            {
+                "label": ".crosier.grade.90",
+                "service": "grade",
+                "parameter": {
+                    "grade": 90
+                },
+                "reload": true,
+                "when": "model.grade<90"
             }
         ]
     },
