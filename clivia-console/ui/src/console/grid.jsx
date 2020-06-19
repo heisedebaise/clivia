@@ -145,7 +145,7 @@ class Grid extends React.Component {
         }
 
         if (op.type === 'delete' || op.reload) {
-            this.serviceReload(op, model, op.parameter);
+            this.serviceReload(op, model, {});
 
             return;
         }
@@ -199,12 +199,12 @@ class Grid extends React.Component {
     }
 
     serviceReload = (op, model, parameter) => {
-        parameter.id = model.id;
+        let param = { ...model, ...parameter }
         if (op.parameter)
-            parameter = { ...parameter, ...op.parameter };
+            param = { ...param, ...op.parameter };
         if (this.props.parameter)
-            parameter = { ...parameter, ...this.props.parameter };
-        service(this.props.body.uri(this.props.uri, op.service || op.type), parameter).then(data => {
+            param = { ...param, ...this.props.parameter };
+        service(this.props.body.uri(this.props.uri, op.service || op.type), param).then(data => {
             if (data === null) return;
 
             this.load({ current: this.pageNum || 1 });
