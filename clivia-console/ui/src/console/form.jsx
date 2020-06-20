@@ -47,15 +47,19 @@ class Base extends React.Component {
             this.load().then(data => {
                 if (data === null) return;
 
-                let values = this.form.current.getFieldsValue();
-                for (let key in values) {
-                    values[key] = data[key];
-                }
-                this.format(values);
-                this.form.current.setFieldsValue(values);
-                this.setState(data);
+                this.state(data);
             });
         }
+    }
+
+    state = data => {
+        let values = this.form.current.getFieldsValue();
+        for (let key in values) {
+            values[key] = data[key];
+        }
+        this.format(values);
+        this.form.current.setFieldsValue(values);
+        this.setState(data);
     }
 
     format = (values) => {
@@ -116,6 +120,8 @@ class Base extends React.Component {
                 this.props.body.load(this.props.uri, this.props.parameter, this.props.data);
             else if (mt.success)
                 this.props.body.load(this.props.body.uri(this.props.uri, mt.success), this.props.parameter, this.props.data);
+            else if (mt.state)
+                this.state(data);
             else
                 message.success('操作已完成！');
         });
