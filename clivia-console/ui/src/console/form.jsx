@@ -47,12 +47,12 @@ class Base extends React.Component {
             this.load().then(data => {
                 if (data === null) return;
 
-                this.state(data);
+                this.data(data);
             });
         }
     }
 
-    state = data => {
+    data = data => {
         let values = this.form.current.getFieldsValue();
         for (let key in values) {
             values[key] = data[key];
@@ -120,8 +120,8 @@ class Base extends React.Component {
                 this.props.body.load(this.props.uri, this.props.parameter, this.props.data);
             else if (mt.success)
                 this.props.body.load(this.props.body.uri(this.props.uri, mt.success), this.props.parameter, this.props.data);
-            else if (mt.state)
-                this.state(data);
+            else if (mt.data)
+                this.data(data);
             else
                 message.success('操作已完成！');
         });
