@@ -5,6 +5,7 @@ import { service, url } from '../http';
 import meta from './meta';
 import { toMoney, toPercent } from './numeric';
 import { toArray } from './json';
+import DSelect from './dselect';
 import Category from './category';
 import User from './user';
 import './grid.css';
@@ -342,8 +343,11 @@ class Search extends React.Component {
             );
         }
 
+        if (column.type === 'dselect')
+            return <DSelect list={column.list} parameter={column.parameter} name={column.name} vname={column.vname} lname={column.lname} form={this} />;
+
         if (column.type === 'category')
-            return <Category name={column.name} list={column.category} form={this} />;
+            return <Category list={column.category} name={column.name} form={this} />;
 
         return <Input />
     }

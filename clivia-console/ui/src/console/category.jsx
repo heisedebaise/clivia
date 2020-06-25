@@ -1,7 +1,6 @@
 import React from 'react';
 import { TreeSelect } from 'antd';
 import { service } from '../http';
-import './category.css';
 
 class Category extends React.Component {
     constructor(props) {
@@ -49,7 +48,7 @@ class Category extends React.Component {
         this.props.form.value(this.props.name, value);
     }
 
-    render = () => <TreeSelect dropdownClassName="category-dropdown" treeData={this.state.list} value={this.state.value} onChange={this.change} />;
+    render = () => <TreeSelect treeData={this.state.list} value={this.state.value} onChange={this.change} />;
 }
 
 export default Category;

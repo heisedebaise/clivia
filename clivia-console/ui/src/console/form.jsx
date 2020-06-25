@@ -8,6 +8,7 @@ import { toMoney, fromMoney, toPercent, fromPercent } from './numeric';
 import { toArray } from './json';
 import Image from './image';
 import File from './file';
+import DSelect from './dselect';
 import Editor from './editor';
 import Category from './category';
 import User from './user';
@@ -145,12 +146,14 @@ class Base extends React.Component {
                 items.push(<Form.Item {...item}><Image name={prop.name} upload={prop.upload} size={prop.size || 1} value={this.state[prop.name] || ''} form={this} /></Form.Item>);
             } else if (prop.type === 'file') {
                 items.push(<Form.Item {...item}><File name={prop.name} upload={prop.upload} size={prop.size || 1} value={this.state[prop.name] || ''} form={this} /></Form.Item>);
+            } else if (prop.type === 'dselect') {
+                items.push(<Form.Item {...item}><DSelect list={prop.list} parameter={prop.parameter} name={prop.name} value={this.state[prop.name]} vname={prop.vname} lname={prop.lname} form={this} /></Form.Item>);
             } else if (prop.type === 'editor') {
                 items.push(<Form.Item {...item}><Editor name={prop.name} value={this.state[prop.name] || ''} form={this} /></Form.Item>);
             } else if (prop.type === 'html') {
                 items.push(<Form.Item {...item}><div dangerouslySetInnerHTML={{ __html: this.state[prop.name] || '' }} /></Form.Item>);
             } else if (prop.type === 'category') {
-                items.push(<Form.Item {...item}><Category name={prop.name} list={prop.category} value={this.state[prop.name]} form={this} /></Form.Item>);
+                items.push(<Form.Item {...item}><Category list={prop.category} name={prop.name} value={this.state[prop.name]} form={this} /></Form.Item>);
             } else if (prop.type === 'user') {
                 items.push(<Form.Item {...item}><User data={this.state[prop.name]} /></Form.Item>);
             } else {
