@@ -10,6 +10,8 @@ class DSelect extends React.Component {
             list: [],
             value: ''
         };
+        this.vname = props.vname || 'id';
+        this.lname = props.lname || 'name';
         props.form.value(props.name, props.value);
         service(props.list, props.parameter).then(data => {
             if (data === null) return;
@@ -28,7 +30,7 @@ class DSelect extends React.Component {
         this.props.form.value(this.props.name, value);
     }
 
-    render = () => <Select showSearch={true} filterOption={this.filter} onChange={this.change} value={this.state.value}>{this.state.list.map(option => <Select.Option key={option[this.props.vname]} value={option[this.props.vname]}>{option[this.props.lname]}</Select.Option>)}</Select>;
+    render = () => <Select showSearch={true} filterOption={this.filter} onChange={this.change} value={this.state.value}>{this.state.list.map(option => <Select.Option key={option[this.vname]} value={option[this.vname]}>{option[this.lname]}</Select.Option>)}</Select>;
 }
 
 export default DSelect;
