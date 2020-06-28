@@ -19,6 +19,11 @@ public class UidNotExistsValidatorImpl extends ValidatorSupport {
     private AuthService authService;
 
     @Override
+    public boolean validate(ValidateWrapper validate, String parameter) {
+        return authService.findByUid(parameter) == null;
+    }
+
+    @Override
     public boolean validate(ValidateWrapper validate, String[] parameters) {
         if (!Types.Self.equals(parameters[2]))
             return false;
