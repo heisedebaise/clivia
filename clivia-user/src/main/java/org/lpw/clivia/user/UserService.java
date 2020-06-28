@@ -24,6 +24,9 @@ public interface UserService {
      * 用户信息是否存在验证器Bean名称。
      */
     String VALIDATOR_EXISTS = UserModel.NAME + ".validator.exists";
+    /**
+     * 用户信息是否存在或已登入验证器Bean名称。
+     */
     String VALIDATOR_EXISTS_SIGN = VALIDATOR_EXISTS + "-sign";
 
     /**
