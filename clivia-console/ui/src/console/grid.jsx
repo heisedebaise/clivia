@@ -134,7 +134,7 @@ class Grid extends React.Component {
         return m || '';
     }
 
-    button = op => <Button key={op.label} onClick={this.operate.bind(this, op, {})}>{op.label}</Button>;
+    button = op => <Button key={op.label} onClick={this.operate.bind(this, op)}>{op.label}</Button>;
 
     action = (op, model) => <span key={op.label} className="console-grid-op" onClick={this.operate.bind(this, op, model)}>{op.label}</span>;
 
