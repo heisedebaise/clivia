@@ -61,8 +61,18 @@ public interface UserService {
      */
     JSONObject sign();
 
+    /**
+     * 获取当前用户ID。
+     *
+     * @return 当前用户ID。
+     */
     String id();
 
+    /**
+     * 获取当前用户等级。
+     *
+     * @return 当前用户等级。
+     */
     int grade();
 
     /**
@@ -163,6 +173,13 @@ public interface UserService {
      */
     JSONObject findOrSign(String idUidCode);
 
+    /**
+     * 填充数据。
+     *
+     * @param array 数组数组。
+     * @param names 填充的属性集。
+     * @return 填充后的数据数组。
+     */
     JSONArray fill(JSONArray array, String[] names);
 
     /**
@@ -191,6 +208,12 @@ public interface UserService {
      */
     void update(UserModel user);
 
+    /**
+     * 重置密码。
+     *
+     * @param id 用户ID。
+     * @return 新密码。
+     */
     String resetPassword(String id);
 
     /**
@@ -209,6 +232,13 @@ public interface UserService {
      */
     void state(String id, int state);
 
+    /**
+     * 重置root用户。
+     *
+     * @param user     用户。
+     * @param password 密码。
+     * @return 重置成功则返回true；否则返回false。
+     */
     boolean root(UserModel user, String password);
 
     /**
@@ -217,6 +247,17 @@ public interface UserService {
      * @return 用户数。
      */
     JSONObject count();
+
+    /**
+     * 创建用户。
+     *
+     * @param uid      UID。
+     * @param password 密码。
+     * @param grade    等级。
+     * @param state    状态。
+     * @return 用户信息。
+     */
+    UserModel create(String uid, String password, int grade, int state);
 
     /**
      * 清空当前用户缓存数据。

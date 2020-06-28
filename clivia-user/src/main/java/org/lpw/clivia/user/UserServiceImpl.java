@@ -15,7 +15,11 @@ import org.lpw.photon.crypto.Digest;
 import org.lpw.photon.ctrl.context.Session;
 import org.lpw.photon.dao.model.ModelHelper;
 import org.lpw.photon.dao.orm.PageList;
-import org.lpw.photon.util.*;
+import org.lpw.photon.util.Converter;
+import org.lpw.photon.util.DateTime;
+import org.lpw.photon.util.Generator;
+import org.lpw.photon.util.Numeric;
+import org.lpw.photon.util.Validator;
 import org.springframework.stereotype.Service;
 
 import javax.inject.Inject;
@@ -81,11 +85,7 @@ public class UserServiceImpl implements UserService {
             user.setPassword(password(password));
         if (user.getRegister() == null)
             user.setRegister(dateTime.now());
-        for (int i = 0; i < 1024 && user.getCode() == null; i++) {
-            String code = generator.random(codeLength);
-            if (userDao.findByCode(code) == null)
-                user.setCode(code);
-        }
+        setCode((user));
         String mobile = types.getMobile(type, uid, password);
         if (!validator.isEmpty(mobile) && validator.isMobile(mobile)) {
             if (validator.isEmpty(user.getMobile()))
@@ -114,6 +114,14 @@ public class UserServiceImpl implements UserService {
         signIn(user, uid);
 
         return user;
+    }
+
+    private void setCode(UserModel user) {
+        for (int i = 0; i < 1024 && user.getCode() == null; i++) {
+            String code = generator.random(codeLength);
+            if (userDao.findByCode(code) == null)
+                user.setCode(code);
+        }
     }
 
     private void setInviter(UserModel user) {
@@ -422,6 +430,26 @@ public class UserServiceImpl implements UserService {
         object.put("online", onlineService.count());
 
         return object;
+    }
+
+    @Override
+    public UserModel create(String uid, String password, int grade, int state) {
+        UserModel user = new UserModel();
+        user.setNick(uid);
+        if (validator.isMobile(uid))
+            user.setMobile(uid);
+        if (validator.isEmail(uid))
+            user.setEmail(uid);
+        user.setPassword(password(password));
+        setCode(user);
+        user.setInviter(id());
+        user.setRegister(dateTime.now());
+        user.setGrade(grade);
+        user.setState(state);
+        userDao.save(user);
+        authService.create(user.getId(), uid, Types.Self, null, null, null, null);
+
+        return user;
     }
 
     @Override
