@@ -185,7 +185,8 @@ class Grid extends React.Component {
             return;
         }
 
-        delete model.children;
+        if (model && model.children)
+            delete model.children;
         this.props.body.load(this.props.body.uri(this.props.uri, op.service || op.type), this.props.parameter, model);
     }
 
