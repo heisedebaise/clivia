@@ -18,6 +18,23 @@
     ],
     "query": {
         "type": "grid",
+        "props": [
+            {
+                "name": "sort"
+            },
+            {
+                "name": "name"
+            },
+            {
+                "name": "value"
+            },
+            {
+                "name": "image"
+            },
+            {
+                "name": "child"
+            }
+        ],
         "ops": [
             {
                 "type": "create"
