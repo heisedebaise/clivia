@@ -25,6 +25,7 @@
     ],
     "query": {
         "type": "grid",
+        "reload": true,
         "ops": [
             {
                 "service": "sign-out",
