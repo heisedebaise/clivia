@@ -16,6 +16,9 @@
             "type": "image"
         },
         {
+            "name": "child"
+        },
+        {
             "name": "pointTo",
             "type": "category"
         }
