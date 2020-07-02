@@ -30,19 +30,21 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public JSONArray query(String key, String pointTo) {
-        return cache.computeIfAbsent(CategoryModel.NAME + ":key:" + key + ":" + pointTo, k -> query(key, "", pointTo), false);
+        String pt = validator.isEmpty(pointTo) ? "" : pointTo;
+
+        return cache.computeIfAbsent(CategoryModel.NAME + ":key:" + key + ":" + pt, k -> query(key, "", pt), false);
     }
 
     private JSONArray query(String key, String parent, String pointTo) {
         JSONArray array = new JSONArray();
         categoryDao.query(key, parent).getList().forEach(category -> {
             boolean notEmpty = !validator.isEmpty(category.getPointTo());
-            if (notEmpty && "ignore".equals(pointTo))
+            if (notEmpty && pointTo.equals("ignore"))
                 return;
 
             JSONObject object = modelHelper.toJson(category);
             if (notEmpty) {
-                if ("replace".equals(pointTo))
+                if (pointTo.equals("replace"))
                     object.put("id", category.getPointTo());
                 else {
                     String path = "";
