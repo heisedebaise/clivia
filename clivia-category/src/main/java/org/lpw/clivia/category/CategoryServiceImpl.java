@@ -34,6 +34,18 @@ public class CategoryServiceImpl implements CategoryService {
 
     private JSONArray query(String key, String parent) {
         return modelHelper.toJson(categoryDao.query(key, parent).getList(), (category, object) -> {
+            if (!validator.isEmpty(category.getPointTo())) {
+                String path = "";
+                for (String id = category.getPointTo(); !validator.isEmpty(id); ) {
+                    CategoryModel model = categoryDao.findById(id);
+                    if (model == null)
+                        break;
+
+                    path = "/" + model.getName() + path;
+                    id = model.getParent();
+                }
+                object.put("pointToPath", path);
+            }
             JSONArray children = query(key, category.getId());
             if (!children.isEmpty())
                 object.put("children", children);

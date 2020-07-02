@@ -48,7 +48,7 @@ class Category extends React.Component {
         this.props.form.value(this.props.name, value);
     }
 
-    render = () => <TreeSelect treeData={this.state.list} value={this.state.value} onChange={this.change} />;
+    render = () => <TreeSelect treeData={this.state.list} value={this.state.value} treeDefaultExpandedKeys={[this.state.value]} onChange={this.change} />;
 }
 
 export default Category;

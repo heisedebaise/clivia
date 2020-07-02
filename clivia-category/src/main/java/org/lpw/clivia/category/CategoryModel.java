@@ -26,6 +26,7 @@ public class CategoryModel extends ModelSupport {
     private String name; // 名称
     private String value; // 值
     private String image; // 图片
+    private String pointTo; // 指向
 
     @Jsonable
     @Column(name = "c_key")
@@ -85,5 +86,15 @@ public class CategoryModel extends ModelSupport {
 
     public void setImage(String image) {
         this.image = image;
+    }
+
+    @Jsonable
+    @Column(name = "c_point_to")
+    public String getPointTo() {
+        return pointTo;
+    }
+
+    public void setPointTo(String pointTo) {
+        this.pointTo = pointTo;
     }
 }

@@ -153,7 +153,10 @@ class Base extends React.Component {
             } else if (prop.type === 'html') {
                 items.push(<Form.Item {...item}><div dangerouslySetInnerHTML={{ __html: this.state[prop.name] || '' }} /></Form.Item>);
             } else if (prop.type === 'category') {
-                items.push(<Form.Item {...item}><Category list={prop.category} name={prop.name} value={this.state[prop.name]} form={this} /></Form.Item>);
+                let list = prop.category;
+                if (!list && this.props.parameter && this.props.parameter.key)
+                    list = this.props.parameter.key;
+                items.push(<Form.Item {...item}><Category list={list} name={prop.name} value={this.state[prop.name]} form={this} /></Form.Item>);
             } else if (prop.type === 'user') {
                 items.push(<Form.Item {...item}><User data={this.state[prop.name]} /></Form.Item>);
             } else {

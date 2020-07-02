@@ -14,10 +14,31 @@
         {
             "name": "image",
             "type": "image"
+        },
+        {
+            "name": "pointTo",
+            "type": "category"
         }
     ],
     "query": {
         "type": "grid",
+        "props": [
+            {
+                "name": "sort"
+            },
+            {
+                "name": "name"
+            },
+            {
+                "name": "value"
+            },
+            {
+                "name": "image"
+            },
+            {
+                "name": "pointToPath"
+            }
+        ],
         "ops": [
             {
                 "type": "create"
