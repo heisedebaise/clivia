@@ -16,9 +16,6 @@
             "type": "image"
         },
         {
-            "name": "child"
-        },
-        {
             "name": "pointTo",
             "type": "category"
         }
@@ -37,6 +34,9 @@
             },
             {
                 "name": "image"
+            },
+            {
+                "name": "child"
             },
             {
                 "name": "pointToPath"
