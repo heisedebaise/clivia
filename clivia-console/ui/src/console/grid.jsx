@@ -348,7 +348,7 @@ class Search extends React.Component {
             return <DSelect list={column.list} parameter={column.parameter} name={column.name} vname={column.vname} lname={column.lname} form={this} />;
 
         if (column.type === 'category')
-            return <Category list={column.category} name={column.name} form={this} />;
+            return <Category list={column.category} pointTo={column.pointTo} name={column.name} form={this} />;
 
         return <Input />
     }

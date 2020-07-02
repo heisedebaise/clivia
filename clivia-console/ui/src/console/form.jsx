@@ -156,7 +156,7 @@ class Base extends React.Component {
                 let list = prop.category;
                 if (!list && this.props.parameter && this.props.parameter.key)
                     list = this.props.parameter.key;
-                items.push(<Form.Item {...item}><Category list={list} name={prop.name} value={this.state[prop.name]} form={this} /></Form.Item>);
+                items.push(<Form.Item {...item}><Category list={list} pointTo={prop.pointTo} name={prop.name} value={this.state[prop.name]} form={this} /></Form.Item>);
             } else if (prop.type === 'user') {
                 items.push(<Form.Item {...item}><User data={this.state[prop.name]} /></Form.Item>);
             } else {

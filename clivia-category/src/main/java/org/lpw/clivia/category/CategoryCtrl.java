@@ -24,7 +24,7 @@ public class CategoryCtrl {
             @Validate(validator = Validators.SIGN)
     })
     public Object query() {
-        return categoryService.query(request.get("key"));
+        return categoryService.query(request.get("key"), request.get("pointTo"));
     }
 
     @Execute(name = "save", validates = {
@@ -53,6 +53,6 @@ public class CategoryCtrl {
 
     @Execute(name = "list")
     public Object list() {
-        return categoryService.query(request.get("key"));
+        return categoryService.query(request.get("key"), request.get("pointTo"));
     }
 }

@@ -11,7 +11,7 @@ class Category extends React.Component {
             value: ''
         };
         props.form.value(props.name, props.value);
-        service('/category/list', { key: props.list }).then(data => {
+        service('/category/list', { key: props.list, pointTo: props.pointTo }).then(data => {
             if (data === null)
                 return;
 

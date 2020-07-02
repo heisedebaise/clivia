@@ -1,6 +1,7 @@
 package org.lpw.clivia.category;
 
 import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import org.lpw.photon.cache.Cache;
 import org.lpw.photon.dao.model.ModelHelper;
 import org.lpw.photon.util.Validator;
@@ -28,31 +29,43 @@ public class CategoryServiceImpl implements CategoryService {
     private CategoryDao categoryDao;
 
     @Override
-    public JSONArray query(String key) {
-        return cache.computeIfAbsent(CategoryModel.NAME + key, k -> query(key, ""), false);
+    public JSONArray query(String key, String pointTo) {
+        return cache.computeIfAbsent(CategoryModel.NAME + ":key:" + key + ":" + pointTo, k -> query(key, "", pointTo), false);
     }
 
-    private JSONArray query(String key, String parent) {
-        return modelHelper.toJson(categoryDao.query(key, parent).getList(), (category, object) -> {
-            if (!validator.isEmpty(category.getPointTo())) {
-                String path = "";
-                for (String id = category.getPointTo(); !validator.isEmpty(id); ) {
-                    CategoryModel model = categoryDao.findById(id);
-                    if (model == null)
-                        break;
-
-                    path = "/" + model.getName() + path;
-                    id = model.getParent();
-                }
-                object.put("pointToPath", path);
-            }
-            JSONArray children = query(key, category.getId());
-            if (children.isEmpty())
+    private JSONArray query(String key, String parent, String pointTo) {
+        JSONArray array = new JSONArray();
+        categoryDao.query(key, parent).getList().forEach(category -> {
+            boolean notEmpty = !validator.isEmpty(category.getPointTo());
+            if (notEmpty && "ignore".equals(pointTo))
                 return;
 
-            object.put("children", children);
-            object.put("child", children.size());
+            JSONObject object = modelHelper.toJson(category);
+            if (notEmpty) {
+                if ("replace".equals(pointTo))
+                    object.put("id", category.getPointTo());
+                else {
+                    String path = "";
+                    for (String id = category.getPointTo(); !validator.isEmpty(id); ) {
+                        CategoryModel model = categoryDao.findById(id);
+                        if (model == null)
+                            break;
+
+                        path = "/" + model.getName() + path;
+                        id = model.getParent();
+                    }
+                    object.put("pointToPath", path);
+                }
+            }
+            JSONArray children = query(key, category.getId(), pointTo);
+            if (!children.isEmpty()) {
+                object.put("children", children);
+                object.put("child", children.size());
+            }
+            array.add(object);
         });
+
+        return array;
     }
 
     @Override
@@ -114,7 +127,9 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     private void clean(String key, String id) {
-        cache.remove(CategoryModel.NAME + key);
+        cache.remove(CategoryModel.NAME + ":key:" + key + ":");
+        cache.remove(CategoryModel.NAME + ":key:" + key + ":ignore");
+        cache.remove(CategoryModel.NAME + ":key:" + key + ":replace");
         cache.remove(CategoryModel.NAME + ":name:" + id);
     }
 }
