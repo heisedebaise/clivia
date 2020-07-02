@@ -47,8 +47,11 @@ public class CategoryServiceImpl implements CategoryService {
                 object.put("pointToPath", path);
             }
             JSONArray children = query(key, category.getId());
-            if (!children.isEmpty())
-                object.put("children", children);
+            if (children.isEmpty())
+                return;
+
+            object.put("children", children);
+            object.put("child", children.size());
         });
     }
 
