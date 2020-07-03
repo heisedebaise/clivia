@@ -15,7 +15,7 @@
         <dependency>
             <groupId>com.alipay.sdk</groupId>
             <artifactId>alipay-sdk-java</artifactId>
-            <version>4.10.29.ALL</version>
+            <version>4.10.38.ALL</version>
         </dependency>
         <dependency>
             <groupId>org.lpw.clivia</groupId>
