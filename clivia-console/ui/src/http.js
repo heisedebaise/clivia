@@ -21,10 +21,7 @@ const service = (uri, body) => post(uri, body).then(json => {
 
 const post = (uri, body) => fetch(root + uri, {
     method: 'POST',
-    headers: {
-        'Content-Type': 'application/json',
-        'photon-session-id': sid()
-    },
+    headers: header(),
     body: JSON.stringify(body)
 }).then(response => {
     if (post.loader) {
@@ -40,24 +37,32 @@ const post = (uri, body) => fetch(root + uri, {
     return null;
 });
 
+const header = () => {
+    let header = {
+        'Content-Type': 'application/json'
+    };
+    psid(header, true);
+
+    return header;
+}
+
 const url = uri => root + uri;
 
-const sid = () => {
-    if (post.loader) {
+const psid = (header, loading) => {
+    if (loading && post.loader) {
         post.loader.setState({
             loading: true
         });
     }
 
-    let tsid = localStorage.getItem('tephra-session-id');
-    if (!tsid) {
-        tsid = '';
-        while (tsid.length < 64) tsid += Math.random().toString(36).substring(2);
-        tsid = tsid.substring(0, 64);
-        localStorage.setItem('tephra-session-id', tsid);
+    let psid = localStorage.getItem('photon-session-id');
+    if (!psid) {
+        psid = '';
+        while (psid.length < 64) psid += Math.random().toString(36).substring(2);
+        psid = psid.substring(0, 64);
+        localStorage.setItem('photon-session-id', psid);
     }
-
-    return tsid;
+    header['photon-session-id'] = psid;
 }
 
 const loader = loader => post.loader = loader;
@@ -66,5 +71,6 @@ export {
     service,
     post,
     url,
+    psid,
     loader
 };
