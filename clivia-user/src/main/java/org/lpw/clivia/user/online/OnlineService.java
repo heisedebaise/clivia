@@ -3,6 +3,8 @@ package org.lpw.clivia.user.online;
 import com.alibaba.fastjson.JSONObject;
 import org.lpw.clivia.user.UserModel;
 
+import java.sql.Date;
+
 /**
  * @author lpw
  */
@@ -61,7 +63,8 @@ public interface OnlineService {
     /**
      * 统计在线用户数。
      *
+     * @param date 日期。
      * @return 在线用户数。
      */
-    int count();
+    int count(Date date);
 }

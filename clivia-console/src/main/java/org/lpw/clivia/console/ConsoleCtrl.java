@@ -21,6 +21,8 @@ public class ConsoleCtrl {
     private MenuHelper menuHelper;
     @Inject
     private MetaHelper metaHelper;
+    @Inject
+    private Dashboard dashboard;
 
     @Execute(name = "menu", validates = {
             @Validate(validator = UserService.VALIDATOR_SIGN)
@@ -34,5 +36,12 @@ public class ConsoleCtrl {
     })
     public Object meta() {
         return metaHelper.get(request.get("key"), false);
+    }
+
+    @Execute(name = "dashboard", validates = {
+            @Validate(validator = UserService.VALIDATOR_SIGN)
+    })
+    public Object dashboard() {
+        return dashboard.get();
     }
 }

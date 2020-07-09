@@ -40,8 +40,8 @@ class OnlineDaoImpl implements OnlineDao {
     }
 
     @Override
-    public int count() {
-        return liteOrm.count(new LiteQuery(OnlineModel.class), null);
+    public int count(Timestamp[] lastVisit) {
+        return liteOrm.count(new LiteQuery(OnlineModel.class).where("c_last_visit between ? and ? and c_grade<?"), new Object[]{lastVisit[0], lastVisit[1], 99});
     }
 
     @Override

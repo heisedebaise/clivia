@@ -17,6 +17,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import javax.inject.Inject;
+import java.sql.Date;
+import java.sql.Time;
 import java.sql.Timestamp;
 
 /**
@@ -113,8 +115,8 @@ public class OnlineServiceImpl implements OnlineService, MinuteJob {
     }
 
     @Override
-    public int count() {
-        return onlineDao.count();
+    public int count(Date date) {
+        return onlineDao.count(dateTime.toTimeRange(date));
     }
 
     @Override

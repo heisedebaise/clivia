@@ -23,6 +23,8 @@ import org.lpw.photon.util.Validator;
 import org.springframework.stereotype.Service;
 
 import javax.inject.Inject;
+import java.sql.Date;
+import java.sql.Timestamp;
 
 /**
  * @author lpw
@@ -424,12 +426,13 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public JSONObject count() {
-        JSONObject object = new JSONObject();
-        object.put("total", userDao.count());
-        object.put("online", onlineService.count());
+    public int count() {
+        return userDao.count();
+    }
 
-        return object;
+    @Override
+    public int count(Date date) {
+        return userDao.count(dateTime.toTimeRange(date));
     }
 
     @Override

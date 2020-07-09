@@ -33,7 +33,7 @@ import java.util.concurrent.ConcurrentHashMap;
 /**
  * @author lpw
  */
-@Service(ConsoleModel.NAME + ".meta.helper")
+@Service(ConsoleModel.NAME + ".meta")
 public class MetaHelperImpl implements MetaHelper, ContextRefreshedListener, CrosierValid {
     @Inject
     private Cache cache;

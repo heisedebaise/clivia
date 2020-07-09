@@ -3,6 +3,7 @@ import { Layout } from 'antd';
 import { url } from '../http';
 import Menu from './menu';
 import Sign from './sign';
+import Dashboard from './dashboard';
 import body from './body';
 import './index.css';
 
@@ -14,7 +15,7 @@ class Console extends React.Component {
 
     this.state = {
       menu: <Menu />,
-      body: <div />
+      body: <Dashboard />
     };
     body.setIndex(this);
   }

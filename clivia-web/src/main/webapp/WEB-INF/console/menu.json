@@ -1,5 +1,9 @@
 [
     {
+        "label": "主面板",
+        "service": "/console/dashboard"
+    },
+    {
         "label": "文档",
         "items": [
             {

@@ -3,6 +3,8 @@ package org.lpw.clivia.user;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 
+import java.sql.Date;
+
 /**
  * @author lpw
  */
@@ -249,7 +251,15 @@ public interface UserService {
      *
      * @return 用户数。
      */
-    JSONObject count();
+    int count();
+
+    /**
+     * 统计用户注册数。
+     *
+     * @param date 日期。
+     * @return 注册数。
+     */
+    int count(Date date);
 
     /**
      * 创建用户。

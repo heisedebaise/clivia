@@ -2,6 +2,8 @@ package org.lpw.clivia.user;
 
 import org.lpw.photon.dao.orm.PageList;
 
+import java.sql.Timestamp;
+
 /**
  * @author lpw
  */
@@ -14,6 +16,8 @@ interface UserDao {
     UserModel findByCode(String code);
 
     int count();
+
+    int count(Timestamp[] register);
 
     void save(UserModel user);
 }

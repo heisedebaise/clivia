@@ -1,6 +1,7 @@
 import React from 'react';
 import { service } from '../http';
 import meta from './meta';
+import Dashboard from './dashboard';
 import Grid from './grid';
 import Form from './form';
 import Setting from './setting';
@@ -21,6 +22,12 @@ class Body {
         if (!uri.startsWith('/')) uri = uri.substring(uri.indexOf('.')).replace(/\./g, '/');
         if (uri === '/user/sign-out') {
             service(uri).then(data => window.location.reload());
+
+            return;
+        }
+
+        if (uri === '/console/dashboard') {
+            this.setState(<Dashboard />);
 
             return;
         }

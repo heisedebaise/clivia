@@ -21,7 +21,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-@Service(ConsoleModel.NAME + ".menu.helper")
+@Service(ConsoleModel.NAME + ".menu")
 public class MenuHelperImpl implements MenuHelper, CrosierValid {
     @Inject
     private Context context;
@@ -45,6 +45,8 @@ public class MenuHelperImpl implements MenuHelper, CrosierValid {
     private CrosierService crosierService;
     @Inject
     private MetaHelper metaHelper;
+    @Inject
+    private Dashboard dashboard;
     @Value("${" + ConsoleModel.NAME + ".console:/WEB-INF/console/}")
     private String console;
     private final Map<String, JSONArray> map = new ConcurrentHashMap<>();
@@ -163,6 +165,22 @@ public class MenuHelperImpl implements MenuHelper, CrosierValid {
 
         if (logger.isInfoEnable())
             logger.info("载入菜单配置[{}]。", array);
+
+        for (int i = 0, size = array.size(); i < size; i++) {
+            JSONObject object = array.getJSONObject(i);
+            if (json.has(object, "service", "/console/dashboard")) {
+                JSONArray items = new JSONArray();
+                JSONArray cards = dashboard.cards();
+                for (int j = 0, s = cards.size(); j < s; j++) {
+                    JSONObject card = cards.getJSONObject(j);
+                    card.put("label", card.getString("title"));
+                    items.add(card);
+                }
+                object.put("items", items);
+
+                break;
+            }
+        }
 
         return array;
     }

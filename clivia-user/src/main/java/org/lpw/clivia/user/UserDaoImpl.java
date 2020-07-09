@@ -9,6 +9,7 @@ import org.lpw.photon.dao.orm.lite.LiteQuery;
 import org.springframework.stereotype.Repository;
 
 import javax.inject.Inject;
+import java.sql.Timestamp;
 
 /**
  * @author lpw
@@ -49,7 +50,12 @@ class UserDaoImpl implements UserDao {
 
     @Override
     public int count() {
-        return liteOrm.count(new LiteQuery(UserModel.class), null);
+        return liteOrm.count(new LiteQuery(UserModel.class).where("c_grade<?"), new Object[]{99});
+    }
+
+    @Override
+    public int count(Timestamp[] register) {
+        return liteOrm.count(new LiteQuery(UserModel.class).where("c_register between ? and ? and c_grade<?"), new Object[]{register[0], register[1], 99});
     }
 
     @Override
