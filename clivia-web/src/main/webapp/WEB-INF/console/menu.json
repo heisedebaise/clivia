@@ -44,6 +44,10 @@
             {
                 "label": "在线用户",
                 "service": "/user/online/query"
+            },
+            {
+                "label": "用户统计",
+                "service": "/user/stat/query"
             }
         ]
     }

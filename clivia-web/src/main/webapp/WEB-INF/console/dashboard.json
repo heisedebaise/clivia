@@ -8,14 +8,5 @@
                 "service": "/user/stat/today"
             }
         ]
-    },
-    {
-        "span": 16,
-        "cards": [
-            {
-                "title": "用户统计",
-                "service": "/user/stat/query"
-            }
-        ]
     }
 ]
