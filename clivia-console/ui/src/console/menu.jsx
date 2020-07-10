@@ -29,11 +29,12 @@ class LeftMenu extends React.Component {
 
         for (let item of items) {
             let key = Math.random().toString(36).substring(2);
-            if (item.items) {
-                menus.push(<SubMenu key={key} title={<span>{item.label}</span>} >{this.menu(item.items)}</SubMenu>);
-            } else {
+            if (item.service || !item.items) {
                 this.map[key] = item;
                 menus.push(<Menu.Item key={key}>{item.label}</Menu.Item>);
+            }
+            else {
+                menus.push(<SubMenu key={key} title={<span>{item.label}</span>} >{this.menu(item.items)}</SubMenu>);
             }
         }
 
