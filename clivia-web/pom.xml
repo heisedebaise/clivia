@@ -20,7 +20,7 @@
         </dependency>
         <dependency>
             <groupId>org.lpw.clivia</groupId>
-            <artifactId>clivia-user</artifactId>
+            <artifactId>clivia-wps</artifactId>
             <version>0.3</version>
         </dependency>
         <dependency>

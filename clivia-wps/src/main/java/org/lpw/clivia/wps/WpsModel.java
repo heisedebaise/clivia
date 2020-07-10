@@ -20,7 +20,7 @@ import javax.persistence.Table;
 public class WpsModel extends ModelSupport {
     static final String NAME = "clivia.wps";
 
-    private String key; // 饮用KEY
+    private String key; // 引用KEY
     private String name; // 名称
     private String appId; // APP ID
     private String secret; // 密钥
@@ -49,7 +49,7 @@ public class WpsModel extends ModelSupport {
     }
 
     @Jsonable
-    @Column(name = "c_appId")
+    @Column(name = "c_app_id")
     public String getAppId() {
         return appId;
     }

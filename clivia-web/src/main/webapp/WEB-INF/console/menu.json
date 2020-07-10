@@ -16,6 +16,15 @@
         ]
     },
     {
+        "label": "配置",
+        "items": [
+            {
+                "label": "WPS",
+                "service": "/wps/query"
+            }
+        ]
+    },
+    {
         "label": "系统",
         "items": [
             {
