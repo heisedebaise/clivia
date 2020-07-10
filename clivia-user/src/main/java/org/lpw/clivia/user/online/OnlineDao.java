@@ -1,5 +1,6 @@
 package org.lpw.clivia.user.online;
 
+import org.lpw.photon.dao.jdbc.SqlTable;
 import org.lpw.photon.dao.orm.PageList;
 
 import java.sql.Timestamp;
@@ -14,7 +15,7 @@ interface OnlineDao {
 
     OnlineModel findBySid(String sid);
 
-    int count(Timestamp[] lastVisit);
+    SqlTable user(Timestamp[] lastVisit);
 
     void save(OnlineModel online);
 

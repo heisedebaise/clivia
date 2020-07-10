@@ -2,6 +2,8 @@ package org.lpw.clivia.user.online;
 
 import org.lpw.clivia.dao.DaoHelper;
 import org.lpw.clivia.dao.DaoOperation;
+import org.lpw.photon.dao.jdbc.Sql;
+import org.lpw.photon.dao.jdbc.SqlTable;
 import org.lpw.photon.dao.orm.PageList;
 import org.lpw.photon.dao.orm.lite.LiteOrm;
 import org.lpw.photon.dao.orm.lite.LiteQuery;
@@ -15,6 +17,8 @@ import java.sql.Timestamp;
  */
 @Repository(OnlineModel.NAME + ".dao")
 class OnlineDaoImpl implements OnlineDao {
+    @Inject
+    private Sql sql;
     @Inject
     private LiteOrm liteOrm;
     @Inject
@@ -40,8 +44,8 @@ class OnlineDaoImpl implements OnlineDao {
     }
 
     @Override
-    public int count(Timestamp[] lastVisit) {
-        return liteOrm.count(new LiteQuery(OnlineModel.class).where("c_last_visit between ? and ? and c_grade<?"), new Object[]{lastVisit[0], lastVisit[1], 99});
+    public SqlTable user(Timestamp[] lastVisit) {
+        return sql.query("select c_user from m_user_online where c_last_visit between ? and ? and c_grade<?", new Object[]{lastVisit[0], lastVisit[1], 99});
     }
 
     @Override

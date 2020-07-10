@@ -20,6 +20,8 @@ import javax.inject.Inject;
 import java.sql.Date;
 import java.sql.Time;
 import java.sql.Timestamp;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * @author lpw
@@ -116,7 +118,10 @@ public class OnlineServiceImpl implements OnlineService, MinuteJob {
 
     @Override
     public int count(Date date) {
-        return onlineDao.count(dateTime.toTimeRange(date));
+        Set<String> set = new HashSet<>();
+        onlineDao.user(dateTime.toTimeRange(date)).forEach(list -> set.add((String) list.get(0)));
+
+        return set.size();
     }
 
     @Override
