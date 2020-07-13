@@ -21,7 +21,7 @@ import org.lpw.photon.dao.model.ModelHelper;
 import org.lpw.photon.scheduler.HourJob;
 import org.lpw.photon.scheduler.MinuteJob;
 import org.lpw.photon.storage.Storages;
-import org.lpw.photon.util.Coder;
+import org.lpw.photon.util.Codec;
 import org.lpw.photon.util.Context;
 import org.lpw.photon.util.Converter;
 import org.lpw.photon.util.DateTime;
@@ -92,7 +92,7 @@ public class WeixinServiceImpl implements WeixinService, ContextRefreshedListene
     @Inject
     private QrCode qrCode;
     @Inject
-    private Coder coder;
+    private Codec codec;
     @Inject
     private Context context;
     @Inject
@@ -665,9 +665,9 @@ public class WeixinServiceImpl implements WeixinService, ContextRefreshedListene
             if (Security.getProvider("BC") == null)
                 Security.addProvider(new BouncyCastleProvider());
             Cipher cipher = Cipher.getInstance("AES/CBC/PKCS7Padding", "BC");
-            cipher.init(Cipher.DECRYPT_MODE, new SecretKeySpec(coder.decodeBase64(sessionKey), "AES"),
-                    new IvParameterSpec(coder.decodeBase64(iv)));
-            String string = new String(cipher.doFinal(coder.decodeBase64(message)));
+            cipher.init(Cipher.DECRYPT_MODE, new SecretKeySpec(codec.decodeBase64(sessionKey), "AES"),
+                    new IvParameterSpec(codec.decodeBase64(iv)));
+            String string = new String(cipher.doFinal(codec.decodeBase64(message)));
             if (logger.isDebugEnable())
                 logger.debug("获得decryptAesCbcPkcs7解密[{}:{}:{}]数据[{}]。", sessionKey, iv, message, string);
 

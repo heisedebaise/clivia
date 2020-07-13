@@ -21,7 +21,7 @@ import org.lpw.clivia.transfer.TransferModel;
 import org.lpw.clivia.transfer.TransferService;
 import org.lpw.clivia.user.UserService;
 import org.lpw.photon.dao.model.ModelHelper;
-import org.lpw.photon.util.Coder;
+import org.lpw.photon.util.Codec;
 import org.lpw.photon.util.Converter;
 import org.lpw.photon.util.Json;
 import org.lpw.photon.util.Logger;
@@ -45,7 +45,7 @@ public class AlipayServiceImpl implements AlipayService, TransferListener {
     @Inject
     private Numeric numeric;
     @Inject
-    private Coder coder;
+    private Codec codec;
     @Inject
     private Json json;
     @Inject
@@ -137,7 +137,7 @@ public class AlipayServiceImpl implements AlipayService, TransferListener {
         String string = prepay(alipay, null, request);
 
         return string == null ? null : string.substring(string.indexOf('?') + 1, string.indexOf('>') - 1) + "&biz_content=" +
-                coder.encodeUrl(string.substring(string.indexOf('{'), string.indexOf('}') + 1)
+                codec.encodeUrl(string.substring(string.indexOf('{'), string.indexOf('}') + 1)
                         .replaceAll("&quot;", "\""), null);
     }
 

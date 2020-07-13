@@ -6,7 +6,7 @@ import org.lpw.photon.ctrl.execute.Execute;
 import org.lpw.photon.ctrl.template.Templates;
 import org.lpw.photon.ctrl.validate.Validate;
 import org.lpw.photon.ctrl.validate.Validators;
-import org.lpw.photon.util.Coder;
+import org.lpw.photon.util.Codec;
 import org.lpw.photon.util.Context;
 import org.lpw.photon.util.Generator;
 import org.lpw.photon.util.Message;
@@ -26,7 +26,7 @@ public class ChromeCtrl {
     @Inject
     private Context context;
     @Inject
-    private Coder coder;
+    private Codec codec;
     @Inject
     private Generator generator;
     @Inject
@@ -95,7 +95,7 @@ public class ChromeCtrl {
         if (validator.isEmpty(filename))
             filename = generator.random(32);
         response.setHeader("Content-Disposition", "attachment; filename*=" + context.getCharset(null)
-                + "''" + coder.encodeUrl(filename, null) + ".pdf");
+                + "''" + codec.encodeUrl(filename, null) + ".pdf");
         response.setContentType("application/pdf");
 
         return pdf;
