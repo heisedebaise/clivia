@@ -14,4 +14,6 @@ public interface FileService {
     void delete(String wps);
 
     JSONObject info(String id, Map<String, String> map);
+
+    JSONObject user(String id, Map<String, String> map, String body);
 }

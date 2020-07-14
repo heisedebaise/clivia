@@ -1,5 +1,6 @@
 package org.lpw.clivia.wps.file;
 
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import org.lpw.clivia.user.UserModel;
 import org.lpw.clivia.user.UserService;
@@ -11,6 +12,7 @@ import org.lpw.photon.ctrl.context.Request;
 import org.lpw.photon.util.Codec;
 import org.lpw.photon.util.Context;
 import org.lpw.photon.util.Converter;
+import org.lpw.photon.util.Json;
 import org.lpw.photon.util.Logger;
 import org.lpw.photon.util.Validator;
 import org.springframework.stereotype.Service;
@@ -41,6 +43,8 @@ public class FileServiceImpl implements FileService, ContextRefreshedListener {
     private Codec codec;
     @Inject
     private Validator validator;
+    @Inject
+    private Json json;
     @Inject
     private Logger logger;
     @Inject
@@ -100,11 +104,11 @@ public class FileServiceImpl implements FileService, ContextRefreshedListener {
     public JSONObject info(String id, Map<String, String> map) {
         FileModel file = fileDao.findById(id);
         if (file == null)
-            return failure(2, "id " + id + " not exists");
+            return failure(1, "id " + id + " not exists");
 
         WpsModel wps = wpsService.findById(file.getWps());
         if (wps == null)
-            return failure(3, "wps " + id + " not exists");
+            return failure(2, "wps " + id + " not exists");
 
         JSONObject validate = validate(wps, map);
         if (validate != null)
@@ -138,8 +142,44 @@ public class FileServiceImpl implements FileService, ContextRefreshedListener {
             watermark.put("value", wps.getWatermark());
         }
         object.put("file", f);
+        JSONObject u = user(map.get(USER), wps);
+        u.put("permission", file.getPermission() == 1 ? "write" : "read");
+        object.put("user", u);
+
+        return object;
+    }
+
+    @Override
+    public JSONObject user(String id, Map<String, String> map, String body) {
+        FileModel file = fileDao.findById(id);
+        if (file == null)
+            return failure(1, "id " + id + " not exists");
+
+        WpsModel wps = wpsService.findById(file.getWps());
+        if (wps == null)
+            return failure(2, "wps " + id + " not exists");
+
+        JSONObject validate = validate(wps, map);
+        if (validate != null)
+            return validate;
+
+        JSONObject b = json.toObject(body);
+        if (!json.containsKey(b, "ids"))
+            return failure(4, "illegal body " + body);
+
+        JSONArray ids = b.getJSONArray("ids");
+        JSONArray users = new JSONArray();
+        for (int i = 0, size = ids.size(); i < size; i++)
+            users.add(user(ids.getString(i), wps));
+        JSONObject object = new JSONObject();
+        object.put("users", users);
+
+        return object;
+    }
+
+    private JSONObject user(String id, WpsModel wps) {
         JSONObject u = new JSONObject();
-        UserModel user = userService.findById(map.get(USER));
+        UserModel user = userService.findById(id);
         if (user == null) {
             u.put("id", "");
             u.put("name", wps.getNick());
@@ -147,11 +187,9 @@ public class FileServiceImpl implements FileService, ContextRefreshedListener {
             u.put("id", user.getId());
             u.put("name", user.getNick());
         }
-        u.put("permission", file.getPermission() == 1 ? "write" : "read");
         u.put("avatar_url", avatar(user, wps));
-        object.put("user", u);
 
-        return object;
+        return u;
     }
 
     private String avatar(UserModel user, WpsModel wps) {
@@ -163,7 +201,7 @@ public class FileServiceImpl implements FileService, ContextRefreshedListener {
     }
 
     private JSONObject validate(WpsModel wps, Map<String, String> map) {
-        return signature(wps, map).equals(map.get(SIGNATURE)) ? null : failure(1, "illegal signature");
+        return signature(wps, map).equals(map.get(SIGNATURE)) ? null : failure(3, "illegal signature");
     }
 
     private String signature(WpsModel wps, Map<String, String> map) {
