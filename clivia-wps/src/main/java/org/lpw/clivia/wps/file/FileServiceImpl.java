@@ -58,10 +58,7 @@ public class FileServiceImpl implements FileService, ContextRefreshedListener {
     private final Map<String, String> types = new HashMap<>();
 
     @Override
-    public String preview(WpsModel wps, String uri, String name, int permission, String creator, long create) {
-        if (wps == null)
-            return null;
-
+    public String preview(String key, String uri, String name, Permission permission, String creator, long create) {
         int index = uri.lastIndexOf('.');
         if (index == -1)
             return null;
@@ -74,13 +71,17 @@ public class FileServiceImpl implements FileService, ContextRefreshedListener {
         if (!file.exists())
             return null;
 
-        FileModel model = fileDao.find(wps.getId(), uri, permission);
+        WpsModel wps = wpsService.findByKey(key);
+        if (wps == null)
+            return null;
+
+        FileModel model = fileDao.find(wps.getId(), uri, permission.ordinal());
         if (model == null) {
             model = new FileModel();
             model.setWps(wps.getId());
             model.setUri(uri);
             model.setName(name);
-            model.setPermission(permission);
+            model.setPermission(permission.ordinal());
             model.setVersion(1);
             model.setSize(file.length());
             model.setCreator(creator);
@@ -95,7 +96,7 @@ public class FileServiceImpl implements FileService, ContextRefreshedListener {
         map.put(USER, userService.id());
         map.put(SIGNATURE, signature(wps, map));
         StringBuilder sb = new StringBuilder("https://wwo.wps.cn/office/").append(types.get(suffix)).append('/').append(model.getId()).append('?');
-        map.forEach((key, value) -> sb.append(key).append('=').append(codec.encodeUrl(value, null)).append('&'));
+        map.forEach((k, v) -> sb.append(k).append('=').append(codec.encodeUrl(v, null)).append('&'));
 
         return sb.substring(0, sb.length() - 1);
     }

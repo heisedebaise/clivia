@@ -33,6 +33,11 @@ public class WpsServiceImpl implements WpsService {
     }
 
     @Override
+    public WpsModel findByKey(String key) {
+        return wpsDao.findByKey(key);
+    }
+
+    @Override
     public void save(WpsModel wps) {
         if (validator.isEmpty(wps.getId()) || wpsDao.findById(wps.getId()) == null)
             wps.setId(null);
@@ -43,10 +48,5 @@ public class WpsServiceImpl implements WpsService {
     public void delete(String id) {
         wpsDao.delete(id);
         fileService.delete(id);
-    }
-
-    @Override
-    public String preview(String key, String uri, String name, Permission permission, String creator, long create) {
-        return fileService.preview(wpsDao.findByKey(key), uri, name, permission.ordinal(), creator, create);
     }
 }
