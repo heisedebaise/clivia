@@ -31,6 +31,7 @@ import java.util.Map;
 @Service(FileModel.NAME + ".service")
 public class FileServiceImpl implements FileService, ContextRefreshedListener {
     private static final String USER = "_w_user";
+    private static final String URL = "_w_url";
     private static final String SIGNATURE = "_w_signature";
 
     @Inject
@@ -93,6 +94,7 @@ public class FileServiceImpl implements FileService, ContextRefreshedListener {
         Map<String, String> map = new HashMap<>();
         map.put("_w_appid", wps.getAppId());
         map.put(USER, userService.id());
+        map.put(URL, request.getUrl());
         map.put(SIGNATURE, signature(wps, map));
         StringBuilder sb = new StringBuilder("https://wwo.wps.cn/office/").append(types.get(suffix)).append('/').append(model.getId()).append('?');
         map.forEach((key, value) -> sb.append(key).append('=').append(codec.encodeUrl(value, null)).append('&'));
@@ -114,6 +116,7 @@ public class FileServiceImpl implements FileService, ContextRefreshedListener {
         if (validate != null)
             return validate;
 
+        String url = map.get(URL);
         JSONObject object = new JSONObject();
         JSONObject f = new JSONObject();
         f.put("id", id);
@@ -124,7 +127,7 @@ public class FileServiceImpl implements FileService, ContextRefreshedListener {
         f.put("create_time", file.getCreateTime());
         f.put("modifier", file.getModifier());
         f.put("modify_time", file.getModifyTime());
-        f.put("download_url", request.getUrl() + file.getUri());
+        f.put("download_url", url + file.getUri());
         f.put("preview_pages", 99);
         JSONObject acl = new JSONObject();
         acl.put("rename", file.getPermission());
@@ -142,7 +145,7 @@ public class FileServiceImpl implements FileService, ContextRefreshedListener {
             watermark.put("value", wps.getWatermark());
         }
         object.put("file", f);
-        JSONObject u = user(map.get(USER), wps);
+        JSONObject u = user(map.get(USER), wps, url);
         u.put("permission", file.getPermission() == 1 ? "write" : "read");
         object.put("user", u);
 
@@ -170,14 +173,14 @@ public class FileServiceImpl implements FileService, ContextRefreshedListener {
         JSONArray ids = b.getJSONArray("ids");
         JSONArray users = new JSONArray();
         for (int i = 0, size = ids.size(); i < size; i++)
-            users.add(user(ids.getString(i), wps));
+            users.add(user(ids.getString(i), wps, map.get(URL)));
         JSONObject object = new JSONObject();
         object.put("users", users);
 
         return object;
     }
 
-    private JSONObject user(String id, WpsModel wps) {
+    private JSONObject user(String id, WpsModel wps, String url) {
         JSONObject u = new JSONObject();
         UserModel user = userService.findById(id);
         if (user == null) {
@@ -187,17 +190,17 @@ public class FileServiceImpl implements FileService, ContextRefreshedListener {
             u.put("id", user.getId());
             u.put("name", user.getNick());
         }
-        u.put("avatar_url", avatar(user, wps));
+        u.put("avatar_url", avatar(user, wps, url));
 
         return u;
     }
 
-    private String avatar(UserModel user, WpsModel wps) {
+    private String avatar(UserModel user, WpsModel wps, String url) {
         if (user != null)
             if (!validator.isEmpty(user.getPortrait()))
-                return user.getPortrait().contains("://") ? user.getPortrait() : (request.getUrl() + user.getPortrait());
+                return user.getPortrait().contains("://") ? user.getPortrait() : (url + user.getPortrait());
 
-        return validator.isEmpty(wps.getAvatar()) ? "" : (request.getUrl() + wps.getAvatar());
+        return validator.isEmpty(wps.getAvatar()) ? "" : (url + wps.getAvatar());
     }
 
     private JSONObject validate(WpsModel wps, Map<String, String> map) {
