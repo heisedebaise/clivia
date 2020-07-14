@@ -27,9 +27,9 @@ public class FileModel extends ModelSupport {
     private int version; // 版本号
     private long size; // 文件大小
     private String creator; // 创建者
-    private long create; // 创建时间
+    private long createTime; // 创建时间，单位：秒
     private String modifier; // 修改者
-    private long modify; // 修改时间
+    private long modifyTime; // 修改时间，单位：秒
 
     @Jsonable
     @Column(name = "c_wps")
@@ -102,13 +102,13 @@ public class FileModel extends ModelSupport {
     }
 
     @Jsonable
-    @Column(name = "c_create")
-    public long getCreate() {
-        return create;
+    @Column(name = "c_create_time")
+    public long getCreateTime() {
+        return createTime;
     }
 
-    public void setCreate(long create) {
-        this.create = create;
+    public void setCreateTime(long createTime) {
+        this.createTime = createTime;
     }
 
     @Jsonable
@@ -122,12 +122,12 @@ public class FileModel extends ModelSupport {
     }
 
     @Jsonable
-    @Column(name = "c_modify")
-    public long getModify() {
-        return modify;
+    @Column(name = "c_modify_time")
+    public long getModifyTime() {
+        return modifyTime;
     }
 
-    public void setModify(long modify) {
-        this.modify = modify;
+    public void setModifyTime(long modifyTime) {
+        this.modifyTime = modifyTime;
     }
 }

@@ -1,7 +1,11 @@
 package org.lpw.clivia.wps.file;
 
+import com.alibaba.fastjson.JSONObject;
+import org.lpw.photon.ctrl.context.Header;
 import org.lpw.photon.ctrl.context.Request;
+import org.lpw.photon.ctrl.context.Response;
 import org.lpw.photon.ctrl.execute.Execute;
+import org.lpw.photon.ctrl.template.Templates;
 import org.springframework.stereotype.Controller;
 
 import javax.inject.Inject;
@@ -10,10 +14,23 @@ import javax.inject.Inject;
  * @author lpw
  */
 @Controller(FileModel.NAME + ".ctrl")
-@Execute(name = "/wps/file/", key = FileModel.NAME, code = "0")
+@Execute(name = "/wps", key = FileModel.NAME, code = "0")
 public class FileCtrl {
+    @Inject
+    private Header header;
     @Inject
     private Request request;
     @Inject
+    private Response response;
+    @Inject
     private FileService fileService;
+
+    @Execute(name = "/v1/3rd/file/info", type = Templates.STRING)
+    public Object info() {
+        JSONObject object = fileService.info(header.get("x-weboffice-file-id"), request.getMap());
+        if (object.containsKey("code"))
+            response.sendError(422);
+
+        return object.toJSONString();
+    }
 }

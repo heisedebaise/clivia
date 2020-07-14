@@ -9,9 +9,9 @@ CREATE TABLE t_wps_file
   c_version INT DEFAULT 0 COMMENT '版本号',
   c_size BIGINT DEFAULT 0 COMMENT '文件大小',
   c_creator CHAR(36) DEFAULT NULL COMMENT '创建者',
-  c_create BIGINT DEFAULT 0 COMMENT '创建时间',
+  c_create_time BIGINT DEFAULT 0 COMMENT '创建时间，单位：秒',
   c_modifier CHAR(36) DEFAULT NULL COMMENT '修改者',
-  c_modify BIGINT DEFAULT 0 COMMENT '修改时间',
+  c_modify_time BIGINT DEFAULT 0 COMMENT '修改时间，单位：秒',
 
   PRIMARY KEY pk(c_id) USING HASH,
   KEY k_wps(c_wps) USING HASH,

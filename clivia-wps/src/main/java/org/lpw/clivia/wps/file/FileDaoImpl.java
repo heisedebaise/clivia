@@ -15,6 +15,11 @@ class FileDaoImpl implements FileDao {
     private LiteOrm liteOrm;
 
     @Override
+    public FileModel findById(String id) {
+        return liteOrm.findById(FileModel.class, id);
+    }
+
+    @Override
     public FileModel find(String wps, String uri, int permission) {
         return liteOrm.findOne(new LiteQuery(FileModel.class).where("c_uri=? and c_permission=? and c_wps=?"), new Object[]{uri, permission, wps});
     }

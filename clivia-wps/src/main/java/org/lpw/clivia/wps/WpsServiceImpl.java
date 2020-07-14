@@ -28,6 +28,11 @@ public class WpsServiceImpl implements WpsService {
     }
 
     @Override
+    public WpsModel findById(String id) {
+        return wpsDao.findById(id);
+    }
+
+    @Override
     public void save(WpsModel wps) {
         if (validator.isEmpty(wps.getId()) || wpsDao.findById(wps.getId()) == null)
             wps.setId(null);

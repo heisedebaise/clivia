@@ -12,6 +12,8 @@ public interface WpsService {
 
     JSONObject query(String key, String name, String appId);
 
+    WpsModel findById(String id);
+
     void save(WpsModel wps);
 
     void delete(String id);
