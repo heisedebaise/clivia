@@ -28,6 +28,9 @@ public class FileCtrl {
     @Execute(name = "/v1/3rd/file/info", type = Templates.STRING)
     public Object info() {
         JSONObject object = fileService.info(header.get("x-weboffice-file-id"), request.getMap());
+        System.out.println("#############################################");
+        System.out.println(object);
+        System.out.println("#############################################");
         if (object.containsKey("code"))
             response.sendError(422);
 
@@ -37,6 +40,9 @@ public class FileCtrl {
     @Execute(name = "/v1/3rd/user/info", type = Templates.STRING)
     public Object user() {
         JSONObject object = fileService.user(header.get("x-weboffice-file-id"), request.getMap(), request.getFromInputStream());
+        System.out.println("#############################################");
+        System.out.println(object);
+        System.out.println("#############################################");
         if (object.containsKey("code"))
             response.sendError(422);
 
