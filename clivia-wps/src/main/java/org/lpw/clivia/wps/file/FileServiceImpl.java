@@ -8,7 +8,7 @@ import org.lpw.clivia.wps.WpsModel;
 import org.lpw.clivia.wps.WpsService;
 import org.lpw.photon.bean.ContextRefreshedListener;
 import org.lpw.photon.crypto.Digest;
-import org.lpw.photon.ctrl.context.Request;
+import org.lpw.photon.ctrl.http.ServiceHelper;
 import org.lpw.photon.util.Codec;
 import org.lpw.photon.util.Context;
 import org.lpw.photon.util.Converter;
@@ -31,7 +31,6 @@ import java.util.Map;
 @Service(FileModel.NAME + ".service")
 public class FileServiceImpl implements FileService, ContextRefreshedListener {
     private static final String USER = "_w_user";
-    private static final String URL = "_w_url";
     private static final String SIGNATURE = "_w_signature";
 
     @Inject
@@ -49,7 +48,7 @@ public class FileServiceImpl implements FileService, ContextRefreshedListener {
     @Inject
     private Logger logger;
     @Inject
-    private Request request;
+    private ServiceHelper serviceHelper;
     @Inject
     private UserService userService;
     @Inject
@@ -94,7 +93,6 @@ public class FileServiceImpl implements FileService, ContextRefreshedListener {
         Map<String, String> map = new HashMap<>();
         map.put("_w_appid", wps.getAppId());
         map.put(USER, userService.id());
-        map.put(URL, request.getUrl());
         map.put(SIGNATURE, signature(wps, map));
         StringBuilder sb = new StringBuilder("https://wwo.wps.cn/office/").append(types.get(suffix)).append('/').append(model.getId()).append('?');
         map.forEach((key, value) -> sb.append(key).append('=').append(codec.encodeUrl(value, null)).append('&'));
@@ -116,7 +114,6 @@ public class FileServiceImpl implements FileService, ContextRefreshedListener {
         if (validate != null)
             return validate;
 
-        String url = map.get(URL);
         JSONObject object = new JSONObject();
         JSONObject f = new JSONObject();
         f.put("id", id);
@@ -127,7 +124,7 @@ public class FileServiceImpl implements FileService, ContextRefreshedListener {
         f.put("create_time", file.getCreateTime());
         f.put("modifier", file.getModifier());
         f.put("modify_time", file.getModifyTime());
-        f.put("download_url", url + file.getUri());
+        f.put("download_url", serviceHelper.getUrl() + file.getUri());
         f.put("preview_pages", 99);
         JSONObject acl = new JSONObject();
         acl.put("rename", file.getPermission());
@@ -145,7 +142,7 @@ public class FileServiceImpl implements FileService, ContextRefreshedListener {
             watermark.put("value", wps.getWatermark());
         }
         object.put("file", f);
-        JSONObject u = user(map.get(USER), wps, url);
+        JSONObject u = user(map.get(USER), wps);
         u.put("permission", file.getPermission() == 1 ? "write" : "read");
         object.put("user", u);
 
@@ -173,14 +170,14 @@ public class FileServiceImpl implements FileService, ContextRefreshedListener {
         JSONArray ids = b.getJSONArray("ids");
         JSONArray users = new JSONArray();
         for (int i = 0, size = ids.size(); i < size; i++)
-            users.add(user(ids.getString(i), wps, map.get(URL)));
+            users.add(user(ids.getString(i), wps));
         JSONObject object = new JSONObject();
         object.put("users", users);
 
         return object;
     }
 
-    private JSONObject user(String id, WpsModel wps, String url) {
+    private JSONObject user(String id, WpsModel wps) {
         JSONObject u = new JSONObject();
         UserModel user = userService.findById(id);
         if (user == null) {
@@ -190,17 +187,17 @@ public class FileServiceImpl implements FileService, ContextRefreshedListener {
             u.put("id", user.getId());
             u.put("name", user.getNick());
         }
-        u.put("avatar_url", avatar(user, wps, url));
+        u.put("avatar_url", avatar(user, wps));
 
         return u;
     }
 
-    private String avatar(UserModel user, WpsModel wps, String url) {
+    private String avatar(UserModel user, WpsModel wps) {
         if (user != null)
             if (!validator.isEmpty(user.getPortrait()))
-                return user.getPortrait().contains("://") ? user.getPortrait() : (url + user.getPortrait());
+                return user.getPortrait().contains("://") ? user.getPortrait() : (serviceHelper.getUrl() + user.getPortrait());
 
-        return validator.isEmpty(wps.getAvatar()) ? "" : (url + wps.getAvatar());
+        return validator.isEmpty(wps.getAvatar()) ? "" : (serviceHelper.getUrl() + wps.getAvatar());
     }
 
     private JSONObject validate(WpsModel wps, Map<String, String> map) {
