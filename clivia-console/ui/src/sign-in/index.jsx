@@ -2,6 +2,7 @@ import React from 'react';
 import { Layout, Form, Input, Button, message } from 'antd';
 import { UserOutlined, LockOutlined, GithubOutlined, WechatOutlined, WeiboOutlined, AlipayOutlined } from '@ant-design/icons';
 import { service } from '../http';
+import { toArray } from '../json';
 import './index.css';
 
 const { Footer, Content } = Layout;
@@ -11,8 +12,25 @@ class SignIn extends React.Component {
         super();
 
         this.state = {
-            up: false
+            up: false,
+            agreement: {
+                uri: '',
+                name: ''
+            }
         };
+        service('/keyvalue/object', { key: 'setting.agreement.user.sign-up' }).then(data => {
+            if (data === null) return;
+
+            let array = toArray(data['setting.agreement.user.sign-up']);
+            if (array.length === 0) return;
+
+            let agreement = array[0];
+            agreement.label = agreement.name;
+            let index = agreement.name.lastIndexOf('.');
+            if (index > -1)
+                agreement.label = agreement.name.substring(0, index);
+            this.setState({ agreement: agreement });
+        });
     }
 
     finish = values => {
@@ -44,6 +62,7 @@ class SignIn extends React.Component {
                             <Form.Item name="uid"><Input prefix={<UserOutlined style={{ color: 'rgba(0,0,0,.25)' }} />} placeholder="用户名" /></Form.Item>
                             <Form.Item name="password"><Input.Password prefix={<LockOutlined style={{ color: 'rgba(0,0,0,.25)' }} />} placeholder="密码" /></Form.Item>
                             {this.state.up ? <Form.Item name="repeat"><Input.Password prefix={<LockOutlined style={{ color: 'rgba(0,0,0,.25)' }} />} placeholder="重复密码" /></Form.Item> : null}
+                            {this.state.up ? <Form.Item><a href={this.state.agreement.uri + '?filename=' + this.state.agreement.name} target="_blank" rel="noopener noreferrer">{this.state.agreement.label}</a></Form.Item> : null}
                             <Form.Item><Button type="primary" htmlType="submit" className="sign-in-up-button">{this.state.up ? '提交注册' : '登录'}</Button></Form.Item>
                             <Form.Item>
                                 <Button type="link" className="sign-in-up-link" onClick={this.change}>{this.state.up ? '使用已有账户登录' : '注册新账户'}</Button>

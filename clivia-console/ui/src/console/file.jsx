@@ -2,7 +2,7 @@ import React from 'react';
 import { Upload, Button, message } from 'antd';
 import { UploadOutlined, LoadingOutlined } from '@ant-design/icons';
 import { url, service } from '../http';
-import { toArray } from './json';
+import { toArray } from '../json';
 
 class File extends React.Component {
     state = {

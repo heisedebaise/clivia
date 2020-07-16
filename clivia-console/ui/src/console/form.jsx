@@ -5,7 +5,7 @@ import moment from 'moment';
 import { service, url } from '../http';
 import meta from './meta';
 import { toMoney, fromMoney, toPercent, fromPercent } from './numeric';
-import { toArray } from './json';
+import { toArray } from '../json';
 import Image from './image';
 import File from './file';
 import DSelect from './dselect';

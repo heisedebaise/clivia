@@ -4,7 +4,7 @@ import { MinusOutlined, PaperClipOutlined } from '@ant-design/icons';
 import { service, url } from '../http';
 import meta from './meta';
 import { toMoney, toPercent } from './numeric';
-import { toArray } from './json';
+import { toArray } from '../json';
 import DSelect from './dselect';
 import Category from './category';
 import User from './user';
