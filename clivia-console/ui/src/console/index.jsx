@@ -10,8 +10,8 @@ import './index.css';
 const { Header, Footer, Sider, Content } = Layout;
 
 class Console extends React.Component {
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
 
     this.state = {
       menu: <Menu />,
