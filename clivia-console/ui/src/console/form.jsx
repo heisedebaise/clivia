@@ -51,6 +51,20 @@ class Base extends React.Component {
                 this.data(data);
             });
         }
+
+        for (let prop of meta.props(this.props.props, this.props.meta.props)) {
+            if (prop.type === 'agreement') {
+                service('/keyvalue/object', { key: prop.agreement }).then(data => {
+                    if (data === null) return;
+
+                    let array = toArray(data[prop.agreement]);
+                    if (array.length === 0) return;
+
+                    data[prop.agreement] = array[0];
+                    this.setState(data);
+                });
+            }
+        }
     }
 
     data = data => {
@@ -134,6 +148,8 @@ class Base extends React.Component {
 
     render = () => {
         let items = [];
+        if (this.props.meta.info)
+            items.push(<div key={'info:' + this.props.meta.info} className="console-info" dangerouslySetInnerHTML={{ __html: this.state[this.props.meta.info] }} />);
         for (let prop of meta.props(this.props.props, this.props.meta.props)) {
             let item = {
                 key: prop.name,
@@ -152,6 +168,16 @@ class Base extends React.Component {
                 items.push(<Form.Item {...item}><Editor name={prop.name} value={this.state[prop.name] || ''} form={this} /></Form.Item>);
             } else if (prop.type === 'html') {
                 items.push(<Form.Item {...item}><div dangerouslySetInnerHTML={{ __html: this.state[prop.name] || '' }} /></Form.Item>);
+            } else if (prop.type === 'agreement') {
+                let value = this.state[prop.agreement] || { uri: '', name: '' };
+                if (value) {
+                    let label = value.name;
+                    let index = label.lastIndexOf('.');
+                    if (index > -1) label = label.substring(0, index);
+                    item.className += ' console-form-agreement';
+                    item.label = 'agreement';
+                    items.push(<Form.Item {...item}><a href={value.uri + '?filename=' + value.name} target="_blank" rel="noopener noreferrer">{label}</a></Form.Item>);
+                }
             } else if (prop.type === 'category') {
                 let list = prop.category;
                 if (!list && this.props.parameter && this.props.parameter.key)

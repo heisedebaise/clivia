@@ -36,6 +36,14 @@
     background-color: #fff;
 }
 
+.console-info {
+    margin-bottom: 8px;
+    padding: 8px 15px;
+    background-color: #e6f7ff;
+    border: 1px solid #91d5ff;
+    border-radius: 2px;
+}
+
 .console-footer {
     text-align: center;
     color: rgba(0, 0, 0, 0.45);

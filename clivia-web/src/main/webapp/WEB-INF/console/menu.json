@@ -16,11 +16,27 @@
         ]
     },
     {
+        "label": "页面",
+        "items": [
+            {
+                "label": "自定义",
+                "page": "custom",
+                "parameter": {
+                    "name": "value"
+                }
+            }
+        ]
+    },
+    {
         "label": "配置",
         "items": [
             {
                 "label": "WPS",
                 "service": "/wps/query"
+            },
+            {
+                "label": "协议",
+                "service": "/setting/agreement"
             }
         ]
     },

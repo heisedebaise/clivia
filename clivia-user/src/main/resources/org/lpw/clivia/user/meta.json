@@ -148,6 +148,11 @@
             },
             {
                 "name": "register"
+            },
+            {
+                "name": "agreement",
+                "type": "agreement",
+                "agreement": "setting.agreement.user.sign-up"
             }
         ],
         "toolbar": [

@@ -18,7 +18,10 @@ class LeftMenu extends React.Component {
 
     click = e => {
         let item = this.map[e.key];
-        body.load(item.service, item.parameter, item.data);
+        if (item.service)
+            body.load(item.service, item.parameter, item.data);
+        else if (item.page)
+            body.page(item.page, item.parameter);
     };
 
     render = () => <Menu onClick={this.click} mode="inline" theme="dark">{this.menu(this.state.items)}</Menu>;

@@ -236,14 +236,19 @@ class Grid extends React.Component {
                     });
                 } else {
                     this.pageNum = data.number;
-                    this.setState({
-                        list: data.list,
-                        pagination: data.count <= data.size ? false : {
+                    let state = { list: data.list };
+                    if (data.count <= data.size)
+                        state.pagination = false;
+                    else {
+                        state.pagination = {
                             total: data.count,
                             pageSize: data.size,
                             current: data.number
-                        }
-                    });
+                        };
+                    }
+                    if (this.props.meta.info)
+                        state[this.props.meta.info] = data[this.props.meta.info];
+                    this.setState(state);
                 }
             });
         });
@@ -251,6 +256,8 @@ class Grid extends React.Component {
 
     render = () => {
         let elements = [];
+        if (this.props.meta.info)
+            elements.push(<div key={'info:' + this.props.meta.info} className="console-info" dangerouslySetInnerHTML={{ __html: this.state[this.props.meta.info] }} />);
         if (this.search) elements.push(this.search);
         else if (this.toolbar) elements.push(<div key="toolbar" className="console-grid-toolbar">{this.toolbar}</div>);
         elements.push(<Table key="table" columns={this.columns} dataSource={this.state.list} rowKey="id" pagination={this.state.pagination}

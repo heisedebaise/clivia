@@ -18,5 +18,20 @@
                 "service": "/keyvalue/saves"
             }
         ]
+    },
+    "agreement": {
+        "props": [
+            {
+                "name": "setting.agreement.user.sign-up",
+                "type": "file",
+                "upload": "clivia.keyvalue.file"
+            }
+        ],
+        "toolbar": [
+            {
+                "label": "save",
+                "service": "/keyvalue/saves"
+            }
+        ]
     }
 }

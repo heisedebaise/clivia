@@ -6,6 +6,7 @@ import Grid from './grid';
 import Form from './form';
 import Setting from './setting';
 import Crosier from './crosier';
+import Page from '../page';
 
 class Body {
     setIndex = index => this.index = index;
@@ -49,6 +50,8 @@ class Body {
             }
         });
     }
+
+    page = (page, parameter) => this.setState(<Page page={page} parameter={parameter} body={this} />);
 
     setState = state => this.index.setState({ body: <div /> }, () => this.index.setState({ body: state }));
 }
