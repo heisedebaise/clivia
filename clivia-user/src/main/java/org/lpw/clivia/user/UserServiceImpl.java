@@ -24,7 +24,6 @@ import org.springframework.stereotype.Service;
 
 import javax.inject.Inject;
 import java.sql.Date;
-import java.sql.Timestamp;
 
 /**
  * @author lpw
@@ -392,6 +391,24 @@ public class UserServiceImpl implements UserService {
         save(user);
 
         return password;
+    }
+
+    @Override
+    public void info(String id, String idcard, String name, String nick, String mobile, String email, int gender) {
+        UserModel user = findById(id);
+        if (!validator.isEmpty(idcard))
+            user.setIdcard(idcard);
+        if (!validator.isEmpty(name))
+            user.setName(name);
+        if (!validator.isEmpty(nick))
+            user.setNick(nick);
+        if (!validator.isEmpty(mobile))
+            user.setMobile(mobile);
+        if (!validator.isEmpty(email))
+            user.setEmail(email);
+        if (gender > 0)
+            user.setGender(gender);
+        save(user);
     }
 
     @Override

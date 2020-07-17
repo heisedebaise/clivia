@@ -51,7 +51,7 @@ class Body {
         });
     }
 
-    page = (page, parameter) => this.setState(<Page page={page} parameter={parameter} body={this} />);
+    page = (page, parameter, data) => this.setState(<Page page={page} parameter={parameter} data={data} body={this} />);
 
     setState = state => this.index.setState({ body: <div /> }, () => this.index.setState({ body: state }));
 }

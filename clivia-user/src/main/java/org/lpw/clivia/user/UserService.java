@@ -222,9 +222,22 @@ public interface UserService {
     String resetPassword(String id);
 
     /**
+     * 更新用户信息。
+     *
+     * @param id     ID值。
+     * @param idcard 身份证号。
+     * @param name   姓名。
+     * @param nick   昵称。
+     * @param mobile 手机号。
+     * @param email  Email地址。
+     * @param gender 性别：0-未知；1-男；2-女。
+     */
+    void info(String id, String idcard, String name, String nick, String mobile, String email, int gender);
+
+    /**
      * 设置用户等级。
      *
-     * @param id    用户ID值。
+     * @param id    ID值。
      * @param grade 等级值。
      */
     void grade(String id, int grade);
@@ -232,7 +245,7 @@ public interface UserService {
     /**
      * 设置用户状态。
      *
-     * @param id    用户ID值。
+     * @param id    ID值。
      * @param state 状态值。
      */
     void state(String id, int state);
