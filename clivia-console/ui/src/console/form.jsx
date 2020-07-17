@@ -109,7 +109,7 @@ class Base extends React.Component {
                 continue;
             }
 
-            if (!value) {
+            if (!value && value !== '') {
                 delete values[prop.name];
 
                 continue;
