@@ -39,7 +39,15 @@
         },
         {
             "name": "grade",
-            "type": "read-only"
+            "type": "read-only",
+            "style": [
+                {
+                    "condition": "model.grade>=90",
+                    "value": {
+                        "color": "#f00"
+                    }
+                }
+            ]
         },
         {
             "name": "state",

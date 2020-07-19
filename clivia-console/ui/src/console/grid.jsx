@@ -31,23 +31,23 @@ class Grid extends React.Component {
         for (let prop of columns) {
             let column = { key: prop.name, title: prop.label };
             if (prop.labels) {
-                column.render = model => prop.labels[this.value(model, prop.name)];
+                column.render = model => this.style(prop, model, prop.labels[this.value(model, prop.name)]);
             } else if (prop.type === 'money' || prop.type === 'read-only:money') {
-                column.render = model => toMoney(this.value(model, prop.name), prop.empty);
+                column.render = model => this.style(prop, model, toMoney(this.value(model, prop.name), prop.empty));
             } else if (prop.type === 'percent' || prop.type === 'read-only:percent') {
-                column.render = model => toPercent(this.value(model, prop.name));
+                column.render = model => this.style(prop, model, toPercent(this.value(model, prop.name)));
             } else if (prop.type === 'image') {
                 column.render = model => {
                     let value = this.value(model, prop.name);
-                    if (value === '') return '';
+                    if (value === '') return this.style(prop, model, '');
 
-                    if (value.indexOf(',') === -1) return <img src={url(value)} alt="" onClick={this.preview} />;
+                    if (value.indexOf(',') === -1) return this.style(prop, model, <img src={url(value)} alt="" onClick={this.preview} />);
 
                     let imgs = [];
                     for (let img of value.split(','))
                         imgs.push(<img key={prop.name + imgs.length} src={url(img)} alt="" onClick={this.preview} />);
 
-                    return imgs;
+                    return this.style(prop, model, imgs);
                 }
             } else if (prop.type === 'file' || prop.type === 'read-only:file') {
                 column.render = model => {
@@ -59,7 +59,7 @@ class Grid extends React.Component {
                         </div>);
                     }
 
-                    return files;
+                    return this.style(prop, model, files);
                 }
             } else if (prop.type === 'switch') {
                 column.render = model => {
@@ -69,12 +69,14 @@ class Grid extends React.Component {
                     else
                         s.disabled = true;
 
-                    return <Switch {...s} />;
+                    return this.style(prop, model, <Switch {...s} />);
                 }
             } else if (prop.type === 'editor' || prop.type === 'html') {
-                column.render = model => <div dangerouslySetInnerHTML={{ __html: this.value(model, prop.name) }} />;
+                column.render = model => this.style(prop, model, <div dangerouslySetInnerHTML={{ __html: this.value(model, prop.name) }} />);
             } else if (prop.type === 'user') {
-                column.render = model => <User data={this.value(model, prop.name)} />;
+                column.render = model => this.style(prop, model, <User data={this.value(model, prop.name)} />);
+            } else if (prop.style) {
+                column.render = model => this.style(prop, model, this.value(model, prop.name));
             } else {
                 column.dataIndex = (prop.name || '').split('.');
             }
@@ -132,6 +134,17 @@ class Grid extends React.Component {
             return 0;
 
         return m || '';
+    }
+
+    style = (prop, model, element) => {
+        if (prop.style) {
+            for (let style of prop.style) {
+                // eslint-disable-next-line
+                if (eval(style.condition))
+                    return <div style={style.value}>{element}</div>
+            }
+        }
+        return element;
     }
 
     button = op => <Button key={op.label} onClick={this.operate.bind(this, op, null)}>{op.label}</Button>;

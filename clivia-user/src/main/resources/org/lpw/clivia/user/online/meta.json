@@ -11,7 +11,15 @@
             "label": "clivia.user.register"
         },
         {
-            "name": "grade"
+            "name": "grade",
+            "style": [
+                {
+                    "condition": "model.grade>=90",
+                    "value": {
+                        "color": "#f00"
+                    }
+                }
+            ]
         },
         {
             "name": "ip"
