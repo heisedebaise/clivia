@@ -227,6 +227,19 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public boolean secret(String oldPassword, String newPassword) {
+        UserModel user = fromSession();
+        if (!validator.isEmpty(user.getSecret()) && !user.getSecret().equals(password(oldPassword)))
+            return false;
+
+        user.setSecret(password(newPassword));
+        save(user);
+        session.set(SESSION, user);
+
+        return true;
+    }
+
+    @Override
     public String password(String password) {
         return digest.md5(UserModel.NAME + digest.sha1(password + UserModel.NAME));
     }

@@ -96,6 +96,17 @@ public class UserCtrl {
                 templates.get().failure(151017, message.get(UserModel.NAME + ".password.illegal"), null, null);
     }
 
+    @Execute(name = "secret", validates = {
+            @Validate(validator = Validators.NOT_EMPTY, parameter = "new", failureCode = 14, failureArgKeys = {UserModel.NAME + ".password.new"}),
+            @Validate(validator = Validators.NOT_EQUALS, parameters = {"old", "new"}, failureCode = 15, failureArgKeys = {UserModel.NAME + ".password.new", UserModel.NAME + ".password.old"}),
+            @Validate(validator = Validators.EQUALS, parameters = {"new", "repeat"}, failureCode = 16, failureArgKeys = {UserModel.NAME + ".password.repeat", UserModel.NAME + ".password.new"}),
+            @Validate(validator = UserService.VALIDATOR_SIGN)
+    })
+    public Object secret() {
+        return userService.secret(request.get("old"), request.get("new")) ? "" :
+                templates.get().failure(151018, message.get(UserModel.NAME + ".secret.illegal"), null, null);
+    }
+
     @Execute(name = "get", validates = {
             @Validate(validator = Validators.NOT_EMPTY, parameter = "ids", failureCode = 21),
             @Validate(validator = Validators.SIGN)

@@ -14,6 +14,7 @@
 /user/sign
 /user/modify:0
 /user/password:0
+/user/secret:0
 /user/sign-out
 /user/crosier/grades:0
 /user/crosier/pathes:0

@@ -109,6 +109,15 @@ public interface UserService {
     boolean password(String oldPassword, String newPassword);
 
     /**
+     * 修改安全密码。
+     *
+     * @param oldPassword 旧密码。
+     * @param newPassword 新密码。
+     * @return 如果修改成功则返回true；否则返回false。
+     */
+    boolean secret(String oldPassword, String newPassword);
+
+    /**
      * 加密密码。
      *
      * @param password 密码明文。
