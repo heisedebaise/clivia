@@ -336,6 +336,7 @@ public class UserServiceImpl implements UserService {
                 object = new JSONObject();
             else {
                 object = modelHelper.toJson(user);
+                object.put("secret", !validator.isEmpty(user.getSecret()));
                 object.put("auth", authService.query(user.getId()));
             }
             cache.put(cacheKey, object, false);
