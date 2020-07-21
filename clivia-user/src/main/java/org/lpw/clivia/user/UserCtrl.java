@@ -93,7 +93,7 @@ public class UserCtrl {
     })
     public Object password() {
         return userService.password(request.get("old"), request.get("new")) ? "" :
-                templates.get().failure(1517, message.get(UserModel.NAME + ".password.illegal"), null, null);
+                templates.get().failure(151017, message.get(UserModel.NAME + ".password.illegal"), null, null);
     }
 
     @Execute(name = "get", validates = {
