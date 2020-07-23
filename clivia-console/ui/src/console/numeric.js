@@ -1,6 +1,6 @@
 const toMoney = function (value, empty) {
     if (!value) return empty || '';
-    
+
     try {
         return (parseInt(value) / 100).toFixed(2);
     } catch (e) {
@@ -9,8 +9,10 @@ const toMoney = function (value, empty) {
 }
 
 const fromMoney = function (value) {
+    if (!value) return 0;
+
     try {
-        return Math.round(parseFloat(value) * 100);
+        return Math.round(parseFloat(value) * 100) || 0;
     } catch (e) {
         return 0;
     }
