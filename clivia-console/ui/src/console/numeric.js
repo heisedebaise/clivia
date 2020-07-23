@@ -10,7 +10,7 @@ const toMoney = function (value, empty) {
 
 const fromMoney = function (value) {
     try {
-        return Math.floor(parseFloat(value) * 100);
+        return Math.round(parseFloat(value) * 100);
     } catch (e) {
         return 0;
     }
@@ -35,7 +35,7 @@ const fromPercent = function (value) {
         if (length > 1 && value.substring(length - 1) === '%')
             value = value.substring(0, length - 1).trim();
 
-        return Math.floor(parseFloat(value) * 100);
+        return Math.round(parseFloat(value) * 100);
     } catch (e) {
         return 0;
     }
