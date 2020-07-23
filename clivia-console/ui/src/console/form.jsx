@@ -126,7 +126,7 @@ class Base extends React.Component {
         }
         if (this.props.data)
             for (let key in this.props.data)
-                if (!(key in values))
+                if (!(key in values) && this.props.data[key])
                     values[key] = this.props.data[key];
         this.submit(mt, { ...values, ...this.values }).then(data => {
             if (data === null) return;
