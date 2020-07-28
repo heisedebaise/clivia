@@ -36,7 +36,7 @@ class Grid extends React.Component {
                 column.render = model => this.style(prop, model, toMoney(this.value(model, prop.name), prop.empty));
             } else if (prop.type === 'percent' || prop.type === 'read-only:percent') {
                 column.render = model => this.style(prop, model, toPercent(this.value(model, prop.name)));
-            } else if (prop.type === 'image') {
+            } else if (prop.type === 'image' || prop.type === 'read-only:image') {
                 column.render = model => {
                     let value = this.value(model, prop.name);
                     if (value === '') return this.style(prop, model, '');
