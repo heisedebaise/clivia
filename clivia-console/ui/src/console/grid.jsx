@@ -198,6 +198,12 @@ class Grid extends React.Component {
             return;
         }
 
+        if (op.type === 'download') {
+            location.href = op.service;
+
+            return;
+        }
+
         if (model && model.children)
             delete model.children;
 
