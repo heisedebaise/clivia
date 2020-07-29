@@ -61,7 +61,7 @@ public class SelfImpl extends TypeSupport {
         String[] failures = converter.toArray(cache.get(cacheKey), ",");
         int failure = failures.length < 2 ? 0 : numeric.toInt(failures[0]);
         if (failure > 0 && System.currentTimeMillis() - numeric.toLong(failures[1]) >
-                keyvalueService.valueAsInt(PREFIX + "pass.lock", 5) * TimeUnit.Minute.getTime()) {
+                TimeUnit.Minute.getTime(keyvalueService.valueAsInt(PREFIX + "pass.lock", 5))) {
             failure = 0;
             cache.remove(cacheKey);
         }

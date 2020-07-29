@@ -6,9 +6,14 @@ import org.lpw.photon.bean.ContextRefreshedListener;
 import org.lpw.photon.cache.Cache;
 import org.lpw.photon.scheduler.MinuteJob;
 import org.lpw.photon.scheduler.SecondsJob;
+import org.lpw.photon.util.Context;
+import org.lpw.photon.util.DateTime;
+import org.lpw.photon.util.Generator;
+import org.lpw.photon.util.Io;
+import org.lpw.photon.util.Logger;
+import org.lpw.photon.util.Numeric;
 import org.lpw.photon.util.Thread;
 import org.lpw.photon.util.TimeUnit;
-import org.lpw.photon.util.*;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -17,7 +22,11 @@ import java.sql.Timestamp;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.*;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 /**
  * @author lpw
@@ -59,7 +68,7 @@ public class AsyncServiceImpl implements AsyncService, SecondsJob, MinuteJob, Co
         async.setKey(key);
         async.setParameter(parameter);
         async.setBegin(dateTime.now());
-        async.setTimeout(new Timestamp(System.currentTimeMillis() + timeout * TimeUnit.Second.getTime()));
+        async.setTimeout(new Timestamp(System.currentTimeMillis() + TimeUnit.Second.getTime(timeout)));
         asyncDao.save(async);
         putCache(async);
         map.put(async.getId(), executorService.submit(BeanFactory.getBean(Callabler.class).set(callable, asyncNotifier)));

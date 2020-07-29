@@ -1,11 +1,11 @@
 package org.lpw.clivia.user.online;
 
 import com.alibaba.fastjson.JSONObject;
+import org.lpw.clivia.page.Pagination;
 import org.lpw.clivia.user.UserModel;
 import org.lpw.clivia.user.UserService;
 import org.lpw.clivia.user.auth.AuthModel;
 import org.lpw.clivia.user.auth.AuthService;
-import org.lpw.clivia.page.Pagination;
 import org.lpw.photon.ctrl.context.Header;
 import org.lpw.photon.ctrl.context.Session;
 import org.lpw.photon.dao.model.ModelHelper;
@@ -18,7 +18,6 @@ import org.springframework.stereotype.Service;
 
 import javax.inject.Inject;
 import java.sql.Date;
-import java.sql.Time;
 import java.sql.Timestamp;
 import java.util.HashSet;
 import java.util.Set;
@@ -82,7 +81,7 @@ public class OnlineServiceImpl implements OnlineService, MinuteJob {
         if (online == null)
             return false;
 
-        if (System.currentTimeMillis() - online.getLastVisit().getTime() > TimeUnit.Minute.getTime()) {
+        if (System.currentTimeMillis() - online.getLastVisit().getTime() > TimeUnit.Minute.getTime(1)) {
             online.setLastVisit(dateTime.now());
             onlineDao.save(online);
         }
@@ -126,7 +125,7 @@ public class OnlineServiceImpl implements OnlineService, MinuteJob {
 
     @Override
     public void executeMinuteJob() {
-        onlineDao.query(new Timestamp(System.currentTimeMillis() - effective * TimeUnit.Minute.getTime())).getList().forEach(online -> {
+        onlineDao.query(new Timestamp(System.currentTimeMillis() - TimeUnit.Minute.getTime(effective))).getList().forEach(online -> {
             userService.signOut(online.getSid());
             onlineDao.delete(online);
         });
