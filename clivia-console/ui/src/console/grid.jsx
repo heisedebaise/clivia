@@ -199,7 +199,7 @@ class Grid extends React.Component {
         }
 
         if (op.type === 'download') {
-            location.href = op.service;
+            window.location.href = op.service;
 
             return;
         }
