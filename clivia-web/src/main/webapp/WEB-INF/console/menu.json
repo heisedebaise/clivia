@@ -4,16 +4,7 @@
         "service": "/console/dashboard"
     },
     {
-        "label": "文档",
-        "items": [
-            {
-                "label": "分类",
-                "service": "/category/query",
-                "parameter": {
-                    "key": "category"
-                }
-            }
-        ]
+        "category": "menu"
     },
     {
         "label": "页面",
@@ -30,6 +21,20 @@
     {
         "label": "配置",
         "items": [
+            {
+                "label": "分类",
+                "service": "/category/query",
+                "parameter": {
+                    "key": "category"
+                }
+            },
+            {
+                "label": "菜单",
+                "service": "/category/query",
+                "parameter": {
+                    "key": "menu"
+                }
+            },
             {
                 "label": "WPS",
                 "service": "/wps/query"

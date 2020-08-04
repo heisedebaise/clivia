@@ -2,6 +2,7 @@ package org.lpw.clivia.console;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import org.lpw.clivia.category.CategoryService;
 import org.lpw.clivia.user.UserService;
 import org.lpw.clivia.user.crosier.CrosierService;
 import org.lpw.clivia.user.crosier.CrosierValid;
@@ -40,6 +41,8 @@ public class MenuHelperImpl implements MenuHelper, CrosierValid {
     @Inject
     private Logger logger;
     @Inject
+    private CategoryService categoryService;
+    @Inject
     private UserService userService;
     @Inject
     private CrosierService crosierService;
@@ -66,7 +69,38 @@ public class MenuHelperImpl implements MenuHelper, CrosierValid {
     }
 
     private JSONArray get() {
-        return json.toArray(map.get("").toJSONString());
+        JSONArray array = json.toArray(map.get("").toJSONString());
+        for (int i = array.size() - 1; i > -1; i--) {
+            JSONObject object = array.getJSONObject(i);
+            if (!object.containsKey("category"))
+                continue;
+
+            array.remove(i);
+            array.addAll(i, category(categoryService.query(object.getString("category"), null)));
+        }
+
+        return array;
+    }
+
+    private JSONArray category(JSONArray categories) {
+        JSONArray array = new JSONArray();
+        for (int i = 0, size = categories.size(); i < size; i++) {
+            JSONObject object = new JSONObject();
+            JSONObject category = categories.getJSONObject(i);
+            object.put("label", category.getString("name"));
+            String value = category.getString("value");
+            if (!validator.isEmpty(value)) {
+                object.put("service", value);
+                JSONObject parameter = new JSONObject();
+                parameter.put("category", category.getString("id"));
+                object.put("parameter", parameter);
+            }
+            if (category.containsKey("children"))
+                object.put("items", category(category.getJSONArray("children")));
+            array.add(object);
+        }
+
+        return array;
     }
 
     private void operation(JSONArray menus) {
@@ -80,6 +114,9 @@ public class MenuHelperImpl implements MenuHelper, CrosierValid {
 
                 continue;
             }
+
+            if (!menu.containsKey("service"))
+                continue;
 
             String service = menu.getString("service").replace('.', '/');
             int index = service.lastIndexOf('/') + 1;
