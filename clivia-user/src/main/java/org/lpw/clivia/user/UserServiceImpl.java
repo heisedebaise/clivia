@@ -67,7 +67,7 @@ public class UserServiceImpl implements UserService {
     private OnlineService onlineService;
     @Inject
     private UserDao userDao;
-    private int codeLength = 8;
+    private final int codeLength = 8;
 
     @Override
     public String inviter(String code) {
