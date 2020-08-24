@@ -139,11 +139,14 @@ class Grid extends React.Component {
     style = (prop, model, element) => {
         if (prop.style) {
             for (let style of prop.style) {
-                // eslint-disable-next-line
-                if (eval(style.condition))
-                    return <div style={style.value}>{element}</div>
+                try {
+                    // eslint-disable-next-line
+                    if (eval(style.condition))
+                        return <div style={style.value}>{element}</div>;
+                } catch (e) { }
             }
         }
+
         return element;
     }
 
