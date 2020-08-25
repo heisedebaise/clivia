@@ -7,11 +7,11 @@
         },
         {
             "name": "forced",
-            "type": "switch"
+            "labels": "forceds"
         },
         {
             "name": "client",
-            "type": "clients"
+            "labels": "clients"
         },
         {
             "name": "explain",
