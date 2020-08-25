@@ -16,6 +16,7 @@
         <module>clivia-shortcut</module>
         <module>clivia-chrome</module>
         <module>clivia-ad</module>
+        <module>clivia-update</module>
         <module>clivia-user</module>
         <module>clivia-account</module>
         <module>clivia-payment</module>
