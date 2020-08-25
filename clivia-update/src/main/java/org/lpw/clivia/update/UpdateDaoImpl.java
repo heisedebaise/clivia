@@ -17,7 +17,7 @@ class UpdateDaoImpl implements UpdateDao {
 
     @Override
     public PageList<UpdateModel> query(int pageSize, int pageNum) {
-        return liteOrm.query(new LiteQuery(UpdateModel.class).where("c_version>?").order("c_version desc").size(pageSize).page(pageNum), null);
+        return liteOrm.query(new LiteQuery(UpdateModel.class).order("c_version desc").size(pageSize).page(pageNum), null);
     }
 
     @Override
