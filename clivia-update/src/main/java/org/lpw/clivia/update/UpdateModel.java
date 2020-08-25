@@ -21,8 +21,9 @@ public class UpdateModel extends ModelSupport {
     static final String NAME = "clivia.update";
 
     private int version; // 版本号
+    private String name; // 版本名
     private int forced; // 强制升级：0-否；1-是
-    private String client; // 客户端：0-Android；1-iOS
+    private int client; // 客户端：0-Android；1-iOS
     private String explain; // 说明
     private String url; // 升级地址
 
@@ -37,6 +38,16 @@ public class UpdateModel extends ModelSupport {
     }
 
     @Jsonable
+    @Column(name = "c_name")
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    @Jsonable
     @Column(name = "c_forced")
     public int getForced() {
         return forced;
@@ -48,11 +59,11 @@ public class UpdateModel extends ModelSupport {
 
     @Jsonable
     @Column(name = "c_client")
-    public String getClient() {
+    public int getClient() {
         return client;
     }
 
-    public void setClient(String client) {
+    public void setClient(int client) {
         this.client = client;
     }
 

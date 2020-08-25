@@ -36,11 +36,13 @@ public class UpdateCtrl {
 
     @Execute(name = "save", validates = {
             @Validate(validator = Validators.GREATER_THAN, number = {0}, parameter = "version", failureCode = 2),
-            @Validate(validator = Validators.BETWEEN, number = {0, 1}, parameter = "forced", failureCode = 3),
-            @Validate(validator = Validators.BETWEEN, number = {0, 1}, parameter = "client", failureCode = 4),
-            @Validate(validator = Validators.NOT_EMPTY, parameter = "explain", failureCode = 5),
-            @Validate(validator = Validators.NOT_EMPTY, parameter = "url", failureCode = 6),
-            @Validate(validator = Validators.MAX_LENGTH, number = {100}, parameter = "url", failureCode = 7),
+            @Validate(validator = Validators.NOT_EMPTY, parameter = "name", failureCode = 3),
+            @Validate(validator = Validators.MAX_LENGTH, number = {100}, parameter = "name", failureCode = 4),
+            @Validate(validator = Validators.BETWEEN, number = {0, 1}, parameter = "forced", failureCode = 5),
+            @Validate(validator = Validators.BETWEEN, number = {0, 1}, parameter = "client", failureCode = 6),
+            @Validate(validator = Validators.NOT_EMPTY, parameter = "explain", failureCode = 7),
+            @Validate(validator = Validators.NOT_EMPTY, parameter = "url", failureCode = 8),
+            @Validate(validator = Validators.MAX_LENGTH, number = {100}, parameter = "url", failureCode = 9),
             @Validate(validator = Validators.SIGN)
     })
     public Object save() {

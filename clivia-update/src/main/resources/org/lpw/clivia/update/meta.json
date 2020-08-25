@@ -6,6 +6,9 @@
             "name": "version"
         },
         {
+            "name": "name"
+        },
+        {
             "name": "forced",
             "labels": "forceds"
         },
