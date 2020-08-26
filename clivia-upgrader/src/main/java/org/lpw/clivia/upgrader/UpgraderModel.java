@@ -1,4 +1,4 @@
-package org.lpw.clivia.update;
+package org.lpw.clivia.upgrader;
 
 import org.lpw.photon.dao.model.Jsonable;
 import org.lpw.photon.dao.model.ModelSupport;
@@ -13,12 +13,12 @@ import javax.persistence.Table;
 /**
  * @author lpw
  */
-@Component(UpdateModel.NAME + ".model")
+@Component(UpgraderModel.NAME + ".model")
 @Scope(BeanDefinition.SCOPE_PROTOTYPE)
-@Entity(name = UpdateModel.NAME)
-@Table(name = "t_update")
-public class UpdateModel extends ModelSupport {
-    static final String NAME = "clivia.update";
+@Entity(name = UpgraderModel.NAME)
+@Table(name = "t_upgrader")
+public class UpgraderModel extends ModelSupport {
+    static final String NAME = "clivia.upgrader";
 
     private int version; // 版本号
     private String name; // 版本名

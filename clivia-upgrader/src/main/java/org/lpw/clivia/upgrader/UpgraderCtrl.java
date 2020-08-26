@@ -1,4 +1,4 @@
-package org.lpw.clivia.update;
+package org.lpw.clivia.upgrader;
 
 import org.lpw.photon.ctrl.context.Request;
 import org.lpw.photon.ctrl.execute.Execute;
@@ -11,19 +11,19 @@ import javax.inject.Inject;
 /**
  * @author lpw
  */
-@Controller(UpdateModel.NAME + ".ctrl")
-@Execute(name = "/update/", key = UpdateModel.NAME, code = "107")
-public class UpdateCtrl {
+@Controller(UpgraderModel.NAME + ".ctrl")
+@Execute(name = "/upgrader/", key = UpgraderModel.NAME, code = "107")
+public class UpgraderCtrl {
     @Inject
     private Request request;
     @Inject
-    private UpdateService updateService;
+    private UpgraderService upgraderService;
 
     @Execute(name = "query", validates = {
             @Validate(validator = Validators.SIGN)
     })
     public Object query() {
-        return updateService.query();
+        return upgraderService.query();
     }
 
     @Execute(name = "latest", validates = {
@@ -31,7 +31,7 @@ public class UpdateCtrl {
             @Validate(validator = Validators.BETWEEN, number = {0, 1}, parameter = "client", failureCode = 4)
     })
     public Object latest() {
-        return updateService.latest(request.getAsInt("version"), request.getAsInt("client"));
+        return upgraderService.latest(request.getAsInt("version"), request.getAsInt("client"));
     }
 
     @Execute(name = "save", validates = {
@@ -46,7 +46,7 @@ public class UpdateCtrl {
             @Validate(validator = Validators.SIGN)
     })
     public Object save() {
-        updateService.save(request.setToModel(UpdateModel.class));
+        upgraderService.save(request.setToModel(UpgraderModel.class));
 
         return "";
     }
@@ -56,7 +56,7 @@ public class UpdateCtrl {
             @Validate(validator = Validators.SIGN)
     })
     public Object delete() {
-        updateService.delete(request.get("id"));
+        upgraderService.delete(request.get("id"));
 
         return "";
     }

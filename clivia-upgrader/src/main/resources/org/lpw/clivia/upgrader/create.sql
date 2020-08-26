@@ -1,5 +1,5 @@
-DROP TABLE IF EXISTS t_update;
-CREATE TABLE t_update
+DROP TABLE IF EXISTS t_upgrader;
+CREATE TABLE t_upgrader
 (
   c_id CHAR(36) NOT NULL COMMENT '主键',
   c_version INT DEFAULT 0 COMMENT '版本号',

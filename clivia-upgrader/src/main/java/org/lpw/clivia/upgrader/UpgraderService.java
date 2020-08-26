@@ -1,16 +1,16 @@
-package org.lpw.clivia.update;
+package org.lpw.clivia.upgrader;
 
 import com.alibaba.fastjson.JSONObject;
 
 /**
  * @author lpw
  */
-public interface UpdateService {
+public interface UpgraderService {
     JSONObject query();
 
     JSONObject latest(int version, int client);
 
-    void save(UpdateModel update);
+    void save(UpgraderModel upgrader);
 
     void delete(String id);
 }

@@ -1,6 +1,6 @@
 {
-    "key": "clivia.update",
-    "uri": "/update/",
+    "key": "clivia.upgrader",
+    "uri": "/upgrader/",
     "props": [
         {
             "name": "version"

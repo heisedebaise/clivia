@@ -5,10 +5,10 @@
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>org.lpw.clivia</groupId>
-  <artifactId>clivia-update</artifactId>
+  <artifactId>clivia-upgrader</artifactId>
   <version>0.3</version>
 
-  <name>clivia-update</name>
+  <name>clivia-upgrader</name>
   <url>https://github.com/heisedebaise/clivia</url>
 
   <dependencies>
