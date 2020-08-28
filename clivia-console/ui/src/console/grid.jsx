@@ -155,7 +155,7 @@ class Grid extends React.Component {
     action = (op, model) => <span key={op.label} className="console-grid-op" onClick={this.operate.bind(this, op, model)}>{op.label}</span>;
 
     operate = (op, model) => {
-        if (op.type === 'create') {
+        if (op.type === 'create' || op.type === 'ucreate') {
             this.props.body.load(this.props.body.uri(this.props.uri, op.service || op.type), this.props.parameter, model && model.id ? { parent: model.id } : {});
 
             return;
