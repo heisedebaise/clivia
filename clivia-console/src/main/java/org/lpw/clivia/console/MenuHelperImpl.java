@@ -6,6 +6,8 @@ import org.lpw.clivia.category.CategoryService;
 import org.lpw.clivia.user.UserService;
 import org.lpw.clivia.user.crosier.CrosierService;
 import org.lpw.clivia.user.crosier.CrosierValid;
+import org.lpw.photon.bean.BeanFactory;
+import org.lpw.photon.bean.ContextRefreshedListener;
 import org.lpw.photon.cache.Cache;
 import org.lpw.photon.util.Context;
 import org.lpw.photon.util.Converter;
@@ -18,12 +20,14 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import javax.inject.Inject;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Service(ConsoleModel.NAME + ".menu")
-public class MenuHelperImpl implements MenuHelper, CrosierValid {
+public class MenuHelperImpl implements MenuHelper, ContextRefreshedListener, CrosierValid {
     @Inject
     private Context context;
     @Inject
@@ -52,6 +56,7 @@ public class MenuHelperImpl implements MenuHelper, CrosierValid {
     private Dashboard dashboard;
     @Value("${" + ConsoleModel.NAME + ".console:/WEB-INF/console/}")
     private String console;
+    private final Map<String, MenuSupplier> suppliers = new HashMap<>();
     private final Map<String, JSONArray> map = new ConcurrentHashMap<>();
 
     @Override
@@ -63,7 +68,17 @@ public class MenuHelperImpl implements MenuHelper, CrosierValid {
             return menus;
         }
 
-        return map.computeIfAbsent(numeric.toString(userService.grade(), "0"), key -> permit("", get()));
+        JSONArray array = json.copy(map.computeIfAbsent(numeric.toString(userService.grade(), "0"), key -> permit("", get())));
+        for (int i = 0, size = array.size(); i < size; i++) {
+            JSONObject object = array.getJSONObject(i);
+            if (object.containsKey("supplier")) {
+                String supplier = object.getString("supplier");
+                if (suppliers.containsKey(supplier))
+                    object.put("items", suppliers.get(supplier).items());
+            }
+        }
+
+        return array;
     }
 
     private JSONArray get() {
@@ -218,5 +233,20 @@ public class MenuHelperImpl implements MenuHelper, CrosierValid {
         }
 
         return array;
+    }
+
+    @Override
+    public int getContextRefreshedSort() {
+        return 191;
+    }
+
+    @Override
+    public void onContextRefreshed() {
+        suppliers.clear();
+        Collection<MenuSupplier> collection = BeanFactory.getBeans(MenuSupplier.class);
+        if (validator.isEmpty(collection))
+            return;
+
+        collection.forEach(supplier -> suppliers.put(supplier.key(), supplier));
     }
 }
