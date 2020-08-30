@@ -47,6 +47,8 @@ class Body {
                 this.setState(<Crosier meta={m} />);
             } else if (mt.key === 'setting') {
                 this.setState(<Setting props={mt.props} meta={m} uri={uri} parameter={parameter} data={data} body={this} />);
+            } else if (m.type === 'page') {
+                this.page(m.page, parameter, data);
             }
         });
     }

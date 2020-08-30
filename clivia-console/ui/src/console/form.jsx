@@ -229,6 +229,9 @@ class Base extends React.Component {
         if (prop.labels)
             return prop.labels[value] || '';
 
+        if (prop.values)
+            return prop.values[value] || '';
+
         if (value === 0)
             return 0;
 
@@ -249,6 +252,25 @@ class Base extends React.Component {
             let options = [];
             for (let index in prop.labels) {
                 options.push(<Select.Option key={index} value={index}>{prop.labels[index]}</Select.Option>);
+            }
+
+            return <Select>{options}</Select>;
+        }
+
+        if (prop.values) {
+            let keys = Object.keys(prop.values);
+            if (keys.length < 5) {
+                let radios = [];
+                for (let index in keys) {
+                    radios.push(<Radio key={index} value={keys[index]}>{prop.values[keys[index]]}</Radio>);
+                }
+
+                return <Radio.Group>{radios}</Radio.Group>;
+            }
+
+            let options = [];
+            for (let index in keys) {
+                options.push(<Select.Option key={index} value={keys[index]}>{prop.values[keys[index]]}</Select.Option>);
             }
 
             return <Select>{options}</Select>;
@@ -279,6 +301,8 @@ class Base extends React.Component {
         let one = this.props.meta.toolbar.length === 1;
         if (this.props.meta.toolbar) {
             for (let toolbar of this.props.meta.toolbar) {
+                if (toolbar.hidden) continue;
+
                 let button = {
                     key: toolbar.label
                 };

@@ -23,7 +23,9 @@ class Grid extends React.Component {
         } else if (props.meta.toolbar && props.meta.toolbar.length > 0) {
             this.toolbar = [];
             for (let toolbar of props.meta.toolbar) {
-                this.toolbar.push(this.button(toolbar));
+                if (!toolbar.hidden) {
+                    this.toolbar.push(this.button(toolbar));
+                }
             }
         }
 
@@ -32,6 +34,8 @@ class Grid extends React.Component {
             let column = { key: prop.name, title: prop.label };
             if (prop.labels) {
                 column.render = model => this.style(prop, model, prop.labels[this.value(model, prop.name)]);
+            } else if (prop.values) {
+                column.render = model => this.style(prop, model, prop.values[this.value(model, prop.name)]);
             } else if (prop.type === 'money' || prop.type === 'read-only:money') {
                 column.render = model => this.style(prop, model, toMoney(this.value(model, prop.name), prop.empty));
             } else if (prop.type === 'percent' || prop.type === 'read-only:percent') {
@@ -322,7 +326,9 @@ class Search extends React.Component {
         toolbar.push(<Button key="search" type="primary" htmlType="submit">搜索</Button>);
         if (this.props.toolbar && this.props.toolbar.length > 0) {
             for (let button of this.props.toolbar) {
-                toolbar.push(this.props.grid.button(button));
+                if (!button.hidden) {
+                    toolbar.push(this.props.grid.button(button));
+                }
             }
         }
         cols.push(<span key="toolbar" className="console-grid-search-toolbar">{toolbar}</span>);
@@ -347,6 +353,23 @@ class Search extends React.Component {
             let options = [<Option key={''} value={''}>全部</Option>];
             for (let index in column.labels)
                 options.push(<Option key={index} value={index}>{column.labels[index]}</Option>);
+
+            return <Select>{options}</Select>
+        }
+
+        if (column.values) {
+            let keys = Object.keys(column.values);
+            if (keys.length <= 2) {
+                let radios = [<Radio key="" value={''}>全部</Radio>];
+                for (let index in keys)
+                    radios.push(<Radio key={index} value={keys[index]}>{column.values[keys[index]]}</Radio>);
+
+                return <Radio.Group initValue={''}>{radios}</Radio.Group>;
+            }
+
+            let options = [<Option key={''} value={''}>全部</Option>];
+            for (let index in keys)
+                options.push(<Option key={index} value={keys[index]}>{column.values[keys[index]]}</Option>);
 
             return <Select>{options}</Select>
         }
