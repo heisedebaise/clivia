@@ -1,5 +1,5 @@
 import React from 'react';
-import { Form, Radio, Select, DatePicker, Switch, Input, Button, message, Col } from 'antd';
+import { Form, Radio, Select, DatePicker, Switch, Input, Button, message, Row, Col } from 'antd';
 import { PaperClipOutlined, SyncOutlined } from '@ant-design/icons';
 import moment from 'moment';
 import { service, url } from '../http';
@@ -164,6 +164,13 @@ class Base extends React.Component {
                 items.push(<Form.Item {...item}><File name={prop.name} upload={prop.upload} size={prop.size || 1} value={this.state[prop.name] || ''} form={this} /></Form.Item>);
             } else if (prop.type === 'dselect') {
                 items.push(<Form.Item {...item}><DSelect list={prop.list} parameter={prop.parameter} name={prop.name} value={this.state[prop.name]} vname={prop.vname} lname={prop.lname} form={this} /></Form.Item>);
+            } else if (prop.type === 'refresh') {
+                items.push(<Form.Item {...item}>
+                    <Row>
+                        <Col span={23}>{this.state[prop.name] || ''}</Col>
+                        <Col span={1}><SyncOutlined onClick={this.refresh.bind(this, prop)} /></Col>
+                    </Row>
+                </Form.Item>);
             } else if (prop.type === 'editor') {
                 items.push(<Form.Item {...item}><Editor name={prop.name} value={this.state[prop.name] || ''} form={this} /></Form.Item>);
             } else if (prop.type === 'html') {
@@ -274,15 +281,6 @@ class Base extends React.Component {
             }
 
             return <Select>{options}</Select>;
-        }
-
-        if (prop.type === 'refresh') {
-            return (
-                <Row>
-                    <Col span={23}>{prop.values[value] || ''}</Col>
-                    <Col span={1}><SyncOutlined onClick={this.refresh.bind(this, prop)} /></Col>
-                </Row>
-            );
         }
 
         if (prop.type === 'date') return <DatePicker />;
