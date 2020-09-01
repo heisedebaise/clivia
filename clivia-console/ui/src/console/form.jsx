@@ -1,5 +1,5 @@
 import React from 'react';
-import { Form, Radio, Select, DatePicker, Switch, Input, Button, message, Row, Col } from 'antd';
+import { Form, Radio, Select, DatePicker, Switch, Input, Button, message } from 'antd';
 import { PaperClipOutlined, SyncOutlined } from '@ant-design/icons';
 import moment from 'moment';
 import { service, url } from '../http';
@@ -165,16 +165,7 @@ class Base extends React.Component {
             } else if (prop.type === 'dselect') {
                 items.push(<Form.Item {...item}><DSelect list={prop.list} parameter={prop.parameter} name={prop.name} value={this.state[prop.name]} vname={prop.vname} lname={prop.lname} form={this} /></Form.Item>);
             } else if (prop.type === 'refresh') {
-                if (!prop.service)
-                    items.push(<Form.Item {...item}>{this.state[prop.name] || ''}</Form.Item>);
-                else {
-                    items.push(<Form.Item {...item}>
-                        <Row>
-                            <Col span={23}>{this.state[prop.name] || ''}</Col>
-                            <Col span={1}><SyncOutlined onClick={this.refresh.bind(this, prop)} /></Col>
-                        </Row>
-                    </Form.Item>);
-                }
+                items.push(<Form.Item {...item}>{this.state[prop.name] || ''} {prop.service ? <Button icon={<SyncOutlined alt={prop.label} />} onClick={this.refresh.bind(this, prop)} /> : null}</Form.Item>);
             } else if (prop.type === 'editor') {
                 items.push(<Form.Item {...item}><Editor name={prop.name} value={this.state[prop.name] || ''} form={this} /></Form.Item>);
             } else if (prop.type === 'html') {
@@ -204,10 +195,10 @@ class Base extends React.Component {
         }
 
         return (
-            <Form ref={this.form} {...layout} initialValues={this.state}>
+            <Form ref={this.form} {...layout} initialValues={this.state} >
                 {items}
-                <Form.Item className="console-form-toolbar" label="toolbar">{this.toolbar()}</Form.Item>
-            </Form>
+                < Form.Item className="console-form-toolbar" label="toolbar" > {this.toolbar()}</Form.Item>
+            </Form >
         );
     }
 
@@ -305,7 +296,7 @@ class Base extends React.Component {
     }
 
     refresh = (prop) => {
-        service(prop.service).then(data => {
+        service(this.props.body.uri(this.props.uri, prop.service)).then(data => {
             if (data === null) return;
 
             this.props.body.load(this.props.uri, this.props.parameter, this.props.data);
