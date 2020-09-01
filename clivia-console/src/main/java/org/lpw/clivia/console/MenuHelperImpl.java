@@ -23,7 +23,6 @@ import javax.inject.Inject;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Service(ConsoleModel.NAME + ".menu")
@@ -153,7 +152,7 @@ public class MenuHelperImpl implements MenuHelper, ContextRefreshedListener, Cro
             if (!validator.isEmpty(props)) {
                 for (int i = 0, size = props.size(); i < size; i++) {
                     JSONObject prop = props.getJSONObject(i);
-                    if (json.has(prop, "type", "switch") && prop.containsKey("service"))
+                    if ((json.has(prop, "type", "switch") || json.has(prop, "type", "refresh")) && prop.containsKey("service"))
                         items.add(prop);
                 }
             }
