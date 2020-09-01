@@ -1,6 +1,6 @@
 import React from 'react';
-import { Form, Radio, Select, DatePicker, Switch, Input, Button, message } from 'antd';
-import { PaperClipOutlined } from '@ant-design/icons';
+import { Form, Radio, Select, DatePicker, Switch, Input, Button, message, Col } from 'antd';
+import { PaperClipOutlined, SyncOutlined } from '@ant-design/icons';
 import moment from 'moment';
 import { service, url } from '../http';
 import meta from './meta';
@@ -276,6 +276,15 @@ class Base extends React.Component {
             return <Select>{options}</Select>;
         }
 
+        if (prop.type === 'refresh') {
+            return (
+                <Row>
+                    <Col span={23}>{prop.values[value] || ''}</Col>
+                    <Col span={1}><SyncOutlined onClick={this.refresh.bind(this, prop)} /></Col>
+                </Row>
+            );
+        }
+
         if (prop.type === 'date') return <DatePicker />;
 
         if (prop.type === 'datetime') return <DatePicker showTime={true} />;
@@ -291,6 +300,14 @@ class Base extends React.Component {
 
     switch = (prop, check) => {
         this.value(prop.name, check ? 1 : 0);
+    }
+
+    refresh = (prop) => {
+        service(prop.service).then(data => {
+            if (data === null) return;
+
+            this.props.body.load(this.props.uri, this.props.parameter, this.props.data);
+        });
     }
 
     toolbar = () => {
