@@ -113,7 +113,7 @@ public class MetaHelperImpl implements MetaHelper, ContextRefreshedListener, Cro
                 if (service.charAt(0) != '/')
                     service = uri + service;
                 if (!crosierService.permit(service, obj.containsKey("parameter") ? json.toMap(obj.getJSONObject("parameter")) : new HashMap<>())) {
-                    if (json.has(obj, "type", "switch"))
+                    if (json.has(obj, "type", "switch") || json.has(obj, "type", "refresh"))
                         obj.remove("service");
                     else {
                         array.remove(i);
