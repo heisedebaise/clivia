@@ -467,21 +467,34 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserModel create(String uid, String password, int grade, int state) {
+    public UserModel create(String uid, String password, String idcard, String name, String nick, String mobile, String email,
+                            String portrait, int gender, Date birthday, int grade, int state) {
         UserModel user = new UserModel();
-        user.setNick(uid);
-        if (validator.isMobile(uid))
-            user.setMobile(uid);
-        if (validator.isEmail(uid))
-            user.setEmail(uid);
         user.setPassword(password(password));
+        user.setIdcard(idcard);
+        user.setName(name);
+        user.setNick(validator.isEmpty(nick) ? uid : nick);
+        if (validator.isEmpty(mobile)) {
+            if (validator.isMobile(uid))
+                user.setMobile(uid);
+        } else
+            user.setMobile(mobile);
+        if (validator.isEmpty(email)) {
+            if (validator.isEmail(uid))
+                user.setEmail(uid);
+        } else {
+            user.setEmail(email);
+        }
+        user.setPortrait(portrait);
+        user.setGender(gender);
+        user.setBirthday(birthday);
         setCode(user);
         user.setInviter(id());
         user.setRegister(dateTime.now());
         user.setGrade(grade);
         user.setState(state);
         userDao.save(user);
-        authService.create(user.getId(), uid, Types.Self, null, null, null, null);
+        authService.create(user.getId(), uid, Types.Self, mobile, email, nick, portrait);
 
         return user;
     }

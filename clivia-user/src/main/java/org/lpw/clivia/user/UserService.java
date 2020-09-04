@@ -288,11 +288,20 @@ public interface UserService {
      *
      * @param uid      UID。
      * @param password 密码。
+     * @param idcard   身份证号。
+     * @param name     姓名。
+     * @param nick     昵称。
+     * @param mobile   手机号。
+     * @param email    Email地址。
+     * @param portrait 头像。
+     * @param gender   性别：0-未知；1-男；2-女。
+     * @param birthday 出生日期。
      * @param grade    等级。
      * @param state    状态。
      * @return 用户信息。
      */
-    UserModel create(String uid, String password, int grade, int state);
+    UserModel create(String uid, String password, String idcard, String name, String nick, String mobile, String email,
+                     String portrait, int gender, Date birthday, int grade, int state);
 
     /**
      * 清空当前用户缓存数据。
