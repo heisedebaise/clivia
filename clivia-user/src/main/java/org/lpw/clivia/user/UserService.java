@@ -252,6 +252,13 @@ public interface UserService {
     void grade(String id, int grade);
 
     /**
+     * 设置当前用户等级。
+     *
+     * @param grade 等级值。
+     */
+    void grade(int grade);
+
+    /**
      * 设置用户状态。
      *
      * @param id    ID值。

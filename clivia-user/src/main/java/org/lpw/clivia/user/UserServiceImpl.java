@@ -433,6 +433,13 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public void grade(int grade) {
+        String id = id();
+        grade(id, grade);
+        session.set(SESSION, findById(id));
+    }
+
+    @Override
     public void state(String id, int state) {
         UserModel user = findById(id);
         user.setState(state);
