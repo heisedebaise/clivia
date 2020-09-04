@@ -468,7 +468,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserModel create(String uid, String password, String idcard, String name, String nick, String mobile, String email,
-                            String portrait, int gender, Date birthday, int grade, int state) {
+                            String portrait, int gender, Date birthday, String inviter, int grade, int state) {
         UserModel user = new UserModel();
         user.setPassword(password(password));
         user.setIdcard(idcard);
@@ -489,7 +489,7 @@ public class UserServiceImpl implements UserService {
         user.setGender(gender);
         user.setBirthday(birthday);
         setCode(user);
-        user.setInviter(id());
+        user.setInviter(validator.isEmpty(inviter) ? id() : inviter);
         user.setRegister(dateTime.now());
         user.setGrade(grade);
         user.setState(state);

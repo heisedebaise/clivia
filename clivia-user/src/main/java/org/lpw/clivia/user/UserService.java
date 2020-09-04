@@ -296,12 +296,13 @@ public interface UserService {
      * @param portrait 头像。
      * @param gender   性别：0-未知；1-男；2-女。
      * @param birthday 出生日期。
+     * @param inviter  邀请人。
      * @param grade    等级。
      * @param state    状态。
      * @return 用户信息。
      */
     UserModel create(String uid, String password, String idcard, String name, String nick, String mobile, String email,
-                     String portrait, int gender, Date birthday, int grade, int state);
+                     String portrait, int gender, Date birthday, String inviter, int grade, int state);
 
     /**
      * 清空当前用户缓存数据。
