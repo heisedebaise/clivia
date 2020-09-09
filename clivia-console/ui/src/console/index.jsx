@@ -3,7 +3,6 @@ import { Layout } from 'antd';
 import { url } from '../http';
 import Menu from './menu';
 import Sign from './sign';
-import Dashboard from './dashboard';
 import body from './body';
 import './index.css';
 
@@ -14,17 +13,22 @@ class Console extends React.Component {
     super(props);
 
     this.state = {
-      menu: <Menu />,
-      body: <Dashboard />
+      body: <div />
     };
     body.setIndex(this);
+  }
+
+  componentDidMount = () => {
+    this.setState({
+      body: <div />
+    });
   }
 
   render = () => (
     <Layout style={{ minHeight: '100vh' }}>
       <Sider>
         <div className="console-logo">{this.props.logo ? [<img key="img" src={url(this.props.logo)} alt="" />, <div key="div"></div>] : null}</div>
-        {this.state.menu}
+        <Menu />
       </Sider>
       <Layout>
         <Header className="console-header">

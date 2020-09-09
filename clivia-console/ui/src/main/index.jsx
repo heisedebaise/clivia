@@ -14,6 +14,9 @@ class Main extends React.Component {
       user: {}
     };
     loader(null);
+  }
+
+  componentDidMount = () => {
     service('/keyvalue/object', { key: 'setting.global.' }).then(data => {
       if (data === null) return;
 

@@ -13,31 +13,48 @@ class LeftMenu extends React.Component {
             items: []
         };
         this.map = {};
-        service('/console/menu').then(data => this.setState({ items: data }));
+        service('/console/menu').then(data => {
+            if (data === null || data.length === 0) return;
+
+            let item = data[0].service || data[0].page;
+            this.setState({
+                items: data,
+                item: item
+            });
+            this.load(item ? data[0] : data[0].items[0]);
+        });
     }
 
     click = e => {
-        let item = this.map[e.key];
+        this.load(this.map[e.key]);
+    };
+
+    load = item => {
         if (item.service)
             body.load(item.service, item.parameter, item.data);
         else if (item.page)
             body.page(item.page, item.parameter, item.data);
-    };
+    }
 
-    render = () => <Menu onClick={this.click} mode="inline" theme="dark">{this.menu(this.state.items)}</Menu>;
+    render = () => {
+        if (this.state.items.length === 0) return null;
 
-    menu = items => {
+        return <Menu onClick={this.click} mode="inline" theme="dark" defaultOpenKeys={['0-0']} defaultSelectedKeys={[this.state.item ? '0-0' : '0-0-0']}>{this.menu(this.state.items, '0')}</Menu>;
+    }
+
+    menu = (items, parent) => {
         let menus = [];
         if (items.length === 0) return menus;
 
-        for (let item of items) {
-            let key = Math.random().toString(36).substring(2);
+        for (let i = 0; i < items.length; i++) {
+            let key = parent + '-' + i;
+            let item = items[i];
             if (item.service || !item.items) {
                 this.map[key] = item;
                 menus.push(<Menu.Item key={key}>{item.label}</Menu.Item>);
             }
             else {
-                menus.push(<SubMenu key={key} title={<span>{item.label}</span>} >{this.menu(item.items)}</SubMenu>);
+                menus.push(<SubMenu key={key} title={<span>{item.label}</span>} >{this.menu(item.items, key)}</SubMenu>);
             }
         }
 
