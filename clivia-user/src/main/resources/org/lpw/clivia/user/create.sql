@@ -16,7 +16,7 @@ CREATE TABLE t_user
   c_invite_count INT DEFAULT 0 COMMENT '邀请人数',
   c_code CHAR(8) NOT NULL COMMENT '唯一编码',
   c_register DATETIME DEFAULT NULL COMMENT '注册时间',
-  c_grade INT DEFAULT 0 COMMENT '等级：<50为用户；>=50为管理员；99为超级管理员',
+  c_grade INT DEFAULT 0 COMMENT '等级：>=90为管理员；99为超级管理员',
   c_state INT DEFAULT 0 COMMENT '状态：0-禁用；1-正常',
 
   PRIMARY KEY pk(c_id) USING HASH,

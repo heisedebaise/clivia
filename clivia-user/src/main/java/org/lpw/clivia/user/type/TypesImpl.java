@@ -23,8 +23,8 @@ public class TypesImpl implements Types, ContextRefreshedListener {
     }
 
     @Override
-    public UserModel auth(String key, String uid, String password) {
-        return map.get(key).auth(uid, password);
+    public UserModel auth(String key, String uid, String password, String grade) {
+        return map.get(key).auth(uid, password, grade);
     }
 
     @Override

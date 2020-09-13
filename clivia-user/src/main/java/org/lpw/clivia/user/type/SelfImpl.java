@@ -45,7 +45,7 @@ public class SelfImpl extends TypeSupport {
     }
 
     @Override
-    public UserModel auth(String uid, String password) {
+    public UserModel auth(String uid, String password, String grade) {
         if (validator.isEmpty(password))
             return null;
 

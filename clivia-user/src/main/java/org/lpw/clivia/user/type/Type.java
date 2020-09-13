@@ -23,9 +23,10 @@ public interface Type {
      *
      * @param uid      UID。
      * @param password 密码。
+     * @param grade    等级。
      * @return 认证通过则返回用户信息；否则返回null。
      */
-    UserModel auth(String uid, String password);
+    UserModel auth(String uid, String password, String grade);
 
     /**
      * 获取UID。

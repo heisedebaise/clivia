@@ -10,7 +10,6 @@ import Category from './category';
 import User from './user';
 import './grid.css';
 
-const { Option } = Select;
 const { RangePicker } = DatePicker;
 
 class Grid extends React.Component {
@@ -342,36 +341,20 @@ class Search extends React.Component {
 
     input = column => {
         if (column.labels) {
-            if (column.labels.length <= 2) {
-                let radios = [<Radio key="" value={''}>全部</Radio>];
-                for (let index in column.labels)
-                    radios.push(<Radio key={index} value={index}>{column.labels[index]}</Radio>);
-
-                return <Radio.Group initValue={''}>{radios}</Radio.Group>;
-            }
-
-            let options = [<Option key={''} value={''}>全部</Option>];
+            let options = [{ label: '全部', value: '' }];
             for (let index in column.labels)
-                options.push(<Option key={index} value={index}>{column.labels[index]}</Option>);
+                options.push({ label: column.labels[index], value: index });
 
-            return <Select>{options}</Select>
+            return options.length <= 3 ? <Radio.Group options={options} /> : <Select options={options} />;
         }
 
         if (column.values) {
+            let options = [{ label: '全部', value: '' }];
             let keys = Object.keys(column.values);
-            if (keys.length <= 2) {
-                let radios = [<Radio key="" value={''}>全部</Radio>];
-                for (let index in keys)
-                    radios.push(<Radio key={index} value={keys[index]}>{column.values[keys[index]]}</Radio>);
-
-                return <Radio.Group initValue={''}>{radios}</Radio.Group>;
-            }
-
-            let options = [<Option key={''} value={''}>全部</Option>];
             for (let index in keys)
-                options.push(<Option key={index} value={keys[index]}>{column.values[keys[index]]}</Option>);
+                options.push({ label: column.values[keys[index]], value: keys[index] });
 
-            return <Select>{options}</Select>
+            return options.length <= 3 ? <Radio.Group options={options} /> : <Select options={options} />;
         }
 
         if (column.type === 'date')

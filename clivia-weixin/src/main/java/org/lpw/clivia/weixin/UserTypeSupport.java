@@ -32,7 +32,7 @@ public abstract class UserTypeSupport extends TypeSupport {
     protected InfoService infoService;
 
     @Override
-    public UserModel auth(String uid, String password) {
+    public UserModel auth(String uid, String password, String grade) {
         Set<String> set = getUid(uid, password);
         if (set == null)
             return null;
@@ -45,7 +45,7 @@ public abstract class UserTypeSupport extends TypeSupport {
         }
 
         if (user == null)
-            return userService.signUp(uid, password, getKey());
+            return userService.signUp(uid, password, getKey(), grade);
 
         for (String u : set)
             if (authService.findByUid(u) == null)
@@ -71,7 +71,7 @@ public abstract class UserTypeSupport extends TypeSupport {
         return set;
     }
 
-    protected String key(String uid,String password){
-        return WeixinModel.NAME+".uid-password."+uid+"-"+password;
+    protected String key(String uid, String password) {
+        return WeixinModel.NAME + ".uid-password." + uid + "-" + password;
     }
 }

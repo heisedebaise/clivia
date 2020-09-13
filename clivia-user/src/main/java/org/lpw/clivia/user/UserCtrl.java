@@ -42,7 +42,7 @@ public class UserCtrl {
             @Validate(validator = AuthService.VALIDATOR_UID_NOT_EXISTS, parameters = {"uid", "password", "type"}, failureCode = 4)
     })
     public Object signUp() {
-        userService.signUp(request.get("uid"), request.get("password"), request.get("type"));
+        userService.signUp(request.get("uid"), request.get("password"), request.get("type"), request.get("grade"));
 
         return sign();
     }
@@ -51,7 +51,7 @@ public class UserCtrl {
             @Validate(validator = Validators.NOT_EMPTY, parameter = "uid", failureCode = 1),
             @Validate(validator = UserService.VALIDATOR_EXISTS_TYPE, parameter = "type", failureCode = 27),
             @Validate(validator = UserService.VALIDATOR_PASSWORD, parameters = {"password", "type"}, failureCode = 3),
-            @Validate(validator = UserService.VALIDATOR_SIGN_IN, parameters = {"uid", "password", "type"}, failureCode = 6)
+            @Validate(validator = UserService.VALIDATOR_SIGN_IN, parameters = {"uid", "password", "type", "grade"}, failureCode = 6)
     })
     public Object signIn() {
         return sign();

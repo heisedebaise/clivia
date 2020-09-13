@@ -242,40 +242,20 @@ class Base extends React.Component {
 
     input = prop => {
         if (prop.labels) {
-            if (prop.labels.length < 5) {
-                let radios = [];
-                for (let index in prop.labels) {
-                    radios.push(<Radio key={index} value={index}>{prop.labels[index]}</Radio>);
-                }
-
-                return <Radio.Group>{radios}</Radio.Group>;
-            }
-
             let options = [];
-            for (let index in prop.labels) {
-                options.push(<Select.Option key={index} value={index}>{prop.labels[index]}</Select.Option>);
-            }
+            for (let index in prop.labels)
+                options.push({ label: prop.labels[index], value: index });
 
-            return <Select>{options}</Select>;
+            return options.length < 5 ? <Radio.Group options={options} /> : <Select options={options} />;
         }
 
         if (prop.values) {
-            let keys = Object.keys(prop.values);
-            if (keys.length < 5) {
-                let radios = [];
-                for (let index in keys) {
-                    radios.push(<Radio key={index} value={keys[index]}>{prop.values[keys[index]]}</Radio>);
-                }
-
-                return <Radio.Group>{radios}</Radio.Group>;
-            }
-
             let options = [];
-            for (let index in keys) {
-                options.push(<Select.Option key={index} value={keys[index]}>{prop.values[keys[index]]}</Select.Option>);
-            }
+            let keys = Object.keys(prop.values);
+            for (let index in keys)
+                options.push({ label: prop.values[keys[index]], value: keys[index] });
 
-            return <Select>{options}</Select>;
+            return options.length < 5 ? <Radio.Group options={options} /> : <Select options={options} />;
         }
 
         if (prop.type === 'date') return <DatePicker />;

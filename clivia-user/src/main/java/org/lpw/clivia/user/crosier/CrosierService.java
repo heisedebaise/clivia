@@ -8,6 +8,10 @@ import java.util.Map;
  * @author lpw
  */
 public interface CrosierService {
+    JSONArray signUpGrades();
+
+    int signUpGrade(String grade);
+
     JSONArray grades();
 
     JSONArray pathes(int grade);

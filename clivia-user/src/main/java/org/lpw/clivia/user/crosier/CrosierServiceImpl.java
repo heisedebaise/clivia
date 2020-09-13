@@ -47,9 +47,30 @@ public class CrosierServiceImpl implements CrosierService, StorageListener, Cont
     private CrosierDao crosierDao;
     @Value("${" + CrosierModel.NAME + ".permit:/WEB-INF/permit}")
     private String permit;
-    private int[] grades = {0, 90};
+    private final int[] grades = {0, 90};
     private Map<String, Integer> permits = new HashMap<>();
-    private Map<Integer, Map<String, Set<Map<String, String>>>> map = new ConcurrentHashMap<>();
+    private final Map<Integer, Map<String, Set<Map<String, String>>>> map = new ConcurrentHashMap<>();
+
+    @Override
+    public JSONArray signUpGrades() {
+        JSONArray array = new JSONArray();
+        signUpGrades(array, "0");
+        signUpGrades(array, "other");
+
+        return new JSONArray();
+    }
+
+    private void signUpGrades(JSONArray array, String value) {
+        JSONObject object = new JSONObject();
+        object.put("label", message.get(CrosierModel.NAME + ".grade." + value));
+        object.put("value", value);
+        array.add(object);
+    }
+
+    @Override
+    public int signUpGrade(String grade) {
+        return 0;
+    }
 
     @Override
     public JSONArray grades() {

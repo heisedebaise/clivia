@@ -45,9 +45,10 @@ public interface UserService {
      * @param uid      UID值。
      * @param password 密码。
      * @param type     认证类型。
+     * @param grade    等级。
      * @return 用户信息。
      */
-    UserModel signUp(String uid, String password, String type);
+    UserModel signUp(String uid, String password, String type, String grade);
 
     /**
      * 登入验证。
@@ -55,9 +56,10 @@ public interface UserService {
      * @param uid      UID值。
      * @param password 密码。
      * @param type     认证类型。
+     * @param grade    等级。
      * @return 认证成功则返回true；否则返回false。
      */
-    boolean signIn(String uid, String password, String type);
+    boolean signIn(String uid, String password, String type, String grade);
 
     /**
      * 获取当前用户登入信息。

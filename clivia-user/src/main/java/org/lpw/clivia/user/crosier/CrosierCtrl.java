@@ -19,6 +19,11 @@ public class CrosierCtrl {
     @Inject
     private CrosierService crosierService;
 
+    @Execute(name = "sign-up-grades")
+    public Object signUpGrades() {
+        return crosierService.signUpGrades();
+    }
+
     @Execute(name = "grades", validates = {
             @Validate(validator = Validators.SIGN)
     })

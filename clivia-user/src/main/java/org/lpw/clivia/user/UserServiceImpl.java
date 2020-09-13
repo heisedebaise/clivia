@@ -6,6 +6,7 @@ import org.lpw.clivia.keyvalue.KeyvalueService;
 import org.lpw.clivia.page.Pagination;
 import org.lpw.clivia.user.auth.AuthModel;
 import org.lpw.clivia.user.auth.AuthService;
+import org.lpw.clivia.user.crosier.CrosierService;
 import org.lpw.clivia.user.online.OnlineModel;
 import org.lpw.clivia.user.online.OnlineService;
 import org.lpw.clivia.user.type.Types;
@@ -64,6 +65,8 @@ public class UserServiceImpl implements UserService {
     @Inject
     private AuthService authService;
     @Inject
+    private CrosierService crosierService;
+    @Inject
     private OnlineService onlineService;
     @Inject
     private UserDao userDao;
@@ -78,7 +81,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserModel signUp(String uid, String password, String type) {
+    public UserModel signUp(String uid, String password, String type, String grade) {
         UserModel user = fromSession();
         if (user == null)
             user = new UserModel();
@@ -106,6 +109,7 @@ public class UserServiceImpl implements UserService {
         if (validator.isEmpty(user.getNick()))
             user.setNick(nick);
         setInviter(user);
+        user.setGrade(crosierService.signUpGrade(grade));
         user.setState(1);
         userDao.save(user);
         for (String ruid : types.getUid(type, uid, password))
@@ -144,8 +148,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public boolean signIn(String uid, String password, String type) {
-        UserModel user = types.auth(type, uid, password);
+    public boolean signIn(String uid, String password, String type, String grade) {
+        UserModel user = types.auth(type, uid, password, grade);
         if (user == null || user.getState() != 1)
             return false;
 

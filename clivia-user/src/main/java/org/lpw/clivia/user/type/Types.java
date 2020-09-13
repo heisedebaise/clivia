@@ -30,9 +30,10 @@ public interface Types {
      * @param key      类型KEY。
      * @param uid      UID。
      * @param password 密码。
+     * @param grade    等级。
      * @return 认证通过则返回用户信息；否则返回null。
      */
-    UserModel auth(String key, String uid, String password);
+    UserModel auth(String key, String uid, String password, String grade);
 
     /**
      * 获取UID。

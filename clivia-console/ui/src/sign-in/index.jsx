@@ -1,5 +1,5 @@
 import React from 'react';
-import { Layout, Form, Input, Button, message } from 'antd';
+import { Layout, Form, Input, Radio, Button, message } from 'antd';
 import { UserOutlined, LockOutlined, GithubOutlined, WechatOutlined, WeiboOutlined, AlipayOutlined } from '@ant-design/icons';
 import { service } from '../http';
 import { toArray } from '../json';
@@ -12,7 +12,8 @@ class SignIn extends React.Component {
         super();
 
         this.state = {
-            up: false
+            up: false,
+            grades: []
         };
         service('/keyvalue/object', { key: 'setting.agreement.user.sign-up' }).then(data => {
             if (data === null) return;
@@ -26,6 +27,12 @@ class SignIn extends React.Component {
             if (index > -1)
                 agreement.label = agreement.name.substring(0, index);
             this.setState({ agreement: agreement });
+        });
+        service('/user/crosier/sign-up-grades').then(data => {
+            if (data === null || data.length <= 1)
+                return;
+
+            this.setState({ grades: data });
         });
     }
 
@@ -58,6 +65,7 @@ class SignIn extends React.Component {
                             <Form.Item name="uid"><Input prefix={<UserOutlined style={{ color: 'rgba(0,0,0,.25)' }} />} placeholder="用户名" /></Form.Item>
                             <Form.Item name="password"><Input.Password prefix={<LockOutlined style={{ color: 'rgba(0,0,0,.25)' }} />} placeholder="密码" /></Form.Item>
                             {this.state.up ? <Form.Item name="repeat"><Input.Password prefix={<LockOutlined style={{ color: 'rgba(0,0,0,.25)' }} />} placeholder="重复密码" /></Form.Item> : null}
+                            {this.state.up && this.state.grades.length > 0 ? <Form.Item label="我是" name="grade"><Radio.Group options={this.state.grades} optionType="button" buttonStyle="solid" /></Form.Item> : null}
                             {this.state.up && this.state.agreement ? <Form.Item><a href={this.state.agreement.uri + '?filename=' + this.state.agreement.name} target="_blank" rel="noopener noreferrer">{this.state.agreement.label}</a></Form.Item> : null}
                             <Form.Item><Button type="primary" htmlType="submit" className="sign-in-up-button">{this.state.up ? '提交注册' : '登录'}</Button></Form.Item>
                             <Form.Item>
