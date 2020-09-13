@@ -13,6 +13,8 @@ public interface CategoryService {
 
     String name(String id);
 
+    CategoryModel get(String id);
+
     void save(CategoryModel category);
 
     void delete(String id);

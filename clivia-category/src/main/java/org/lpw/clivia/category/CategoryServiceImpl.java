@@ -89,6 +89,11 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
+    public CategoryModel get(String id) {
+        return categoryDao.findById(id);
+    }
+
+    @Override
     public void save(CategoryModel category) {
         if (validator.isEmpty(category.getId()) || categoryDao.findById(category.getId()) == null)
             category.setId(null);
