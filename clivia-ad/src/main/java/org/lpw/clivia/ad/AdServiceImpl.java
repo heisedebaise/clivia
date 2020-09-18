@@ -51,16 +51,23 @@ public class AdServiceImpl implements AdService {
 
     @Override
     public void save(AdModel ad) {
-        if (validator.isEmpty(ad.getId()) || adDao.findById(ad.getId()) == null)
+        AdModel model = validator.isEmpty(ad.getId()) ? null : adDao.findById(ad.getId());
+        if (model == null)
             ad.setId(null);
+        else
+            clean(model.getType());
         adDao.save(ad);
-        cache.remove(AdModel.NAME + ad.getType());
+        clean(ad.getType());
     }
 
     @Override
     public void delete(String id) {
         AdModel ad = adDao.findById(id);
         adDao.delete(id);
-        cache.remove(AdModel.NAME + ad.getType());
+        clean(ad.getType());
+    }
+
+    private void clean(String type) {
+        cache.remove(AdModel.NAME + ":" + type);
     }
 }
