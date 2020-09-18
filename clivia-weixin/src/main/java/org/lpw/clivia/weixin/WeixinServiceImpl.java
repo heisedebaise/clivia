@@ -13,6 +13,7 @@ import org.lpw.photon.bean.ContextRefreshedListener;
 import org.lpw.photon.cache.Cache;
 import org.lpw.photon.crypto.Digest;
 import org.lpw.photon.crypto.Sign;
+import org.lpw.photon.ctrl.CtrlHelper;
 import org.lpw.photon.ctrl.context.Header;
 import org.lpw.photon.ctrl.context.Session;
 import org.lpw.photon.ctrl.http.ServiceHelper;
@@ -106,6 +107,8 @@ public class WeixinServiceImpl implements WeixinService, ContextRefreshedListene
     @Inject
     private WormholeHelper wormholeHelper;
     @Inject
+    private CtrlHelper ctrlHelper;
+    @Inject
     private Header header;
     @Inject
     private Session session;
@@ -123,8 +126,6 @@ public class WeixinServiceImpl implements WeixinService, ContextRefreshedListene
     private ReplyService replyService;
     @Inject
     private WeixinDao weixinDao;
-    @Value("${photon.ctrl.service-root:}")
-    private String root;
     @Value("${" + WeixinModel.NAME + ".auto:false}")
     private boolean auto;
     @Value("${" + WeixinModel.NAME + ".synch.url:}")
@@ -567,6 +568,13 @@ public class WeixinServiceImpl implements WeixinService, ContextRefreshedListene
 
     private Map<String, String> prepay(String key, String user, String openId, String subject, int amount, String billNo, String notice,
                                        String type, Map<String, String> map) {
+        String url = ctrlHelper.url("/weixin/notice");
+        if (url == null) {
+            logger.warn(null, "root未配置！");
+
+            return null;
+        }
+
         WeixinModel weixin = findByKey(key);
         if (weixin == null) {
             logger.warn(null, "获取微信配置[{}]失败！", key);
@@ -589,7 +597,7 @@ public class WeixinServiceImpl implements WeixinService, ContextRefreshedListene
         map.put("out_trade_no", orderNo);
         map.put("total_fee", numeric.toString(amount, "0"));
         map.put("spbill_create_ip", header.getIp());
-        map.put("notify_url", root + "/weixin/notice");
+        map.put("notify_url", url);
         map.put("trade_type", type);
         if (type.equals("JSAPI"))
             map.put("openid", infoService.findOpenId(weixin.getAppId(), openId));

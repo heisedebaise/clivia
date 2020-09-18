@@ -20,6 +20,7 @@ import org.lpw.clivia.transfer.TransferListener;
 import org.lpw.clivia.transfer.TransferModel;
 import org.lpw.clivia.transfer.TransferService;
 import org.lpw.clivia.user.UserService;
+import org.lpw.photon.ctrl.CtrlHelper;
 import org.lpw.photon.dao.model.ModelHelper;
 import org.lpw.photon.util.Codec;
 import org.lpw.photon.util.Converter;
@@ -27,7 +28,6 @@ import org.lpw.photon.util.Json;
 import org.lpw.photon.util.Logger;
 import org.lpw.photon.util.Numeric;
 import org.lpw.photon.util.Validator;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import javax.inject.Inject;
@@ -53,6 +53,8 @@ public class AlipayServiceImpl implements AlipayService, TransferListener {
     @Inject
     private ModelHelper modelHelper;
     @Inject
+    private CtrlHelper ctrlHelper;
+    @Inject
     private UserService userService;
     @Inject
     private PaymentService paymentService;
@@ -60,8 +62,6 @@ public class AlipayServiceImpl implements AlipayService, TransferListener {
     private TransferService transferService;
     @Inject
     private AlipayDao alipayDao;
-    @Value("${photon.ctrl.service-root:}")
-    private String root;
 
     @Override
     public JSONArray query() {
@@ -159,7 +159,14 @@ public class AlipayServiceImpl implements AlipayService, TransferListener {
     }
 
     private String prepay(AlipayModel alipay, String returnUrl, AlipayRequest<? extends AlipayResponse> request) {
-        request.setNotifyUrl(root + "/alipay/notice");
+        String url = ctrlHelper.url("/alipay/notice");
+        if (url == null) {
+            logger.warn(null, "root未配置！");
+
+            return null;
+        }
+
+        request.setNotifyUrl(url);
         if (!validator.isEmpty(returnUrl))
             request.setReturnUrl(returnUrl);
 
