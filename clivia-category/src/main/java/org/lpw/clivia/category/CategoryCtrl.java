@@ -27,6 +27,14 @@ public class CategoryCtrl {
         return categoryService.query(request.get("key"), request.get("pointTo"));
     }
 
+    @Execute(name = "faq-query", validates = {
+            @Validate(validator = Validators.NOT_EMPTY, parameter = "key", failureCode = 1),
+            @Validate(validator = Validators.SIGN)
+    })
+    public Object faqQuery() {
+        return categoryService.query(request.get("key"), null);
+    }
+
     @Execute(name = "save", validates = {
             @Validate(validator = Validators.NOT_EMPTY, parameter = "key", failureCode = 1),
             @Validate(validator = Validators.MAX_LENGTH, number = {100}, parameter = "key", failureCode = 2),

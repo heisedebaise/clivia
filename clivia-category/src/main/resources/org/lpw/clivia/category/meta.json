@@ -77,5 +77,76 @@
                 "success": "query"
             }
         ]
+    },
+    "faq-query": {
+        "type": "grid",
+        "props": [
+            {
+                "name": "sort"
+            },
+            {
+                "name": "name"
+            },
+            {
+                "name": "value"
+            }
+        ],
+        "ops": [
+            {
+                "type": "modify",
+                "service": "faq-modify"
+            },
+            {
+                "type": "delete"
+            }
+        ],
+        "toolbar": [
+            {
+                "type": "create",
+                "service": "faq-create"
+            }
+        ]
+    },
+    "faq-create": {
+        "type": "form",
+        "props": [
+            {
+                "name": "sort"
+            },
+            {
+                "name": "name"
+            },
+            {
+                "name": "value",
+                "type": "text-area"
+            }
+        ],
+        "toolbar": [
+            {
+                "service": "save",
+                "success": "faq-query"
+            }
+        ]
+    },
+    "faq-modify": {
+        "type": "form",
+        "props": [
+            {
+                "name": "sort"
+            },
+            {
+                "name": "name"
+            },
+            {
+                "name": "value",
+                "type": "text-area"
+            }
+        ],
+        "toolbar": [
+            {
+                "service": "save",
+                "success": "faq-query"
+            }
+        ]
     }
 }

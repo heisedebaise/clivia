@@ -29,6 +29,13 @@
                 }
             },
             {
+                "label": "FAQ",
+                "service": "/category/faq-query",
+                "parameter": {
+                    "key": "faq"
+                }
+            },
+            {
                 "label": "菜单",
                 "service": "/category/query",
                 "parameter": {
