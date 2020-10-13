@@ -31,15 +31,15 @@ class Grid extends React.Component {
         this.columns = [];
         for (let prop of columns) {
             let column = { key: prop.name, title: prop.label };
-            if (prop.labels) {
-                column.render = model => this.style(prop, model, prop.labels[this.value(model, prop.name)]);
-            } else if (prop.values) {
-                column.render = model => this.style(prop, model, prop.values[this.value(model, prop.name)]);
-            } else if (prop.type === 'money' || prop.type === 'read-only:money') {
+            if (prop.labels)
+                column.render = model => this.style(prop, model, prop.multiple ? this.multiple(prop.labels, this.value(model, prop.name)) : prop.labels[this.value(model, prop.name)]);
+            else if (prop.values)
+                column.render = model => this.style(prop, model, prop.multiple ? this.multiple(prop.values, this.value(model, prop.name)) : prop.values[this.value(model, prop.name)]);
+            else if (prop.type === 'money' || prop.type === 'read-only:money')
                 column.render = model => this.style(prop, model, toMoney(this.value(model, prop.name), prop.empty));
-            } else if (prop.type === 'percent' || prop.type === 'read-only:percent') {
+            else if (prop.type === 'percent' || prop.type === 'read-only:percent')
                 column.render = model => this.style(prop, model, toPercent(this.value(model, prop.name)));
-            } else if (prop.type === 'image' || prop.type === 'read-only:image') {
+            else if (prop.type === 'image' || prop.type === 'read-only:image') {
                 column.render = model => {
                     let value = this.value(model, prop.name);
                     if (value === '') return this.style(prop, model, '');
@@ -74,15 +74,14 @@ class Grid extends React.Component {
 
                     return this.style(prop, model, <Switch {...s} />);
                 }
-            } else if (prop.type === 'editor' || prop.type === 'html') {
+            } else if (prop.type === 'editor' || prop.type === 'html')
                 column.render = model => this.style(prop, model, <div dangerouslySetInnerHTML={{ __html: this.value(model, prop.name) }} />);
-            } else if (prop.type === 'user') {
+            else if (prop.type === 'user')
                 column.render = model => this.style(prop, model, <User data={this.value(model, prop.name)} />);
-            } else if (prop.style) {
+            else if (prop.style)
                 column.render = model => this.style(prop, model, this.value(model, prop.name));
-            } else {
+            else
                 column.dataIndex = (prop.name || '').split('.');
-            }
             this.columns.push(column);
         }
         if (props.meta.ops && props.meta.ops.length > 0) {
@@ -137,6 +136,19 @@ class Grid extends React.Component {
             return 0;
 
         return m || '';
+    }
+
+    multiple = (values, value) => {
+        if (!value) return '';
+
+        let labels = '';
+        for (let v of value) {
+            let label = values[v];
+            if (label)
+                labels += ',' + label;
+        }
+
+        return labels.length > 0 ? labels.substring(1) : '';
     }
 
     style = (prop, model, element) => {

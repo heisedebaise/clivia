@@ -1,5 +1,5 @@
 import React from 'react';
-import { Form, Radio, Select, DatePicker, Switch, Input, Button, message } from 'antd';
+import { Form, Radio, Checkbox, Select, DatePicker, Switch, Input, Button, message } from 'antd';
 import { PaperClipOutlined, SyncOutlined } from '@ant-design/icons';
 import moment from 'moment';
 import { service, url } from '../http';
@@ -94,6 +94,8 @@ class Base extends React.Component {
                 else if (prop.type === 'datetime')
                     values[prop.name] = moment(value, 'YYYY-MM-DD HH:mm:ss');
             }
+            if (prop.multiple)
+                values[prop.name] = values[prop.name] ? values[prop.name].split(',') : [];
         }
     }
 
@@ -123,6 +125,8 @@ class Base extends React.Component {
                 values[prop.name] = fromMoney(value);
             else if (prop.type === 'percent')
                 values[prop.name] = fromPercent(value);
+            else if (prop.multiple)
+                values[prop.name] = values[prop.name].join(',');
         }
         if (this.props.data)
             for (let key in this.props.data)
@@ -210,9 +214,8 @@ class Base extends React.Component {
         if (prop.type === 'read-only:percent')
             return toPercent(value);
 
-        if (prop.type === 'read-only:image') {
+        if (prop.type === 'read-only:image')
             return <Image name={prop.name} upload={prop.upload} size={prop.size || 1} readonly={true} value={this.state[prop.name] || ''} form={this} />;
-        }
 
         if (prop.type === 'read-only:file') {
             let files = [];
@@ -229,10 +232,10 @@ class Base extends React.Component {
         }
 
         if (prop.labels)
-            return prop.labels[value] || '';
+            return prop.multiple ? this.multiple(prop.labels, value) : (prop.labels[value] || '');
 
         if (prop.values)
-            return prop.values[value] || '';
+            return prop.multiple ? this.multiple(prop.values, value) : (prop.values[value] || '');
 
         if (value === 0)
             return 0;
@@ -240,11 +243,27 @@ class Base extends React.Component {
         return value || '';
     }
 
+    multiple = (values, value) => {
+        if (!value) return '';
+
+        let labels = '';
+        for (let v of value) {
+            let label = values[v];
+            if (label)
+                labels += ',' + label;
+        }
+
+        return labels.length > 0 ? labels.substring(1) : '';
+    }
+
     input = prop => {
         if (prop.labels) {
             let options = [];
             for (let index in prop.labels)
                 options.push({ label: prop.labels[index], value: index });
+
+            if (prop.multiple)
+                return options.length < 5 ? <Checkbox.Group options={options} /> : <Select options={options} mode="multiple" allowClear />;
 
             return options.length < 5 ? <Radio.Group options={options} /> : <Select options={options} />;
         }
@@ -254,6 +273,9 @@ class Base extends React.Component {
             let keys = Object.keys(prop.values);
             for (let index in keys)
                 options.push({ label: prop.values[keys[index]], value: keys[index] });
+
+            if (prop.multiple)
+                return options.length < 5 ? <Checkbox.Group options={options} /> : <Select options={options} mode="multiple" allowClear />;
 
             return options.length < 5 ? <Radio.Group options={options} /> : <Select options={options} />;
         }

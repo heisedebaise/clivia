@@ -6,8 +6,6 @@ import Sign from './sign';
 import body from './body';
 import './index.css';
 
-const { Header, Footer, Sider, Content } = Layout;
-
 class Console extends React.Component {
   constructor(props) {
     super(props);
@@ -18,26 +16,20 @@ class Console extends React.Component {
     body.setIndex(this);
   }
 
-  componentDidMount = () => {
-    this.setState({
-      body: <div />
-    });
-  }
-
   render = () => (
     <Layout style={{ minHeight: '100vh' }}>
-      <Sider>
+      <Layout.Sider>
         <div className="console-logo">{this.props.logo ? [<img key="img" src={url(this.props.logo)} alt="" />, <div key="div"></div>] : null}</div>
-        <Menu />
-      </Sider>
+        <div className="console-menu"><Menu /></div>
+        <div className="console-copyright">clivia-console &copy; {new Date().getFullYear()}</div>
+      </Layout.Sider>
       <Layout>
-        <Header className="console-header">
+        <Layout.Header className="console-header">
           <Sign user={this.props.user} body={body} />
-        </Header>
-        <Content>
+        </Layout.Header>
+        <Layout.Content>
           <div className="console-body">{this.state.body}</div>
-        </Content>
-        <Footer className="console-footer">Copyright &copy; {new Date().getFullYear()} clivia-console</Footer>
+        </Layout.Content>
       </Layout>
     </Layout>
   );

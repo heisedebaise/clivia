@@ -23,13 +23,24 @@
     border-bottom: 1px solid #333;
 }
 
+.console-menu {
+    min-height: calc(100vh - 97px);
+}
+
+.console-copyright {
+    line-height: 32px;
+    text-align: center;
+    color: #666;
+    border-top: 1px dashed #333;
+}
+
 .console-header {
     background-color: #fff;
     box-shadow: 0 1px 4px rgba(0, 21, 41, 0.08);
 }
 
 .console-body {
-    min-height: 75vh;
+    min-height: calc(100% - 16px);
     margin: 8px;
     padding: 8px;
     border-radius: 8px;
@@ -42,10 +53,4 @@
     background-color: #e6f7ff;
     border: 1px solid #91d5ff;
     border-radius: 2px;
-}
-
-.console-footer {
-    text-align: center;
-    color: rgba(0, 0, 0, 0.45);
-    font-size: 14px;
 }
