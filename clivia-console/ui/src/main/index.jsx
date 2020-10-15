@@ -6,8 +6,8 @@ import Console from '../console';
 import SignIn from '../sign-in';
 
 class Main extends React.Component {
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
 
     this.state = {
       logo: '',

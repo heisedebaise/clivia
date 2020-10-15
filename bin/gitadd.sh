@@ -11,7 +11,7 @@ do
   git add $name/pom.xml
 done
 
-for name in clivia-console/ui
+for name in clivia-console/ui clivia-api/ui
 do
   git add $name/bin
   git add $name/public

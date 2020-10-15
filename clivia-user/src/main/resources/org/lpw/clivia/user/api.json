@@ -1,0 +1,18 @@
+{
+    "uri": "/user/",
+    "children": [
+        {
+            "uri": "sign-in",
+            "parameters": [
+                {
+                    "name": "uid",
+                    "type": "integer",
+                    "require": true
+                }
+            ]
+        },
+        {
+            "uri": "sign-out"
+        }
+    ]
+}

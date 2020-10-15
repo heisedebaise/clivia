@@ -29,6 +29,11 @@
             <version>0.3</version>
         </dependency>
         <dependency>
+            <groupId>org.lpw.clivia</groupId>
+            <artifactId>clivia-api</artifactId>
+            <version>0.3</version>
+        </dependency>
+        <dependency>
             <groupId>org.lpw.photon</groupId>
             <artifactId>photon-web</artifactId>
             <version>0.2</version>
