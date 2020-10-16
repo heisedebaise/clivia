@@ -1,5 +1,6 @@
 package org.lpw.clivia.api;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.serializer.SerializerFeature;
@@ -102,6 +103,10 @@ public class ApiServiceImpl implements ApiService, ContextRefreshedListener {
             description(child, "parameters", name);
             response(child, name);
         }
+        if (object.containsKey("model")) {
+            response(object, "model", name);
+            format(object, "model");
+        }
         list.add(object);
     }
 
@@ -152,33 +157,40 @@ public class ApiServiceImpl implements ApiService, ContextRefreshedListener {
 
     private void response(JSONObject object, String prefix) {
         if (object.containsKey("response")) {
-            response(object, "response", prefix);
-            Object obj = object.get("response");
-            if (obj instanceof JSONObject)
-                object.put("response", ((JSONObject) obj).toString(SerializerFeature.PrettyFormat).replaceAll("\t", "    "));
-            else if (obj instanceof JSONArray)
-                object.put("response", ((JSONArray) obj).toString(SerializerFeature.PrettyFormat).replaceAll("\t", "    "));
+            if (response(object, "response", prefix) > 0)
+                format(object, "response");
         } else
             object.put("response", "\"\"");
     }
 
-    private void response(JSONObject object, String name, String prefix) {
+    private int response(JSONObject object, String name, String prefix) {
         Object value = object.get(name);
+        if (value.equals("model") || value.equals("page"))
+            return 0;
+
         if (value instanceof JSONArray) {
             object.put(name, response((JSONArray) value, name, prefix));
 
-            return;
+            return 1;
         }
 
         if (value instanceof JSONObject) {
             JSONObject obj = (JSONObject) value;
             obj.keySet().forEach(key -> response(obj, key, prefix));
 
-            return;
+            return 2;
+        }
+
+        if (name.equals("id")) {
+            object.put(name, message.get(ApiModel.NAME + ".id.description"));
+
+            return 0;
         }
 
         String description = value.toString();
         object.put(name, getMessage(prefix, validator.isEmpty(description) ? ("." + name + ".description") : description));
+
+        return 0;
     }
 
     private JSONArray response(JSONArray array, String name, String prefix) {
@@ -205,5 +217,10 @@ public class ApiServiceImpl implements ApiService, ContextRefreshedListener {
             key = prefix + key;
 
         return validator.isEmpty(key) ? "" : message.get(key);
+    }
+
+    private void format(JSONObject object, String name) {
+        JSON json = object.getObject(name, JSON.class);
+        object.put(name, json.toString(SerializerFeature.PrettyFormat).replaceAll("\t", "    "));
     }
 }

@@ -24,10 +24,13 @@
 }
 
 .api-menu {
-    min-height: calc(100vh - 97px);
+    margin-bottom: 32px;
 }
 
 .api-copyright {
+    position: fixed;
+    bottom: 0;
+    width: 200px;
     line-height: 32px;
     text-align: center;
     color: #666;
@@ -47,8 +50,13 @@
     background-color: #fff;
 }
 
-.api-title {
+.api-title,
+.api-response-title {
     font-weight: bold;
+}
+
+.api-response-title {
+    padding: 16px;
 }
 
 .api-response {

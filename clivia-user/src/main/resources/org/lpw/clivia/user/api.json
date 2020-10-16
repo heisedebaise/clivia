@@ -1,16 +1,5 @@
 {
     "uri": "/user/",
-    "model": {
-        "id": "",
-        "code": "",
-        "auth": [
-            {
-                "uid": ""
-            }
-        ],
-        "grade": "",
-        "state": ""
-    },
     "children": [
         {
             "uri": "sign-up",
@@ -32,17 +21,7 @@
                     "require": true
                 }
             ],
-            "response": {
-                "id": "",
-                "code": "",
-                "auth": [
-                    {
-                        "uid": ""
-                    }
-                ],
-                "grade": "",
-                "state": ""
-            }
+            "response": "model"
         },
         {
             "uri": "sign-in",
@@ -64,21 +43,36 @@
                     "require": true
                 }
             ],
-            "response": {
-                "id": "",
-                "code": "",
-                "auth": [
-                    {
-                        "uid": ""
-                    }
-                ],
-                "grade": "",
-                "state": ""
-            }
+            "response": "model"
+        },
+        {
+            "uri": "sign",
+            "psid": true,
+            "response": "model"
         },
         {
             "uri": "sign-out",
             "psid": true
         }
-    ]
+    ],
+    "model": {
+        "id": "",
+        "idcard": "",
+        "name": "",
+        "nick": "",
+        "mobile": "",
+        "email": "",
+        "portrait": "",
+        "gender": "",
+        "birthday": "",
+        "code": "",
+        "register": "",
+        "grade": "",
+        "state": "",
+        "auth": [
+            {
+                "uid": ""
+            }
+        ]
+    }
 }

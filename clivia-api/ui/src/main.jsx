@@ -35,6 +35,25 @@ class Main extends React.Component {
         service('/api/get').then(data => {
             if (data === null) return;
 
+            for (let module of data) {
+                if (module.model) {
+                    for (let child of module.children) {
+                        if (child.response === 'model')
+                            child.response = module.model;
+                        else if (child.response === 'page') {
+                            child.response = '{\n'
+                                + '    "count":"记录总数。",\n'
+                                + '    "size":"每页最大显示记录数。",\n'
+                                + '    "number":"当前显示页数。",\n'
+                                + '    "page":"总页数。",\n'
+                                + '    "list":[\n'
+                                + '        ' + module.model.replace(/\n {4}/g, '\n            ').replace('\n}', '\n        }')
+                                + '\n    ]\n'
+                                + '}';
+                        }
+                    }
+                }
+            }
             this.setState({ data: data }, () => this.show({ key: '0-0-0' }));
         });
     }
@@ -122,7 +141,7 @@ class Main extends React.Component {
                     dataIndex: 'description',
                     key: 'description',
                 }]} dataSource={this.state.item.parameters} pagination={false} locale={{ emptyText: <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description='无需参数' /> }} />
-                <div className="api-title">返回</div>
+                <div className="api-response-title">返回</div>
                 <pre className="api-response">{this.state.item.response}</pre>
             </Space>
         );
