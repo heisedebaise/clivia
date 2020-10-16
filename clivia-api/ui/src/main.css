@@ -46,3 +46,12 @@
     border-radius: 8px;
     background-color: #fff;
 }
+
+.api-title {
+    font-weight: bold;
+}
+
+.api-response {
+    padding: 8px;
+    border: 1px solid #f0f0f0;
+}

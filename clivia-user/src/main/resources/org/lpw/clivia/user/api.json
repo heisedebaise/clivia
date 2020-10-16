@@ -2,17 +2,72 @@
     "uri": "/user/",
     "children": [
         {
-            "uri": "sign-in",
+            "uri": "sign-up",
+            "psid": true,
             "parameters": [
                 {
+                    "name": "type",
+                    "type": "string",
+                    "require": true
+                },
+                {
                     "name": "uid",
-                    "type": "integer",
+                    "type": "string",
+                    "require": true
+                },
+                {
+                    "name": "password",
+                    "type": "string",
                     "require": true
                 }
-            ]
+            ],
+            "response": {
+                "id": "",
+                "code": "",
+                "auth": [
+                    {
+                        "uid": ""
+                    }
+                ],
+                "grade": "",
+                "state": ""
+            }
         },
         {
-            "uri": "sign-out"
+            "uri": "sign-in",
+            "psid": true,
+            "parameters": [
+                {
+                    "name": "type",
+                    "type": "string",
+                    "require": true
+                },
+                {
+                    "name": "uid",
+                    "type": "string",
+                    "require": true
+                },
+                {
+                    "name": "password",
+                    "type": "string",
+                    "require": true
+                }
+            ],
+            "response": {
+                "id": "",
+                "code": "",
+                "auth": [
+                    {
+                        "uid": ""
+                    }
+                ],
+                "grade": "",
+                "state": ""
+            }
+        },
+        {
+            "uri": "sign-out",
+            "psid": true
         }
     ]
 }

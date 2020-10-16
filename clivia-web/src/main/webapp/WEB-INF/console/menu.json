@@ -43,10 +43,6 @@
                 }
             },
             {
-                "label": "WPS",
-                "service": "/wps/query"
-            },
-            {
                 "label": "协议",
                 "service": "/setting/agreement"
             }

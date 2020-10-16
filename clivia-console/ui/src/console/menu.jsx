@@ -20,8 +20,7 @@ class LeftMenu extends React.Component {
             this.setState({
                 items: data,
                 item: item
-            });
-            this.load(item ? data[0] : data[0].items[0]);
+            }, () => this.load(item ? data[0] : data[0].items[0]));
         });
     }
 

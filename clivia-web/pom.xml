@@ -20,11 +20,6 @@
         </dependency>
         <dependency>
             <groupId>org.lpw.clivia</groupId>
-            <artifactId>clivia-wps</artifactId>
-            <version>0.3</version>
-        </dependency>
-        <dependency>
-            <groupId>org.lpw.clivia</groupId>
             <artifactId>clivia-console</artifactId>
             <version>0.3</version>
         </dependency>

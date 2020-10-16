@@ -2,6 +2,7 @@ package org.lpw.clivia.api;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson.serializer.SerializerFeature;
 import org.lpw.photon.bean.BeanFactory;
 import org.lpw.photon.bean.ContextRefreshedListener;
 import org.lpw.photon.ctrl.execute.Execute;
@@ -90,16 +91,16 @@ public class ApiServiceImpl implements ApiService, ContextRefreshedListener {
             object.put("sort", getCode(name));
         message(object, "name", "", name);
         JSONArray children = object.getJSONArray("children");
+        String uri = object.getString("uri");
         for (int i = 0, size = children.size(); i < size; i++) {
             JSONObject child = children.getJSONObject(i);
-            message(child, "name", name, child.getString("uri"));
-            if (child.containsKey("parameters")) {
-                JSONArray parameters = child.getJSONArray("parameters");
-                for (int j = 0, s = parameters.size(); j < s; j++) {
-                    JSONObject parameter = parameters.getJSONObject(j);
-                    message(parameter, "description", name, parameter.getString("name"));
-                }
-            }
+            String u = child.getString("uri");
+            child.put("uri", uri + u);
+            message(child, "name", name, u);
+            description(child, "headers", name);
+            psid(child);
+            description(child, "parameters", name);
+            response(child, name);
         }
         list.add(object);
     }
@@ -116,16 +117,93 @@ public class ApiServiceImpl implements ApiService, ContextRefreshedListener {
         return numeric.toInt(execute.code());
     }
 
+    private void description(JSONObject object, String name, String prefix) {
+        if (!object.containsKey(name))
+            return;
+
+        JSONArray parameters = object.getJSONArray(name);
+        for (int j = 0, s = parameters.size(); j < s; j++) {
+            JSONObject parameter = parameters.getJSONObject(j);
+            message(parameter, "description", prefix, "." + parameter.getString("name") + ".description");
+        }
+    }
+
     private void message(JSONObject object, String name, String prefix, String defaultName) {
         String key = defaultName;
         if (object.containsKey(name))
             key = object.getString(name);
+        object.put(name, getMessage(prefix, key));
+    }
+
+    private void psid(JSONObject object) {
+        if (!json.hasTrue(object, "psid"))
+            return;
+
+        object.remove("psid");
+        JSONArray headers = object.containsKey("headers") ? object.getJSONArray("headers") : new JSONArray();
+        JSONObject psid = new JSONObject();
+        psid.put("name", "psid");
+        psid.put("type", "string");
+        psid.put("require", true);
+        psid.put("description", message.get(ApiModel.NAME + ".psid.description"));
+        headers.add(psid);
+        object.put("headers", headers);
+    }
+
+    private void response(JSONObject object, String prefix) {
+        if (object.containsKey("response")) {
+            response(object, "response", prefix);
+            Object obj = object.get("response");
+            if (obj instanceof JSONObject)
+                object.put("response", ((JSONObject) obj).toString(SerializerFeature.PrettyFormat).replaceAll("\t", "    "));
+            else if (obj instanceof JSONArray)
+                object.put("response", ((JSONArray) obj).toString(SerializerFeature.PrettyFormat).replaceAll("\t", "    "));
+        } else
+            object.put("response", "\"\"");
+    }
+
+    private void response(JSONObject object, String name, String prefix) {
+        Object value = object.get(name);
+        if (value instanceof JSONArray) {
+            object.put(name, response((JSONArray) value, name, prefix));
+
+            return;
+        }
+
+        if (value instanceof JSONObject) {
+            JSONObject obj = (JSONObject) value;
+            obj.keySet().forEach(key -> response(obj, key, prefix));
+
+            return;
+        }
+
+        String description = value.toString();
+        object.put(name, getMessage(prefix, validator.isEmpty(description) ? ("." + name + ".description") : description));
+    }
+
+    private JSONArray response(JSONArray array, String name, String prefix) {
+        JSONArray newArray = new JSONArray();
+        array.forEach(object -> {
+            if (object instanceof JSONObject) {
+                JSONObject obj = (JSONObject) object;
+                obj.keySet().forEach(key -> response(obj, key, prefix));
+                newArray.add(obj);
+            } else {
+                String description = object.toString();
+                newArray.add(getMessage(prefix, validator.isEmpty(description) ? ("." + name + ".description") : description));
+            }
+        });
+
+        return newArray;
+    }
+
+    private String getMessage(String prefix, String key) {
         int index = key.indexOf('.');
         if (index == -1)
             key = prefix + "." + key;
         else if (index == 0)
             key = prefix + key;
-        if (!validator.isEmpty(key))
-            object.put(name, message.get(key));
+
+        return validator.isEmpty(key) ? "" : message.get(key);
     }
 }

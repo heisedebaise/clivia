@@ -1,5 +1,6 @@
 import React from 'react';
-import { ConfigProvider, Layout, Menu, Space, Alert, Table } from 'antd';
+import { ConfigProvider, Layout, Menu, Space, Alert, Table, Empty } from 'antd';
+import { CheckOutlined, CloseOutlined } from '@ant-design/icons';
 import zhCN from 'antd/es/locale/zh_CN';
 import { service, url } from './http';
 import './main.css';
@@ -34,10 +35,7 @@ class Main extends React.Component {
         service('/api/get').then(data => {
             if (data === null) return;
 
-            for (let module of data)
-                for (let child of module.children)
-                    child.uri = module.uri + child.uri;
-            this.setState({ data: data });
+            this.setState({ data: data }, () => this.show({ key: '0-0-0' }));
         });
     }
 
@@ -46,7 +44,7 @@ class Main extends React.Component {
             <Layout style={{ minHeight: '100vh' }}>
                 <Layout.Sider>
                     <div className="api-logo">{this.props.logo ? [<img key="img" src={url(this.props.logo)} alt="" />, <div key="div"></div>] : null}</div>
-                    <div className="api-menu"><Menu onClick={this.show} mode="inline" theme="dark" defaultOpenKeys={['0-0']} defaultSelectedKeys={[this.state.item ? '0-0' : '0-0-0']}>{this.menu(this.state.data, '0')}</Menu></div>
+                    <div className="api-menu"><Menu onClick={this.show} mode="inline" theme="dark" defaultOpenKeys={['0-0']} defaultSelectedKeys={[this.state.item.uri ? '0-0' : '0-0-0']}>{this.menu(this.state.data, '0')}</Menu></div>
                     <div className="api-copyright">clivia-api &copy; {new Date().getFullYear()}</div>
                 </Layout.Sider>
                 <Layout>
@@ -88,7 +86,25 @@ class Main extends React.Component {
         return (
             <Space direction="vertical" style={{ width: '100%' }}>
                 <Alert type="info" message={'接口地址：' + this.url + this.state.item.uri} />
-                {this.state.item.parameters ? <Table columns={[{
+                <Table title={() => <div className="api-title">头信息</div>} columns={[{
+                    title: '头名称',
+                    dataIndex: 'name',
+                    key: 'name',
+                }, {
+                    title: '类型',
+                    dataIndex: 'type',
+                    key: 'type',
+                }, {
+                    title: '必须',
+                    dataIndex: 'require',
+                    key: 'require',
+                    render: require => require ? <CheckOutlined /> : <CloseOutlined />
+                }, {
+                    title: '说明',
+                    dataIndex: 'description',
+                    key: 'description',
+                }]} dataSource={this.state.item.headers} pagination={false} locale={{ emptyText: <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description='无需头信息' /> }} />
+                <Table title={() => <div className="api-title">参数</div>} columns={[{
                     title: '参数名',
                     dataIndex: 'name',
                     key: 'name',
@@ -100,12 +116,14 @@ class Main extends React.Component {
                     title: '必须',
                     dataIndex: 'require',
                     key: 'require',
-                    render: require => require ? '是' : '否'
+                    render: require => require ? <CheckOutlined /> : <CloseOutlined />
                 }, {
                     title: '说明',
                     dataIndex: 'description',
                     key: 'description',
-                }]} dataSource={this.state.item.parameters} pagination={false} /> : '无'}
+                }]} dataSource={this.state.item.parameters} pagination={false} locale={{ emptyText: <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description='无需参数' /> }} />
+                <div className="api-title">返回</div>
+                <pre className="api-response">{this.state.item.response}</pre>
             </Space>
         );
     }
