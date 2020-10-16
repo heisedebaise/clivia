@@ -1,5 +1,16 @@
 {
     "uri": "/user/",
+    "model": {
+        "id": "",
+        "code": "",
+        "auth": [
+            {
+                "uid": ""
+            }
+        ],
+        "grade": "",
+        "state": ""
+    },
     "children": [
         {
             "uri": "sign-up",
