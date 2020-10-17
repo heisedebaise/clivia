@@ -24,10 +24,13 @@
 }
 
 .console-menu {
-    min-height: calc(100vh - 97px);
+    margin-bottom: 33px;
 }
 
 .console-copyright {
+    position: fixed;
+    bottom: 0;
+    width: 200px;
     line-height: 32px;
     text-align: center;
     color: #666;

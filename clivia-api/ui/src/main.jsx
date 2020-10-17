@@ -122,7 +122,7 @@ class Main extends React.Component {
                     title: '说明',
                     dataIndex: 'description',
                     key: 'description',
-                }]} dataSource={this.state.item.headers} pagination={false} locale={{ emptyText: <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description='无需头信息' /> }} />
+                }]} dataSource={this.state.item.headers} rowKey="name" pagination={false} locale={{ emptyText: <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description='无需头信息' /> }} />
                 <Table title={() => <div className="api-title">参数</div>} columns={[{
                     title: '参数名',
                     dataIndex: 'name',
@@ -140,7 +140,7 @@ class Main extends React.Component {
                     title: '说明',
                     dataIndex: 'description',
                     key: 'description',
-                }]} dataSource={this.state.item.parameters} pagination={false} locale={{ emptyText: <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description='无需参数' /> }} />
+                }]} dataSource={this.state.item.parameters} rowKey="name" pagination={false} locale={{ emptyText: <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description='无需参数' /> }} />
                 <div className="api-response-title">返回</div>
                 <pre className="api-response">{this.state.item.response}</pre>
             </Space>
