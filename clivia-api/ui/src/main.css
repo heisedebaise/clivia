@@ -35,6 +35,7 @@
     text-align: center;
     color: #666;
     border-top: 1px dashed #333;
+    background-color: #001529;
 }
 
 .api-header {
@@ -59,7 +60,8 @@
     padding: 16px;
 }
 
-.api-response {
-    padding: 8px;
+pre {
+    margin: 0;
+    padding: 8px 8px 0 8px;
     border: 1px solid #f0f0f0;
 }

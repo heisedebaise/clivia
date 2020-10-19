@@ -12,4 +12,12 @@ public interface ApiService {
      * @return API配置集。
      */
     JSONArray get();
+
+    /**
+     * 获取JS资源。
+     *
+     * @param name 资源名。
+     * @return JS资源。
+     */
+    String js(String name);
 }

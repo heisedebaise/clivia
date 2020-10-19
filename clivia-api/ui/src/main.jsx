@@ -3,6 +3,7 @@ import { ConfigProvider, Layout, Menu, Space, Alert, Table, Empty } from 'antd';
 import { CheckOutlined, CloseOutlined } from '@ant-design/icons';
 import zhCN from 'antd/es/locale/zh_CN';
 import { service, url } from './http';
+import Request from './request';
 import './main.css';
 
 class Main extends React.Component {
@@ -54,7 +55,19 @@ class Main extends React.Component {
                     }
                 }
             }
-            this.setState({ data: data }, () => this.show({ key: '0-0-0' }));
+            let list = [{
+                name: '通用',
+                children: [{
+                    name: 'HTTP请求',
+                    page: 'request'
+                }, {
+                    name: '参数签名',
+                    page: 'sign'
+                }]
+            }];
+            for (let d of data)
+                list.push(d);
+            this.setState({ data: list }, () => this.show({ key: '0-0-0' }));
         });
     }
 
@@ -100,7 +113,14 @@ class Main extends React.Component {
     }
 
     body = () => {
-        if (this.state.page || !this.state.item.uri) return <div />;
+        if (this.state.item.page) {
+            switch (this.state.item.page) {
+                case 'request':
+                    return <Request />;
+                default:
+                    return <div />;
+            }
+        }
 
         return (
             <Space direction="vertical" style={{ width: '100%' }}>
@@ -142,7 +162,7 @@ class Main extends React.Component {
                     key: 'description',
                 }]} dataSource={this.state.item.parameters} rowKey="name" pagination={false} locale={{ emptyText: <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description='无需参数' /> }} />
                 <div className="api-response-title">返回</div>
-                <pre className="api-response">{this.state.item.response}</pre>
+                <pre>{this.state.item.response}</pre>
             </Space>
         );
     }

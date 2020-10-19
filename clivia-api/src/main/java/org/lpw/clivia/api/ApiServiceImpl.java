@@ -22,7 +22,9 @@ import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
@@ -48,10 +50,16 @@ public class ApiServiceImpl implements ApiService, ContextRefreshedListener {
     @Inject
     private Optional<Set<Model>> models;
     private JSONArray array;
+    private final Map<String, String> js = new HashMap<>();
 
     @Override
     public JSONArray get() {
         return array;
+    }
+
+    @Override
+    public String js(String name) {
+        return js.computeIfAbsent(name, key -> io.readAsString(getClass().getResourceAsStream(key + ".js")));
     }
 
     @Override
@@ -147,7 +155,7 @@ public class ApiServiceImpl implements ApiService, ContextRefreshedListener {
         object.remove("psid");
         JSONArray headers = object.containsKey("headers") ? object.getJSONArray("headers") : new JSONArray();
         JSONObject psid = new JSONObject();
-        psid.put("name", "psid");
+        psid.put("name", "photon-session-id");
         psid.put("type", "string");
         psid.put("require", true);
         psid.put("description", message.get(ApiModel.NAME + ".psid.description"));

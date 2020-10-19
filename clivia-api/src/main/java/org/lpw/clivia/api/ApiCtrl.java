@@ -21,4 +21,9 @@ public class ApiCtrl {
     public Object get() {
         return apiService.get();
     }
+
+    @Execute(name = "request-demo")
+    public Object requestDemo() {
+        return apiService.js("request-demo");
+    }
 }
