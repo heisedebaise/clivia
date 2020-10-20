@@ -51,6 +51,11 @@
             "response": "model"
         },
         {
+            "page": "upload",
+            "name": ".portrait.upload",
+            "upload": "portrait"
+        },
+        {
             "uri": "modify",
             "psid": true,
             "parameters": [
