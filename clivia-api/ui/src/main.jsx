@@ -19,10 +19,7 @@ class Main extends React.Component {
         };
         this.map = {};
         this.url = window.location.href;
-        if (this.url.endsWith('/api'))
-            this.url = this.url.substring(0, this.url.length - 4);
-        else if (this.url.endsWith('/'))
-            this.url = this.url.substring(0, this.url.length - 1);
+        this.url = this.url.substring(0, this.url.length - window.location.pathname.length);
     }
 
     componentDidMount = () => {
