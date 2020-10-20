@@ -99,18 +99,19 @@ public class ApiServiceImpl implements ApiService, ContextRefreshedListener {
                 String u = child.getString("uri");
                 child.put("uri", uri + u);
                 message(child, "name", name, u);
-                description(child, "headers", name);
-                psid(child);
-                description(child, "parameters", name);
-                response(child, name);
             } else if (json.has(child, "page", "upload") && child.containsKey("upload")) {
                 String upload = child.getString("upload");
+                message(child, "name", name, upload);
                 int index = upload.indexOf('.');
                 if (index == -1)
                     child.put("upload", name + "." + upload);
                 else if (index == 0)
                     child.put("upload", name + upload);
             }
+            description(child, "headers", name);
+            psid(child);
+            description(child, "parameters", name);
+            response(child, name);
         }
         if (object.containsKey("model")) {
             response(object, "model", name);

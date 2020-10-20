@@ -4,6 +4,7 @@ import { CheckOutlined, CloseOutlined } from '@ant-design/icons';
 import zhCN from 'antd/es/locale/zh_CN';
 import { service, url } from './http';
 import Request from './request';
+import Upload from './upload';
 import './main.css';
 
 class Main extends React.Component {
@@ -119,6 +120,8 @@ class Main extends React.Component {
             switch (this.state.item.page) {
                 case 'request':
                     return <Request />;
+                case 'upload':
+                    return <Upload url={this.url} meta={this.state.item} />;
                 default:
                     return <div />;
             }

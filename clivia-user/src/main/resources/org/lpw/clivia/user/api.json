@@ -53,7 +53,8 @@
         {
             "page": "upload",
             "name": ".portrait.upload",
-            "upload": "portrait"
+            "upload": "portrait",
+            "psid": true
         },
         {
             "uri": "modify",
