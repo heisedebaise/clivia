@@ -109,7 +109,6 @@ public class ApiServiceImpl implements ApiService, ContextRefreshedListener {
                     child.put("upload", name + upload);
             }
             description(child, "headers", name);
-            psid(child);
             description(child, "parameters", name);
             response(child, name);
         }
@@ -150,21 +149,6 @@ public class ApiServiceImpl implements ApiService, ContextRefreshedListener {
         object.put(name, getMessage(prefix, key));
     }
 
-    private void psid(JSONObject object) {
-        if (!json.hasTrue(object, "psid"))
-            return;
-
-        object.remove("psid");
-        JSONArray headers = object.containsKey("headers") ? object.getJSONArray("headers") : new JSONArray();
-        JSONObject psid = new JSONObject();
-        psid.put("name", "photon-session-id");
-        psid.put("type", "string");
-        psid.put("require", true);
-        psid.put("description", message.get(ApiModel.NAME + ".psid.description"));
-        headers.add(psid);
-        object.put("headers", headers);
-    }
-
     private void response(JSONObject object, String prefix) {
         if (object.containsKey("response")) {
             if (response(object, "response", prefix) > 0)
@@ -175,7 +159,7 @@ public class ApiServiceImpl implements ApiService, ContextRefreshedListener {
 
     private int response(JSONObject object, String name, String prefix) {
         Object value = object.get(name);
-        if (value.equals("model") || value.equals("page"))
+        if (value.equals("model") || value.equals("pagination"))
             return 0;
 
         if (value instanceof JSONArray) {

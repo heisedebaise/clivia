@@ -15,7 +15,6 @@ class Main extends React.Component {
             logo: '',
             user: {},
             data: [],
-            page: null,
             item: {}
         };
         this.map = {};
@@ -40,9 +39,18 @@ class Main extends React.Component {
             for (let module of data) {
                 if (module.model) {
                     for (let child of module.children) {
+                        if (child.psid) {
+                            if (!child.headers) child.headers = [];
+                            child.headers.push({
+                                name: 'photon-session-id',
+                                type: 'string',
+                                require: true,
+                                description: '用户SESSION ID值。'
+                            });
+                        }
                         if (child.response === 'model')
                             child.response = module.model;
-                        else if (child.response === 'page') {
+                        else if (child.response === 'pagination') {
                             child.parameters.push({ name: 'pageSize', type: 'int', description: '每页显示记录数，默认：20。' });
                             child.parameters.push({ name: 'pageNum', type: 'int', description: '当前显示页数。' });
                             child.response = `{

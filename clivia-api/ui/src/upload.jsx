@@ -68,7 +68,7 @@ class Upload extends React.Component {
             }]} dataSource={[{ name: 'name', type: 'string', require: true, description: '固定为：' + this.props.meta.upload + '。' },
             { name: 'contentType', type: 'string', require: true, description: '文件格式，如：image/jpeg。' },
             { name: 'fileName', type: 'string', require: true, description: '原文件名。' },
-            { name: 'base64', type: 'string', require: true, description: 'BASE64编码后的文件内容。' }]} rowKey="name" pagination={false} />
+            { name: 'base64', type: 'string', require: true, description: 'BASE64编码后的文件内容，不包含Content-Type。' }]} rowKey="name" pagination={false} />
             <div>返回结果</div>
             <pre>{this.responseBase64}</pre>
         </Space>
