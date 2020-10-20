@@ -135,10 +135,14 @@ public class ApiServiceImpl implements ApiService, ContextRefreshedListener {
         if (!object.containsKey(name))
             return;
 
-        JSONArray parameters = object.getJSONArray(name);
-        for (int j = 0, s = parameters.size(); j < s; j++) {
-            JSONObject parameter = parameters.getJSONObject(j);
-            message(parameter, "description", prefix, "." + parameter.getString("name") + ".description");
+        JSONArray array = object.getJSONArray(name);
+        for (int j = 0, s = array.size(); j < s; j++) {
+            JSONObject obj = array.getJSONObject(j);
+            String n = obj.getString("name");
+            if (n.equals("id"))
+                obj.put("description", message.get(ApiModel.NAME + ".id.description"));
+            else
+                message(obj, "description", prefix, "." + n + ".description");
         }
     }
 
