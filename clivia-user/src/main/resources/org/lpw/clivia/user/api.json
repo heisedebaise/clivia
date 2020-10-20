@@ -51,6 +51,64 @@
             "response": "model"
         },
         {
+            "uri": "modify",
+            "psid": true,
+            "parameters": [
+                {
+                    "name": "idcard",
+                    "type": "string"
+                },
+                {
+                    "name": "name",
+                    "type": "string"
+                },
+                {
+                    "name": "nick",
+                    "type": "string"
+                },
+                {
+                    "name": "mobile",
+                    "type": "string"
+                },
+                {
+                    "name": "email",
+                    "type": "string"
+                },
+                {
+                    "name": "portrait",
+                    "type": "string"
+                },
+                {
+                    "name": "gender",
+                    "type": "int"
+                },
+                {
+                    "name": "birthday",
+                    "type": "string"
+                }
+            ],
+            "response": "model"
+        },
+        {
+            "uri": "password",
+            "name": ".password.change",
+            "psid": true,
+            "parameters": [
+                {
+                    "name": "old",
+                    "type": "string",
+                    "require": true,
+                    "description": ".password.old"
+                },
+                {
+                    "name": "new",
+                    "type": "string",
+                    "require": true,
+                    "description": ".password.new"
+                }
+            ]
+        },
+        {
             "uri": "sign-out",
             "psid": true
         }

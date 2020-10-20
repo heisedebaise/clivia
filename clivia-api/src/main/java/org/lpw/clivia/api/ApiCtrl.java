@@ -2,6 +2,7 @@ package org.lpw.clivia.api;
 
 import org.lpw.photon.ctrl.context.Request;
 import org.lpw.photon.ctrl.execute.Execute;
+import org.lpw.photon.ctrl.template.Templates;
 import org.springframework.stereotype.Controller;
 
 import javax.inject.Inject;
@@ -15,6 +16,8 @@ public class ApiCtrl {
     @Inject
     private Request request;
     @Inject
+    private Templates templates;
+    @Inject
     private ApiService apiService;
 
     @Execute(name = "get")
@@ -22,8 +25,13 @@ public class ApiCtrl {
         return apiService.get();
     }
 
-    @Execute(name = "request-demo")
-    public Object requestDemo() {
-        return apiService.js("request-demo");
+    @Execute(name = "request")
+    public Object request() {
+        return apiService.resource("request.js");
+    }
+
+    @Execute(name = "response")
+    public Object response() {
+        return templates.get().success(apiService.resource("response.json"), null);
     }
 }

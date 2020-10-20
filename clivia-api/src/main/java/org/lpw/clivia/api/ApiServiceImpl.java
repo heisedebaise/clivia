@@ -27,6 +27,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * @author lpw
@@ -50,7 +51,7 @@ public class ApiServiceImpl implements ApiService, ContextRefreshedListener {
     @Inject
     private Optional<Set<Model>> models;
     private JSONArray array;
-    private final Map<String, String> js = new HashMap<>();
+    private final Map<String, String> resources = new ConcurrentHashMap<>();
 
     @Override
     public JSONArray get() {
@@ -58,8 +59,8 @@ public class ApiServiceImpl implements ApiService, ContextRefreshedListener {
     }
 
     @Override
-    public String js(String name) {
-        return js.computeIfAbsent(name, key -> io.readAsString(getClass().getResourceAsStream(key + ".js")));
+    public String resource(String name) {
+        return resources.computeIfAbsent(name, key -> io.readAsString(getClass().getResourceAsStream(key)));
     }
 
     @Override

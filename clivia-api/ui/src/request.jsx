@@ -7,22 +7,30 @@ class Request extends React.Component {
         super(props);
 
         this.state = {
-            demo: ''
+            request: '',
+            response: ''
         };
     }
     componentDidMount = () => {
-        service('/api/request-demo').then(data => {
+        service('/api/request').then(data => {
             if (data === null) return;
 
-            this.setState({ demo: data });
-        })
+            this.setState({ request: data });
+        });
+        service('/api/response').then(data => {
+            if (data === null) return;
+
+            this.setState({ response: data });
+        });
     }
 
     render = () => {
         return (
             <Space direction="vertical" style={{ width: '100%' }}>
                 <div>参考示例</div>
-                <pre>{this.state.demo}</pre>
+                <pre>{this.state.request}</pre>
+                <div>返回结果</div>
+                <pre>{this.state.response}</pre>
             </Space>
         );
     }

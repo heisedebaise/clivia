@@ -14,10 +14,10 @@ public interface ApiService {
     JSONArray get();
 
     /**
-     * 获取JS资源。
+     * 获取资源文件内容。。
      *
-     * @param name 资源名。
-     * @return JS资源。
+     * @param name 资源文件名。
+     * @return 获取资源文件内容。。
      */
-    String js(String name);
+    String resource(String name);
 }
