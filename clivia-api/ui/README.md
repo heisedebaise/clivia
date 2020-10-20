@@ -12,11 +12,3 @@ cd ui
 yarn add antd react-app-rewired customize-cra babel-plugin-import
 sed -i 's/react-scripts /react-app-rewired /g' package.json
 ```
-
-## upgrade
-
-```
-yarn upgrade-interactive --latest
-rm -rf yarn.lock
-yarn
-```
