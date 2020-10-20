@@ -42,15 +42,17 @@ class Main extends React.Component {
                         if (child.response === 'model')
                             child.response = module.model;
                         else if (child.response === 'page') {
-                            child.response = '{\n'
-                                + '    "count":"记录总数。",\n'
-                                + '    "size":"每页最大显示记录数。",\n'
-                                + '    "number":"当前显示页数。",\n'
-                                + '    "page":"总页数。",\n'
-                                + '    "list":[\n'
-                                + '        ' + module.model.replace(/\n {4}/g, '\n            ').replace('\n}', '\n        }')
-                                + '\n    ]\n'
-                                + '}';
+                            child.parameters.push({ name: 'pageSize', type: 'int', description: '每页显示记录数，默认：20。' });
+                            child.parameters.push({ name: 'pageNum', type: 'int', description: '当前显示页数。' });
+                            child.response = `{
+    "count":"记录总数。",
+    "size":"每页最大显示记录数。",
+    "number":"当前显示页数。",
+    "page":"总页数。",
+    "list":[
+        `+ module.model.replace(/\n {4}/g, '\n            ').replace('\n}', '\n        }') + `
+    ]
+}`;
                         }
                     }
                 }

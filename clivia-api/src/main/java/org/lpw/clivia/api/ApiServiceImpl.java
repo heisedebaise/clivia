@@ -22,12 +22,9 @@ import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * @author lpw
@@ -51,16 +48,10 @@ public class ApiServiceImpl implements ApiService, ContextRefreshedListener {
     @Inject
     private Optional<Set<Model>> models;
     private JSONArray array;
-    private final Map<String, String> resources = new ConcurrentHashMap<>();
 
     @Override
     public JSONArray get() {
         return array;
-    }
-
-    @Override
-    public String resource(String name) {
-        return resources.computeIfAbsent(name, key -> io.readAsString(getClass().getResourceAsStream(key)));
     }
 
     @Override

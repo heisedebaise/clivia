@@ -12,12 +12,4 @@ public interface ApiService {
      * @return API配置集。
      */
     JSONArray get();
-
-    /**
-     * 获取资源文件内容。。
-     *
-     * @param name 资源文件名。
-     * @return 获取资源文件内容。。
-     */
-    String resource(String name);
 }

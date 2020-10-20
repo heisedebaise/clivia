@@ -24,14 +24,4 @@ public class ApiCtrl {
     public Object get() {
         return apiService.get();
     }
-
-    @Execute(name = "request")
-    public Object request() {
-        return apiService.resource("request.js");
-    }
-
-    @Execute(name = "response")
-    public Object response() {
-        return templates.get().success(apiService.resource("response.json"), null);
-    }
 }
