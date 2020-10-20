@@ -277,10 +277,20 @@ public class QueryBuilder {
      * @param modelClass Model类。
      * @param pageSize   最大返回的记录数。
      * @param pageNum    当前显示的页码。
-     * @param <T>        返回Model类型。
+     * @param <T>        Model类型。
      * @return Model实例集。
      */
     public <T extends Model> PageList<T> query(Class<T> modelClass, int pageSize, int pageNum) {
         return liteOrm.query(new LiteQuery(modelClass).where(where.toString()).order(order).size(pageSize).page(pageNum), args.toArray());
+    }
+
+    /**
+     * 删除。
+     *
+     * @param modelClass Model类。
+     * @param <T>        Model类型。
+     */
+    public <T extends Model> void delete(Class<T> modelClass) {
+        liteOrm.delete(new LiteQuery(modelClass).where(where.toString()), args.toArray());
     }
 }
