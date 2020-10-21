@@ -112,6 +112,56 @@
                 "reload": true,
                 "when": "model.grade<90"
             }
+        ],
+        "toolbar": [
+            {
+                "type": "create"
+            }
+        ]
+    },
+    "create": {
+        "type": "form",
+        "props": [
+            {
+                "name": "uid"
+            },
+            {
+                "name": "password"
+            },
+            {
+                "name": "portrait"
+            },
+            {
+                "name": "idcard"
+            },
+            {
+                "name": "name"
+            },
+            {
+                "name": "nick"
+            },
+            {
+                "name": "mobile"
+            },
+            {
+                "name": "email"
+            },
+            {
+                "name": "gender"
+            },
+            {
+                "name": "birthday"
+            },
+            {
+                "name": "state"
+            }
+        ],
+        "toolbar": [
+            {
+                "type": "save",
+                "service": "create",
+                "success": "query"
+            }
         ]
     },
     "update": {
