@@ -11,6 +11,7 @@ class Main extends React.Component {
 
     this.state = {
       logo: '',
+      signUpEnable: false,
       user: {}
     };
     loader(null);
@@ -21,14 +22,17 @@ class Main extends React.Component {
       if (data === null) return;
 
       document.title = data['setting.global.console.title'] || 'Clivia Console';
-      this.setState({ logo: data['setting.global.console.logo'] });
+      this.setState({
+        logo: data['setting.global.console.logo'],
+        signUpEnable: data['setting.global.sign-up.enable'] === '1'
+      });
     });
     service('/user/sign').then(data => this.setState({ user: data }));
   }
 
   render = () => (
     <ConfigProvider locale={zhCN}>
-      {this.state.user.id && this.state.user.id.length === 36 ? <Console logo={this.state.logo} user={this.state.user} /> : <SignIn />}
+      {this.state.user.id && this.state.user.id.length === 36 ? <Console logo={this.state.logo} user={this.state.user} /> : <SignIn logo={this.state.logo} signUpEnable={this.state.signUpEnable} />}
     </ConfigProvider>
   );
 }

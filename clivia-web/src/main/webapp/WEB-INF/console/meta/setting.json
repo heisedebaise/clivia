@@ -10,6 +10,11 @@
                 "name": "setting.global.console.logo",
                 "type": "image",
                 "upload": "clivia.keyvalue.image"
+            },
+            {
+                "name": "setting.global.sign-up.enable",
+                "type": "switch",
+                "permit": true
             }
         ],
         "toolbar": [

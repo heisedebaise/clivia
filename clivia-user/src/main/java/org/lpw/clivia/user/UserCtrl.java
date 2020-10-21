@@ -39,6 +39,7 @@ public class UserCtrl {
             @Validate(validator = Validators.MAX_LENGTH, number = {100}, parameter = "uid", failureCode = 2),
             @Validate(validator = UserService.VALIDATOR_EXISTS_TYPE, parameter = "type", failureCode = 27),
             @Validate(validator = UserService.VALIDATOR_PASSWORD, parameters = {"password", "type"}, failureCode = 3),
+            @Validate(validator = UserService.VALIDATOR_SIGN_UP_ENABLE, failureCode = 99),
             @Validate(validator = AuthService.VALIDATOR_UID_NOT_EXISTS, parameters = {"uid", "password", "type"}, failureCode = 4)
     })
     public Object signUp() {

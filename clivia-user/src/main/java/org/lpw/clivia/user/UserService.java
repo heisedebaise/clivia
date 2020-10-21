@@ -9,7 +9,14 @@ import java.sql.Date;
  * @author lpw
  */
 public interface UserService {
+    /**
+     * 类型是否存在验证器Bean名称。
+     */
     String VALIDATOR_EXISTS_TYPE = UserModel.NAME + ".validator.exists-type";
+    /**
+     * 是否允许注册验证器Bean名称。
+     */
+    String VALIDATOR_SIGN_UP_ENABLE=UserModel.NAME+".validator.sign-up.enable";
     /**
      * 登入验证器Bean名称。
      */

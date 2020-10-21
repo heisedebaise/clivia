@@ -5,11 +5,9 @@ import { service } from '../http';
 import { toArray } from '../json';
 import './index.css';
 
-const { Footer, Content } = Layout;
-
 class SignIn extends React.Component {
-    constructor() {
-        super();
+    constructor(props) {
+        super(props);
 
         this.state = {
             up: false,
@@ -58,7 +56,7 @@ class SignIn extends React.Component {
     render() {
         return (
             <Layout className="sign-in-layout">
-                <Content>
+                <Layout.Content>
                     <div className="sign-in-header">{document.title}</div>
                     <div className="sign-in-form">
                         <Form onFinish={this.finish}>
@@ -68,18 +66,18 @@ class SignIn extends React.Component {
                             {this.state.up && this.state.grades.length > 0 ? <Form.Item label="我是" name="grade"><Radio.Group options={this.state.grades} optionType="button" buttonStyle="solid" /></Form.Item> : null}
                             {this.state.up && this.state.agreement ? <Form.Item><a href={this.state.agreement.uri + '?filename=' + this.state.agreement.name} target="_blank" rel="noopener noreferrer">{this.state.agreement.label}</a></Form.Item> : null}
                             <Form.Item><Button type="primary" htmlType="submit" className="sign-in-up-button">{this.state.up ? '提交注册' : '登录'}</Button></Form.Item>
-                            <Form.Item>
+                            {this.props.signUpEnable ? <Form.Item>
                                 <Button type="link" className="sign-in-up-link" onClick={this.change}>{this.state.up ? '使用已有账户登录' : '注册新账户'}</Button>
                                 <span>其他登录方式</span>
                                 <WechatOutlined className="sign-in-third" />
                                 <AlipayOutlined className="sign-in-third" />
                                 <WeiboOutlined className="sign-in-third" />
                                 <GithubOutlined className="sign-in-third" />
-                            </Form.Item>
+                            </Form.Item> : null}
                         </Form>
                     </div>
-                </Content>
-                <Footer className="sign-in-footer">Copyright &copy; {new Date().getFullYear()} clivia-console</Footer>
+                </Layout.Content>
+                <Layout.Footer className="sign-in-footer">clivia-console &copy; {new Date().getFullYear()}</Layout.Footer>
             </Layout>
         );
     }

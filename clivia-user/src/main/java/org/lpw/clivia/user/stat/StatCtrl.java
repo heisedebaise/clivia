@@ -12,7 +12,7 @@ import javax.inject.Inject;
  * @author lpw
  */
 @Controller(StatModel.NAME + ".ctrl")
-@Execute(name = "/user/stat/", key = StatModel.NAME, code = "0")
+@Execute(name = "/user/stat/", key = StatModel.NAME, code = "151")
 public class StatCtrl {
     @Inject
     private Request request;

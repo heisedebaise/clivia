@@ -284,7 +284,7 @@ class Base extends React.Component {
 
         if (prop.type === 'datetime') return <DatePicker showTime={true} />;
 
-        if (prop.type === 'switch') return <Switch disabled={!prop.service} onChange={this.switch.bind(this, prop)} />;
+        if (prop.type === 'switch') return <Switch disabled={!prop.service && !prop.permit} onChange={this.switch.bind(this, prop)} />;
 
         if (prop.type === 'text-area') return <Input.TextArea />;
 
