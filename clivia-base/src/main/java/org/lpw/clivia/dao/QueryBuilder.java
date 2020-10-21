@@ -11,6 +11,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
+/**
+ * 检索构建器。
+ *
+ * @author lpw
+ */
 public class QueryBuilder {
     private final LiteOrm liteOrm;
     private final DaoHelper daoHelper;
@@ -18,7 +23,7 @@ public class QueryBuilder {
     private final List<Object> args;
     private String order;
 
-    public QueryBuilder(LiteOrm liteOrm, DaoHelper daoHelper) {
+    QueryBuilder(LiteOrm liteOrm, DaoHelper daoHelper) {
         this.liteOrm = liteOrm;
         this.daoHelper = daoHelper;
         where = new StringBuilder();
@@ -282,6 +287,17 @@ public class QueryBuilder {
      */
     public <T extends Model> PageList<T> query(Class<T> modelClass, int pageSize, int pageNum) {
         return liteOrm.query(new LiteQuery(modelClass).where(where.toString()).order(order).size(pageSize).page(pageNum), args.toArray());
+    }
+
+    /**
+     * 更新。
+     *
+     * @param modelClass Model类。
+     * @param set        set子句。
+     * @param <T>        Model类型。
+     */
+    public <T extends Model> void update(Class<T> modelClass, String set) {
+        liteOrm.update(new LiteQuery(modelClass).set(set).where(where.toString()), args.toArray());
     }
 
     /**
