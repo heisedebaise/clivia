@@ -34,17 +34,17 @@ class Main extends React.Component {
             if (data === null) return;
 
             for (let module of data) {
-                if (module.model) {
-                    for (let child of module.children) {
-                        if (child.psid) {
-                            if (!child.headers) child.headers = [];
-                            child.headers.push({
-                                name: 'photon-session-id',
-                                type: 'string',
-                                require: true,
-                                description: '用户SESSION ID值。'
-                            });
-                        }
+                for (let child of module.children) {
+                    if (child.psid) {
+                        if (!child.headers) child.headers = [];
+                        child.headers.push({
+                            name: 'photon-session-id',
+                            type: 'string',
+                            require: true,
+                            description: '用户SESSION ID值。'
+                        });
+                    }
+                    if (module.model) {
                         if (child.response === 'model')
                             child.response = module.model;
                         else if (child.response === 'pagination') {

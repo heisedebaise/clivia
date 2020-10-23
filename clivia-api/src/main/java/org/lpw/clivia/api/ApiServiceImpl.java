@@ -139,7 +139,7 @@ public class ApiServiceImpl implements ApiService, ContextRefreshedListener {
         for (int j = 0, s = array.size(); j < s; j++) {
             JSONObject obj = array.getJSONObject(j);
             String n = obj.getString("name");
-            if (n.equals("id"))
+            if (n.equals("id") && validator.isEmpty(obj.get("description")))
                 obj.put("description", message.get(ApiModel.NAME + ".id.description"));
             else
                 message(obj, "description", prefix, "." + n + ".description");
@@ -179,7 +179,7 @@ public class ApiServiceImpl implements ApiService, ContextRefreshedListener {
             return 2;
         }
 
-        if (name.equals("id")) {
+        if (name.equals("id") && validator.isEmpty(value)) {
             object.put(name, message.get(ApiModel.NAME + ".id.description"));
 
             return 0;
