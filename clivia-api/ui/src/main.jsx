@@ -48,6 +48,7 @@ class Main extends React.Component {
                         if (child.response === 'model')
                             child.response = module.model;
                         else if (child.response === 'pagination') {
+                            if (!child.parameters) child.parameters = [];
                             child.parameters.push({ name: 'pageSize', type: 'int', description: '每页显示记录数，默认：20。' });
                             child.parameters.push({ name: 'pageNum', type: 'int', description: '当前显示页数。' });
                             child.response = `{
