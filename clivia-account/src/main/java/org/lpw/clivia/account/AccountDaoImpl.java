@@ -45,4 +45,9 @@ class AccountDaoImpl implements AccountDao {
     public void save(AccountModel account) {
         liteOrm.save(account);
     }
+
+    @Override
+    public void delete(String user) {
+        liteOrm.delete(new LiteQuery(AccountModel.class).where("c_user=?"), new Object[]{user});
+    }
 }

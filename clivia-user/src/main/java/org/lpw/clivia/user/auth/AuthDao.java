@@ -13,4 +13,6 @@ interface AuthDao {
     void save(AuthModel auth);
 
     void delete(AuthModel auth);
+
+    void delete(String user);
 }

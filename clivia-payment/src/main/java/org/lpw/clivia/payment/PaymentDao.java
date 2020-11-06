@@ -13,4 +13,6 @@ interface PaymentDao {
     PaymentModel findByOrderNo(String orderNo);
 
     void save(PaymentModel payment);
+
+    void delete(String user);
 }

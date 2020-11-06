@@ -8,6 +8,8 @@ import org.lpw.clivia.account.type.AccountTypes;
 import org.lpw.clivia.keyvalue.KeyvalueService;
 import org.lpw.clivia.lock.LockHelper;
 import org.lpw.clivia.page.Pagination;
+import org.lpw.clivia.user.UserListener;
+import org.lpw.clivia.user.UserModel;
 import org.lpw.clivia.user.UserService;
 import org.lpw.clivia.user.auth.AuthService;
 import org.lpw.photon.crypto.Digest;
@@ -25,7 +27,7 @@ import java.util.Map;
  * @author lpw
  */
 @Service(AccountModel.NAME + ".service")
-public class AccountServiceImpl implements AccountService {
+public class AccountServiceImpl implements AccountService, UserListener {
     private static final String LOCK_USER = AccountModel.NAME + ".service.lock:";
     private static final String CHECKSUM = AccountModel.NAME + ".service.checksum";
 
@@ -241,5 +243,11 @@ public class AccountServiceImpl implements AccountService {
                 + "&" + account.getRemitIn() + "&" + account.getRemitOut() + "&" + account.getRefund() + "&" + account.getPending()));
         accountDao.save(account);
         lockHelper.unlock(account.getLockId());
+    }
+
+    @Override
+    public void userDeleted(UserModel user, boolean completely) {
+        if (completely)
+            accountDao.delete(user.getId());
     }
 }

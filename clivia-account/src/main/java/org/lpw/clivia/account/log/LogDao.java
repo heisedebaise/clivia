@@ -13,4 +13,6 @@ interface LogDao {
     LogModel findById(String id);
 
     void save(LogModel log);
+
+    void delete(String user);
 }

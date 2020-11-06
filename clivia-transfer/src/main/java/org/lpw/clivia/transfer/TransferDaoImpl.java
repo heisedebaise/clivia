@@ -56,4 +56,9 @@ class TransferDaoImpl implements TransferDao {
         liteOrm.save(transfer);
         liteOrm.close();
     }
+
+    @Override
+    public void delete(String user) {
+        liteOrm.delete(new LiteQuery(TransferModel.class).where("c_user=?"), new Object[]{user});
+    }
 }

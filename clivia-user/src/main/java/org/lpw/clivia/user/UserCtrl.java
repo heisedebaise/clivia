@@ -234,4 +234,15 @@ public class UserCtrl {
     public Object count() {
         return userService.count();
     }
+
+    @Execute(name = "delete", validates = {
+            @Validate(validator = Validators.ID, parameter = "id", failureCode = 22),
+            @Validate(validator = Validators.SIGN),
+            @Validate(validator = UserService.VALIDATOR_EXISTS, parameter = "id", failureCode = 25)
+    })
+    public Object delete() {
+        userService.delete(request.get("id"));
+
+        return "";
+    }
 }

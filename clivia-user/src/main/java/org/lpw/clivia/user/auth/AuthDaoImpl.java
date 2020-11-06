@@ -34,4 +34,9 @@ class AuthDaoImpl implements AuthDao {
     public void delete(AuthModel auth) {
         liteOrm.delete(auth);
     }
+
+    @Override
+    public void delete(String user) {
+        liteOrm.delete(new LiteQuery(AuthModel.class).where("c_user=?"), new Object[]{user});
+    }
 }

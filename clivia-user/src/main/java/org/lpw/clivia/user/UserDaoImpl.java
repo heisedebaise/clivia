@@ -34,6 +34,7 @@ class UserDaoImpl implements UserDao {
                 .where("c_grade", DaoOperation.LessEquals, maxGrade)
                 .where("c_state", DaoOperation.Equals, state)
                 .between("c_register", ColumnType.Timestamp, register)
+                .where("c_state", DaoOperation.LessEquals, 1)
                 .order("c_register desc")
                 .query(UserModel.class, pageSize, pageNum);
     }
@@ -61,5 +62,15 @@ class UserDaoImpl implements UserDao {
     @Override
     public void save(UserModel user) {
         liteOrm.save(user);
+    }
+
+    @Override
+    public void state(String id, int state) {
+        liteOrm.update(new LiteQuery(UserModel.class).set("c_state=?").where("c_id=?"), new Object[]{state, id});
+    }
+
+    @Override
+    public void delete(String id) {
+        liteOrm.deleteById(UserModel.class, id);
     }
 }

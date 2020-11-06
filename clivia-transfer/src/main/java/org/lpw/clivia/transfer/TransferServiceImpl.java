@@ -3,6 +3,8 @@ package org.lpw.clivia.transfer;
 import com.alibaba.fastjson.JSONObject;
 import org.lpw.clivia.lock.LockHelper;
 import org.lpw.clivia.page.Pagination;
+import org.lpw.clivia.user.UserListener;
+import org.lpw.clivia.user.UserModel;
 import org.lpw.clivia.user.UserService;
 import org.lpw.clivia.user.auth.AuthService;
 import org.lpw.photon.bean.BeanFactory;
@@ -32,7 +34,7 @@ import java.util.Set;
  * @author lpw
  */
 @Service(TransferModel.NAME + ".service")
-public class TransferServiceImpl implements ContextRefreshedListener, SecondsJob, TransferService {
+public class TransferServiceImpl implements TransferService, UserListener, ContextRefreshedListener, SecondsJob {
     private static final String LOCK_ORDER_NO = TransferModel.NAME + ".service.order-no:";
 
     @Inject
@@ -172,6 +174,12 @@ public class TransferServiceImpl implements ContextRefreshedListener, SecondsJob
         JSONObject notice = json.toObject(transfer.getNotice());
         if (notice != null)
             notices.ifPresent(set -> set.forEach(pn -> pn.transferDone(transfer, notice)));
+    }
+
+    @Override
+    public void userDeleted(UserModel user, boolean completely) {
+        if (completely)
+            transferDao.delete(user.getId());
     }
 
     @Override

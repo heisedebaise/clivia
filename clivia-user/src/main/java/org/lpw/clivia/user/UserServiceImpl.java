@@ -25,6 +25,8 @@ import org.springframework.stereotype.Service;
 
 import javax.inject.Inject;
 import java.sql.Date;
+import java.util.Optional;
+import java.util.Set;
 
 /**
  * @author lpw
@@ -68,6 +70,8 @@ public class UserServiceImpl implements UserService {
     private CrosierService crosierService;
     @Inject
     private OnlineService onlineService;
+    @Inject
+    private Optional<Set<UserListener>> listeners;
     @Inject
     private UserDao userDao;
     private final int codeLength = 8;
@@ -508,6 +512,23 @@ public class UserServiceImpl implements UserService {
         authService.create(user.getId(), uid, Types.Self, mobile, email, nick, portrait);
 
         return user;
+    }
+
+    @Override
+    public void delete(String id) {
+        UserModel user = findById(id);
+        if (user.getGrade() > 98)
+            return;
+
+        boolean completely = keyvalueService.valueAsInt("setting.global.user.delete", 0) == 1;
+        if (completely) {
+            userDao.delete(id);
+            authService.delete(id);
+        } else
+            userDao.state(id, 2);
+        onlineService.signOutUser(id);
+        clearCache(user);
+        listeners.ifPresent(set -> set.forEach(listener -> listener.userDeleted(user, completely)));
     }
 
     @Override

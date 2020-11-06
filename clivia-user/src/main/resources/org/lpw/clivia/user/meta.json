@@ -111,6 +111,9 @@
                 },
                 "reload": true,
                 "when": "model.grade<90"
+            },
+            {
+                "type": "delete"
             }
         ],
         "toolbar": [

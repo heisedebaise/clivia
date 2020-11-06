@@ -5,6 +5,8 @@ import org.lpw.clivia.account.AccountService;
 import org.lpw.clivia.account.log.LogService;
 import org.lpw.clivia.lock.LockHelper;
 import org.lpw.clivia.page.Pagination;
+import org.lpw.clivia.user.UserListener;
+import org.lpw.clivia.user.UserModel;
 import org.lpw.clivia.user.UserService;
 import org.lpw.clivia.user.auth.AuthService;
 import org.lpw.photon.dao.model.ModelHelper;
@@ -28,7 +30,7 @@ import java.util.Set;
  * @author lpw
  */
 @Service(PaymentModel.NAME + ".service")
-public class PaymentServiceImpl implements PaymentService {
+public class PaymentServiceImpl implements PaymentService, UserListener {
     private static final String LOCK_ORDER_NO = PaymentModel.NAME + ".service.order-no:";
 
     @Inject
@@ -202,5 +204,11 @@ public class PaymentServiceImpl implements PaymentService {
         JSONObject notice = json.toObject(payment.getNotice());
         if (notice != null)
             notices.ifPresent(set -> set.forEach(pn -> pn.paymentDone(payment, notice)));
+    }
+
+    @Override
+    public void userDeleted(UserModel user, boolean completely) {
+        if (completely)
+            paymentDao.delete(user.getId());
     }
 }

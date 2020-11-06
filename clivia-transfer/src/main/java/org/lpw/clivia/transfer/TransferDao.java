@@ -17,4 +17,6 @@ interface TransferDao {
     TransferModel findByOrderNo(String orderNo);
 
     void save(TransferModel transfer);
+
+    void delete(String user);
 }

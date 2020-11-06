@@ -13,4 +13,6 @@ interface AccountDao {
     AccountModel find(String user, String owner, int type);
 
     void save(AccountModel account);
+
+    void delete(String user);
 }

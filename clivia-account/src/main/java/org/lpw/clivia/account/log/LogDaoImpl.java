@@ -47,4 +47,9 @@ class LogDaoImpl implements LogDao {
         liteOrm.save(log);
         liteOrm.close();
     }
+
+    @Override
+    public void delete(String user) {
+        liteOrm.delete(new LiteQuery(LogModel.class).where("c_user=?"), new Object[]{user});
+    }
 }

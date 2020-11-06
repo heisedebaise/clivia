@@ -20,4 +20,8 @@ interface UserDao {
     int count(Timestamp[] register);
 
     void save(UserModel user);
+
+    void state(String id, int state);
+
+    void delete(String id);
 }

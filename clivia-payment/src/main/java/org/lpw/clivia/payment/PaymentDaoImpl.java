@@ -50,4 +50,9 @@ class PaymentDaoImpl implements PaymentDao {
         liteOrm.save(payment);
         liteOrm.close();
     }
+
+    @Override
+    public void delete(String user) {
+        liteOrm.delete(new LiteQuery(PaymentModel.class).where("c_user=?"), new Object[]{user});
+    }
 }

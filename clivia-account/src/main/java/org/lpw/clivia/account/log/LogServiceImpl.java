@@ -6,6 +6,8 @@ import org.lpw.clivia.account.AccountModel;
 import org.lpw.clivia.account.AccountService;
 import org.lpw.clivia.lock.LockHelper;
 import org.lpw.clivia.page.Pagination;
+import org.lpw.clivia.user.UserListener;
+import org.lpw.clivia.user.UserModel;
 import org.lpw.clivia.user.UserService;
 import org.lpw.clivia.user.auth.AuthService;
 import org.lpw.photon.dao.model.ModelHelper;
@@ -24,7 +26,7 @@ import java.util.Set;
  * @author lpw
  */
 @Service(LogModel.NAME + ".service")
-public class LogServiceImpl implements LogService, SecondsJob {
+public class LogServiceImpl implements LogService, UserListener, SecondsJob {
     @Inject
     private Validator validator;
     @Inject
@@ -140,23 +142,30 @@ public class LogServiceImpl implements LogService, SecondsJob {
 
         log.setState(state.ordinal());
         switch (accountService.complete(log)) {
-            case Success:
+            case Success -> {
                 if (log.getRestate() > 0)
                     log.setRestate(0);
                 log.setEnd(dateTime.now());
                 if (array != null)
                     array.add(id);
-                break;
-            case Locked:
+            }
+            case Locked -> {
                 log.setState(State.New.ordinal());
                 log.setRestate(state.ordinal());
-                break;
-            case Failure:
+            }
+            case Failure -> {
                 lockHelper.unlock(lockId);
                 return;
+            }
         }
         logDao.save(log);
         lockHelper.unlock(lockId);
+    }
+
+    @Override
+    public void userDeleted(UserModel user, boolean completely) {
+        if (completely)
+            logDao.delete(user.getId());
     }
 
     @Override

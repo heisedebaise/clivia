@@ -15,6 +15,11 @@
                 "name": "setting.global.sign-up.enable",
                 "type": "switch",
                 "permit": true
+            },
+            {
+                "name": "setting.global.user.delete",
+                "type": "switch",
+                "permit": true
             }
         ],
         "toolbar": [

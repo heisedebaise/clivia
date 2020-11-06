@@ -71,4 +71,9 @@ public class AuthServiceImpl implements AuthService {
         userService.clearCache();
         userService.signOut();
     }
+
+    @Override
+    public void delete(String user) {
+        authDao.delete(user);
+    }
 }

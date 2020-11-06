@@ -53,4 +53,11 @@ public interface AuthService {
      * 删除当前认证。
      */
     void delete();
+
+    /**
+     * 删除用户认证。
+     *
+     * @param user 用户ID。
+     */
+    void delete(String user);
 }

@@ -16,7 +16,7 @@ public interface UserService {
     /**
      * 是否允许注册验证器Bean名称。
      */
-    String VALIDATOR_SIGN_UP_ENABLE=UserModel.NAME+".validator.sign-up.enable";
+    String VALIDATOR_SIGN_UP_ENABLE = UserModel.NAME + ".validator.sign-up.enable";
     /**
      * 登入验证器Bean名称。
      */
@@ -319,6 +319,13 @@ public interface UserService {
      */
     UserModel create(String uid, String password, String idcard, String name, String nick, String mobile, String email,
                      String portrait, int gender, Date birthday, String inviter, int grade, int state);
+
+    /**
+     * 删除。
+     *
+     * @param id ID值。
+     */
+    void delete(String id);
 
     /**
      * 清空当前用户缓存数据。
