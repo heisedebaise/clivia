@@ -60,7 +60,7 @@ class SignIn extends React.Component {
                     <div className="sign-in-header">{document.title}</div>
                     <div className="sign-in-form">
                         <Form onFinish={this.finish}>
-                            <Form.Item name="uid"><Input prefix={<UserOutlined style={{ color: 'rgba(0,0,0,.25)' }} />} placeholder="用户名" /></Form.Item>
+                            <Form.Item name="uid"><Input prefix={<UserOutlined style={{ color: 'rgba(0,0,0,.25)' }} />} placeholder="用户名" autoFocus={true} /></Form.Item>
                             <Form.Item name="password"><Input.Password prefix={<LockOutlined style={{ color: 'rgba(0,0,0,.25)' }} />} placeholder="密码" /></Form.Item>
                             {this.state.up ? <Form.Item name="repeat"><Input.Password prefix={<LockOutlined style={{ color: 'rgba(0,0,0,.25)' }} />} placeholder="重复密码" /></Form.Item> : null}
                             {this.state.up && this.state.grades.length > 0 ? <Form.Item label="我是" name="grade"><Radio.Group options={this.state.grades} optionType="button" buttonStyle="solid" /></Form.Item> : null}
