@@ -199,10 +199,10 @@ class Base extends React.Component {
         }
 
         return (
-            <Form ref={this.form} {...layout} initialValues={this.state} >
+            <Form ref={this.form} {...layout} initialValues={this.state}>
                 {items}
-                < Form.Item className="console-form-toolbar" label="toolbar" > {this.toolbar()}</Form.Item>
-            </Form >
+                <Form.Item className="console-form-toolbar" label="toolbar">{this.toolbar()}</Form.Item>
+            </Form>
         );
     }
 
