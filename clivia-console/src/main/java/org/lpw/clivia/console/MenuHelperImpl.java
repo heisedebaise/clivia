@@ -151,7 +151,7 @@ public class MenuHelperImpl implements MenuHelper, ContextRefreshedListener, Cro
         if (!validator.isEmpty(props)) {
             for (int i = 0, size = props.size(); i < size; i++) {
                 JSONObject prop = props.getJSONObject(i);
-                if ((json.has(prop, "type", "switch") || json.has(prop, "type", "refresh")) && prop.containsKey("service"))
+                if (prop.containsKey("service"))
                     items.add(prop);
             }
         }

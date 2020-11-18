@@ -7,12 +7,30 @@ class DSelect extends React.Component {
         super(props);
 
         props.form.value(props.name, props.value);
+
         this.vname = props.vname || 'id';
         this.lname = props.lname || 'name';
+        let dlname = props.dlname || this.lname;
+
+        let options = [];
+        if (props.value && props.data) {
+            let option = { value: props.value, label: props.value };
+            if (dlname) {
+                if (dlname.indexOf('+') > -1)
+                    // eslint-disable-next-line
+                    eval('option.label=' + dlname.replace(/option/g, 'props.data'));
+                else
+                    option.label = props.data[dlname];
+            }
+            options.push(option);
+        }
         this.state = {
-            options: [],
+            options: options,
             value: props.value
         };
+    }
+
+    focus = () => {
         this.search('');
     }
 
@@ -63,7 +81,7 @@ class DSelect extends React.Component {
         this.props.form.value(this.props.name, value);
     }
 
-    render = () => <Select showSearch={true} onSearch={this.search} filterOption={this.filter} onChange={this.change} value={this.state.value} options={this.state.options} />;
+    render = () => <Select showSearch={true} onFocus={this.focus} onSearch={this.search} filterOption={this.filter} onChange={this.change} value={this.state.value} options={this.state.options} />;
 }
 
 export default DSelect;
