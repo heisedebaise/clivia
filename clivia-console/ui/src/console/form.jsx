@@ -99,7 +99,15 @@ class Base extends React.Component {
         }
     }
 
-    value = (name, value) => this.values[name] = value;
+    value = (name, value) => {
+        if (value === null) {
+            let values = this.form.current ? this.form.current.getFieldsValue() : {};
+
+            return values[name] || this.values[name];
+        }
+
+        this.values[name] = value;
+    }
 
     button = mt => {
         let values = this.form.current.getFieldsValue();
@@ -167,7 +175,7 @@ class Base extends React.Component {
             } else if (prop.type === 'file') {
                 items.push(<Form.Item {...item}><File name={prop.name} upload={prop.upload} size={prop.size || 1} value={this.state[prop.name] || ''} form={this} /></Form.Item>);
             } else if (prop.type === 'dselect') {
-                items.push(<Form.Item {...item}><DSelect list={prop.list} parameter={prop.parameter} name={prop.name} value={this.state[prop.name]} vname={prop.vname} lname={prop.lname} form={this} /></Form.Item>);
+                items.push(<Form.Item {...item}><DSelect list={prop.list} search={prop.search} parameter={prop.parameter} name={prop.name} value={this.state[prop.name]} vname={prop.vname} lname={prop.lname} form={this} /></Form.Item>);
             } else if (prop.type === 'refresh') {
                 items.push(<Form.Item {...item}>{this.state[prop.name] || ''} {prop.service ? <Button icon={<SyncOutlined alt={prop.label} />} onClick={this.refresh.bind(this, prop)} /> : null}</Form.Item>);
             } else if (prop.type === 'editor') {

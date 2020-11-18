@@ -6,31 +6,56 @@ class DSelect extends React.Component {
     constructor(props) {
         super(props);
 
-        this.state = {
-            list: [],
-            value: ''
-        };
+        props.form.value(props.name, props.value);
         this.vname = props.vname || 'id';
         this.lname = props.lname || 'name';
-        props.form.value(props.name, props.value);
-        service(props.list, props.parameter).then(data => {
+        this.state = {
+            list: [],
+            value: props.value
+        };
+        this.search('');
+    }
+
+    search = (value) => {
+        let parameter = {};
+        if (this.props.search) {
+            for (let i = 0; i < this.props.search.length; i++) {
+                if (i === this.props.search.length - 1)
+                    parameter[this.props.search[i].name] = value;
+                else if (this.props.search[i].form)
+                    parameter[this.props.search[i].name || this.props.search[i].form] = this.props.form.value(this.props.search[i].form, null);
+            }
+        }
+        service(this.props.list, { ...parameter, ...this.props.parameter }).then(data => {
             if (data === null) return;
 
+            let options = []
+            for (let option of data.list || data) {
+                options.push({
+                    label: option[this.lname] || option[this.vname],
+                    value: option[this.vname]
+                });
+            }
             this.setState({
-                list: data,
-                value: props.value
+                options: options
             });
         });
     }
 
-    filter = (input, option) => option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0;
+    filter = (input, option) => {
+        if (!option) return false;
+
+        if (input === '') return true;
+
+        return option.value.toLowerCase().indexOf(input.toLowerCase()) >= 0 || option.label.toLowerCase().indexOf(input.toLowerCase()) >= 0;
+    }
 
     change = value => {
         this.setState({ value: value });
         this.props.form.value(this.props.name, value);
     }
 
-    render = () => <Select showSearch={true} filterOption={this.filter} onChange={this.change} value={this.state.value}>{this.state.list.map(option => <Select.Option key={option[this.vname]} value={option[this.vname]}>{option[this.lname]}</Select.Option>)}</Select>;
+    render = () => <Select showSearch={true} onSearch={this.search} filterOption={this.filter} onChange={this.change} value={this.state.value} options={this.state.options} />;
 }
 
 export default DSelect;
