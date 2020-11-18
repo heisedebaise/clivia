@@ -10,7 +10,7 @@ class DSelect extends React.Component {
         this.vname = props.vname || 'id';
         this.lname = props.lname || 'name';
         this.state = {
-            list: [],
+            options: [],
             value: props.value
         };
         this.search('');
@@ -26,13 +26,21 @@ class DSelect extends React.Component {
                     parameter[this.props.search[i].name || this.props.search[i].form] = this.props.form.value(this.props.search[i].form, null);
             }
         }
-        service(this.props.list, { ...parameter, ...this.props.parameter }).then(data => {
+        service(this.props.service, { ...parameter, ...this.props.parameter }).then(data => {
             if (data === null) return;
 
             let options = []
             for (let option of data.list || data) {
+                let label = option[this.vname];
+                if (this.lname) {
+                    if (this.lname.indexOf('+') > -1)
+                        // eslint-disable-next-line
+                        eval('label=' + this.lname);
+                    else
+                        label = option[this.lname];
+                }
                 options.push({
-                    label: option[this.lname] || option[this.vname],
+                    label: label,
                     value: option[this.vname]
                 });
             }
