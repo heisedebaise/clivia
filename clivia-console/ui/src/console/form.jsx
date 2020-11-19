@@ -294,7 +294,7 @@ class Base extends React.Component {
 
         if (prop.type === 'switch') return <Switch disabled={!prop.service && !prop.permit} onChange={this.switch.bind(this, prop)} />;
 
-        if (prop.type === 'text-area') return <Input.TextArea />;
+        if (prop.type === 'text-area') return <Input.TextArea autoSize={{ minRows: 2 }} />;
 
         if (prop.type === 'password') return <Input.Password />;
 
