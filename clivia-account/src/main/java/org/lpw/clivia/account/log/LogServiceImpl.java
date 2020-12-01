@@ -18,7 +18,6 @@ import org.lpw.photon.util.Validator;
 import org.springframework.stereotype.Service;
 
 import javax.inject.Inject;
-import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
@@ -47,22 +46,7 @@ public class LogServiceImpl implements LogService, UserListener, SecondsJob {
     private AccountService accountService;
     @Inject
     private LogDao logDao;
-    private Set<String> ignores;
-
-    public LogServiceImpl() {
-        ignores = new HashSet<>();
-        ignores.add("user");
-        ignores.add("account");
-        ignores.add("owner");
-        ignores.add("type");
-        ignores.add("channel");
-        ignores.add("amount");
-        ignores.add("balance");
-        ignores.add("state");
-        ignores.add("restate");
-        ignores.add("start");
-        ignores.add("end");
-    }
+    private final Set<String> ignores = Set.of("user", "account", "owner", "type", "channel", "amount", "balance", "state", "restate", "start", "end");
 
     @Override
     public JSONObject query(String uid, String owner, String type, String channel, int state, String start) {

@@ -5,7 +5,6 @@ import org.lpw.clivia.account.log.LogService;
 
 import javax.inject.Inject;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
@@ -17,16 +16,7 @@ public abstract class AccountTypeSupport implements AccountType {
 
     @Inject
     private LogService logService;
-    private Set<String> ignores;
-
-    AccountTypeSupport() {
-        ignores = new HashSet<>();
-        ignores.add("user");
-        ignores.add("owner");
-        ignores.add("type");
-        ignores.add("channel");
-        ignores.add("amount");
-    }
+    private final Set<String> ignores = Set.of("user", "owner", "type", "channel", "amount");
 
     protected String in(AccountModel account, String channel, long amount, Map<String, String> map) {
         account.setPending(account.getPending() + amount);
