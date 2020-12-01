@@ -177,6 +177,10 @@ public class TransferServiceImpl implements TransferService, UserListener, Conte
     }
 
     @Override
+    public void userSignUp(UserModel user) {
+    }
+
+    @Override
     public void userDeleted(UserModel user, boolean completely) {
         if (completely)
             transferDao.delete(user.getId());

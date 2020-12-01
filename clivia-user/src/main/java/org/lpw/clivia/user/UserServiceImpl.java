@@ -119,6 +119,8 @@ public class UserServiceImpl implements UserService {
         for (String ruid : types.getUid(type, uid, password))
             if (authService.findByUid(ruid) == null)
                 authService.create(user.getId(), ruid, type, mobile, email, nick, portrait);
+        UserModel model = user;
+        listeners.ifPresent(set -> set.forEach(listener -> listener.userSignUp(model)));
         clearCache(user);
         signIn(user, uid);
 

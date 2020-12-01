@@ -246,6 +246,10 @@ public class AccountServiceImpl implements AccountService, UserListener {
     }
 
     @Override
+    public void userSignUp(UserModel user) {
+    }
+
+    @Override
     public void userDeleted(UserModel user, boolean completely) {
         if (completely)
             accountDao.delete(user.getId());

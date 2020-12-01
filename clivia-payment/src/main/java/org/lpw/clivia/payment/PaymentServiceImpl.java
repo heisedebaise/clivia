@@ -21,7 +21,6 @@ import org.springframework.stereotype.Service;
 import javax.inject.Inject;
 import java.sql.Timestamp;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
@@ -63,23 +62,7 @@ public class PaymentServiceImpl implements PaymentService, UserListener {
     private Optional<Set<PaymentNotice>> notices;
     @Inject
     private PaymentDao paymentDao;
-    private Set<String> ignores;
-
-    public PaymentServiceImpl() {
-        ignores = new HashSet<>();
-        ignores.add("id");
-        ignores.add("type");
-        ignores.add("user");
-        ignores.add("appId");
-        ignores.add("amount");
-        ignores.add("orderNo");
-        ignores.add("billNo");
-        ignores.add("tradeNo");
-        ignores.add("notice");
-        ignores.add("state");
-        ignores.add("sign");
-        ignores.add("sign-time");
-    }
+    private final Set<String> ignores = Set.of("id", "type", "user", "appId", "amount", "orderNo", "billNo", "tradeNo", "notice", "state", "sign", "sign-time");
 
     @Override
     public JSONObject query(String type, String appId, String user, String orderNo, String billNo, String tradeNo,
@@ -204,6 +187,10 @@ public class PaymentServiceImpl implements PaymentService, UserListener {
         JSONObject notice = json.toObject(payment.getNotice());
         if (notice != null)
             notices.ifPresent(set -> set.forEach(pn -> pn.paymentDone(payment, notice)));
+    }
+
+    @Override
+    public void userSignUp(UserModel user) {
     }
 
     @Override
