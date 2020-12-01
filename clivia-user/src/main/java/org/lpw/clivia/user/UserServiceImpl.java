@@ -85,7 +85,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserModel signUp(String uid, String password, String type, String grade) {
+    public UserModel signUp(String uid, String password, String type, String inviter, String grade) {
         UserModel user = fromSession();
         if (user == null)
             user = new UserModel();
@@ -93,7 +93,7 @@ public class UserServiceImpl implements UserService {
             user.setPassword(password(password));
         if (user.getRegister() == null)
             user.setRegister(dateTime.now());
-        setCode((user));
+        setCode(user);
         String mobile = types.getMobile(type, uid, password);
         if (!validator.isEmpty(mobile) && validator.isMobile(mobile)) {
             if (validator.isEmpty(user.getMobile()))
@@ -112,7 +112,7 @@ public class UserServiceImpl implements UserService {
         String nick = types.getNick(type, uid, password);
         if (validator.isEmpty(user.getNick()))
             user.setNick(nick);
-        setInviter(user);
+        setInviter(user, inviter);
         user.setGrade(crosierService.signUpGrade(grade));
         user.setState(1);
         userDao.save(user);
@@ -133,11 +133,12 @@ public class UserServiceImpl implements UserService {
         }
     }
 
-    private void setInviter(UserModel user) {
+    private void setInviter(UserModel user, String code) {
         if (!validator.isEmpty(user.getInviter()))
             return;
 
-        String code = inviter(null);
+        if (validator.isEmpty(code))
+            code = inviter(null);
         if (validator.isEmpty(code) || code.length() != codeLength)
             return;
 

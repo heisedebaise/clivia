@@ -43,7 +43,7 @@ public class UserCtrl {
             @Validate(validator = AuthService.VALIDATOR_UID_NOT_EXISTS, parameters = {"uid", "password", "type"}, failureCode = 4)
     })
     public Object signUp() {
-        userService.signUp(request.get("uid"), request.get("password"), request.get("type"), request.get("grade"));
+        userService.signUp(request.get("uid"), request.get("password"), request.get("type"), request.get("inviter"), request.get("grade"));
 
         return sign();
     }

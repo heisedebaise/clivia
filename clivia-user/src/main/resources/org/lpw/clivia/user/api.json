@@ -2,6 +2,18 @@
     "uri": "/user/",
     "children": [
         {
+            "uri": "inviter",
+            "psid": true,
+            "parameters": [
+                {
+                    "name": "code",
+                    "type": "string",
+                    "require": true,
+                    "description": ".inviter.description"
+                }
+            ]
+        },
+        {
             "uri": "sign-up",
             "psid": true,
             "parameters": [
@@ -19,6 +31,14 @@
                     "name": "password",
                     "type": "string",
                     "require": true
+                },
+                {
+                    "name": "inviter",
+                    "type": "string"
+                },
+                {
+                    "name": "grade",
+                    "type": "string"
                 }
             ],
             "response": "model"

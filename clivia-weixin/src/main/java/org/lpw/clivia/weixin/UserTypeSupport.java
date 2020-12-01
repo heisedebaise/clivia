@@ -45,7 +45,7 @@ public abstract class UserTypeSupport extends TypeSupport {
         }
 
         if (user == null)
-            return userService.signUp(uid, password, getKey(), grade);
+            return userService.signUp(uid, password, getKey(), grade, null);
 
         for (String u : set)
             if (authService.findByUid(u) == null)

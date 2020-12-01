@@ -52,10 +52,11 @@ public interface UserService {
      * @param uid      UID值。
      * @param password 密码。
      * @param type     认证类型。
+     * @param inviter  推荐人。
      * @param grade    等级。
      * @return 用户信息。
      */
-    UserModel signUp(String uid, String password, String type, String grade);
+    UserModel signUp(String uid, String password, String type, String inviter, String grade);
 
     /**
      * 登入验证。
