@@ -215,6 +215,8 @@ public interface UserService {
      * @param nick     昵称；为空则表示所有。
      * @param mobile   用户手机号；为空则表示所有。
      * @param email    Email地址；为空则表示所有。
+     * @param weixin   微信号；为空则表示所有。
+     * @param qq       QQ号；为空则表示所有。
      * @param code     唯一编码；为空则表示所有。
      * @param minGrade 最小等级，-1表示不限制。
      * @param maxGrade 最大等级，-1表示不限制。
@@ -222,7 +224,7 @@ public interface UserService {
      * @param register 注册日期范围，格式：yyyy-MM-dd；为空表示不限制。
      * @return 用户信息集。
      */
-    JSONObject query(String uid, String idcard, String name, String nick, String mobile, String email, String code,
+    JSONObject query(String uid, String idcard, String name, String nick, String mobile, String email, String weixin, String qq, String code,
                      int minGrade, int maxGrade, int state, String register);
 
     /**

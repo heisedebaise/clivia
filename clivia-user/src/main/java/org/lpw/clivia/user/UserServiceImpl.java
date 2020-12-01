@@ -370,10 +370,10 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public JSONObject query(String uid, String idcard, String name, String nick, String mobile, String email, String code,
+    public JSONObject query(String uid, String idcard, String name, String nick, String mobile, String email, String weixin, String qq, String code,
                             int minGrade, int maxGrade, int state, String register) {
         if (validator.isEmpty(uid))
-            return userDao.query(idcard, name, nick, mobile, email, code, minGrade, maxGrade, state, register,
+            return userDao.query(idcard, name, nick, mobile, email, weixin, qq, code, minGrade, maxGrade, state, register,
                     pagination.getPageSize(20), pagination.getPageNum()).toJson();
 
         AuthModel auth = authService.findByUid(uid);

@@ -22,11 +22,13 @@ class UserDaoImpl implements UserDao {
     private DaoHelper daoHelper;
 
     @Override
-    public PageList<UserModel> query(String idcard, String name, String nick, String mobile, String email, String code,
+    public PageList<UserModel> query(String idcard, String name, String nick, String mobile, String email, String weixin, String qq, String code,
                                      int minGrade, int maxGrade, int state, String register, int pageSize, int pageNum) {
         return daoHelper.newQueryBuilder().where("c_code", DaoOperation.Equals, code)
                 .where("c_mobile", DaoOperation.Equals, mobile)
                 .where("c_idcard", DaoOperation.Equals, idcard)
+                .where("c_weixin", DaoOperation.Equals, weixin)
+                .where("c_qq", DaoOperation.Equals, qq)
                 .like(null, "c_name", name)
                 .like(null, "c_nick", nick)
                 .like(null, "c_email", email)

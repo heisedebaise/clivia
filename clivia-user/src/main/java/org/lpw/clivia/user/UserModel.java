@@ -29,6 +29,8 @@ public class UserModel extends ModelSupport {
     private String nick; // 昵称
     private String mobile; // 手机号
     private String email; // Email地址
+    private String weixin; // 微信号
+    private String qq; // QQ号
     private String portrait; // 头像
     private int gender; // 性别：0-未知；1-男；2-女
     private Date birthday; // 出生日期
@@ -105,6 +107,26 @@ public class UserModel extends ModelSupport {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    @Jsonable
+    @Column(name = "c_weixin")
+    public String getWeixin() {
+        return weixin;
+    }
+
+    public void setWeixin(String weixin) {
+        this.weixin = weixin;
+    }
+
+    @Jsonable
+    @Column(name = "c_qq")
+    public String getQq() {
+        return qq;
+    }
+
+    public void setQq(String qq) {
+        this.qq = qq;
     }
 
     @Jsonable

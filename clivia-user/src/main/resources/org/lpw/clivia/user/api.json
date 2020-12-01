@@ -101,6 +101,14 @@
                     "type": "string"
                 },
                 {
+                    "name": "weixin",
+                    "type": "string"
+                },
+                {
+                    "name": "qq",
+                    "type": "string"
+                },
+                {
                     "name": "portrait",
                     "type": "string"
                 },
@@ -146,6 +154,8 @@
         "nick": "",
         "mobile": "",
         "email": "",
+        "weixin": "",
+        "qq": "",
         "portrait": "",
         "gender": "",
         "birthday": "",
