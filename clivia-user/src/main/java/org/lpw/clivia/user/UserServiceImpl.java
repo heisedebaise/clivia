@@ -398,6 +398,8 @@ public class UserServiceImpl implements UserService {
         model.setNick(user.getNick());
         model.setMobile(user.getMobile());
         model.setEmail(user.getEmail());
+        model.setWeixin(user.getWeixin());
+        model.setQq(user.getQq());
         model.setPortrait(user.getPortrait());
         model.setGender(user.getGender());
         model.setBirthday(user.getBirthday());
@@ -419,7 +421,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void info(String id, String idcard, String name, String nick, String mobile, String email, int gender) {
+    public void info(String id, String idcard, String name, String nick, String mobile, String email, String weixin, String qq, int gender) {
         UserModel user = findById(id);
         if (!validator.isEmpty(idcard))
             user.setIdcard(idcard);
@@ -431,6 +433,10 @@ public class UserServiceImpl implements UserService {
             user.setMobile(mobile);
         if (!validator.isEmpty(email))
             user.setEmail(email);
+        if (!validator.isEmpty(weixin))
+            user.setWeixin(weixin);
+        if (!validator.isEmpty(qq))
+            user.setQq(qq);
         if (gender > 0)
             user.setGender(gender);
         save(user);
@@ -485,7 +491,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserModel create(String uid, String password, String idcard, String name, String nick, String mobile, String email,
+    public UserModel create(String uid, String password, String idcard, String name, String nick, String mobile, String email, String weixin, String qq,
                             String portrait, int gender, Date birthday, String inviter, int grade, int state) {
         UserModel user = new UserModel();
         user.setPassword(password(password));
@@ -503,6 +509,8 @@ public class UserServiceImpl implements UserService {
         } else {
             user.setEmail(email);
         }
+        user.setWeixin(weixin);
+        user.setQq(qq);
         user.setPortrait(portrait);
         user.setGender(gender);
         user.setBirthday(birthday);

@@ -251,9 +251,11 @@ public interface UserService {
      * @param nick   昵称。
      * @param mobile 手机号。
      * @param email  Email地址。
+     * @param weixin 微信号。
+     * @param qq     QQ号。
      * @param gender 性别：0-未知；1-男；2-女。
      */
-    void info(String id, String idcard, String name, String nick, String mobile, String email, int gender);
+    void info(String id, String idcard, String name, String nick, String mobile, String email, String weixin, String qq, int gender);
 
     /**
      * 设置用户等级。
@@ -312,6 +314,8 @@ public interface UserService {
      * @param nick     昵称。
      * @param mobile   手机号。
      * @param email    Email地址。
+     * @param weixin   微信号。
+     * @param qq       QQ号。
      * @param portrait 头像。
      * @param gender   性别：0-未知；1-男；2-女。
      * @param birthday 出生日期。
@@ -320,7 +324,7 @@ public interface UserService {
      * @param state    状态。
      * @return 用户信息。
      */
-    UserModel create(String uid, String password, String idcard, String name, String nick, String mobile, String email,
+    UserModel create(String uid, String password, String idcard, String name, String nick, String mobile, String email, String weixin, String qq,
                      String portrait, int gender, Date birthday, String inviter, int grade, int state);
 
     /**
