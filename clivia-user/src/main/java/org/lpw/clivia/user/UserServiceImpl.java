@@ -387,6 +387,11 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public PageList<UserModel> inviter(String inviter, int pageSize, int pageNum) {
+        return userDao.query(inviter, pageSize, pageNum);
+    }
+
+    @Override
     public void update(UserModel user) {
         save(user.getId(), user, true);
     }

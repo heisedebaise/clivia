@@ -42,6 +42,11 @@ class UserDaoImpl implements UserDao {
     }
 
     @Override
+    public PageList<UserModel> query(String inviter, int pageSize, int pageNum) {
+        return liteOrm.query(new LiteQuery(UserModel.class).where("c_inviter=?").order("c_register desc").size(pageSize).page(pageNum), new Object[]{inviter});
+    }
+
+    @Override
     public UserModel findById(String id) {
         return liteOrm.findById(UserModel.class, id);
     }

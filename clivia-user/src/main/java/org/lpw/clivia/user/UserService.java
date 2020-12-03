@@ -2,6 +2,7 @@ package org.lpw.clivia.user;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import org.lpw.photon.dao.orm.PageList;
 
 import java.sql.Date;
 
@@ -226,6 +227,16 @@ public interface UserService {
      */
     JSONObject query(String uid, String idcard, String name, String nick, String mobile, String email, String weixin, String qq, String code,
                      int minGrade, int maxGrade, int state, String register);
+
+    /**
+     * 获取推荐用户集。
+     *
+     * @param inviter  推荐人。
+     * @param pageSize 每页记录数。
+     * @param pageNum  当前页数。
+     * @return 推荐用户集。
+     */
+    PageList<UserModel> inviter(String inviter, int pageSize, int pageNum);
 
     /**
      * 更新用户信息。
