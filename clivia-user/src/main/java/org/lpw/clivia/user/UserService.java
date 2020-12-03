@@ -31,6 +31,10 @@ public interface UserService {
      */
     String VALIDATOR_PASSWORD = UserModel.NAME + ".validator.password";
     /**
+     * 安全密码验证器Bean名称。
+     */
+    String VALIDATOR_SECRET = UserModel.NAME + ".validator.secret";
+    /**
      * 用户信息是否存在验证器Bean名称。
      */
     String VALIDATOR_EXISTS = UserModel.NAME + ".validator.exists";
