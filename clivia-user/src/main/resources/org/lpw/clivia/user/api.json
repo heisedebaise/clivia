@@ -143,6 +143,25 @@
             ]
         },
         {
+            "uri": "secret",
+            "name": ".secret.change",
+            "psid": true,
+            "parameters": [
+                {
+                    "name": "old",
+                    "type": "string",
+                    "require": true,
+                    "description": ".password.old"
+                },
+                {
+                    "name": "new",
+                    "type": "string",
+                    "require": true,
+                    "description": ".password.new"
+                }
+            ]
+        },
+        {
             "uri": "sign-out",
             "psid": true
         }
