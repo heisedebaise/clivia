@@ -8,14 +8,24 @@ import org.lpw.photon.bean.ContextRefreshedListener;
 import org.lpw.photon.cache.Cache;
 import org.lpw.photon.storage.StorageListener;
 import org.lpw.photon.storage.Storages;
-import org.lpw.photon.util.*;
+import org.lpw.photon.util.Context;
+import org.lpw.photon.util.Converter;
+import org.lpw.photon.util.Json;
+import org.lpw.photon.util.Logger;
+import org.lpw.photon.util.Message;
+import org.lpw.photon.util.Numeric;
+import org.lpw.photon.util.Validator;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import javax.inject.Inject;
 import java.io.BufferedReader;
 import java.io.FileReader;
-import java.util.*;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -42,6 +52,8 @@ public class CrosierServiceImpl implements CrosierService, StorageListener, Cont
     @Inject
     private UserService userService;
     @Inject
+    private Optional<CrosierGrade> crosierGrade;
+    @Inject
     private Optional<Set<CrosierValid>> valids;
     @Inject
     private CrosierDao crosierDao;
@@ -53,11 +65,14 @@ public class CrosierServiceImpl implements CrosierService, StorageListener, Cont
 
     @Override
     public JSONArray signUpGrades() {
+        if (crosierGrade.isPresent())
+            return crosierGrade.get().signUpGrades();
+
         JSONArray array = new JSONArray();
         signUpGrades(array, "0");
         signUpGrades(array, "other");
 
-        return new JSONArray();
+        return array;
     }
 
     private void signUpGrades(JSONArray array, String value) {
@@ -69,12 +84,15 @@ public class CrosierServiceImpl implements CrosierService, StorageListener, Cont
 
     @Override
     public int signUpGrade(String grade) {
-        return 0;
+        return crosierGrade.map(value -> value.signUpGrade(grade)).orElse(0);
     }
 
     @Override
     public JSONArray grades() {
         return cache.computeIfAbsent(CrosierModel.NAME + context.getLocale().toString(), key -> {
+            if (crosierGrade.isPresent())
+                return crosierGrade.get().grades();
+
             JSONArray grades = new JSONArray();
             for (int n : this.grades) {
                 JSONObject grade = new JSONObject();
