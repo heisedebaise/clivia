@@ -30,6 +30,10 @@ class DSelect extends React.Component {
         };
     }
 
+    componentDidMount = () => {
+        this.search('');
+    }
+
     focus = () => {
         this.search('');
     }

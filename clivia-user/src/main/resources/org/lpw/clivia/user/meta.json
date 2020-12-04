@@ -45,15 +45,9 @@
         },
         {
             "name": "grade",
-            "type": "read-only",
-            "style": [
-                {
-                    "condition": "model.grade>=90",
-                    "value": {
-                        "color": "#f00"
-                    }
-                }
-            ]
+            "type": "dselect",
+            "service": "/user/crosier/grades",
+            "vname": "grade"
         },
         {
             "name": "state",
@@ -107,24 +101,6 @@
                 "reload": true
             },
             {
-                "label": ".crosier.grade.0",
-                "service": "grade",
-                "parameter": {
-                    "grade": 0
-                },
-                "reload": true,
-                "when": "model.grade>0"
-            },
-            {
-                "label": ".crosier.grade.90",
-                "service": "grade",
-                "parameter": {
-                    "grade": 90
-                },
-                "reload": true,
-                "when": "model.grade<90"
-            },
-            {
                 "type": "delete"
             }
         ],
@@ -172,6 +148,9 @@
             },
             {
                 "name": "birthday"
+            },
+            {
+                "name": "grade"
             },
             {
                 "name": "state"

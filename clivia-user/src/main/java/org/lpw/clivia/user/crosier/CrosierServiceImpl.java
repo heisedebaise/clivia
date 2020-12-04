@@ -84,7 +84,15 @@ public class CrosierServiceImpl implements CrosierService, StorageListener, Cont
 
     @Override
     public int signUpGrade(String grade) {
-        return crosierGrade.map(value -> value.signUpGrade(grade)).orElse(0);
+        if (crosierGrade.isPresent())
+            return crosierGrade.get().signUpGrade(grade);
+
+        int g = numeric.toInt(grade);
+        for (int n : grades)
+            if (g == n)
+                return n;
+
+        return 0;
     }
 
     @Override

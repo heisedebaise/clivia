@@ -408,8 +408,10 @@ public class UserServiceImpl implements UserService {
         model.setPortrait(user.getPortrait());
         model.setGender(user.getGender());
         model.setBirthday(user.getBirthday());
-        if (manage)
+        if (manage) {
+            model.setGrade(user.getGrade());
             model.setState(user.getState());
+        }
         save(model);
 
         return model;

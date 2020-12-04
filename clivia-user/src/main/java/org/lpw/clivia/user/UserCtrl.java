@@ -174,7 +174,7 @@ public class UserCtrl {
     public Object create() {
         userService.create(request.get("uid"), request.get("password"), request.get("idcard"), request.get("name"), request.get("nick"),
                 request.get("mobile"), request.get("email"), request.get("weixin"), request.get("qq"), request.get("portrait"),
-                request.getAsInt("gender"), request.getAsSqlDate("birthday"), userService.id(), 0, request.getAsInt("state"));
+                request.getAsInt("gender"), request.getAsSqlDate("birthday"), userService.id(), request.getAsInt("grade"), request.getAsInt("state"));
 
         return "";
     }
