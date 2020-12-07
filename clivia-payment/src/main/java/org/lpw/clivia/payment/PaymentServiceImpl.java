@@ -159,12 +159,14 @@ public class PaymentServiceImpl implements PaymentService, UserListener {
     }
 
     private JSONObject putToJson(JSONObject object, Map<String, String> map) {
-        map.forEach((key, value) -> {
-            if (ignores.contains(key))
-                return;
+        if (map != null) {
+            map.forEach((key, value) -> {
+                if (ignores.contains(key))
+                    return;
 
-            object.put(key, value);
-        });
+                object.put(key, value);
+            });
+        }
 
         return object;
     }

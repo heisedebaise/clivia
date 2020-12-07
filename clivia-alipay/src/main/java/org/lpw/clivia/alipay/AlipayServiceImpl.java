@@ -282,14 +282,11 @@ public class AlipayServiceImpl implements AlipayService, TransferListener {
     }
 
     private int getState(String status) {
-        switch (status) {
-            case "SUCCESS":
-                return 1;
-            case "FAIL":
-                return 2;
-            default:
-                return 0;
-        }
+        return switch (status) {
+            case "SUCCESS" -> 1;
+            case "FAIL" -> 2;
+            default -> 0;
+        };
     }
 
     private AlipayClient newAlipayClient(AlipayModel alipay) {
