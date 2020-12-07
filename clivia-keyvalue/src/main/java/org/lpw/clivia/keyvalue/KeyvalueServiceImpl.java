@@ -76,6 +76,17 @@ public class KeyvalueServiceImpl implements KeyvalueService {
     }
 
     @Override
+    public void save(String key, String value) {
+        KeyvalueModel keyvalue = keyvalueDao.findByKey(key);
+        if (keyvalue == null) {
+            keyvalue = new KeyvalueModel();
+            keyvalue.setKey(key);
+        }
+        keyvalue.setValue(value);
+        keyvalueDao.save(keyvalue);
+    }
+
+    @Override
     public void save(KeyvalueModel keyvalue) {
         if (validator.isEmpty(keyvalue.getId()) || keyvalueDao.findById(keyvalue.getId()) == null)
             keyvalue.setId(null);

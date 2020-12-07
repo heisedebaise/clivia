@@ -1,6 +1,6 @@
 {
-    "uri": "/user/",
-    "children": [
+    "name": "clivia.user",
+    "services": [
         {
             "uri": "inviter",
             "psid": true,
@@ -225,27 +225,5 @@
             ],
             "response": "pagination"
         }
-    ],
-    "model": {
-        "id": "",
-        "idcard": "",
-        "name": "",
-        "nick": "",
-        "mobile": "",
-        "email": "",
-        "weixin": "",
-        "qq": "",
-        "portrait": "",
-        "gender": "",
-        "birthday": "",
-        "code": "",
-        "register": "",
-        "grade": "",
-        "state": "",
-        "auth": [
-            {
-                "uid": ""
-            }
-        ]
-    }
+    ]
 }

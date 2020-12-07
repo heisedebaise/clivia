@@ -35,10 +35,10 @@ class Main extends React.Component {
             if (data === null) return;
 
             for (let module of data) {
-                for (let child of module.children) {
-                    if (child.psid) {
-                        if (!child.headers) child.headers = [];
-                        child.headers.push({
+                for (let service of module.services) {
+                    if (service.psid) {
+                        if (!service.headers) service.headers = [];
+                        service.headers.push({
                             name: 'photon-session-id',
                             type: 'string',
                             require: true,
@@ -46,13 +46,15 @@ class Main extends React.Component {
                         });
                     }
                     if (module.model) {
-                        if (child.response === 'model')
-                            child.response = module.model;
-                        else if (child.response === 'pagination') {
-                            if (!child.parameters) child.parameters = [];
-                            child.parameters.push({ name: 'pageSize', type: 'int', description: '每页显示记录数，默认：20。' });
-                            child.parameters.push({ name: 'pageNum', type: 'int', description: '当前显示页数。' });
-                            child.response = `{
+                        if (service.response === 'model')
+                            service.response = module.model;
+                        else if (service.response.length === 1 && service.response[0] === 'model')
+                            service.response = '[' + module.model + ']';
+                        else if (service.response === 'pagination') {
+                            if (!service.parameters) service.parameters = [];
+                            service.parameters.push({ name: 'pageSize', type: 'int', description: '每页显示记录数，默认：20。' });
+                            service.parameters.push({ name: 'pageNum', type: 'int', description: '当前显示页数。' });
+                            service.response = `{
     "count":"记录总数。",
     "size":"每页最大显示记录数。",
     "number":"当前显示页数。",
@@ -67,7 +69,7 @@ class Main extends React.Component {
             }
             let list = [{
                 name: '通用',
-                children: [{
+                services: [{
                     name: 'HTTP请求',
                     page: 'request'
                 }, {
@@ -107,8 +109,8 @@ class Main extends React.Component {
         for (let i = 0; i < items.length; i++) {
             let key = parent + '-' + i;
             let item = items[i];
-            if (item.children)
-                menus.push(<Menu.SubMenu key={key} title={<span>{item.name}</span>} >{this.menu(item.children, key)}</Menu.SubMenu>);
+            if (item.services)
+                menus.push(<Menu.SubMenu key={key} title={<span>{item.name}</span>} >{this.menu(item.services, key)}</Menu.SubMenu>);
             else {
                 this.map[key] = item;
                 menus.push(<Menu.Item key={key}>{item.name}</Menu.Item>);

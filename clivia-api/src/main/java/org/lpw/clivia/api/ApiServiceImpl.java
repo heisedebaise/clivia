@@ -8,6 +8,7 @@ import org.lpw.photon.bean.BeanFactory;
 import org.lpw.photon.bean.ContextRefreshedListener;
 import org.lpw.photon.ctrl.execute.Execute;
 import org.lpw.photon.dao.model.Model;
+import org.lpw.photon.dao.model.ModelTable;
 import org.lpw.photon.dao.model.ModelTables;
 import org.lpw.photon.util.Io;
 import org.lpw.photon.util.Json;
@@ -47,6 +48,7 @@ public class ApiServiceImpl implements ApiService, ContextRefreshedListener {
     private ModelTables modelTables;
     @Inject
     private Optional<Set<Model>> models;
+    private final Set<String> model = Set.of("model", "pagination");
     private JSONArray array;
 
     @Override
@@ -87,48 +89,58 @@ public class ApiServiceImpl implements ApiService, ContextRefreshedListener {
         if (object == null)
             return;
 
-        String name = modelTables.get(modelClass).getName();
-        if (!object.containsKey("sort"))
-            object.put("sort", getCode(name));
+        ModelTable modelTable = modelTables.get(modelClass);
+        String name = modelTable.getName();
+        ctrl(name, object);
         message(object, "name", "", name);
-        JSONArray children = object.getJSONArray("children");
+        JSONArray services = object.getJSONArray("services");
         String uri = object.getString("uri");
-        for (int i = 0, size = children.size(); i < size; i++) {
-            JSONObject child = children.getJSONObject(i);
-            if (child.containsKey("uri")) {
-                String u = child.getString("uri");
-                child.put("uri", uri + u);
-                message(child, "name", name, u);
-            } else if (json.has(child, "page", "upload") && child.containsKey("upload")) {
-                String upload = child.getString("upload");
-                message(child, "name", name, upload);
+        boolean model = false;
+        for (int i = 0, size = services.size(); i < size; i++) {
+            JSONObject service = services.getJSONObject(i);
+            if (service.containsKey("uri")) {
+                String u = service.getString("uri");
+                service.put("uri", uri + u);
+                message(service, "name", name, u);
+            } else if (json.has(service, "page", "upload") && service.containsKey("upload")) {
+                String upload = service.getString("upload");
+                message(service, "name", name, upload);
                 int index = upload.indexOf('.');
                 if (index == -1)
-                    child.put("upload", name + "." + upload);
+                    service.put("upload", name + "." + upload);
                 else if (index == 0)
-                    child.put("upload", name + upload);
+                    service.put("upload", name + upload);
             }
-            description(child, "headers", name);
-            description(child, "parameters", name);
-            response(child, name);
+            description(service, "headers", name);
+            description(service, "parameters", name);
+            if (response(service, name))
+                model = true;
         }
-        if (object.containsKey("model")) {
+        if (model) {
+            if (!object.containsKey("model")) {
+                JSONObject m = new JSONObject();
+                modelTable.getPropertyNames().forEach(property -> m.put(property, ""));
+                object.put("model", m);
+            }
             response(object, "model", name);
             format(object, "model");
         }
         list.add(object);
     }
 
-    private int getCode(String name) {
+    private void ctrl(String name, JSONObject object) {
         Object ctrl = BeanFactory.getBean(name + ".ctrl");
         if (ctrl == null)
-            return 999;
+            return;
 
         Execute execute = ctrl.getClass().getAnnotation(Execute.class);
         if (execute == null)
-            return 999;
+            return;
 
-        return numeric.toInt(execute.code());
+        if (!object.containsKey("sort"))
+            object.put("sort", numeric.toInt(execute.code()));
+        if (!object.containsKey("uri"))
+            object.put("uri", execute.name());
     }
 
     private void description(JSONObject object, String name, String prefix) {
@@ -142,41 +154,43 @@ public class ApiServiceImpl implements ApiService, ContextRefreshedListener {
             if (n.equals("id") && validator.isEmpty(obj.get("description")))
                 obj.put("description", message.get(ApiModel.NAME + ".id.description"));
             else
-                message(obj, "description", prefix, "." + n + ".description");
+                message(obj, "description", prefix, "." + n);
         }
     }
 
-    private void message(JSONObject object, String name, String prefix, String defaultName) {
-        String key = defaultName;
-        if (object.containsKey(name))
-            key = object.getString(name);
-        object.put(name, getMessage(prefix, key));
-    }
-
-    private void response(JSONObject object, String prefix) {
+    private boolean response(JSONObject object, String prefix) {
+        boolean model = false;
         if (object.containsKey("response")) {
-            if (response(object, "response", prefix) > 0)
+            int n = response(object, "response", prefix);
+            if (n > 1)
                 format(object, "response");
+            model = n == 1;
         } else
             object.put("response", "\"\"");
+
+        return model;
     }
 
     private int response(JSONObject object, String name, String prefix) {
         Object value = object.get(name);
-        if (value.equals("model") || value.equals("pagination"))
-            return 0;
+        if (model.contains(value.toString()))
+            return 1;
 
         if (value instanceof JSONArray) {
-            object.put(name, response((JSONArray) value, name, prefix));
+            JSONArray array = (JSONArray) value;
+            if (array.size() == 1 && model.contains(array.getString(0)))
+                return 1;
 
-            return 1;
+            object.put(name, response(array, name, prefix));
+
+            return 2;
         }
 
         if (value instanceof JSONObject) {
             JSONObject obj = (JSONObject) value;
             obj.keySet().forEach(key -> response(obj, key, prefix));
 
-            return 2;
+            return 3;
         }
 
         if (name.equals("id") && validator.isEmpty(value)) {
@@ -185,8 +199,7 @@ public class ApiServiceImpl implements ApiService, ContextRefreshedListener {
             return 0;
         }
 
-        String description = value.toString();
-        object.put(name, getMessage(prefix, validator.isEmpty(description) ? ("." + name + ".description") : description));
+        object.put(name, message(prefix, value.toString(), name, ""));
 
         return 0;
     }
@@ -198,23 +211,48 @@ public class ApiServiceImpl implements ApiService, ContextRefreshedListener {
                 JSONObject obj = (JSONObject) object;
                 obj.keySet().forEach(key -> response(obj, key, prefix));
                 newArray.add(obj);
-            } else {
-                String description = object.toString();
-                newArray.add(getMessage(prefix, validator.isEmpty(description) ? ("." + name + ".description") : description));
-            }
+            } else
+                newArray.add(message(prefix, object.toString(), name, ""));
         });
 
         return newArray;
     }
 
-    private String getMessage(String prefix, String key) {
+    private void message(JSONObject object, String name, String prefix, String defaultName) {
+        object.put(name, message(prefix, object.getString(name), defaultName, name));
+    }
+
+    private String message(String prefix, String value, String property, String name) {
+        String message = message(prefix, value);
+        if (message.equals(""))
+            message = message(prefix, property + "." + name);
+        if (message.equals(""))
+            message = message(prefix, property);
+        if (message.equals(""))
+            message = message(ApiModel.NAME, value);
+        if (message.equals(""))
+            message = message(ApiModel.NAME, property + "." + name);
+        if (message.equals(""))
+            message = message(ApiModel.NAME, property);
+
+        return message;
+    }
+
+    private String message(String prefix, String key) {
+        if (validator.isEmpty(key))
+            return "";
+
         int index = key.indexOf('.');
         if (index == -1)
             key = prefix + "." + key;
         else if (index == 0)
             key = prefix + key;
+        if (key.equals(""))
+            return "";
 
-        return validator.isEmpty(key) ? "" : message.get(key);
+        String message = this.message.get(key);
+
+        return message.equals(key) ? "" : message;
     }
 
     private void format(JSONObject object, String name) {
