@@ -10,7 +10,6 @@ import org.lpw.clivia.user.crosier.CrosierService;
 import org.lpw.clivia.user.online.OnlineModel;
 import org.lpw.clivia.user.online.OnlineService;
 import org.lpw.clivia.user.type.Types;
-import org.lpw.photon.bean.BeanFactory;
 import org.lpw.photon.cache.Cache;
 import org.lpw.photon.crypto.Digest;
 import org.lpw.photon.ctrl.context.Session;
@@ -372,18 +371,8 @@ public class UserServiceImpl implements UserService {
     @Override
     public JSONObject query(String uid, String idcard, String name, String nick, String mobile, String email, String weixin, String qq, String code,
                             int minGrade, int maxGrade, int state, String register) {
-        if (validator.isEmpty(uid))
-            return userDao.query(idcard, name, nick, mobile, email, weixin, qq, code, minGrade, maxGrade, state, register,
-                    pagination.getPageSize(20), pagination.getPageNum()).toJson();
-
-        AuthModel auth = authService.findByUid(uid);
-        if (auth == null)
-            return BeanFactory.getBean(PageList.class).setPage(0, pagination.getPageSize(20), 0).toJson();
-
-        JSONObject object = BeanFactory.getBean(PageList.class).setPage(1, pagination.getPageSize(20), 1).toJson();
-        object.getJSONArray("list").add(getJson(auth.getUser(), null));
-
-        return object;
+        return userDao.query(validator.isEmpty(uid) ? null : authService.users(uid), idcard, name, nick, mobile, email, weixin, qq, code,
+                minGrade, maxGrade, state, register, pagination.getPageSize(20), pagination.getPageNum()).toJson();
     }
 
     @Override

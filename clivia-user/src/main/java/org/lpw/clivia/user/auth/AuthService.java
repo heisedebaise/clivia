@@ -2,6 +2,8 @@ package org.lpw.clivia.user.auth;
 
 import com.alibaba.fastjson.JSONArray;
 
+import java.util.Set;
+
 /**
  * @author lpw
  */
@@ -24,6 +26,14 @@ public interface AuthService {
      * @return 认证信息集，如果不存在则返回空JSON数组。
      */
     JSONArray query(String user);
+
+    /**
+     * 获取用户ID集。
+     *
+     * @param uid uid。
+     * @return 用户ID集。
+     */
+    Set<String> users(String uid);
 
     /**
      * 创建新认证。

@@ -8,6 +8,8 @@ import org.lpw.photon.dao.orm.PageList;
 interface AuthDao {
     PageList<AuthModel> query(String user);
 
+    PageList<AuthModel> search(String uid);
+
     AuthModel findByUid(String uid);
 
     void save(AuthModel auth);

@@ -21,6 +21,11 @@ class AuthDaoImpl implements AuthDao {
     }
 
     @Override
+    public PageList<AuthModel> search(String uid) {
+        return liteOrm.query(new LiteQuery(AuthModel.class).where("c_uid like ?"), new Object[]{"%" + uid + "%"});
+    }
+
+    @Override
     public AuthModel findByUid(String uid) {
         return liteOrm.findOne(new LiteQuery(AuthModel.class).where("c_uid=?"), new Object[]{uid});
     }

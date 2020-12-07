@@ -10,6 +10,7 @@ import org.springframework.stereotype.Repository;
 
 import javax.inject.Inject;
 import java.sql.Timestamp;
+import java.util.Set;
 
 /**
  * @author lpw
@@ -22,9 +23,10 @@ class UserDaoImpl implements UserDao {
     private DaoHelper daoHelper;
 
     @Override
-    public PageList<UserModel> query(String idcard, String name, String nick, String mobile, String email, String weixin, String qq, String code,
-                                     int minGrade, int maxGrade, int state, String register, int pageSize, int pageNum) {
+    public PageList<UserModel> query(Set<String> ids, String idcard, String name, String nick, String mobile, String email, String weixin, String qq,
+                                     String code, int minGrade, int maxGrade, int state, String register, int pageSize, int pageNum) {
         return daoHelper.newQueryBuilder().where("c_code", DaoOperation.Equals, code)
+                .in("c_id", ids)
                 .where("c_mobile", DaoOperation.Equals, mobile)
                 .where("c_idcard", DaoOperation.Equals, idcard)
                 .where("c_weixin", DaoOperation.Equals, weixin)

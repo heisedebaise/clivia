@@ -9,6 +9,8 @@ import org.lpw.photon.util.Validator;
 import org.springframework.stereotype.Service;
 
 import javax.inject.Inject;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * @author lpw
@@ -33,6 +35,14 @@ public class AuthServiceImpl implements AuthService {
     @Override
     public JSONArray query(String user) {
         return modelHelper.toJson(authDao.query(user).getList());
+    }
+
+    @Override
+    public Set<String> users(String uid) {
+        Set<String> set = new HashSet<>();
+        authDao.search(uid).getList().forEach(auth -> set.add(auth.getUser()));
+
+        return set;
     }
 
     @Override
