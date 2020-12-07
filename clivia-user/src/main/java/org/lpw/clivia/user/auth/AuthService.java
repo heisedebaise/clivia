@@ -47,6 +47,13 @@ public interface AuthService {
      */
     AuthModel findByUid(String uid);
 
+    /**
+     * 查找用户。
+     *
+     * @param uid         UID。
+     * @param defaultUser 默认用户。
+     * @return 用户或默认用户。
+     */
     String findUser(String uid, String defaultUser);
 
     /**
