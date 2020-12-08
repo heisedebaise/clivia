@@ -18,7 +18,9 @@ class Grid extends React.Component {
 
         let columns = meta.props(props.props, props.meta.props);
         if (props.meta.search && props.meta.search.length > 0) {
-            this.search = <Search key="search" props={meta.props(columns, props.meta.search)} toolbar={props.meta.toolbar} grid={this} />;
+            this.form = React.createRef();
+            this.searchProps = meta.props(columns, props.meta.search);
+            this.search = <Search key="search" props={this.searchProps} toolbar={props.meta.toolbar} grid={this} form={this.form} />;
         } else if (props.meta.toolbar && props.meta.toolbar.length > 0) {
             this.toolbar = [];
             for (let toolbar of props.meta.toolbar) {
@@ -177,7 +179,13 @@ class Grid extends React.Component {
         }
 
         if (op.type === 'delete' || op.reload) {
-            this.serviceReload(op, model, {});
+            this.reload(op, model, {});
+
+            return;
+        }
+
+        if (op.search) {
+            this.reload(op, model, this.searches());
 
             return;
         }
@@ -238,10 +246,10 @@ class Grid extends React.Component {
     switch = (op, model, check) => {
         let parameter = {};
         parameter[op.name] = check ? 1 : 0;
-        this.serviceReload(op, model, parameter);
+        this.reload(op, model, parameter);
     }
 
-    serviceReload = (op, model, parameter) => {
+    reload = (op, model, parameter) => {
         let param = { ...model, ...parameter }
         if (op.parameter)
             param = { ...param, ...op.parameter };
@@ -255,16 +263,11 @@ class Grid extends React.Component {
     }
 
     load = pagination => {
-        let parameter = {};
-        if (this.searchValues) {
-            parameter = { ...parameter, ...this.searchValues };
-        }
-        if (pagination) {
+        let parameter = this.searches();
+        if (pagination)
             parameter.pageNum = pagination.current;
-        }
-        if (this.props.parameter) {
+        if (this.props.parameter)
             parameter = { ...parameter, ...this.props.parameter };
-        }
         service(this.props.uri, parameter).then(data => {
             if (data === null) return;
 
@@ -295,6 +298,35 @@ class Grid extends React.Component {
         });
     }
 
+    searches = () => {
+        if (!this.form || !this.form.current || !this.searchProps || this.searchProps.length === 0) return {};
+
+        let values = this.form.current.getFieldsValue();
+        for (let column of this.searchProps) {
+            if (column.type === 'range') {
+                values[column.name] = (values[column.name + "Start"] || '') + ',' + (values[column.name + "End"] || '');
+                delete values[column.name + "Start"];
+                delete values[column.name + "End"];
+
+                continue;
+            }
+
+            let value = values[column.name];
+            if (!value) continue;
+
+            if (column.type === 'date') {
+                values[column.name] = value.format('YYYY-MM-DD');
+            } else if (column.type === 'date-range') {
+                if (value.length === 0)
+                    values[column.name] = '';
+                else
+                    values[column.name] = value[0].format('YYYY-MM-DD') + ',' + value[1].format('YYYY-MM-DD')
+            }
+        }
+
+        return values;
+    }
+
     render = () => {
         let elements = [];
         if (this.props.meta.info)
@@ -314,10 +346,6 @@ class Grid extends React.Component {
 }
 
 class Search extends React.Component {
-    values = {};
-
-    value = (name, value) => this.values[name] = value;
-
     render = () => {
         let cols = [];
         let initialValues = {};
@@ -345,7 +373,7 @@ class Search extends React.Component {
         cols.push(<span key="toolbar" className="console-grid-search-toolbar">{toolbar}</span>);
 
         return (
-            <Form className="console-grid-search-form" initialValues={initialValues} onFinish={this.finish}>
+            <Form ref={this.props.form} className="console-grid-search-form" initialValues={initialValues} onFinish={this.finish}>
                 <Row gutter={24}>{cols}</Row>
             </Form>
         );
@@ -404,29 +432,7 @@ class Search extends React.Component {
         return <Input />
     }
 
-    finish = values => {
-        for (let column of this.props.props) {
-            if (column.type === 'range') {
-                values[column.name] = (values[column.name + "Start"] || '') + ',' + (values[column.name + "End"] || '');
-                delete values[column.name + "Start"];
-                delete values[column.name + "End"];
-
-                continue;
-            }
-
-            let value = values[column.name];
-            if (!value) continue;
-
-            if (column.type === 'date') {
-                values[column.name] = value.format('YYYY-MM-DD');
-            } else if (column.type === 'date-range') {
-                if (value.length === 0)
-                    values[column.name] = '';
-                else
-                    values[column.name] = value[0].format('YYYY-MM-DD') + ',' + value[1].format('YYYY-MM-DD')
-            }
-        }
-        this.props.grid.searchValues = { ...values, ...this.values };
+    finish = () => {
         this.props.grid.load(null);
     }
 }
