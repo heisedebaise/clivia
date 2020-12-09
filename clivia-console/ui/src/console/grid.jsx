@@ -16,6 +16,13 @@ class Grid extends React.Component {
     constructor(props) {
         super(props);
 
+        this.state = {
+            list: [],
+            dselect: {},
+            pagination: false,
+            preview: null
+        };
+
         let columns = meta.props(props.props, props.meta.props);
         if (props.meta.search && props.meta.search.length > 0) {
             this.form = React.createRef();
@@ -76,6 +83,27 @@ class Grid extends React.Component {
 
                     return this.style(prop, model, <Switch {...s} />);
                 }
+            } else if (prop.type === 'dselect') {
+                service(prop.service, prop.parameter).then(data => {
+                    if (data === null) return;
+
+                    let options = {};
+                    let vname = prop.vname || 'id';
+                    let lname = prop.lname || 'name';
+                    for (let d of data) {
+                        let option = { label: d[lname] };
+                        if (prop.dlname && prop.dlname.indexOf('+') > -1)
+                            // eslint-disable-next-line
+                            eval('option.label=' + prop.dlname);
+                        options[d[vname]] = option.label;
+                    }
+                    let dselect = this.state.dselect;
+                    dselect[prop.name] = options;
+                    this.setState({
+                        dselect: dselect
+                    });
+                });
+                column.render = model => this.style(prop, model, this.dselect(prop, model));
             } else if (prop.type === 'editor' || prop.type === 'html')
                 column.render = model => this.style(prop, model, <div dangerouslySetInnerHTML={{ __html: this.value(model, prop.name) }} />);
             else if (prop.type === 'user')
@@ -117,11 +145,6 @@ class Grid extends React.Component {
             });
         }
 
-        this.state = {
-            list: [],
-            pagination: false,
-            preview: null
-        };
         this.load(null);
     }
 
@@ -151,6 +174,13 @@ class Grid extends React.Component {
         }
 
         return labels.length > 0 ? labels.substring(1) : '';
+    }
+
+    dselect = (prop, model) => {
+        let value = this.value(model, prop.name);
+        if (!this.state.dselect || !this.state.dselect[prop.name]) return 'value';
+
+        return this.state.dselect[prop.name][value];
     }
 
     style = (prop, model, element) => {

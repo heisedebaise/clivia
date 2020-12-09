@@ -60,7 +60,7 @@ public class UserCtrl {
 
     @Execute(name = "sign")
     public Object sign() {
-        return templates.get().success(userService.sign(), null);
+        return userService.sign();
     }
 
     @Execute(name = "sign-out")
@@ -124,7 +124,7 @@ public class UserCtrl {
             @Validate(validator = Validators.SIGN)
     })
     public Object find() {
-        return templates.get().success(userService.findByCode(request.get("code")), null);
+        return userService.findByCode(request.get("code"));
     }
 
     @Execute(name = "find-by-uid", validates = {
@@ -133,7 +133,7 @@ public class UserCtrl {
             @Validate(validator = AuthService.VALIDATOR_UID_EXISTS, parameter = "uid", failureCode = 28)
     })
     public Object findByUid() {
-        return templates.get().success(userService.findByUid(request.get("uid")), null);
+        return userService.findByUid(request.get("uid"));
     }
 
     @Execute(name = "find-sign", validates = {
@@ -141,7 +141,7 @@ public class UserCtrl {
             @Validate(validator = Validators.SIGN)
     })
     public Object findOrSign() {
-        return templates.get().success(userService.findOrSign(request.get("idUidCode")), null);
+        return userService.findOrSign(request.get("idUidCode"));
     }
 
     @Execute(name = "query", validates = {
