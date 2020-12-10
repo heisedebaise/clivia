@@ -30,6 +30,9 @@ const post = (uri, body) => fetch(root + uri, {
         });
     }
 
+    if (uri === '/user/sign-out')
+        localStorage.removeItem('photon-session-id');
+
     if (response.ok) return response.json();
 
     message.warn('[' + response.status + ']' + response.statusText);
