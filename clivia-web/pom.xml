@@ -15,17 +15,17 @@
     <dependencies>
         <dependency>
             <groupId>org.lpw.clivia</groupId>
-            <artifactId>clivia-category</artifactId>
-            <version>0.3</version>
-        </dependency>
-        <dependency>
-            <groupId>org.lpw.clivia</groupId>
             <artifactId>clivia-console</artifactId>
             <version>0.3</version>
         </dependency>
         <dependency>
             <groupId>org.lpw.clivia</groupId>
             <artifactId>clivia-api</artifactId>
+            <version>0.3</version>
+        </dependency>
+        <dependency>
+            <groupId>org.lpw.clivia</groupId>
+            <artifactId>clivia-weixin</artifactId>
             <version>0.3</version>
         </dependency>
         <dependency>

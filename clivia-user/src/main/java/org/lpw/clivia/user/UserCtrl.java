@@ -207,7 +207,9 @@ public class UserCtrl {
             @Validate(validator = UserService.VALIDATOR_EXISTS, parameter = "id", failureCode = 25)
     })
     public Object resetPassword() {
-        return templates.get().success("", UserModel.NAME + ".reset-password.success", userService.resetPassword(request.get("id")));
+        String password = userService.resetPassword(request.get("id"));
+
+        return templates.get().success(password, UserModel.NAME + ".reset-password.success", password);
     }
 
     @Execute(name = "grade", validates = {

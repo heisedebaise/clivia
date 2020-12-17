@@ -1,5 +1,4 @@
 {
-    "name": "clivia.user",
     "services": [
         {
             "uri": "inviter",
@@ -224,6 +223,18 @@
                 }
             ],
             "response": "pagination"
+        },
+        {
+            "uri": "reset-password",
+            "psid": true,
+            "parameters": [
+                {
+                    "name": "id",
+                    "type": "string",
+                    "require": true
+                }
+            ],
+            "response": ".reset-password.response"
         }
     ]
 }
