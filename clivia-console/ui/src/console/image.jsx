@@ -1,7 +1,7 @@
 import React from 'react';
 import { Upload, Modal } from 'antd';
 import { PlusOutlined, LoadingOutlined } from '@ant-design/icons';
-import { url, service } from '../http';
+import { url, upload } from '../http';
 import './image.css';
 
 class Image extends React.Component {
@@ -15,33 +15,23 @@ class Image extends React.Component {
 
     upload = uploader => {
         this.setState({ loading: true });
+        upload(this.props.upload, uploader.file).then(data => {
+            if (data === null) {
+                this.setState({ loading: false });
 
-        let reader = new FileReader();
-        reader.onload = () => {
-            if (!reader.result || typeof reader.result !== 'string') {
                 return;
             }
 
-            service('/photon/ctrl/upload', {
-                name: this.props.upload,
-                fileName: uploader.file.name,
-                contentType: uploader.file.type,
-                base64: reader.result.substring(reader.result.indexOf(',') + 1)
-            }).then(data => {
-                if (data === null) return;
-
-                let uri = this.state.changed ? this.state.uri : this.props.value;
-                uri = uri ? (uri + ',' + data.path) : data.path;
-                this.setState({
-                    uri: uri,
-                    changed: true,
-                    loading: false
-                }, () => {
-                    this.props.form.value(this.props.name, this.state.uri)
-                });
+            let uri = this.state.changed ? this.state.uri : this.props.value;
+            uri = uri ? (uri + ',' + data.path) : data.path;
+            this.setState({
+                uri: uri,
+                changed: true,
+                loading: false
+            }, () => {
+                this.props.form.value(this.props.name, this.state.uri)
             });
-        };
-        reader.readAsDataURL(uploader.file);
+        });
     }
 
     preview = file => {

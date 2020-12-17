@@ -2,7 +2,7 @@ import {
     message
 } from 'antd';
 
-const root = 'http://192.168.7.161:8080';
+const root = 'http://192.168.31.164:8080';
 
 const service = (uri, body) => post(uri, body).then(json => {
     if (json === null) return null;
@@ -40,6 +40,40 @@ const post = (uri, body) => fetch(root + uri, {
     return null;
 });
 
+const upload = (name, file) => {
+    let header = {};
+    psid(header, true);
+    let body = new FormData();
+    body.append(name, file);
+
+    return fetch(root + '/photon/ctrl-http/upload', {
+        method: 'POST',
+        headers: header,
+        body: body
+    }).then(response => {
+        if (post.loader) {
+            post.loader.setState({
+                loading: false
+            });
+        }
+
+        if (response.ok) {
+            return response.json().then(json => {
+                if (json.success)
+                    return json;
+
+                message.warn(json.message);
+
+                return null;
+            });
+        }
+
+        message.warn('[' + response.status + ']' + response.statusText);
+
+        return null;
+    });
+}
+
 const header = () => {
     let header = {
         'Content-Type': 'application/json'
@@ -73,6 +107,7 @@ const loader = loader => post.loader = loader;
 export {
     service,
     post,
+    upload,
     url,
     psid,
     loader

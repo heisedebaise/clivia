@@ -1,7 +1,7 @@
 import React from 'react';
-import { Upload, Button, message } from 'antd';
+import { Upload, Button } from 'antd';
 import { UploadOutlined, LoadingOutlined } from '@ant-design/icons';
-import { url, service } from '../http';
+import { url, upload } from '../http';
 import { toArray } from '../json';
 
 class File extends React.Component {
@@ -12,40 +12,26 @@ class File extends React.Component {
 
     upload = uploader => {
         this.setState({ loading: true });
+        upload(this.props.upload, uploader.file).then(data => {
+            if (data === null) {
+                this.setState({ loading: false });
 
-        let reader = new FileReader();
-        reader.onload = () => {
-            if (!reader.result || typeof reader.result !== 'string') {
                 return;
             }
 
-            service('/photon/ctrl/upload', {
-                name: this.props.upload,
-                fileName: uploader.file.name,
-                contentType: uploader.file.type,
-                base64: reader.result.substring(reader.result.indexOf(',') + 1)
-            }).then(data => {
-                this.setState({ loading: false });
-                if (data === null) return;
-
-                if (!data.success) {
-                    message.warn(data.message);
-
-                    return
-                }
-
-                let list = this.list();
-                list.push({
-                    uid: '' + list.length,
-                    name: data.fileName,
-                    uri: data.path,
-                    url: url(data.path),
-                    status: 'done'
-                });
-                this.setState({ list: list }, this.value);
+            let list = this.list();
+            list.push({
+                uid: '' + list.length,
+                name: data.fileName,
+                uri: data.path,
+                url: url(data.path),
+                status: 'done'
             });
-        };
-        reader.readAsDataURL(uploader.file);
+            this.setState({
+                loading: false,
+                list: list
+            }, this.value);
+        });
     }
 
     remove = file => {
