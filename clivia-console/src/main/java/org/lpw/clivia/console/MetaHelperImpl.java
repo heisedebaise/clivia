@@ -7,7 +7,7 @@ import org.lpw.clivia.user.crosier.CrosierService;
 import org.lpw.clivia.user.crosier.CrosierValid;
 import org.lpw.photon.bean.ContextRefreshedListener;
 import org.lpw.photon.cache.Cache;
-import org.lpw.photon.dao.model.Model;
+import org.lpw.photon.dao.model.ModelTables;
 import org.lpw.photon.util.Context;
 import org.lpw.photon.util.Converter;
 import org.lpw.photon.util.Io;
@@ -26,7 +26,6 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
-import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -52,7 +51,7 @@ public class MetaHelperImpl implements MetaHelper, ContextRefreshedListener, Cro
     @Inject
     private Logger logger;
     @Inject
-    private Optional<Set<Model>> models;
+    private ModelTables modelTables;
     @Inject
     private UserService userService;
     @Inject
@@ -207,8 +206,7 @@ public class MetaHelperImpl implements MetaHelper, ContextRefreshedListener, Cro
 
     @Override
     public void onContextRefreshed() {
-        models.ifPresent(set -> set.forEach(model -> {
-            Class<? extends Model> modelClass = model.getClass();
+        modelTables.getModelClasses().forEach(modelClass -> {
             try (InputStream inputStream = modelClass.getResourceAsStream("meta.json");
                  ByteArrayOutputStream outputStream = new ByteArrayOutputStream()) {
                 if (inputStream == null)
@@ -219,8 +217,7 @@ public class MetaHelperImpl implements MetaHelper, ContextRefreshedListener, Cro
             } catch (Throwable throwable) {
                 logger.warn(throwable, "解析Model[{}]元数据时发生异常！", modelClass);
             }
-        }));
-
+        });
         meta(new File(context.getAbsolutePath(console + "meta")).listFiles());
     }
 
@@ -277,7 +274,7 @@ public class MetaHelperImpl implements MetaHelper, ContextRefreshedListener, Cro
             JSONObject prop = array.getJSONObject(i);
             if (json.has(prop, "type", type)) {
                 String upload = prop.containsKey("upload") ? prop.getString("upload") : null;
-                if (validator.isEmpty(upload))
+                if (upload == null)
                     prop.put("upload", prefix + prop.getString("name"));
                 else if (upload.indexOf('.') == -1)
                     prop.put("upload", prefix + upload);

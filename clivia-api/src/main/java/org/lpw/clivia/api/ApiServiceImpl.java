@@ -24,7 +24,6 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Optional;
 import java.util.Set;
 
 /**
@@ -46,8 +45,6 @@ public class ApiServiceImpl implements ApiService, ContextRefreshedListener {
     private Logger logger;
     @Inject
     private ModelTables modelTables;
-    @Inject
-    private Optional<Set<Model>> models;
     private final Set<String> model = Set.of("model", "pagination");
     private JSONArray array;
 
@@ -64,8 +61,7 @@ public class ApiServiceImpl implements ApiService, ContextRefreshedListener {
     @Override
     public void onContextRefreshed() {
         List<JSONObject> list = new ArrayList<>();
-        models.ifPresent(set -> set.forEach(model -> {
-            Class<? extends Model> modelClass = model.getClass();
+        modelTables.getModelClasses().forEach(modelClass -> {
             try (InputStream inputStream = modelClass.getResourceAsStream("api.json");
                  ByteArrayOutputStream outputStream = new ByteArrayOutputStream()) {
                 if (inputStream == null)
@@ -76,7 +72,7 @@ public class ApiServiceImpl implements ApiService, ContextRefreshedListener {
             } catch (Throwable throwable) {
                 logger.warn(throwable, "解析API[{}]元数据时发生异常！", modelClass);
             }
-        }));
+        });
         list.sort(Comparator.comparingInt(object -> object.getIntValue("sort")));
         array = new JSONArray();
         array.addAll(list);
@@ -92,7 +88,9 @@ public class ApiServiceImpl implements ApiService, ContextRefreshedListener {
         ModelTable modelTable = modelTables.get(modelClass);
         String name = modelTable.getName();
         ctrl(name, object);
-        message(object, "name", "", name, false);
+        message(object, "name", name, "name", false);
+        if (object.getString("name").equals(""))
+            object.put("name", message.get(name));
         JSONArray services = object.getJSONArray("services");
         String uri = object.getString("uri");
         boolean model = false;
@@ -137,8 +135,6 @@ public class ApiServiceImpl implements ApiService, ContextRefreshedListener {
         if (execute == null)
             return;
 
-        if (!object.containsKey("name"))
-            object.put("name", name);
         if (!object.containsKey("sort"))
             object.put("sort", numeric.toInt(execute.code()));
         if (!object.containsKey("uri"))
@@ -156,7 +152,7 @@ public class ApiServiceImpl implements ApiService, ContextRefreshedListener {
             if (n.equals("id") && validator.isEmpty(obj.get("description")))
                 obj.put("description", message.get(ApiModel.NAME + ".id"));
             else
-                message(obj, "description", prefix, "." + n, true);
+                message(obj, "description", prefix, n, true);
         }
     }
 
@@ -196,12 +192,12 @@ public class ApiServiceImpl implements ApiService, ContextRefreshedListener {
         }
 
         if (name.equals("id") && validator.isEmpty(value)) {
-            object.put(name, message.get(ApiModel.NAME + ".id.description"));
+            object.put(name, message.get(ApiModel.NAME + ".id"));
 
             return 0;
         }
 
-        object.put(name, message(prefix, value.toString(), name, "", true));
+        object.put(name, message(prefix, value.toString(), name, "description", true));
 
         return 0;
     }
@@ -214,7 +210,7 @@ public class ApiServiceImpl implements ApiService, ContextRefreshedListener {
                 obj.keySet().forEach(key -> response(obj, key, prefix));
                 newArray.add(obj);
             } else
-                newArray.add(message(prefix, object.toString(), name, "", true));
+                newArray.add(message(prefix, object.toString(), name, "description", true));
         });
 
         return newArray;
@@ -227,13 +223,13 @@ public class ApiServiceImpl implements ApiService, ContextRefreshedListener {
     private String message(String prefix, String value, String property, String name, boolean period) {
         String message = message(prefix, value, period);
         if (message.equals(""))
-            message = message(prefix, property + "." + name, period);
+            message = message(prefix, "." + property + "." + name, period);
         if (message.equals(""))
             message = message(prefix, property, period);
         if (message.equals(""))
             message = message(ApiModel.NAME, value, period);
         if (message.equals(""))
-            message = message(ApiModel.NAME, property + "." + name, period);
+            message = message(ApiModel.NAME, "." + property + "." + name, period);
         if (message.equals(""))
             message = message(ApiModel.NAME, property, period);
 
