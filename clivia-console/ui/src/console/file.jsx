@@ -41,7 +41,7 @@ class File extends React.Component {
 
         if (file.status === 'removed') {
             let list = [];
-            for (let f of this.state.list) {
+            for (let f of this.list()) {
                 if (f.uid === file.uid)
                     continue;
 
