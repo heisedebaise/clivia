@@ -1,7 +1,7 @@
 import React from 'react';
-import { Upload, Button } from 'antd';
+import { Upload, Button, message } from 'antd';
 import { UploadOutlined, LoadingOutlined } from '@ant-design/icons';
-import { url, upload } from '../http';
+import { url } from '../http';
 import { toArray } from '../json';
 
 class File extends React.Component {
@@ -10,41 +10,52 @@ class File extends React.Component {
         loading: false
     }
 
-    upload = uploader => {
-        this.setState({ loading: true });
-        upload(this.props.upload, uploader.file).then(data => {
-            if (data === null) {
-                this.setState({ loading: false });
+    change = ({ file }) => {
+        if (file.status === 'removed') {
+            let list = [];
+            for (let f of this.state.list) {
+                if (f.uid === file.uid)
+                    continue;
 
-                return;
-            }
-
-            let list = this.list();
-            list.push({
-                uid: '' + list.length,
-                name: data.fileName,
-                uri: data.path,
-                url: url(data.path),
-                status: 'done'
-            });
-            this.setState({
-                loading: false,
-                list: list
-            }, this.value);
-        });
-    }
-
-    remove = file => {
-        let list = [];
-        for (let f of this.list())
-            if (f.uid !== file.uid)
                 list.push(f);
-        this.setState({ list: list }, this.value);
+            }
+            this.setState({ list: list });
+            this.value();
+
+            return;
+        }
+
+        if (file.status !== 'done') {
+            let list = this.state.list || [];
+            for (let f of list)
+                if (f.uid === file.uid)
+                    return;
+
+            list.push(file);
+            this.setState({ list });
+
+            return;
+        }
+
+        if (!file.response.success) {
+            let list = [];
+            for (let f of this.state.list)
+                if (f.uid !== file.uid)
+                    list.push(f);
+            this.setState({ list });
+            message.warn(file.response.message);
+
+            return;
+        }
+
+        this.value();
     }
 
     value = () => {
         let list = [];
         for (let file of this.state.list) {
+            if (!file.uri)
+                file.uri = file.response.path;
             list.push({
                 name: file.name,
                 uri: file.uri
@@ -68,8 +79,23 @@ class File extends React.Component {
     }
 
     render = () => {
+        let props = {
+            action: url('/photon/ctrl-http/upload'),
+            name: this.props.upload,
+            progress: {
+                strokeColor: {
+                    '0%': '#108ee9',
+                    '100%': '#87d068',
+                },
+                strokeWidth: 3,
+                format: percent => `${parseFloat(percent.toFixed(2))}%`,
+            },
+            fileList: this.list(),
+            onChange: this.change
+        };
+
         return (
-            <Upload fileList={this.list()} customRequest={this.upload} onRemove={this.remove}>
+            <Upload {...props} >
                 {this.state.loading ? <Button disabled={true}><LoadingOutlined /> 上传中</Button> : <Button><UploadOutlined /> 上传</Button>}
             </Upload>
         );

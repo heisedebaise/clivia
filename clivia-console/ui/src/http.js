@@ -2,7 +2,7 @@ import {
     message
 } from 'antd';
 
-const root = 'http://192.168.31.164:8080';
+const root = 'http://192.168.7.161:8080';
 
 const service = (uri, body) => post(uri, body).then(json => {
     if (json === null) return null;
