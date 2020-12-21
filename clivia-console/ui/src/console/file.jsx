@@ -1,16 +1,44 @@
 import React from 'react';
 import { Upload, Button, message } from 'antd';
-import { UploadOutlined, LoadingOutlined } from '@ant-design/icons';
+import { UploadOutlined } from '@ant-design/icons';
 import { url } from '../http';
 import { toArray } from '../json';
 
 class File extends React.Component {
     state = {
-        list: null,
-        loading: false
+        list: null
     }
 
     change = ({ file }) => {
+        if (file.status === 'uploading') {
+            let list = this.state.list || [];
+            for (let f of list)
+                if (f.uid === file.uid)
+                    return;
+
+            list.push(file);
+            this.setState({ list });
+
+            return;
+        }
+
+        if (file.status === 'done') {
+            if (file.response.success) {
+                this.value();
+
+                return;
+            }
+
+            let list = [];
+            for (let f of this.state.list)
+                if (f.uid !== file.uid)
+                    list.push(f);
+            this.setState({ list });
+            message.warn(file.response.message);
+
+            return;
+        }
+
         if (file.status === 'removed') {
             let list = [];
             for (let f of this.state.list) {
@@ -24,31 +52,6 @@ class File extends React.Component {
 
             return;
         }
-
-        if (file.status !== 'done') {
-            let list = this.state.list || [];
-            for (let f of list)
-                if (f.uid === file.uid)
-                    return;
-
-            list.push(file);
-            this.setState({ list });
-
-            return;
-        }
-
-        if (!file.response.success) {
-            let list = [];
-            for (let f of this.state.list)
-                if (f.uid !== file.uid)
-                    list.push(f);
-            this.setState({ list });
-            message.warn(file.response.message);
-
-            return;
-        }
-
-        this.value();
     }
 
     value = () => {
@@ -95,8 +98,8 @@ class File extends React.Component {
         };
 
         return (
-            <Upload {...props} >
-                {this.state.loading ? <Button disabled={true}><LoadingOutlined /> 上传中</Button> : <Button><UploadOutlined /> 上传</Button>}
+            <Upload {...props}>
+                <Button><UploadOutlined /> 上传</Button>
             </Upload>
         );
     }
