@@ -6,8 +6,6 @@ import org.lpw.clivia.user.UserModel;
 import org.lpw.clivia.user.UserService;
 import org.lpw.photon.bean.ContextRefreshedListener;
 import org.lpw.photon.cache.Cache;
-import org.lpw.photon.storage.StorageListener;
-import org.lpw.photon.storage.Storages;
 import org.lpw.photon.util.Context;
 import org.lpw.photon.util.Converter;
 import org.lpw.photon.util.Json;
@@ -32,7 +30,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * @author lpw
  */
 @Service(CrosierModel.NAME + ".service")
-public class CrosierServiceImpl implements CrosierService, StorageListener, ContextRefreshedListener {
+public class CrosierServiceImpl implements CrosierService, ContextRefreshedListener {
     @Inject
     private Context context;
     @Inject
@@ -60,7 +58,8 @@ public class CrosierServiceImpl implements CrosierService, StorageListener, Cont
     @Value("${" + CrosierModel.NAME + ".permit:/WEB-INF/permit}")
     private String permit;
     private final int[] grades = {0, 90};
-    private Map<String, Integer> permits = new HashMap<>();
+    private final Map<String, Integer> permits = new HashMap<>();
+    private final Map<String, String> regexes = new HashMap<>();
     private final Map<Integer, Map<String, Set<Map<String, String>>>> map = new ConcurrentHashMap<>();
 
     @Override
@@ -155,11 +154,9 @@ public class CrosierServiceImpl implements CrosierService, StorageListener, Cont
     @Override
     public boolean permit(String uri, Map<String, String> parameter) {
         UserModel user = userService.fromSession();
-        if (permits.containsKey(uri)) {
-            int grade = permits.get(uri);
-
+        Integer grade = permitGrade(uri);
+        if (grade != null)
             return grade == -1 || (user != null && user.getGrade() >= grade);
-        }
 
         if (user == null || user.getState() != 1)
             return false;
@@ -190,38 +187,15 @@ public class CrosierServiceImpl implements CrosierService, StorageListener, Cont
         return false;
     }
 
-    @Override
-    public String getStorageType() {
-        return Storages.TYPE_DISK;
-    }
+    private Integer permitGrade(String uri) {
+        if (permits.containsKey(uri))
+            return permits.get(uri);
 
-    @Override
-    public String[] getScanPathes() {
-        return new String[]{permit};
-    }
+        for (String key : regexes.keySet())
+            if (validator.isMatchRegex(regexes.get(key), uri))
+                return permits.get(key);
 
-    @Override
-    public void onStorageChanged(String path, String absolutePath) {
-        try (BufferedReader reader = new BufferedReader(new FileReader(absolutePath))) {
-            Map<String, Integer> map = new HashMap<>();
-            for (String line; (line = reader.readLine()) != null; ) {
-                line = line.trim();
-                if (line.charAt(0) == '#')
-                    continue;
-
-                int index = line.indexOf(':');
-                if (index == -1)
-                    map.put(line, -1);
-                else {
-                    map.put(line.substring(0, index), numeric.toInt(line.substring(index + 1)));
-                }
-            }
-            permits = map;
-            if (logger.isInfoEnable())
-                logger.info("更新免校验权限配置[{}]。", permits);
-        } catch (Throwable throwable) {
-            logger.warn(throwable, "读取权限配置[{}:{}]文件失败！", path, absolutePath);
-        }
+        return null;
     }
 
     @Override
@@ -231,8 +205,32 @@ public class CrosierServiceImpl implements CrosierService, StorageListener, Cont
 
     @Override
     public void onContextRefreshed() {
+        load();
         for (int grade : grades)
             valid(grade);
+    }
+
+    private void load() {
+        try (BufferedReader reader = new BufferedReader(new FileReader(context.getAbsolutePath(permit)))) {
+            for (String line; (line = reader.readLine()) != null; ) {
+                line = line.trim();
+                if (line.charAt(0) == '#')
+                    continue;
+
+                int index = line.lastIndexOf(':');
+                String uri = index == -1 ? line : line.substring(0, index);
+                if (index == -1)
+                    permits.put(uri, -1);
+                else
+                    permits.put(uri, numeric.toInt(line.substring(index + 1)));
+                if (uri.charAt(0) == '~')
+                    regexes.put(uri, uri.substring(1));
+            }
+            if (logger.isInfoEnable())
+                logger.info("更新免校验权限配置[{}]。", permits);
+        } catch (Throwable throwable) {
+            logger.warn(throwable, "读取权限配置[{}]文件失败！", permit);
+        }
     }
 
     private void valid(int grade) {
