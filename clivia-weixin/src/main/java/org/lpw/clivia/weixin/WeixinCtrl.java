@@ -97,7 +97,7 @@ public class WeixinCtrl {
         return "";
     }
 
-    @Execute(name = "wx.+", type = Templates.STRING)
+    @Execute(name = "wx.+", regex = true, type = Templates.STRING)
     public Object service() {
         String uri = request.getUri();
         String appId = uri.substring(uri.lastIndexOf('/') + 1);
