@@ -87,10 +87,8 @@ public class ApiServiceImpl implements ApiService, ContextRefreshedListener {
 
         ModelTable modelTable = modelTables.get(modelClass);
         String name = modelTable.getName();
+        name(object, name);
         ctrl(name, object);
-        message(object, "name", name, "name", false);
-        if (object.getString("name").equals(""))
-            object.put("name", message.get(name));
         JSONArray services = object.getJSONArray("services");
         String uri = object.getString("uri");
         boolean model = false;
@@ -124,6 +122,15 @@ public class ApiServiceImpl implements ApiService, ContextRefreshedListener {
             format(object, "model");
         }
         list.add(object);
+    }
+
+    private void name(JSONObject object, String name) {
+        if (object.containsKey("name"))
+            message(object, "name", name, "", false);
+        if (!object.containsKey("name") || object.getString("name").equals(""))
+            object.put("name", message.get(name));
+        if (object.getString("name").equals(name))
+            message(object, "name", name, "name", false);
     }
 
     private void ctrl(String name, JSONObject object) {
