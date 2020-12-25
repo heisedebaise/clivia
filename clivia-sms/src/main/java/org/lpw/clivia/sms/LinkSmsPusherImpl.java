@@ -5,9 +5,10 @@ import org.springframework.stereotype.Service;
 
 import javax.inject.Inject;
 
-@Service(SmsModel.NAME+".pusher.link")
-public class LinkSmsPusherImpl implements SmsPusher{
-    @Inject private Http http;
+@Service(SmsModel.NAME + ".pusher.link")
+public class LinkSmsPusherImpl implements SmsPusher {
+    @Inject
+    private Http http;
 
     @Override
     public String key() {
@@ -15,7 +16,7 @@ public class LinkSmsPusherImpl implements SmsPusher{
     }
 
     @Override
-    public boolean push(String mobile, String content) {
+    public boolean push(String config, String mobile, String content) {
         return false;
     }
 }
