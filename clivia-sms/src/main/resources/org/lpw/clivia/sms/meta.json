@@ -1,0 +1,76 @@
+{
+    "key": "clivia.sms",
+    "uri": "/sms/",
+    "props": [
+        {
+            "name": "scene"
+        },
+        {
+            "name": "pusher"
+        },
+        {
+            "name": "name"
+        },
+        {
+            "name": "config"
+        },
+        {
+            "name": "state",
+            "type": "switch",
+            "service": "state"
+        },
+        {
+            "name": "time",
+            "type": "read-only"
+        }
+    ],
+    "query": {
+        "type": "grid",
+        "search": [
+            {
+                "name": "scene"
+            },
+            {
+                "name": "pusher"
+            },
+            {
+                "name": "name"
+            },
+            {
+                "name": "state",
+                "labels": "states"
+            }
+        ],
+        "ops": [
+            {
+                "type": "modify"
+            },
+            {
+                "type": "delete"
+            }
+        ],
+        "toolbar": [
+            {
+                "type": "create"
+            }
+        ]
+    },
+    "create": {
+        "type": "form",
+        "toolbar": [
+            {
+                "service": "save",
+                "success": "query"
+            }
+        ]
+    },
+    "modify": {
+        "type": "form",
+        "toolbar": [
+            {
+                "service": "save",
+                "success": "query"
+            }
+        ]
+    }
+}

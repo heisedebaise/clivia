@@ -47,6 +47,10 @@
                 }
             },
             {
+                "label": "短信",
+                "service": "/sms/query"
+            },
+            {
                 "label": "协议",
                 "service": "/setting/agreement"
             }

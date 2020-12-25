@@ -87,7 +87,7 @@ class Base extends React.Component {
             else if (prop.type === 'percent')
                 values[prop.name] = toPercent(value);
             else if (prop.type === 'switch')
-                values[prop.name] = value === 1;
+                values[prop.name] = value === 1 || value === '1';
             else if (value) {
                 if (prop.type === 'date')
                     values[prop.name] = moment(value, 'YYYY-MM-DD');

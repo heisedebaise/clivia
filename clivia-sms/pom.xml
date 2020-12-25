@@ -5,21 +5,16 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>org.lpw.clivia</groupId>
-    <artifactId>clivia-user</artifactId>
+    <artifactId>clivia-sms</artifactId>
     <version>0.3</version>
 
-    <name>clivia-user</name>
+    <name>clivia-sms</name>
     <url>https://github.com/heisedebaise/clivia</url>
 
     <dependencies>
         <dependency>
             <groupId>org.lpw.clivia</groupId>
-            <artifactId>clivia-keyvalue</artifactId>
-            <version>0.3</version>
-        </dependency>
-        <dependency>
-            <groupId>org.lpw.clivia</groupId>
-            <artifactId>clivia-sms</artifactId>
+            <artifactId>clivia-base</artifactId>
             <version>0.3</version>
         </dependency>
     </dependencies>
