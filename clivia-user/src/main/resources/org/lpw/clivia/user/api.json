@@ -71,8 +71,8 @@
         },
         {
             "page": "upload",
-            "name": ".portrait.upload",
-            "upload": "portrait",
+            "name": ".avatar.upload",
+            "upload": "avatar",
             "psid": true
         },
         {
@@ -108,7 +108,7 @@
                     "type": "string"
                 },
                 {
-                    "name": "portrait",
+                    "name": "avatar",
                     "type": "string"
                 },
                 {

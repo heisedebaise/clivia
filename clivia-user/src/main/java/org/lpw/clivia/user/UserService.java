@@ -331,7 +331,7 @@ public interface UserService {
      * @param email    Email地址。
      * @param weixin   微信号。
      * @param qq       QQ号。
-     * @param portrait 头像。
+     * @param avatar 头像。
      * @param gender   性别：0-未知；1-男；2-女。
      * @param birthday 出生日期。
      * @param inviter  邀请人。
@@ -340,7 +340,7 @@ public interface UserService {
      * @return 用户信息。
      */
     UserModel create(String uid, String password, String idcard, String name, String nick, String mobile, String email, String weixin, String qq,
-                     String portrait, int gender, Date birthday, String inviter, int grade, int state);
+                     String avatar, int gender, Date birthday, String inviter, int grade, int state);
 
     /**
      * 删除。

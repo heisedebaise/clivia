@@ -49,7 +49,7 @@ public abstract class UserTypeSupport extends TypeSupport {
 
         for (String u : set)
             if (authService.findByUid(u) == null)
-                authService.create(user.getId(), u, getKey(), getMobile(uid, password), getEmail(uid, password), getNick(uid, password), getPortrait(uid, password));
+                authService.create(user.getId(), u, getKey(), getMobile(uid, password), getEmail(uid, password), getNick(uid, password), getAvatar(uid, password));
 
         return user;
     }

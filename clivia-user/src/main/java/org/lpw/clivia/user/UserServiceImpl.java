@@ -105,9 +105,9 @@ public class UserServiceImpl implements UserService {
                 user.setEmail(email);
         } else
             email = null;
-        String portrait = types.getPortrait(type, uid, password);
-        if (validator.isEmpty(user.getPortrait()))
-            user.setPortrait(portrait);
+        String avatar = types.getPortrait(type, uid, password);
+        if (validator.isEmpty(user.getAvatar()))
+            user.setAvatar(avatar);
         String nick = types.getNick(type, uid, password);
         if (validator.isEmpty(user.getNick()))
             user.setNick(nick);
@@ -117,7 +117,7 @@ public class UserServiceImpl implements UserService {
         userDao.save(user);
         for (String ruid : types.getUid(type, uid, password))
             if (authService.findByUid(ruid) == null)
-                authService.create(user.getId(), ruid, type, mobile, email, nick, portrait);
+                authService.create(user.getId(), ruid, type, mobile, email, nick, avatar);
         UserModel model = user;
         listeners.ifPresent(set -> set.forEach(listener -> listener.userSignUp(model)));
         clearCache(user);
@@ -394,7 +394,7 @@ public class UserServiceImpl implements UserService {
         model.setEmail(user.getEmail());
         model.setWeixin(user.getWeixin());
         model.setQq(user.getQq());
-        model.setPortrait(user.getPortrait());
+        model.setAvatar(user.getAvatar());
         model.setGender(user.getGender());
         model.setBirthday(user.getBirthday());
         if (manage) {
@@ -488,7 +488,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserModel create(String uid, String password, String idcard, String name, String nick, String mobile, String email, String weixin, String qq,
-                            String portrait, int gender, Date birthday, String inviter, int grade, int state) {
+                            String avatar, int gender, Date birthday, String inviter, int grade, int state) {
         UserModel user = new UserModel();
         user.setPassword(password(password));
         user.setIdcard(idcard);
@@ -507,7 +507,7 @@ public class UserServiceImpl implements UserService {
         }
         user.setWeixin(weixin);
         user.setQq(qq);
-        user.setPortrait(portrait);
+        user.setAvatar(avatar);
         user.setGender(gender);
         user.setBirthday(birthday);
         setCode(user);
@@ -516,7 +516,7 @@ public class UserServiceImpl implements UserService {
         user.setGrade(grade);
         user.setState(state);
         userDao.save(user);
-        authService.create(user.getId(), uid, Types.Self, mobile, email, nick, portrait);
+        authService.create(user.getId(), uid, Types.Self, mobile, email, nick, avatar);
 
         return user;
     }

@@ -11,7 +11,7 @@ CREATE TABLE t_user
   c_email VARCHAR(255) DEFAULT NULL COMMENT 'Email地址',
   c_weixin VARCHAR(255) DEFAULT NULL COMMENT '微信号',
   c_qq VARCHAR(255) DEFAULT NULL COMMENT 'QQ号',
-  c_portrait VARCHAR(255) DEFAULT NULL COMMENT '头像',
+  c_avatar VARCHAR(255) DEFAULT NULL COMMENT '头像',
   c_gender INT DEFAULT 0 COMMENT '性别：0-未知；1-男；2-女',
   c_birthday DATE DEFAULT NULL COMMENT '出生日期',
   c_inviter CHAR(36) DEFAULT NULL COMMENT '邀请人',
@@ -20,6 +20,7 @@ CREATE TABLE t_user
   c_register DATETIME DEFAULT NULL COMMENT '注册时间',
   c_grade INT DEFAULT 0 COMMENT '等级：>=90为管理员；99为超级管理员',
   c_state INT DEFAULT 0 COMMENT '状态：0-禁用；1-正常',
+  c_from VARCHAR(255) DEFAULT NULL COMMENT '来源',
 
   PRIMARY KEY pk(c_id) USING HASH,
   KEY k_mobile(c_mobile) USING HASH,

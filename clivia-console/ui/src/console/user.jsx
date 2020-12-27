@@ -12,7 +12,7 @@ class User extends React.Component {
 
         return (
             <div className="user">
-                {this.portrait()}
+                {this.avatar()}
                 <div className="user-info">
                     {uids.map(uid => <div className="user-uid">{uid}</div>)}
                     {this.line(uids, 'nick')}
@@ -24,11 +24,11 @@ class User extends React.Component {
         );
     }
 
-    portrait = () => {
-        if (!this.props.data.portrait)
+    avatar = () => {
+        if (!this.props.data.avatar)
             return null;
 
-        return <div className="user-avatar"><Avatar src={url(this.props.data.portrait)} /></div>;
+        return <div className="user-avatar"><Avatar src={url(this.props.data.avatar)} /></div>;
     }
 
     uids = () => {

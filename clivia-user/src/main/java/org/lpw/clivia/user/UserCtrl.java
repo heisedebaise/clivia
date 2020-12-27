@@ -80,7 +80,7 @@ public class UserCtrl {
             @Validate(validator = Validators.MAX_LENGTH, number = {100}, parameter = "weixin", failureCode = 33),
             @Validate(validator = Validators.MAX_LENGTH, number = {100}, parameter = "qq", failureCode = 34),
             @Validate(validator = Validators.BETWEEN, number = {0, 2}, parameter = "gender", failureCode = 13),
-            @Validate(validator = Validators.MAX_LENGTH, number = {100}, parameter = "portrait", failureCode = 32),
+            @Validate(validator = Validators.MAX_LENGTH, number = {100}, parameter = "avatar", failureCode = 32),
             @Validate(validator = UserService.VALIDATOR_SIGN)
     })
     public Object modify() {
@@ -167,13 +167,13 @@ public class UserCtrl {
             @Validate(validator = Validators.MAX_LENGTH, number = {100}, parameter = "weixin", failureCode = 33),
             @Validate(validator = Validators.MAX_LENGTH, number = {100}, parameter = "qq", failureCode = 34),
             @Validate(validator = Validators.BETWEEN, number = {0, 2}, parameter = "gender", failureCode = 13),
-            @Validate(validator = Validators.MAX_LENGTH, number = {100}, parameter = "portrait", failureCode = 32),
+            @Validate(validator = Validators.MAX_LENGTH, number = {100}, parameter = "avatar", failureCode = 32),
             @Validate(validator = Validators.BETWEEN, number = {0, 1}, parameter = "state", failureCode = 24),
             @Validate(validator = AuthService.VALIDATOR_UID_NOT_EXISTS, parameter = "uid", failureCode = 4)
     })
     public Object create() {
         userService.create(request.get("uid"), request.get("password"), request.get("idcard"), request.get("name"), request.get("nick"),
-                request.get("mobile"), request.get("email"), request.get("weixin"), request.get("qq"), request.get("portrait"),
+                request.get("mobile"), request.get("email"), request.get("weixin"), request.get("qq"), request.get("avatar"),
                 request.getAsInt("gender"), request.getAsSqlDate("birthday"), userService.id(), request.getAsInt("grade"), request.getAsInt("state"));
 
         return "";
@@ -190,7 +190,7 @@ public class UserCtrl {
             @Validate(validator = Validators.MAX_LENGTH, number = {100}, parameter = "weixin", failureCode = 33),
             @Validate(validator = Validators.MAX_LENGTH, number = {100}, parameter = "qq", failureCode = 34),
             @Validate(validator = Validators.BETWEEN, number = {0, 2}, parameter = "gender", failureCode = 13),
-            @Validate(validator = Validators.MAX_LENGTH, number = {100}, parameter = "portrait", failureCode = 32),
+            @Validate(validator = Validators.MAX_LENGTH, number = {100}, parameter = "avatar", failureCode = 32),
             @Validate(validator = Validators.BETWEEN, number = {0, 1}, parameter = "state", failureCode = 24),
             @Validate(validator = Validators.SIGN),
             @Validate(validator = UserService.VALIDATOR_EXISTS, parameter = "id", failureCode = 25)

@@ -31,7 +31,7 @@ public class UserModel extends ModelSupport {
     private String email; // Email地址
     private String weixin; // 微信号
     private String qq; // QQ号
-    private String portrait; // 头像
+    private String avatar; // 头像
     private int gender; // 性别：0-未知；1-男；2-女
     private Date birthday; // 出生日期
     private String inviter; // 邀请人
@@ -40,6 +40,7 @@ public class UserModel extends ModelSupport {
     private Timestamp register; // 注册时间
     private int grade; // 等级：>=90为管理员；99为超级管理员
     private int state; // 状态：0-禁用；1-正常
+    private String from; // 来源
 
     @Column(name = "c_password")
     public String getPassword() {
@@ -130,13 +131,13 @@ public class UserModel extends ModelSupport {
     }
 
     @Jsonable
-    @Column(name = "c_portrait")
-    public String getPortrait() {
-        return portrait;
+    @Column(name = "c_avatar")
+    public String getAvatar() {
+        return avatar;
     }
 
-    public void setPortrait(String portrait) {
-        this.portrait = portrait;
+    public void setAvatar(String avatar) {
+        this.avatar = avatar;
     }
 
     @Jsonable
@@ -217,5 +218,15 @@ public class UserModel extends ModelSupport {
 
     public void setState(int state) {
         this.state = state;
+    }
+
+    @Jsonable
+    @Column(name = "c_from")
+    public String getFrom() {
+        return from;
+    }
+
+    public void setFrom(String from) {
+        this.from = from;
     }
 }

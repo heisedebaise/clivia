@@ -28,7 +28,7 @@ public abstract class TypeSupport implements Type {
     }
 
     @Override
-    public String getPortrait(String uid, String password) {
+    public String getAvatar(String uid, String password) {
         return null;
     }
 

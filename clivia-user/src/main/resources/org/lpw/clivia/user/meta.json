@@ -3,7 +3,7 @@
     "uri": "/user/",
     "props": [
         {
-            "name": "portrait",
+            "name": "avatar",
             "type": "image"
         },
         {
@@ -53,6 +53,10 @@
             "name": "state",
             "type": "switch",
             "service": "state"
+        },
+        {
+            "name": "from",
+            "type": "read-only"
         }
     ],
     "query": {
@@ -92,6 +96,9 @@
             {
                 "name": "state",
                 "labels": ".states"
+            },
+            {
+                "name": "from"
             }
         ],
         "ops": [
@@ -123,7 +130,7 @@
                 "name": "password"
             },
             {
-                "name": "portrait"
+                "name": "avatar"
             },
             {
                 "name": "idcard"
@@ -181,7 +188,7 @@
         "type": "form",
         "props": [
             {
-                "name": "portrait"
+                "name": "avatar"
             },
             {
                 "name": "idcard"

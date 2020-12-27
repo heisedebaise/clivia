@@ -195,8 +195,8 @@ public class FileServiceImpl implements FileService, ContextRefreshedListener {
 
     private String avatar(UserModel user, WpsModel wps) {
         if (user != null)
-            if (!validator.isEmpty(user.getPortrait()))
-                return user.getPortrait().contains("://") ? user.getPortrait() : (serviceHelper.getUrl() + user.getPortrait());
+            if (!validator.isEmpty(user.getAvatar()))
+                return user.getAvatar().contains("://") ? user.getAvatar() : (serviceHelper.getUrl() + user.getAvatar());
 
         return validator.isEmpty(wps.getAvatar()) ? "" : (serviceHelper.getUrl() + wps.getAvatar());
     }
