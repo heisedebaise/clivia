@@ -150,9 +150,9 @@ public class UserCtrl {
             @Validate(validator = Validators.SIGN)
     })
     public Object query() {
-        return userService.query(request.get("uid"), request.get("idcard"), request.get("name"), request.get("nick"),
-                request.get("mobile"), request.get("email"), request.get("weixin"), request.get("qq"), request.get("code"), request.getAsInt("minGrade", -1),
-                request.getAsInt("maxGrade", -1), request.getAsInt("state", -1), request.get("register"));
+        return userService.query(request.get("uid"), request.get("idcard"), request.get("name"), request.get("nick"), request.get("mobile"),
+                request.get("email"), request.get("weixin"), request.get("qq"), request.get("code"), request.getAsInt("minGrade", -1),
+                request.getAsInt("maxGrade", -1), request.getAsInt("state", -1), request.get("register"), request.get("from"));
     }
 
     @Execute(name = "create", validates = {

@@ -227,10 +227,11 @@ public interface UserService {
      * @param maxGrade 最大等级，-1表示不限制。
      * @param state    状态：-1-所有；0-正常；1-禁用。
      * @param register 注册日期范围，格式：yyyy-MM-dd；为空表示不限制。
+     * @param from     来源。
      * @return 用户信息集。
      */
     JSONObject query(String uid, String idcard, String name, String nick, String mobile, String email, String weixin, String qq, String code,
-                     int minGrade, int maxGrade, int state, String register);
+                     int minGrade, int maxGrade, int state, String register, String from);
 
     /**
      * 获取推荐用户集。
@@ -331,7 +332,7 @@ public interface UserService {
      * @param email    Email地址。
      * @param weixin   微信号。
      * @param qq       QQ号。
-     * @param avatar 头像。
+     * @param avatar   头像。
      * @param gender   性别：0-未知；1-男；2-女。
      * @param birthday 出生日期。
      * @param inviter  邀请人。

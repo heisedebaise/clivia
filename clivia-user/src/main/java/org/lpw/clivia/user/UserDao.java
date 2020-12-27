@@ -10,7 +10,7 @@ import java.util.Set;
  */
 interface UserDao {
     PageList<UserModel> query(Set<String> ids, String idcard, String name, String nick, String mobile, String email, String weixin, String qq,
-                              String code, int minGrade, int maxGrade, int state, String register, int pageSize, int pageNum);
+                              String code, int minGrade, int maxGrade, int state, String register, String from, int pageSize, int pageNum);
 
     PageList<UserModel> query(String inviter, int pageSize, int pageNum);
 

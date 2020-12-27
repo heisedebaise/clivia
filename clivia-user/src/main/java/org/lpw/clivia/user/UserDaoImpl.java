@@ -24,7 +24,7 @@ class UserDaoImpl implements UserDao {
 
     @Override
     public PageList<UserModel> query(Set<String> ids, String idcard, String name, String nick, String mobile, String email, String weixin, String qq,
-                                     String code, int minGrade, int maxGrade, int state, String register, int pageSize, int pageNum) {
+                                     String code, int minGrade, int maxGrade, int state, String register, String from, int pageSize, int pageNum) {
         return daoHelper.newQueryBuilder()
                 .where("c_code", DaoOperation.Equals, code)
                 .in("c_id", ids)
@@ -39,6 +39,7 @@ class UserDaoImpl implements UserDao {
                 .where("c_grade", DaoOperation.LessEquals, maxGrade)
                 .where("c_state", DaoOperation.Equals, state)
                 .between("c_register", ColumnType.Timestamp, register)
+                .where("c_from", DaoOperation.Equals, from)
                 .where("c_state", DaoOperation.LessEquals, 1)
                 .order("c_register desc")
                 .query(UserModel.class, pageSize, pageNum);
