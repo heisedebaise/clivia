@@ -24,9 +24,9 @@ public class AuthModel extends ModelSupport {
     private String user; // 用户ID
     private String uid; // 认证ID
     private String type; // 类型
-    private String mobile; // 第三方账号手机号
-    private String email; // 第三方账号Email
-    private String nick; // 第三方账号昵称
+    private String mobile; // 手机号
+    private String email; // Email
+    private String nick; // 昵称
     private String avatar; // 头像URL
     private Timestamp time; // 绑定时间
 
