@@ -44,10 +44,10 @@ public interface AuthService {
      * @param mobile   第三方账号手机号。
      * @param email    第三方头像Email。
      * @param nick     第三方账号昵称。
-     * @param portrait 第三方头像URL。
+     * @param avatar 第三方头像URL。
      * @return 认证信息。
      */
-    AuthModel create(String userId, String uid, String type, String mobile, String email, String nick, String portrait);
+    AuthModel create(String userId, String uid, String type, String mobile, String email, String nick, String avatar);
 
     /**
      * 根据uid检索认证信息。

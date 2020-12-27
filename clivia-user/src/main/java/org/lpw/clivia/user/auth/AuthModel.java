@@ -27,7 +27,7 @@ public class AuthModel extends ModelSupport {
     private String mobile; // 第三方账号手机号
     private String email; // 第三方账号Email
     private String nick; // 第三方账号昵称
-    private String portrait; // 第三方头像URL
+    private String avatar; // 头像URL
     private Timestamp time; // 绑定时间
 
     @Jsonable
@@ -91,13 +91,13 @@ public class AuthModel extends ModelSupport {
     }
 
     @Jsonable
-    @Column(name = "c_portrait")
-    public String getPortrait() {
-        return portrait;
+    @Column(name = "c_avatar")
+    public String getAvatar() {
+        return avatar;
     }
 
-    public void setPortrait(String portrait) {
-        this.portrait = portrait;
+    public void setAvatar(String avatar) {
+        this.avatar = avatar;
     }
 
     @Jsonable

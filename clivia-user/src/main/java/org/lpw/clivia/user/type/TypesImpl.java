@@ -48,7 +48,7 @@ public class TypesImpl implements Types, ContextRefreshedListener {
     }
 
     @Override
-    public String getPortrait(String key, String uid, String password) {
+    public String getAvatar(String key, String uid, String password) {
         return map.get(key).getAvatar(uid, password);
     }
 

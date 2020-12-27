@@ -105,7 +105,7 @@ public class UserServiceImpl implements UserService {
                 user.setEmail(email);
         } else
             email = null;
-        String avatar = types.getPortrait(type, uid, password);
+        String avatar = types.getAvatar(type, uid, password);
         if (validator.isEmpty(user.getAvatar()))
             user.setAvatar(avatar);
         String nick = types.getNick(type, uid, password);

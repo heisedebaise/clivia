@@ -83,7 +83,7 @@ public interface Types {
      * @param password 密码。
      * @return 头像URL，不存在则返回null。
      */
-    String getPortrait(String key, String uid, String password);
+    String getAvatar(String key, String uid, String password);
 
     /**
      * 获取第三方认证信息。
