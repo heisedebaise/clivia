@@ -1,6 +1,5 @@
 package org.lpw.clivia.user.type;
 
-import com.alibaba.fastjson.JSONObject;
 import org.lpw.clivia.keyvalue.KeyvalueService;
 import org.lpw.clivia.user.UserModel;
 import org.lpw.clivia.user.UserService;
@@ -98,10 +97,5 @@ public class SelfImpl extends TypeSupport {
     @Override
     public String getNick(String uid, String password) {
         return uid;
-    }
-
-    @Override
-    public JSONObject getAuth(String uid, String password) {
-        return null;
     }
 }

@@ -114,6 +114,8 @@ public class UserServiceImpl implements UserService {
         setInviter(user, inviter);
         user.setGrade(crosierService.signUpGrade(grade));
         user.setState(1);
+        if (validator.isEmpty(user.getFrom()))
+            user.setFrom(types.getFrom(type, uid, password));
         userDao.save(user);
         for (String ruid : types.getUid(type, uid, password))
             if (authService.findByUid(ruid) == null)

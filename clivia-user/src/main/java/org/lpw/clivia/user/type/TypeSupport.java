@@ -32,9 +32,19 @@ public abstract class TypeSupport implements Type {
         return null;
     }
 
+    @Override
+    public String getFrom(String uid, String password) {
+        return null;
+    }
+
     protected String get(String uid, String password, String name) {
         JSONObject object = getAuth(uid, password);
 
         return json.containsKey(object, name) ? object.getString(name) : null;
+    }
+
+    @Override
+    public JSONObject getAuth(String uid, String password) {
+        return null;
     }
 }

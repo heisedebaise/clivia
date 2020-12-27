@@ -86,6 +86,16 @@ public interface Types {
     String getAvatar(String key, String uid, String password);
 
     /**
+     * 获取来源。
+     *
+     * @param key      类型KEY。
+     * @param uid      UID。
+     * @param password 密码。
+     * @return 来源。
+     */
+    String getFrom(String key, String uid, String password);
+
+    /**
      * 获取第三方认证信息。
      *
      * @param key      类型KEY。
