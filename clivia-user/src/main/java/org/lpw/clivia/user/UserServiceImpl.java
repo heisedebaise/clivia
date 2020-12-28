@@ -111,6 +111,8 @@ public class UserServiceImpl implements UserService {
         String nick = types.getNick(type, uid, password);
         if (validator.isEmpty(user.getNick()))
             user.setNick(nick);
+        if (validator.isEmpty(user.getNick()))
+            user.setNick(uid);
         setInviter(user, inviter);
         user.setGrade(crosierService.signUpGrade(grade));
         user.setState(1);
