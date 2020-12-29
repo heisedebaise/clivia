@@ -6,12 +6,13 @@ import org.springframework.stereotype.Controller;
 
 import javax.inject.Inject;
 
-@Controller(UserService.VALIDATOR_SIGN_UP_CAPTCHA)
+@Controller(UserService.VALIDATOR_SIGN_UP_SMS)
 public class SignUpCaptchaValidatorImpl extends CaptchaValidatorSupport {
-    @Inject private KeyvalueService keyvalueService;
+    @Inject
+    private KeyvalueService keyvalueService;
 
     @Override
     protected boolean ignore(String parameter) {
-        return super.ignore(parameter);
+        return keyvalueService.valueAsInt("setting.global.sign-up.sms", 0) == 0;
     }
 }

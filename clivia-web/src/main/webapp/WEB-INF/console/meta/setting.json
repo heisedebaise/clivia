@@ -17,6 +17,11 @@
                 "permit": true
             },
             {
+                "name": "setting.global.sign-up.sms",
+                "type": "switch",
+                "permit": true
+            },
+            {
                 "name": "setting.global.user.delete",
                 "type": "switch",
                 "permit": true
