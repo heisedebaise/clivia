@@ -2,18 +2,21 @@ package org.lpw.clivia.sms;
 
 import com.alibaba.fastjson.JSONObject;
 import org.lpw.clivia.page.Pagination;
+import org.lpw.photon.bean.BeanFactory;
+import org.lpw.photon.bean.ContextRefreshedListener;
 import org.lpw.photon.util.DateTime;
 import org.lpw.photon.util.Validator;
 import org.springframework.stereotype.Service;
 
 import javax.inject.Inject;
-import java.util.Set;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @author lpw
  */
 @Service(SmsModel.NAME + ".service")
-public class SmsServiceImpl implements SmsService {
+public class SmsServiceImpl implements SmsService, ContextRefreshedListener {
     @Inject
     private Validator validator;
     @Inject
@@ -21,9 +24,8 @@ public class SmsServiceImpl implements SmsService {
     @Inject
     private Pagination pagination;
     @Inject
-    private Set<SmsPusher> pushers;
-    @Inject
     private SmsDao smsDao;
+    private final Map<String, SmsPusher> pushers = new HashMap<>();
 
     @Override
     public JSONObject query(String scene, String pusher, String name, int state) {
@@ -49,5 +51,15 @@ public class SmsServiceImpl implements SmsService {
     @Override
     public void delete(String id) {
         smsDao.delete(id);
+    }
+
+    @Override
+    public int getContextRefreshedSort() {
+        return 108;
+    }
+
+    @Override
+    public void onContextRefreshed() {
+        BeanFactory.getBeans(SmsPusher.class).forEach(pusher -> pushers.put(pusher.key(), pusher));
     }
 }
