@@ -37,6 +37,11 @@ class SmsDaoImpl implements SmsDao {
     }
 
     @Override
+    public SmsModel find(String scene, int state) {
+        return liteOrm.findOne(new LiteQuery(SmsModel.class).where("c_scene=? and c_state=?").order("c_time"), new Object[]{scene, state});
+    }
+
+    @Override
     public void save(SmsModel sms) {
         liteOrm.save(sms);
     }

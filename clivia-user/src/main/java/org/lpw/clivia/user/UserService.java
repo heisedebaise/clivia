@@ -19,6 +19,10 @@ public interface UserService {
      */
     String VALIDATOR_SIGN_UP_ENABLE = UserModel.NAME + ".validator.sign-up.enable";
     /**
+     * 注册验证码验证器Bean名称。
+     */
+    String VALIDATOR_SIGN_UP_CAPTCHA = UserModel.NAME + ".validator.sign-up.captcha";
+    /**
      * 登入验证器Bean名称。
      */
     String VALIDATOR_SIGN_IN = UserModel.NAME + ".validator.sign-in";

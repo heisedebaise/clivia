@@ -12,6 +12,8 @@ interface SmsDao {
 
     SmsModel findById(String id);
 
+    SmsModel find(String scene, int state);
+
     void save(SmsModel sms);
 
     void state(String id, int state);

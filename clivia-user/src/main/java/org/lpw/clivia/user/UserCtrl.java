@@ -1,5 +1,6 @@
 package org.lpw.clivia.user;
 
+import org.lpw.clivia.sms.SmsService;
 import org.lpw.clivia.user.auth.AuthService;
 import org.lpw.photon.ctrl.Forward;
 import org.lpw.photon.ctrl.context.Request;
@@ -27,11 +28,20 @@ public class UserCtrl {
     @Inject
     private Forward forward;
     @Inject
+    private SmsService smsService;
+    @Inject
     private UserService userService;
 
     @Execute(name = "inviter")
     public Object inviter() {
         return userService.inviter(request.get("code"));
+    }
+
+    @Execute(name = "sign-up-sms", validates = {
+            @Validate(validator = Validators.MOBILE, parameter = "mobile", failureCode = 10)
+    })
+    public Object signUpSms() {
+        return smsService.captcha(request.get("mobile"));
     }
 
     @Execute(name = "sign-up", validates = {

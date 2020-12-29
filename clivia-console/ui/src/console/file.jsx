@@ -85,6 +85,7 @@ class File extends React.Component {
         let props = {
             action: url('/photon/ctrl-http/upload'),
             name: this.props.upload,
+            multiple: true,
             progress: {
                 strokeColor: {
                     '0%': '#108ee9',
