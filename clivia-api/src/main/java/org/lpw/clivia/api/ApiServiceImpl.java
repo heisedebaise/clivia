@@ -156,7 +156,7 @@ public class ApiServiceImpl implements ApiService, ContextRefreshedListener {
         for (int j = 0, s = array.size(); j < s; j++) {
             JSONObject obj = array.getJSONObject(j);
             String n = obj.getString("name");
-            if (n.equals("id") && validator.isEmpty(obj.get("description")))
+            if ((n.equals("id") || json.has(obj, "type", "id")) && validator.isEmpty(obj.get("description")))
                 obj.put("description", message.get(ApiModel.NAME + ".id"));
             else
                 message(obj, "description", prefix, n, true);

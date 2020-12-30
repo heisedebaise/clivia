@@ -12,7 +12,8 @@
             "name": "name"
         },
         {
-            "name": "config"
+            "name": "config",
+            "type": "text-area"
         },
         {
             "name": "state",

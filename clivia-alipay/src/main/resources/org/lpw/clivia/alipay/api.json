@@ -14,7 +14,7 @@
             "parameters": [
                 {
                     "name": "id",
-                    "type": "string"
+                    "type": "id"
                 },
                 {
                     "name": "key",
@@ -48,7 +48,7 @@
             "parameters": [
                 {
                     "name": "id",
-                    "type": "string",
+                    "type": "id",
                     "require": true
                 }
             ]

@@ -10,8 +10,9 @@
 /category/list
 /upgrader/latest
 /user/inviter
-/user/sign-in
+/user/sign-up-sms
 /user/sign-up
+/user/sign-in
 /user/sign
 /user/modify:0
 /user/password:0

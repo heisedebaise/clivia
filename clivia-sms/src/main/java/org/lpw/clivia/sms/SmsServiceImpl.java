@@ -18,7 +18,6 @@ import org.lpw.photon.util.Validator;
 import org.springframework.stereotype.Service;
 
 import javax.inject.Inject;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -98,7 +97,7 @@ public class SmsServiceImpl implements SmsService, ContextRefreshedListener {
             return templates.get().failure(108902, message.get(SmsModel.NAME + ".no-pusher"), null, null);
         }
 
-        JSONObject object = pusher.push(sms.getConfig(), mobile, content);
+        Object object = pusher.push(sms.getConfig(), mobile, content);
         if (logger.isInfoEnable())
             logger.info("发送短信[{}:{}:{}:{}]。", mobile, sms.getConfig(), content, object);
         if (object == null)
@@ -129,8 +128,6 @@ public class SmsServiceImpl implements SmsService, ContextRefreshedListener {
 
     @Override
     public void onContextRefreshed() {
-        Collection<SmsPusher> collection = BeanFactory.getBeans(SmsPusher.class);
-        if (!validator.isEmpty(collection))
-            collection.forEach(pusher -> pushers.put(pusher.key(), pusher));
+        BeanFactory.getBeans(SmsPusher.class).forEach(pusher -> pushers.put(pusher.key(), pusher));
     }
 }

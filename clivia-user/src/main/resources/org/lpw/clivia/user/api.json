@@ -7,8 +7,18 @@
                 {
                     "name": "code",
                     "type": "string",
-                    "require": true,
-                    "description": ".inviter.description"
+                    "require": true
+                }
+            ]
+        },
+        {
+            "uri": "sign-up-sms",
+            "psid": true,
+            "parameters": [
+                {
+                    "name": "mobile",
+                    "type": "string",
+                    "require": true
                 }
             ]
         },
@@ -230,7 +240,7 @@
             "parameters": [
                 {
                     "name": "id",
-                    "type": "string",
+                    "type": "id",
                     "require": true
                 }
             ],
