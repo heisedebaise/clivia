@@ -12,6 +12,7 @@
 /user/inviter
 /user/sign-up-sms
 /user/sign-up
+/user/sign-in-sms
 /user/sign-in
 /user/sign
 /user/modify:0
