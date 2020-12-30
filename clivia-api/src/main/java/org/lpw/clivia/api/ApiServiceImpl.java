@@ -73,7 +73,7 @@ public class ApiServiceImpl implements ApiService, ContextRefreshedListener {
                 logger.warn(throwable, "解析API[{}]元数据时发生异常！", modelClass);
             }
         });
-        list.sort(Comparator.comparingInt(object -> object.getIntValue("sort")));
+        list.sort(Comparator.comparing(o -> (o.getIntValue("sort") + ":" + o.getString("uri"))));
         array = new JSONArray();
         array.addAll(list);
         if (logger.isInfoEnable())
