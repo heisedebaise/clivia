@@ -112,9 +112,9 @@ public class SmsServiceImpl implements SmsService, ContextRefreshedListener {
     @Override
     public Object captcha(String scene, String mobile) {
         String key = SmsModel.NAME + ".captcha";
-        String test = keyvalueService.value("setting.global.sms.captcha.test");
-        if (!validator.isEmpty(test)) {
-            session.set(key, test);
+        String captcha = keyvalueService.value("setting.global.sms.captcha");
+        if (!validator.isEmpty(captcha)) {
+            session.set(key, captcha);
 
             return new JSONObject();
         }
