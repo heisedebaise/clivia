@@ -107,7 +107,7 @@ public class SmsServiceImpl implements SmsService, ContextRefreshedListener {
     }
 
     @Override
-    public Object captcha(String mobile) {
+    public Object captcha(String scene, String mobile) {
         String key = SmsModel.NAME + ".captcha";
         String prefix = key + ":" + TimeUnit.Minute.now() + ":";
         if (cache.get(prefix + mobile) != null || cache.get(prefix + header.getIp()) != null)
@@ -118,7 +118,14 @@ public class SmsServiceImpl implements SmsService, ContextRefreshedListener {
         cache.put(prefix + mobile, code, false);
         cache.put(prefix + header.getIp(), code, false);
 
-        return push("captcha", mobile, code);
+        return push(scene, mobile, code);
+    }
+
+    @Override
+    public boolean captcha(String code) {
+        String c = session.remove(SmsModel.NAME + ".captcha");
+
+        return !validator.isEmpty(c) && c.equals(code);
     }
 
     @Override

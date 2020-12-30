@@ -42,6 +42,10 @@
                     "require": true
                 },
                 {
+                    "name": "sms",
+                    "type": "string"
+                },
+                {
                     "name": "inviter",
                     "type": "string"
                 },
@@ -70,6 +74,43 @@
                     "name": "password",
                     "type": "string",
                     "require": true
+                }
+            ],
+            "response": "model"
+        },
+        {
+            "uri": "sign-in-sms",
+            "psid": true,
+            "parameters": [
+                {
+                    "name": "mobile",
+                    "type": "string",
+                    "require": true
+                }
+            ]
+        },
+        {
+            "uri": "sign-in",
+            "name": "sms-sign-in",
+            "psid": true,
+            "parameters": [
+                {
+                    "name": "type",
+                    "type": "string",
+                    "require": true,
+                    "description": ".type.sms"
+                },
+                {
+                    "name": "uid",
+                    "type": "string",
+                    "require": true,
+                    "description": "mobile"
+                },
+                {
+                    "name": "password",
+                    "type": "string",
+                    "require": true,
+                    "description": "sms"
                 }
             ],
             "response": "model"

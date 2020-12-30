@@ -41,7 +41,7 @@ public class UserCtrl {
             @Validate(validator = Validators.MOBILE, parameter = "mobile", failureCode = 10)
     })
     public Object signUpSms() {
-        return smsService.captcha(request.get("mobile"));
+        return smsService.captcha("sign-up", request.get("mobile"));
     }
 
     @Execute(name = "sign-up", validates = {
@@ -50,13 +50,20 @@ public class UserCtrl {
             @Validate(validator = UserService.VALIDATOR_EXISTS_TYPE, parameter = "type", failureCode = 27),
             @Validate(validator = UserService.VALIDATOR_PASSWORD, parameters = {"password", "type"}, failureCode = 3),
             @Validate(validator = UserService.VALIDATOR_SIGN_UP_ENABLE, failureCode = 99),
-            @Validate(validator = UserService.VALIDATOR_SIGN_UP_SMS, failureCode = 98),
+            @Validate(validator = UserService.VALIDATOR_SIGN_UP_SMS, parameter = "sms", failureCode = 98),
             @Validate(validator = AuthService.VALIDATOR_UID_NOT_EXISTS, parameters = {"uid", "password", "type"}, failureCode = 4)
     })
     public Object signUp() {
         userService.signUp(request.get("uid"), request.get("password"), request.get("type"), request.get("inviter"), request.get("grade"));
 
         return sign();
+    }
+
+    @Execute(name = "sign-in-sms", validates = {
+            @Validate(validator = Validators.MOBILE, parameter = "mobile", failureCode = 10)
+    })
+    public Object signInSms() {
+        return smsService.captcha("sign-in", request.get("mobile"));
     }
 
     @Execute(name = "sign-in", validates = {

@@ -18,5 +18,7 @@ public interface SmsService {
 
     Object push(String scene, String mobile, String content);
 
-    Object captcha(String mobile);
+    Object captcha(String scene, String mobile);
+
+    boolean captcha(String code);
 }

@@ -19,7 +19,7 @@ import java.util.Set;
  * @author lpw
  */
 @Service("clivia.user.type.self")
-public class SelfImpl extends TypeSupport {
+public class SelfTypeImpl extends TypeSupport {
     private static final String PREFIX = "clivia.user.type.";
     private static final String CACHE_PASS = PREFIX + "pass:";
 

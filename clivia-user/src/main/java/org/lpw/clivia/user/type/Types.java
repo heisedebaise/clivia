@@ -15,6 +15,10 @@ public interface Types {
      * 自有账号类型KEY。
      */
     String Self = "";
+    /**
+     * 短信验证码账号类型KEY。
+     */
+    String Sms = "sms";
 
     /**
      * 是否支持类型KEY。
