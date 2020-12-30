@@ -118,6 +118,8 @@ public class ApiServiceImpl implements ApiService, ContextRefreshedListener {
                 modelTable.getPropertyNames().forEach(property -> m.put(property, ""));
                 object.put("model", m);
             }
+            if (object.containsKey("emodel"))
+                object.getJSONObject("model").putAll(object.getJSONObject("emodel"));
             response(object, "model", name);
             format(object, "model");
         }
