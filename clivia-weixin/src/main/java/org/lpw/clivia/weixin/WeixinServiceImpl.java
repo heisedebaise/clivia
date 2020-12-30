@@ -249,16 +249,11 @@ public class WeixinServiceImpl implements WeixinService, ContextRefreshedListene
         }
 
         switch (msgType) {
-            case "event":
-                event(weixin, string);
-                break;
-            case "text":
-                replyService.send(weixin, getOpenId(string), "text",
-                        getValue(string, "<Content><![CDATA[", "]]></Content>"), null);
-                break;
-            case "miniprogrampage":
-                replyService.send(weixin, getOpenId(string), "miniprogrampage",
-                        getValue(string, "<PagePath><![CDATA[", "]]></PagePath>"), null);
+            case "event" -> event(weixin, string);
+            case "text" -> replyService.send(weixin, getOpenId(string), "text",
+                    getValue(string, "<Content><![CDATA[", "]]></Content>"), null);
+            case "miniprogrampage" -> replyService.send(weixin, getOpenId(string), "miniprogrampage",
+                    getValue(string, "<PagePath><![CDATA[", "]]></PagePath>"), null);
         }
     }
 
@@ -709,9 +704,7 @@ public class WeixinServiceImpl implements WeixinService, ContextRefreshedListene
                 String uri = wormholeHelper.image(null, null, null, file);
                 if (validator.isEmpty(uri)) {
                     uri = uploadService.newSavePath("image/jpeg", "", ".jpg");
-                    File f = new File((context.getAbsolutePath(uri)));
-                    io.mkdirs(f.getParentFile());
-                    file.renameTo(f);
+                    io.move(file, new File((context.getAbsolutePath(uri))));
                 }
 
                 return uri;
