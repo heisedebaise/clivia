@@ -1,6 +1,7 @@
 package org.lpw.clivia.sms;
 
 import com.alibaba.fastjson.JSONObject;
+import org.lpw.clivia.keyvalue.KeyvalueService;
 import org.lpw.clivia.page.Pagination;
 import org.lpw.photon.bean.BeanFactory;
 import org.lpw.photon.bean.ContextRefreshedListener;
@@ -48,6 +49,8 @@ public class SmsServiceImpl implements SmsService, ContextRefreshedListener {
     private Templates templates;
     @Inject
     private Session session;
+    @Inject
+    private KeyvalueService keyvalueService;
     @Inject
     private SmsDao smsDao;
     private final Map<String, SmsPusher> pushers = new HashMap<>();
@@ -109,6 +112,13 @@ public class SmsServiceImpl implements SmsService, ContextRefreshedListener {
     @Override
     public Object captcha(String scene, String mobile) {
         String key = SmsModel.NAME + ".captcha";
+        String test = keyvalueService.value("setting.global.sms.captcha.test");
+        if (!validator.isEmpty(test)) {
+            session.set(key, test);
+
+            return new JSONObject();
+        }
+
         String prefix = key + ":" + TimeUnit.Minute.now() + ":";
         if (cache.get(prefix + mobile) != null || cache.get(prefix + header.getIp()) != null)
             return templates.get().failure(108911, message.get(SmsModel.NAME + ".frequently"), null, null);

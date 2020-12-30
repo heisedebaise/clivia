@@ -14,7 +14,7 @@
     <dependencies>
         <dependency>
             <groupId>org.lpw.clivia</groupId>
-            <artifactId>clivia-base</artifactId>
+            <artifactId>clivia-keyvalue</artifactId>
             <version>0.3</version>
         </dependency>
     </dependencies>

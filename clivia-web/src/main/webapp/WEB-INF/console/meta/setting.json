@@ -12,6 +12,9 @@
                 "upload": "clivia.keyvalue.image"
             },
             {
+                "name": "setting.global.sms.captcha.test"
+            },
+            {
                 "name": "setting.global.sign-up.enable",
                 "type": "switch",
                 "permit": true
