@@ -1,5 +1,6 @@
 package org.lpw.clivia.upgrader;
 
+import org.lpw.clivia.Permit;
 import org.lpw.photon.ctrl.context.Request;
 import org.lpw.photon.ctrl.execute.Execute;
 import org.lpw.photon.ctrl.validate.Validate;
@@ -26,7 +27,7 @@ public class UpgraderCtrl {
         return upgraderService.query();
     }
 
-    @Execute(name = "latest", validates = {
+    @Execute(name = "latest", permit = Permit.always, validates = {
             @Validate(validator = Validators.GREATER_THAN, number = {-1}, parameter = "version", failureCode = 2),
             @Validate(validator = Validators.BETWEEN, number = {0, 1}, parameter = "client", failureCode = 4)
     })

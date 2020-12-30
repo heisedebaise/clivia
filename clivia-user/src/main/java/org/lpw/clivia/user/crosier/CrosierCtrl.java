@@ -1,5 +1,6 @@
 package org.lpw.clivia.user.crosier;
 
+import org.lpw.clivia.Permit;
 import org.lpw.photon.ctrl.context.Request;
 import org.lpw.photon.ctrl.execute.Execute;
 import org.lpw.photon.ctrl.validate.Validate;
@@ -19,19 +20,19 @@ public class CrosierCtrl {
     @Inject
     private CrosierService crosierService;
 
-    @Execute(name = "sign-up-grades")
+    @Execute(name = "sign-up-grades", permit = Permit.always)
     public Object signUpGrades() {
         return crosierService.signUpGrades();
     }
 
-    @Execute(name = "grades", validates = {
+    @Execute(name = "grades", permit = "0", validates = {
             @Validate(validator = Validators.SIGN)
     })
     public Object grades() {
         return crosierService.grades();
     }
 
-    @Execute(name = "pathes", validates = {
+    @Execute(name = "pathes", permit = "0", validates = {
             @Validate(validator = Validators.SIGN)
     })
     public Object pathes() {

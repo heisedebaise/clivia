@@ -1,5 +1,6 @@
 package org.lpw.clivia.keyvalue;
 
+import org.lpw.clivia.Permit;
 import org.lpw.photon.ctrl.context.Request;
 import org.lpw.photon.ctrl.execute.Execute;
 import org.lpw.photon.ctrl.validate.Validate;
@@ -26,14 +27,14 @@ public class KeyvalueCtrl {
         return keyvalueService.query(request.get("key"));
     }
 
-    @Execute(name = "list", validates = {
+    @Execute(name = "list", permit = Permit.always, validates = {
             @Validate(validator = Validators.NOT_EMPTY, parameter = "key", failureCode = 2)
     })
     public Object list() {
         return keyvalueService.list(request.get("key"));
     }
 
-    @Execute(name = "object", validates = {
+    @Execute(name = "object", permit = Permit.always, validates = {
             @Validate(validator = Validators.NOT_EMPTY, parameter = "key", failureCode = 2)
     })
     public Object object() {

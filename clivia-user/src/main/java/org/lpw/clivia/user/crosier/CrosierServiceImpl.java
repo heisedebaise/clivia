@@ -2,10 +2,12 @@ package org.lpw.clivia.user.crosier;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import org.lpw.clivia.Permit;
 import org.lpw.clivia.user.UserModel;
 import org.lpw.clivia.user.UserService;
 import org.lpw.photon.bean.ContextRefreshedListener;
 import org.lpw.photon.cache.Cache;
+import org.lpw.photon.ctrl.execute.ExecutorHelper;
 import org.lpw.photon.util.Context;
 import org.lpw.photon.util.Converter;
 import org.lpw.photon.util.Json;
@@ -13,12 +15,9 @@ import org.lpw.photon.util.Logger;
 import org.lpw.photon.util.Message;
 import org.lpw.photon.util.Numeric;
 import org.lpw.photon.util.Validator;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import javax.inject.Inject;
-import java.io.BufferedReader;
-import java.io.FileReader;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -48,6 +47,8 @@ public class CrosierServiceImpl implements CrosierService, ContextRefreshedListe
     @Inject
     private Logger logger;
     @Inject
+    private ExecutorHelper executorHelper;
+    @Inject
     private UserService userService;
     @Inject
     private Optional<CrosierGrade> crosierGrade;
@@ -55,11 +56,7 @@ public class CrosierServiceImpl implements CrosierService, ContextRefreshedListe
     private Optional<Set<CrosierValid>> valids;
     @Inject
     private CrosierDao crosierDao;
-    @Value("${" + CrosierModel.NAME + ".permit:/WEB-INF/permit}")
-    private String permit;
     private final int[] grades = {0, 90};
-    private final Map<String, Integer> permits = new HashMap<>();
-    private final Map<String, String> regexes = new HashMap<>();
     private final Map<Integer, Map<String, Set<Map<String, String>>>> map = new ConcurrentHashMap<>();
 
     @Override
@@ -154,7 +151,7 @@ public class CrosierServiceImpl implements CrosierService, ContextRefreshedListe
     @Override
     public boolean permit(String uri, Map<String, String> parameter) {
         UserModel user = userService.fromSession();
-        Integer grade = permitGrade(uri);
+        Integer grade = permitGrade();
         if (grade != null)
             return grade == -1 || (user != null && user.getGrade() >= grade);
 
@@ -187,15 +184,17 @@ public class CrosierServiceImpl implements CrosierService, ContextRefreshedListe
         return false;
     }
 
-    private Integer permitGrade(String uri) {
-        if (permits.containsKey(uri))
-            return permits.get(uri);
+    private Integer permitGrade() {
+        String permit = executorHelper.get().getPermit();
+        if (permit.equals(""))
+            return null;
 
-        for (String key : regexes.keySet())
-            if (validator.isMatchRegex(regexes.get(key), uri))
-                return permits.get(key);
+        if (permit.equals(Permit.always))
+            return -1;
 
-        return null;
+        int grade = numeric.toInt(permit, -1);
+
+        return grade < 0 ? null : grade;
     }
 
     @Override
@@ -205,32 +204,8 @@ public class CrosierServiceImpl implements CrosierService, ContextRefreshedListe
 
     @Override
     public void onContextRefreshed() {
-        load();
         for (int grade : grades)
             valid(grade);
-    }
-
-    private void load() {
-        try (BufferedReader reader = new BufferedReader(new FileReader(context.getAbsolutePath(permit)))) {
-            for (String line; (line = reader.readLine()) != null; ) {
-                line = line.trim();
-                if (line.charAt(0) == '#')
-                    continue;
-
-                int index = line.lastIndexOf(':');
-                String uri = index == -1 ? line : line.substring(0, index);
-                if (index == -1)
-                    permits.put(uri, -1);
-                else
-                    permits.put(uri, numeric.toInt(line.substring(index + 1)));
-                if (uri.charAt(0) == '~')
-                    regexes.put(uri, uri.substring(1));
-            }
-            if (logger.isInfoEnable())
-                logger.info("更新免校验权限配置[{}]。", permits);
-        } catch (Throwable throwable) {
-            logger.warn(throwable, "读取权限配置[{}]文件失败！", permit);
-        }
     }
 
     private void valid(int grade) {

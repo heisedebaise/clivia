@@ -1,5 +1,6 @@
 package org.lpw.clivia.user;
 
+import org.lpw.clivia.Permit;
 import org.lpw.clivia.sms.SmsService;
 import org.lpw.clivia.user.auth.AuthService;
 import org.lpw.photon.ctrl.Forward;
@@ -32,19 +33,19 @@ public class UserCtrl {
     @Inject
     private UserService userService;
 
-    @Execute(name = "inviter")
+    @Execute(name = "inviter", permit = Permit.always)
     public Object inviter() {
         return userService.inviter(request.get("code"));
     }
 
-    @Execute(name = "sign-up-sms", validates = {
+    @Execute(name = "sign-up-sms", permit = Permit.always, validates = {
             @Validate(validator = Validators.MOBILE, parameter = "mobile", failureCode = 10)
     })
     public Object signUpSms() {
         return smsService.captcha("sign-up", request.get("mobile"));
     }
 
-    @Execute(name = "sign-up", validates = {
+    @Execute(name = "sign-up", permit = Permit.always, validates = {
             @Validate(validator = Validators.NOT_EMPTY, parameter = "uid", failureCode = 1),
             @Validate(validator = Validators.MAX_LENGTH, number = {100}, parameter = "uid", failureCode = 2),
             @Validate(validator = UserService.VALIDATOR_EXISTS_TYPE, parameter = "type", failureCode = 27),
@@ -59,14 +60,14 @@ public class UserCtrl {
         return sign();
     }
 
-    @Execute(name = "sign-in-sms", validates = {
+    @Execute(name = "sign-in-sms", permit = Permit.always, validates = {
             @Validate(validator = Validators.MOBILE, parameter = "mobile", failureCode = 10)
     })
     public Object signInSms() {
         return smsService.captcha("sign-in", request.get("mobile"));
     }
 
-    @Execute(name = "sign-in", validates = {
+    @Execute(name = "sign-in", permit = Permit.always, validates = {
             @Validate(validator = Validators.NOT_EMPTY, parameter = "uid", failureCode = 1),
             @Validate(validator = UserService.VALIDATOR_EXISTS_TYPE, parameter = "type", failureCode = 27),
             @Validate(validator = UserService.VALIDATOR_PASSWORD, parameters = {"password", "type"}, failureCode = 3),
@@ -76,19 +77,19 @@ public class UserCtrl {
         return sign();
     }
 
-    @Execute(name = "sign")
+    @Execute(name = "sign", permit = Permit.always)
     public Object sign() {
         return userService.sign();
     }
 
-    @Execute(name = "sign-out")
+    @Execute(name = "sign-out", permit = Permit.always)
     public Object signOut() {
         userService.signOut();
 
         return "";
     }
 
-    @Execute(name = "modify", validates = {
+    @Execute(name = "modify", permit = "0", validates = {
             @Validate(validator = Validators.MAX_LENGTH, number = {100}, parameter = "idcard", failureCode = 7),
             @Validate(validator = Validators.MAX_LENGTH, number = {100}, parameter = "name", failureCode = 8),
             @Validate(validator = Validators.MAX_LENGTH, number = {100}, parameter = "nick", failureCode = 9),
@@ -107,7 +108,7 @@ public class UserCtrl {
         return sign();
     }
 
-    @Execute(name = "password", validates = {
+    @Execute(name = "password", permit = "0", validates = {
             @Validate(validator = Validators.NOT_EMPTY, parameter = "new", failureCode = 14, failureArgKeys = {UserModel.NAME + ".password.new"}),
             @Validate(validator = Validators.NOT_EQUALS, parameters = {"old", "new"}, failureCode = 15, failureArgKeys = {UserModel.NAME + ".password.new", UserModel.NAME + ".password.old"}),
             @Validate(validator = Validators.EQUALS, parameters = {"new", "repeat"}, failureCode = 16, failureArgKeys = {UserModel.NAME + ".password.repeat", UserModel.NAME + ".password.new"}),
@@ -118,7 +119,7 @@ public class UserCtrl {
                 templates.get().failure(151017, message.get(UserModel.NAME + ".password.illegal"), null, null);
     }
 
-    @Execute(name = "secret", validates = {
+    @Execute(name = "secret", permit = "0", validates = {
             @Validate(validator = Validators.NOT_EMPTY, parameter = "new", failureCode = 14, failureArgKeys = {UserModel.NAME + ".password.new"}),
             @Validate(validator = Validators.NOT_EQUALS, parameters = {"old", "new"}, failureCode = 15, failureArgKeys = {UserModel.NAME + ".password.new", UserModel.NAME + ".password.old"}),
             @Validate(validator = Validators.EQUALS, parameters = {"new", "repeat"}, failureCode = 16, failureArgKeys = {UserModel.NAME + ".password.repeat", UserModel.NAME + ".password.new"}),

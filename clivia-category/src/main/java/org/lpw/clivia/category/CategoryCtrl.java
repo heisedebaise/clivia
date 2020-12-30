@@ -1,5 +1,6 @@
 package org.lpw.clivia.category;
 
+import org.lpw.clivia.Permit;
 import org.lpw.photon.ctrl.context.Request;
 import org.lpw.photon.ctrl.execute.Execute;
 import org.lpw.photon.ctrl.validate.Validate;
@@ -59,7 +60,7 @@ public class CategoryCtrl {
         return "";
     }
 
-    @Execute(name = "list")
+    @Execute(name = "list", permit = Permit.always)
     public Object list() {
         return categoryService.query(request.get("key"), request.get("pointTo"));
     }

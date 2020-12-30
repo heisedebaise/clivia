@@ -1,6 +1,7 @@
 package org.lpw.clivia.weixin;
 
 import com.alibaba.fastjson.JSONObject;
+import org.lpw.clivia.Permit;
 import org.lpw.clivia.user.UserService;
 import org.lpw.photon.ctrl.Forward;
 import org.lpw.photon.ctrl.context.Request;
@@ -97,7 +98,7 @@ public class WeixinCtrl {
         return "";
     }
 
-    @Execute(name = "wx.+", regex = true, type = Templates.STRING)
+    @Execute(name = "wx.+", regex = true, permit = Permit.always, type = Templates.STRING)
     public Object service() {
         String uri = request.getUri();
         String appId = uri.substring(uri.lastIndexOf('/') + 1);

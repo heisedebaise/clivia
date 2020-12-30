@@ -1,6 +1,7 @@
 package org.lpw.clivia.wps.file;
 
 import com.alibaba.fastjson.JSONObject;
+import org.lpw.clivia.Permit;
 import org.lpw.photon.ctrl.context.Header;
 import org.lpw.photon.ctrl.context.Request;
 import org.lpw.photon.ctrl.context.Response;
@@ -25,7 +26,7 @@ public class FileCtrl {
     @Inject
     private FileService fileService;
 
-    @Execute(name = "v1/3rd/file/info", type = Templates.STRING)
+    @Execute(name = "v1/3rd/file/info", permit = Permit.always, type = Templates.STRING)
     public Object info() {
         JSONObject object = fileService.info(header.get("x-weboffice-file-id"), request.getMap());
         if (object.containsKey("code"))
@@ -34,7 +35,7 @@ public class FileCtrl {
         return object.toJSONString();
     }
 
-    @Execute(name = "v1/3rd/user/info", type = Templates.STRING)
+    @Execute(name = "v1/3rd/user/info", permit = Permit.always, type = Templates.STRING)
     public Object user() {
         JSONObject object = fileService.user(header.get("x-weboffice-file-id"), request.getMap(), request.getFromInputStream());
         if (object.containsKey("code"))
@@ -43,7 +44,7 @@ public class FileCtrl {
         return object.toJSONString();
     }
 
-    @Execute(name = "v1/3rd/file/online", type = Templates.STRING)
+    @Execute(name = "v1/3rd/file/online", permit = Permit.always, type = Templates.STRING)
     public Object online() {
         return "";
     }

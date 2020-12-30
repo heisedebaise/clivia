@@ -1,5 +1,6 @@
 package org.lpw.clivia.api;
 
+import org.lpw.clivia.Permit;
 import org.lpw.photon.ctrl.context.Request;
 import org.lpw.photon.ctrl.execute.Execute;
 import org.lpw.photon.ctrl.template.Templates;
@@ -20,7 +21,7 @@ public class ApiCtrl {
     @Inject
     private ApiService apiService;
 
-    @Execute(name = "get")
+    @Execute(name = "get", permit = Permit.always)
     public Object get() {
         return apiService.get();
     }
