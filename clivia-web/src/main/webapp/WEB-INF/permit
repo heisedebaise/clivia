@@ -21,7 +21,9 @@
 /user/crosier/sign-up-grades
 /user/crosier/grades:0
 /user/crosier/pathes:0
-~/wps/v1/.+
+/wps/v1/3rd/file/info
+/wps/v1/3rd/file/online
+/wps/v1/3rd/user/info
 /console/menu:0
 /console/meta:0
 /console/dashboard:0

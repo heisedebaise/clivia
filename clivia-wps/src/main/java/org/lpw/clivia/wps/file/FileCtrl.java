@@ -14,7 +14,7 @@ import javax.inject.Inject;
  * @author lpw
  */
 @Controller(FileModel.NAME + ".ctrl")
-@Execute(name = "/wps", key = FileModel.NAME, code = "157")
+@Execute(name = "/wps/", key = FileModel.NAME, code = "157")
 public class FileCtrl {
     @Inject
     private Header header;
@@ -25,7 +25,7 @@ public class FileCtrl {
     @Inject
     private FileService fileService;
 
-    @Execute(name = "/v1/3rd/file/info", type = Templates.STRING)
+    @Execute(name = "v1/3rd/file/info", type = Templates.STRING)
     public Object info() {
         JSONObject object = fileService.info(header.get("x-weboffice-file-id"), request.getMap());
         if (object.containsKey("code"))
@@ -34,7 +34,7 @@ public class FileCtrl {
         return object.toJSONString();
     }
 
-    @Execute(name = "/v1/3rd/user/info", type = Templates.STRING)
+    @Execute(name = "v1/3rd/user/info", type = Templates.STRING)
     public Object user() {
         JSONObject object = fileService.user(header.get("x-weboffice-file-id"), request.getMap(), request.getFromInputStream());
         if (object.containsKey("code"))
@@ -43,7 +43,7 @@ public class FileCtrl {
         return object.toJSONString();
     }
 
-    @Execute(name = "/v1/3rd/file/online", type = Templates.STRING)
+    @Execute(name = "v1/3rd/file/online", type = Templates.STRING)
     public Object online() {
         return "";
     }
