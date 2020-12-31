@@ -8,6 +8,7 @@ import org.lpw.photon.dao.orm.lite.LiteQuery;
 import java.sql.Date;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
@@ -293,11 +294,15 @@ public class QueryBuilder {
      * 更新。
      *
      * @param modelClass Model类。
-     * @param set        set子句。
+     * @param set        SET子句。
+     * @param args       SET参数集。
      * @param <T>        Model类型。
      */
-    public <T extends Model> void update(Class<T> modelClass, String set) {
-        liteOrm.update(new LiteQuery(modelClass).set(set).where(where.toString()), args.toArray());
+    public <T extends Model> void update(Class<T> modelClass, String set, Object[] args) {
+        List<Object> list = new ArrayList<>();
+        Collections.addAll(list, args);
+        list.addAll(this.args);
+        liteOrm.update(new LiteQuery(modelClass).set(set).where(where.toString()), list.toArray());
     }
 
     /**
