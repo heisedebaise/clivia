@@ -11,7 +11,6 @@ import org.lpw.photon.ctrl.execute.ExecutorHelper;
 import org.lpw.photon.util.Context;
 import org.lpw.photon.util.Converter;
 import org.lpw.photon.util.Json;
-import org.lpw.photon.util.Logger;
 import org.lpw.photon.util.Message;
 import org.lpw.photon.util.Numeric;
 import org.lpw.photon.util.Validator;
@@ -44,8 +43,6 @@ public class CrosierServiceImpl implements CrosierService, ContextRefreshedListe
     private Numeric numeric;
     @Inject
     private Cache cache;
-    @Inject
-    private Logger logger;
     @Inject
     private ExecutorHelper executorHelper;
     @Inject
