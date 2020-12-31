@@ -138,7 +138,6 @@ public class WeixinServiceImpl implements WeixinService, ContextRefreshedListene
     private int qrCodeSize;
     @Value("${" + WeixinModel.NAME + ".qr-code.logo:}")
     private String qrCodeLogo;
-    private String logo;
 
     @Override
     public JSONArray query() {
