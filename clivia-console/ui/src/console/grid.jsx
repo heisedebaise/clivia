@@ -220,6 +220,16 @@ class Grid extends React.Component {
             return;
         }
 
+        if (op.type === 'ids') {
+            let ids = '';
+            for (let m of this.state.list)
+                ids += ',' + m.id;
+            if (ids.length > 0)
+                this.reload(op, model, { ids: ids.substring(1) });
+
+            return;
+        }
+
         if (op.type === 'upload') {
             let input = document.createElement("input");
             input.type = 'file';
