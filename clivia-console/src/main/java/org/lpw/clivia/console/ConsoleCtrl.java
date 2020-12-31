@@ -32,7 +32,8 @@ public class ConsoleCtrl {
     }
 
     @Execute(name = "meta", permit = "0", validates = {
-            @Validate(validator = Validators.NOT_EMPTY, parameter = "key", failureCode = 2)
+            @Validate(validator = Validators.NOT_EMPTY, parameter = "key", failureCode = 2),
+            @Validate(validator = UserService.VALIDATOR_SIGN)
     })
     public Object meta() {
         return metaHelper.get(request.get("key"), false);
