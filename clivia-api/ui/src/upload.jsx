@@ -71,6 +71,12 @@ class Upload extends React.Component {
             { name: 'base64', type: 'string', require: true, description: 'BASE64编码后的文件内容，不包含Content-Type。' }]} rowKey="name" pagination={false} />
             <div>返回结果</div>
             <pre>{this.responseBase64}</pre>
+            <Divider dashed={true}>cURL方式上传</Divider>
+            <Alert type="info" message={'接口地址：' + this.props.url + '/photon/ctrl-http/upload'} />
+            <div>发送</div>
+            <pre>curl -H 'photon-session-id: {localStorage.getItem('photon-session-id')}' -F '{this.props.meta.upload}=@/path/to/file' {this.props.url}/photon/ctrl-http/upload</pre>
+            <div>返回结果</div>
+            <pre>{this.responseFile}</pre>
         </Space>
     );
 

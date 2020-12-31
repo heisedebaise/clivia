@@ -42,7 +42,7 @@ class Main extends React.Component {
                             name: 'photon-session-id',
                             type: 'string',
                             require: true,
-                            description: '用户SESSION ID值。'
+                            description: '用户SESSION ID值，如：' + localStorage.getItem('photon-session-id') + '。'
                         });
                     }
                     if (service.sign) {
