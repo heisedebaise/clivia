@@ -15,10 +15,8 @@ import org.lpw.photon.crypto.Digest;
 import org.lpw.photon.ctrl.context.Session;
 import org.lpw.photon.dao.model.ModelHelper;
 import org.lpw.photon.dao.orm.PageList;
-import org.lpw.photon.util.Converter;
 import org.lpw.photon.util.DateTime;
 import org.lpw.photon.util.Generator;
-import org.lpw.photon.util.Numeric;
 import org.lpw.photon.util.Validator;
 import org.springframework.stereotype.Service;
 
@@ -43,10 +41,6 @@ public class UserServiceImpl implements UserService {
     private Cache cache;
     @Inject
     private Digest digest;
-    @Inject
-    private Converter converter;
-    @Inject
-    private Numeric numeric;
     @Inject
     private Validator validator;
     @Inject

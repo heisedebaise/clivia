@@ -8,9 +8,7 @@ import org.lpw.clivia.user.crosier.CrosierService;
 import org.lpw.clivia.user.crosier.CrosierValid;
 import org.lpw.photon.bean.BeanFactory;
 import org.lpw.photon.bean.ContextRefreshedListener;
-import org.lpw.photon.cache.Cache;
 import org.lpw.photon.util.Context;
-import org.lpw.photon.util.Converter;
 import org.lpw.photon.util.Io;
 import org.lpw.photon.util.Json;
 import org.lpw.photon.util.Logger;
@@ -34,11 +32,7 @@ public class MenuHelperImpl implements MenuHelper, ContextRefreshedListener, Cro
     @Inject
     private Json json;
     @Inject
-    private Cache cache;
-    @Inject
     private Validator validator;
-    @Inject
-    private Converter converter;
     @Inject
     private Numeric numeric;
     @Inject
