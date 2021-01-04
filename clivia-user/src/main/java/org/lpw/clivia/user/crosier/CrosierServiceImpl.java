@@ -55,6 +55,8 @@ public class CrosierServiceImpl implements CrosierService, ContextRefreshedListe
     private CrosierDao crosierDao;
     private final int[] grades = {0, 90};
     private final Map<Integer, Map<String, Set<Map<String, String>>>> map = new ConcurrentHashMap<>();
+    private final Set<String> always = Set.of("/photon/ctrl/status");
+    private final Set<String> signs = Set.of("/photon/ctrl/upload", "/photon/ctrl-http/upload");
 
     @Override
     public JSONArray signUpGrades() {
@@ -147,7 +149,13 @@ public class CrosierServiceImpl implements CrosierService, ContextRefreshedListe
 
     @Override
     public boolean permit(String uri, Map<String, String> parameter) {
+        if (always.contains(uri))
+            return true;
+
         UserModel user = userService.fromSession();
+        if (signs.contains(uri))
+            return user.getGrade() >= 0;
+
         Integer grade = permitGrade();
         if (grade != null)
             return grade == -1 || (user != null && user.getGrade() >= grade);
