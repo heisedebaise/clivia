@@ -27,13 +27,6 @@ public class KeyvalueCtrl {
         return keyvalueService.query(request.get("key"));
     }
 
-    @Execute(name = "list", permit = Permit.always, validates = {
-            @Validate(validator = Validators.NOT_EMPTY, parameter = "key", failureCode = 2)
-    })
-    public Object list() {
-        return keyvalueService.list(request.get("key"));
-    }
-
     @Execute(name = "object", permit = Permit.always, validates = {
             @Validate(validator = Validators.NOT_EMPTY, parameter = "key", failureCode = 2)
     })

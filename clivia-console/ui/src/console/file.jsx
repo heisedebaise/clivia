@@ -11,7 +11,7 @@ class File extends React.Component {
 
     change = ({ file }) => {
         if (file.status === 'uploading') {
-            let list = this.state.list || [];
+            let list = this.list();
             for (let f of list)
                 if (f.uid === file.uid)
                     return;
@@ -30,7 +30,7 @@ class File extends React.Component {
             }
 
             let list = [];
-            for (let f of this.state.list)
+            for (let f of this.list())
                 if (f.uid !== file.uid)
                     list.push(f);
             this.setState({ list });
@@ -57,8 +57,10 @@ class File extends React.Component {
     value = () => {
         let list = [];
         for (let file of this.state.list) {
-            if (!file.uri)
+            if (!file.uri) {
                 file.uri = file.response.path;
+                file.url = url(file.uri);
+            }
             list.push({
                 name: file.name,
                 uri: file.uri
