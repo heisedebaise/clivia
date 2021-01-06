@@ -60,7 +60,10 @@ public class WeixinCtrl {
             @Validate(validator = Validators.MAX_LENGTH, number = {100}, parameter = "secret", failureCode = 8),
             @Validate(validator = Validators.MAX_LENGTH, number = {100}, parameter = "token", failureCode = 9),
             @Validate(validator = Validators.MAX_LENGTH, number = {100}, parameter = "mchId", failureCode = 10),
+            @Validate(validator = Validators.MAX_LENGTH, number = {100}, parameter = "mchPartnerId", failureCode = 10),
             @Validate(validator = Validators.MAX_LENGTH, number = {100}, parameter = "mchKey", failureCode = 11),
+            @Validate(validator = Validators.MAX_LENGTH, number = {100}, parameter = "mchSerialNo", failureCode = 10),
+            @Validate(validator = Validators.MAX_LENGTH, number = {100}, parameter = "mchKeyV3", failureCode = 11),
             @Validate(validator = Validators.SIGN, string = {"clivia-weixin"}),
             @Validate(validator = WeixinService.VALIDATOR_NOT_EXISTS, parameters = {"key", "appId"}, failureCode = 12)
     })

@@ -161,16 +161,19 @@ public class WeixinServiceImpl implements WeixinService, ContextRefreshedListene
             model = new WeixinModel();
             model.setKey(weixin.getKey());
         }
-        boolean modify = !weixin.getAppId().equals(model.getAppId()) || !weixin.getSecret().equals(model.getSecret());
         model.setName(weixin.getName());
         model.setAppId(weixin.getAppId());
         model.setSecret(weixin.getSecret());
         model.setToken(weixin.getToken());
         model.setMchId(weixin.getMchId());
+        model.setMchPartnerId(weixin.getMchPartnerId());
         model.setMchKey(weixin.getMchKey());
+        model.setMchSerialNo(weixin.getMchSerialNo());
+        model.setMchPrivateKey(weixin.getMchPrivateKey());
+        model.setMchKeyV3(weixin.getMchKeyV3());
         model.setMenu(weixin.getMenu());
         weixinDao.save(model);
-        if (modify && auto && validator.isEmpty(synchUrl))
+        if (auto && validator.isEmpty(synchUrl))
             refreshAccessToken(model);
 
         return modelHelper.toJson(model);

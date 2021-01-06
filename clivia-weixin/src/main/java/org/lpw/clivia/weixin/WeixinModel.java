@@ -27,7 +27,11 @@ public class WeixinModel extends ModelSupport {
     private String secret; // 密钥
     private String token; // 验证Token
     private String mchId; // 商户ID
+    private String mchPartnerId; // 合作方ID
     private String mchKey; // 商户密钥
+    private String mchSerialNo; // 商户证书序列号
+    private String mchPrivateKey; // 商户私钥
+    private String mchKeyV3; // 商户密钥V3
     private String accessToken; // Access Token
     private String jsapiTicket; // Jsapi Ticket
     private String menu; // 菜单配置
@@ -94,6 +98,16 @@ public class WeixinModel extends ModelSupport {
     }
 
     @Jsonable
+    @Column(name = "c_mch_partner_id")
+    public String getMchPartnerId() {
+        return mchPartnerId;
+    }
+
+    public void setMchPartnerId(String mchPartnerId) {
+        this.mchPartnerId = mchPartnerId;
+    }
+
+    @Jsonable
     @Column(name = "c_mch_key")
     public String getMchKey() {
         return mchKey;
@@ -101,6 +115,36 @@ public class WeixinModel extends ModelSupport {
 
     public void setMchKey(String mchKey) {
         this.mchKey = mchKey;
+    }
+
+    @Jsonable
+    @Column(name = "c_mch_serial_no")
+    public String getMchSerialNo() {
+        return mchSerialNo;
+    }
+
+    public void setMchSerialNo(String mchSerialNo) {
+        this.mchSerialNo = mchSerialNo;
+    }
+
+    @Jsonable
+    @Column(name = "c_mch_private_key")
+    public String getMchPrivateKey() {
+        return mchPrivateKey;
+    }
+
+    public void setMchPrivateKey(String mchPrivateKey) {
+        this.mchPrivateKey = mchPrivateKey;
+    }
+
+    @Jsonable
+    @Column(name = "c_mch_key_v3")
+    public String getMchKeyV3() {
+        return mchKeyV3;
+    }
+
+    public void setMchKeyV3(String mchKeyV3) {
+        this.mchKeyV3 = mchKeyV3;
     }
 
     @Jsonable

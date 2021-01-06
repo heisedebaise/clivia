@@ -21,7 +21,20 @@
             "name": "mchId"
         },
         {
+            "name": "mchPartnerId"
+        },
+        {
             "name": "mchKey"
+        },
+        {
+            "name": "mchSerialNo"
+        },
+        {
+            "name": "mchPrivateKey",
+            "type": "text-area"
+        },
+        {
+            "name": "mchKeyV3"
         },
         {
             "name": "accessToken",
@@ -38,6 +51,30 @@
     ],
     "query": {
         "type": "grid",
+        "props": [
+            {
+                "name": "key"
+            },
+            {
+                "name": "name"
+            },
+            {
+                "name": "appId"
+            },
+            {
+                "name": "mchId"
+            },
+            {
+                "name": "mchPartnerId"
+            },
+            {
+                "name": "mchSerialNo"
+            },
+            {
+                "name": "time",
+                "type": "read-only"
+            }
+        ],
         "ops": [
             {
                 "type": "modify"
