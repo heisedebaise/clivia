@@ -212,7 +212,7 @@ public class WeixinCtrl {
                 null, null) : object;
     }
 
-    @Execute(name = "notice", type = Templates.STRING)
+    @Execute(name = "notice", permit = Permit.always, type = Templates.STRING)
     public Object notice() {
         Map<String, String> map = xml.toMap(request.getFromInputStream(), false);
         String code = weixinService.notice(map.get("appid"), map.get("out_trade_no"), map.get("transaction_id"),

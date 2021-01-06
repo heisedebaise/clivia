@@ -1,5 +1,6 @@
 package org.lpw.clivia.alipay;
 
+import org.lpw.clivia.Permit;
 import org.lpw.clivia.user.UserService;
 import org.lpw.photon.ctrl.context.Request;
 import org.lpw.photon.ctrl.execute.Execute;
@@ -105,7 +106,7 @@ public class AlipayCtrl {
                 request.getAsInt("amount"), request.get("billNo"), request.get("notice"));
     }
 
-    @Execute(name = "notice", type = Templates.STRING)
+    @Execute(name = "notice", permit = Permit.always, type = Templates.STRING)
     public Object notice() {
         return alipayService.notice(request.get("app_id"), request.get("out_trade_no"), request.get("trade_no"),
                 request.get("total_amount"), request.get("trade_status"), request.getMap()) ? "success" : "failure";
