@@ -106,6 +106,18 @@ public class ApiServiceImpl implements ApiService, ContextRefreshedListener {
                     service.put("upload", name + "." + upload);
                 else if (index == 0)
                     service.put("upload", name + upload);
+            } else if (json.has(service, "page", "setting")) {
+                message(service, "name", name, "setting", false);
+                JSONArray array = new JSONArray();
+                JSONArray keys = service.getJSONArray("keys");
+                for (int j = 0, s = keys.size(); j < s; j++) {
+                    String key = keys.getString(j);
+                    JSONObject obj = new JSONObject();
+                    obj.put("key", key);
+                    message(obj, "description", key, "description", true);
+                    array.add(obj);
+                }
+                service.put("keys", array);
             }
             description(service, "headers", name);
             description(service, "parameters", name);

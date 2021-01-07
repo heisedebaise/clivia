@@ -6,6 +6,7 @@ import { service, url } from './http';
 import Request from './request';
 import Sign from './sign';
 import Upload from './upload';
+import Setting from './setting';
 import './main.css';
 
 class Main extends React.Component {
@@ -138,6 +139,8 @@ class Main extends React.Component {
                     return <Sign />;
                 case 'upload':
                     return <Upload url={this.url} meta={this.state.item} />;
+                case 'setting':
+                    return <Setting url={this.url} meta={this.state.item} />;
                 default:
                     return <div />;
             }
