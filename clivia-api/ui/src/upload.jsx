@@ -1,6 +1,6 @@
 import React from 'react';
-import { Space, Alert, Table, Divider } from 'antd';
-import { CheckOutlined, CloseOutlined } from '@ant-design/icons';
+import { Space, Alert, Divider } from 'antd';
+import Grid from './grid';
 
 class Upload extends React.Component {
     responseFile = `{
@@ -24,51 +24,17 @@ class Upload extends React.Component {
         <Space direction="vertical" style={{ width: '100%' }}>
             <Divider dashed={true}>文件方式上传</Divider>
             <Alert type="info" message={'接口地址：' + this.props.url + '/photon/ctrl-http/upload'} />
-            {this.header()}
-            <Table title={() => <div className="api-title">参数</div>} columns={[{
-                title: '参数名',
-                dataIndex: 'name',
-                key: 'name',
-            }, {
-                title: '类型',
-                dataIndex: 'type',
-                key: 'type',
-            }, {
-                title: '必须',
-                dataIndex: 'require',
-                key: 'require',
-                render: require => require ? <CheckOutlined /> : <CloseOutlined />
-            }, {
-                title: '说明',
-                dataIndex: 'description',
-                key: 'description',
-            }]} dataSource={[{ name: this.props.meta.upload, type: 'file', require: true, description: '上传文件。' }]} rowKey="name" pagination={false} />
+            <Grid header={true} data={this.props.meta.headers} />
+            <Grid header={false} data={[{ name: this.props.meta.upload, type: 'file', require: true, description: '上传文件。' }]} />
             <div>返回结果</div>
             <pre>{this.responseFile}</pre>
             <Divider dashed={true}>Base64方式上传</Divider>
             <Alert type="info" message={'接口地址：' + this.props.url + '/photon/ctrl/upload'} />
-            {this.header()}
-            <Table title={() => <div className="api-title">参数</div>} columns={[{
-                title: '参数名',
-                dataIndex: 'name',
-                key: 'name',
-            }, {
-                title: '类型',
-                dataIndex: 'type',
-                key: 'type',
-            }, {
-                title: '必须',
-                dataIndex: 'require',
-                key: 'require',
-                render: require => require ? <CheckOutlined /> : <CloseOutlined />
-            }, {
-                title: '说明',
-                dataIndex: 'description',
-                key: 'description',
-            }]} dataSource={[{ name: 'name', type: 'string', require: true, description: '固定为：' + this.props.meta.upload + '。' },
+            <Grid header={true} data={this.props.meta.headers} />
+            <Grid header={false} data={[{ name: 'name', type: 'string', require: true, description: '固定为：' + this.props.meta.upload + '。' },
             { name: 'contentType', type: 'string', require: true, description: '文件格式，如：image/jpeg。' },
             { name: 'fileName', type: 'string', require: true, description: '原文件名。' },
-            { name: 'base64', type: 'string', require: true, description: 'BASE64编码后的文件内容，不包含Content-Type。' }]} rowKey="name" pagination={false} />
+            { name: 'base64', type: 'string', require: true, description: 'BASE64编码后的文件内容，不包含Content-Type。' }]} />
             <div>返回结果</div>
             <pre>{this.responseBase64}</pre>
             <Divider dashed={true}>cURL方式上传</Divider>
@@ -78,27 +44,6 @@ class Upload extends React.Component {
             <div>返回结果</div>
             <pre>{this.responseFile}</pre>
         </Space>
-    );
-
-    header = () => (
-        <Table title={() => <div className="api-title">头信息</div>} columns={[{
-            title: '头名称',
-            dataIndex: 'name',
-            key: 'name',
-        }, {
-            title: '类型',
-            dataIndex: 'type',
-            key: 'type',
-        }, {
-            title: '必须',
-            dataIndex: 'require',
-            key: 'require',
-            render: require => require ? <CheckOutlined /> : <CloseOutlined />
-        }, {
-            title: '说明',
-            dataIndex: 'description',
-            key: 'description',
-        }]} dataSource={this.props.meta.headers} rowKey="name" pagination={false} />
     );
 }
 

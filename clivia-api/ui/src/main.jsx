@@ -1,10 +1,10 @@
 import React from 'react';
-import { ConfigProvider, Layout, Menu, Space, Alert, Table, Empty } from 'antd';
-import { CheckOutlined, CloseOutlined } from '@ant-design/icons';
+import { ConfigProvider, Layout, Menu, Space, Alert } from 'antd';
 import zhCN from 'antd/es/locale/zh_CN';
 import { service, url } from './http';
 import Request from './request';
 import Sign from './sign';
+import Grid from './grid';
 import Upload from './upload';
 import Setting from './setting';
 import './main.css';
@@ -149,42 +149,8 @@ class Main extends React.Component {
         return (
             <Space direction="vertical" style={{ width: '100%' }}>
                 <Alert type="info" message={'接口地址：' + this.url + this.state.item.uri} />
-                <Table title={() => <div className="api-title">头信息</div>} columns={[{
-                    title: '头名称',
-                    dataIndex: 'name',
-                    key: 'name',
-                }, {
-                    title: '类型',
-                    dataIndex: 'type',
-                    key: 'type',
-                }, {
-                    title: '必须',
-                    dataIndex: 'require',
-                    key: 'require',
-                    render: require => require ? <CheckOutlined /> : <CloseOutlined />
-                }, {
-                    title: '说明',
-                    dataIndex: 'description',
-                    key: 'description',
-                }]} dataSource={this.state.item.headers} rowKey="name" pagination={false} locale={{ emptyText: <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description='无需头信息' /> }} />
-                <Table title={() => <div className="api-title">参数</div>} columns={[{
-                    title: '参数名',
-                    dataIndex: 'name',
-                    key: 'name',
-                }, {
-                    title: '类型',
-                    dataIndex: 'type',
-                    key: 'type',
-                }, {
-                    title: '必须',
-                    dataIndex: 'require',
-                    key: 'require',
-                    render: require => require ? <CheckOutlined /> : <CloseOutlined />
-                }, {
-                    title: '说明',
-                    dataIndex: 'description',
-                    key: 'description',
-                }]} dataSource={this.state.item.parameters} rowKey="name" pagination={false} locale={{ emptyText: <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description='无需参数' /> }} />
+                <Grid header={true} data={this.state.item.headers} />
+                <Grid header={false} data={this.state.item.parameters} />
                 <div className="api-response-title">返回</div>
                 <pre>{this.state.item.response}</pre>
             </Space>
