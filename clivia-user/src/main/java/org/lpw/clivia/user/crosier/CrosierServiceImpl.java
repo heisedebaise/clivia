@@ -153,15 +153,15 @@ public class CrosierServiceImpl implements CrosierService, ContextRefreshedListe
             return true;
 
         UserModel user = userService.fromSession();
+        if (user == null || user.getState() != 1)
+            return false;
+
         if (signs.contains(uri))
             return user.getGrade() >= 0;
 
         Integer grade = permitGrade();
         if (grade != null)
-            return grade == -1 || (user != null && user.getGrade() >= grade);
-
-        if (user == null || user.getState() != 1)
-            return false;
+            return grade == -1 || user.getGrade() >= grade;
 
         if (user.getCode().equals("99999999"))
             return true;
