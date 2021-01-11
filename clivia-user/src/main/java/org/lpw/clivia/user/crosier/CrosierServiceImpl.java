@@ -7,6 +7,7 @@ import org.lpw.clivia.user.UserModel;
 import org.lpw.clivia.user.UserService;
 import org.lpw.photon.bean.ContextRefreshedListener;
 import org.lpw.photon.cache.Cache;
+import org.lpw.photon.ctrl.execute.Executor;
 import org.lpw.photon.ctrl.execute.ExecutorHelper;
 import org.lpw.photon.util.Context;
 import org.lpw.photon.util.Converter;
@@ -152,7 +153,7 @@ public class CrosierServiceImpl implements CrosierService, ContextRefreshedListe
         if (always.contains(uri))
             return true;
 
-        Integer grade = permitGrade();
+        Integer grade = permitGrade(uri);
         if (grade != null && grade == -1)
             return true;
 
@@ -160,11 +161,11 @@ public class CrosierServiceImpl implements CrosierService, ContextRefreshedListe
         if (user == null || user.getState() != 1)
             return false;
 
-        if (grade != null)
-            return user.getGrade() >= grade;
-
         if (signs.contains(uri))
             return user.getGrade() >= 0;
+
+        if (grade != null)
+            return user.getGrade() >= grade;
 
         if (user.getCode().equals("99999999"))
             return true;
@@ -192,8 +193,12 @@ public class CrosierServiceImpl implements CrosierService, ContextRefreshedListe
         return false;
     }
 
-    private Integer permitGrade() {
-        String permit = executorHelper.get().getPermit();
+    private Integer permitGrade(String uri) {
+        Executor executor= executorHelper.get(uri);
+        if(executor==null)
+            return null;
+
+        String permit = executor.getPermit();
         if (permit.equals(""))
             return null;
 
