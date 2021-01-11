@@ -162,7 +162,7 @@ public class CrosierServiceImpl implements CrosierService, ContextRefreshedListe
             return false;
 
         if (signs.contains(uri))
-            return user.getGrade() >= 0;
+            return true;
 
         if (grade != null)
             return user.getGrade() >= grade;
