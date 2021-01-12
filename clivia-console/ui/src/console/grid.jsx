@@ -5,7 +5,6 @@ import { service, url } from '../http';
 import meta from './meta';
 import { toMoney, toPercent } from './numeric';
 import { toArray } from '../json';
-import DSelect from './dselect';
 import Category from './category';
 import User from './user';
 import './grid.css';
@@ -27,7 +26,7 @@ class Grid extends React.Component {
         if (props.meta.search && props.meta.search.length > 0) {
             this.form = React.createRef();
             this.searchProps = meta.props(columns, props.meta.search);
-            this.search = <Search key="search" props={this.searchProps} toolbar={props.meta.toolbar} grid={this} form={this.form} />;
+            this.search = <Search key="search" props={this.searchProps} toolbar={props.meta.toolbar} grid={this} form={this.form} dselect={this.state.dselect} />;
         } else if (props.meta.toolbar && props.meta.toolbar.length > 0) {
             this.toolbar = [];
             for (let toolbar of props.meta.toolbar) {
@@ -84,7 +83,7 @@ class Grid extends React.Component {
                     return this.style(prop, model, <Switch {...s} />);
                 }
             } else if (prop.type === 'dselect') {
-                service(prop.service, prop.parameter).then(data => {
+                service(props.body.uri(props.uri, prop.service), prop.parameter).then(data => {
                     if (data === null) return;
 
                     let options = {};
@@ -463,13 +462,14 @@ class Search extends React.Component {
             );
         }
 
-        if (column.type === 'dselect')
-            return <DSelect list={column.list} parameter={column.parameter} name={column.name} vname={column.vname} lname={column.lname} form={this} />;
-
         if (column.type === 'category')
             return <Category list={column.category} pointTo={column.pointTo} name={column.name} form={this} />;
 
         return <Input />
+    }
+
+    value = (name, value) => {
+        console.log(name + ";" + value);
     }
 
     finish = () => {

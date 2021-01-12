@@ -1,5 +1,6 @@
 package org.lpw.clivia.sms;
 
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import org.lpw.clivia.keyvalue.KeyvalueService;
 import org.lpw.clivia.page.Pagination;
@@ -54,10 +55,16 @@ public class SmsServiceImpl implements SmsService, ContextRefreshedListener {
     @Inject
     private SmsDao smsDao;
     private final Map<String, SmsPusher> pushers = new HashMap<>();
+    private final JSONArray lvs = new JSONArray();
 
     @Override
     public JSONObject query(String scene, String pusher, String name, int state) {
         return smsDao.query(scene, pusher, name, state, pagination.getPageSize(20), pagination.getPageNum()).toJson();
+    }
+
+    @Override
+    public JSONArray lvs() {
+        return lvs;
     }
 
     @Override
@@ -145,6 +152,12 @@ public class SmsServiceImpl implements SmsService, ContextRefreshedListener {
 
     @Override
     public void onContextRefreshed() {
-        BeanFactory.getBeans(SmsPusher.class).forEach(pusher -> pushers.put(pusher.key(), pusher));
+        BeanFactory.getBeans(SmsPusher.class).forEach(pusher -> {
+            pushers.put(pusher.key(), pusher);
+            JSONObject lv = new JSONObject();
+            lv.put("id", pusher.key());
+            lv.put("name", pusher.name());
+            lvs.add(lv);
+        });
     }
 }

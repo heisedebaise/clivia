@@ -6,7 +6,8 @@ class DSelect extends React.Component {
     constructor(props) {
         super(props);
 
-        props.form.value(props.name, props.value);
+        if (props.form)
+            props.form.value(props.name, props.value);
 
         this.vname = props.vname || 'id';
         this.lname = props.lname || 'name';
@@ -48,7 +49,7 @@ class DSelect extends React.Component {
                     parameter[this.props.search[i].name || this.props.search[i].form] = this.props.form.value(this.props.search[i].form, null);
             }
         }
-        service(this.props.service, { ...parameter, ...this.props.parameter }).then(data => {
+        service(this.props.body.uri(this.props.uri, this.props.service), { ...parameter, ...this.props.parameter }).then(data => {
             if (data === null) return;
 
             let options = []

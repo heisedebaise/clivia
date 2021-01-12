@@ -9,6 +9,13 @@ public interface SmsPusher {
     String key();
 
     /**
+     * 名称。
+     *
+     * @return 名称。
+     */
+    String name();
+
+    /**
      * 推送。
      *
      * @param config  配置。

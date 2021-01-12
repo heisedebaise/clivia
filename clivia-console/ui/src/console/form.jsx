@@ -175,7 +175,7 @@ class Base extends React.Component {
             } else if (prop.type === 'file') {
                 items.push(<Form.Item {...item}><File name={prop.name} upload={prop.upload} size={prop.size || 1} value={this.state[prop.name] || ''} form={this} /></Form.Item>);
             } else if (prop.type === 'dselect') {
-                items.push(<Form.Item {...item}><DSelect {...prop} value={this.state[prop.name]} data={this.props.data} form={this} /></Form.Item>);
+                items.push(<Form.Item {...item}><DSelect body={this.props.body} uri={this.props.uri} {...prop} value={this.state[prop.name]} data={this.props.data} form={this} /></Form.Item>);
             } else if (prop.type === 'refresh') {
                 items.push(<Form.Item {...item}>{this.state[prop.name] || ''} {prop.service ? <Button icon={<SyncOutlined alt={prop.label} />} onClick={this.refresh.bind(this, prop)} /> : null}</Form.Item>);
             } else if (prop.type === 'editor') {

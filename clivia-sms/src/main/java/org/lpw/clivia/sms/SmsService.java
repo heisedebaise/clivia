@@ -1,5 +1,6 @@
 package org.lpw.clivia.sms;
 
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 
 /**
@@ -9,6 +10,8 @@ public interface SmsService {
     String VALIDATOR_CAPTCHA = SmsModel.NAME + ".validator.captcha";
 
     JSONObject query(String scene, String pusher, String name, int state);
+
+    JSONArray lvs();
 
     void save(SmsModel sms);
 

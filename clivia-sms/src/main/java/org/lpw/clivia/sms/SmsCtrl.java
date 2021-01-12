@@ -26,6 +26,13 @@ public class SmsCtrl {
         return smsService.query(request.get("scene"), request.get("pusher"), request.get("name"), request.getAsInt("state", -1));
     }
 
+    @Execute(name = "lvs", validates = {
+            @Validate(validator = Validators.SIGN)
+    })
+    public Object lvs() {
+        return smsService.lvs();
+    }
+
     @Execute(name = "save", validates = {
             @Validate(validator = Validators.NOT_EMPTY, parameter = "scene", failureCode = 2),
             @Validate(validator = Validators.MAX_LENGTH, number = {100}, parameter = "scene", failureCode = 3),
