@@ -7,6 +7,7 @@ import org.lpw.clivia.page.Pagination;
 import org.lpw.clivia.user.auth.AuthModel;
 import org.lpw.clivia.user.auth.AuthService;
 import org.lpw.clivia.user.crosier.CrosierService;
+import org.lpw.clivia.user.inviter.InviterService;
 import org.lpw.clivia.user.online.OnlineModel;
 import org.lpw.clivia.user.online.OnlineService;
 import org.lpw.clivia.user.type.Types;
@@ -33,7 +34,6 @@ public class UserServiceImpl implements UserService {
     private static final String CACHE_MODEL = UserModel.NAME + ".service.model:";
     private static final String CACHE_JSON = UserModel.NAME + ".service.json:";
     private static final String SESSION = UserModel.NAME + ".service.session";
-    private static final String SESSION_INVITER = UserModel.NAME + ".service.session.inviter";
     private static final String SESSION_AUTH3 = UserModel.NAME + ".service.session.auth3";
     private static final String SESSION_UID = UserModel.NAME + ".service.session.uid";
 
@@ -64,17 +64,16 @@ public class UserServiceImpl implements UserService {
     @Inject
     private OnlineService onlineService;
     @Inject
+    private InviterService inviterService;
+    @Inject
     private Optional<Set<UserListener>> listeners;
     @Inject
     private UserDao userDao;
     private final int codeLength = 8;
 
     @Override
-    public String inviter(String code) {
-        if (!validator.isEmpty(code))
-            session.set(SESSION_INVITER, code);
-
-        return session.get(SESSION_INVITER);
+    public boolean isCode(String code) {
+        return !validator.isEmpty(code) && code.length() == codeLength;
     }
 
     @Override
@@ -137,8 +136,8 @@ public class UserServiceImpl implements UserService {
             return;
 
         if (validator.isEmpty(code))
-            code = inviter(null);
-        if (validator.isEmpty(code) || code.length() != codeLength)
+            code = inviterService.get();
+        if (!isCode(code))
             return;
 
         UserModel inviter = userDao.findByCode(code.toLowerCase());
@@ -300,14 +299,11 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public JSONObject findByCode(String code) {
-        String cacheKey = CACHE_JSON + code;
-        JSONObject object = cache.get(cacheKey);
-        if (object == null) {
+        return cache.computeIfAbsent(CACHE_JSON + code, key -> {
             UserModel user = userDao.findByCode(code);
-            cache.put(cacheKey, object = user == null ? new JSONObject() : getJson(user.getId(), user), false);
-        }
 
-        return object;
+            return user == null ? new JSONObject() : getJson(user.getId(), user);
+        }, false);
     }
 
     @Override

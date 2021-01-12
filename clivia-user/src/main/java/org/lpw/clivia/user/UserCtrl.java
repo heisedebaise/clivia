@@ -3,7 +3,7 @@ package org.lpw.clivia.user;
 import org.lpw.clivia.Permit;
 import org.lpw.clivia.sms.SmsService;
 import org.lpw.clivia.user.auth.AuthService;
-import org.lpw.photon.ctrl.Forward;
+import org.lpw.clivia.user.inviter.InviterService;
 import org.lpw.photon.ctrl.context.Request;
 import org.lpw.photon.ctrl.execute.Execute;
 import org.lpw.photon.ctrl.template.Templates;
@@ -27,15 +27,17 @@ public class UserCtrl {
     @Inject
     private Templates templates;
     @Inject
-    private Forward forward;
-    @Inject
     private SmsService smsService;
     @Inject
     private UserService userService;
+    @Inject
+    private InviterService inviterService;
 
     @Execute(name = "inviter", permit = Permit.always)
     public Object inviter() {
-        return userService.inviter(request.get("code"));
+        inviterService.set(request.get("code"));
+
+        return "";
     }
 
     @Execute(name = "sign-up-sms", permit = Permit.always, validates = {

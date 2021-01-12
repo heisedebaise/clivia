@@ -48,12 +48,12 @@ public interface UserService {
     String VALIDATOR_EXISTS_SIGN = VALIDATOR_EXISTS + "-sign";
 
     /**
-     * 邀请人。
+     * 验证是否为code。
      *
-     * @param code 邀请人code，不为空则设置。
-     * @return 邀请人code。
+     * @param code code。
+     * @return 如果是则返回true；否则返回false。
      */
-    String inviter(String code);
+    boolean isCode(String code);
 
     /**
      * 注册。
