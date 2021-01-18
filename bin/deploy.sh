@@ -2,7 +2,7 @@
 
 source bin/install.sh
 
-podman stop tomcat
+podman stop -t 1 tomcat
 rm -rf ~/tomcat/webapps/ROOT
 cp -r clivia-web/target/clivia-web-0.3 ~/tomcat/webapps/ROOT
 podman restart tomcat

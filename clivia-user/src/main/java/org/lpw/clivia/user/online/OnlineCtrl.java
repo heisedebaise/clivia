@@ -23,7 +23,7 @@ public class OnlineCtrl {
             @Validate(validator = Validators.SIGN)
     })
     public Object query() {
-        return onlineService.query(request.get("user"), request.get("uid"), request.get("ip"));
+        return onlineService.query(request.get("uid"), request.get("ip"));
     }
 
     @Execute(name = "sign-out", validates = {

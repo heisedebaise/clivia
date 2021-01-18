@@ -3,6 +3,7 @@ package org.lpw.clivia.payment;
 import com.alibaba.fastjson.JSONObject;
 import org.lpw.clivia.account.AccountService;
 import org.lpw.clivia.account.log.LogService;
+import org.lpw.clivia.keyvalue.KeyvalueService;
 import org.lpw.clivia.lock.LockHelper;
 import org.lpw.clivia.page.Pagination;
 import org.lpw.clivia.user.UserListener;
@@ -12,9 +13,7 @@ import org.lpw.clivia.user.auth.AuthService;
 import org.lpw.photon.dao.model.ModelHelper;
 import org.lpw.photon.util.DateTime;
 import org.lpw.photon.util.Generator;
-import org.lpw.photon.util.Http;
 import org.lpw.photon.util.Json;
-import org.lpw.photon.util.Numeric;
 import org.lpw.photon.util.Validator;
 import org.springframework.stereotype.Service;
 
@@ -39,17 +38,15 @@ public class PaymentServiceImpl implements PaymentService, UserListener {
     @Inject
     private Validator validator;
     @Inject
-    private Numeric numeric;
-    @Inject
     private Json json;
-    @Inject
-    private Http http;
     @Inject
     private ModelHelper modelHelper;
     @Inject
     private Pagination pagination;
     @Inject
     private LockHelper lockHelper;
+    @Inject
+    private KeyvalueService keyvalueService;
     @Inject
     private UserService userService;
     @Inject
@@ -114,7 +111,12 @@ public class PaymentServiceImpl implements PaymentService, UserListener {
         payment.setJson(json.toJSONString());
         paymentDao.save(payment);
 
-        return modelHelper.toJson(payment);
+        JSONObject object = modelHelper.toJson(payment);
+        int amt = keyvalueService.valueAsInt("setting.global.payment.amount", -1);
+        if (amt > 0)
+            object.put("amount", amt);
+
+        return object;
     }
 
     private String newOrderNo(Timestamp now) {

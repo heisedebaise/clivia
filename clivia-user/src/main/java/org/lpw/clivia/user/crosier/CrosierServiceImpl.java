@@ -194,8 +194,8 @@ public class CrosierServiceImpl implements CrosierService, ContextRefreshedListe
     }
 
     private Integer permitGrade(String uri) {
-        Executor executor= executorHelper.get(uri);
-        if(executor==null)
+        Executor executor = executorHelper.get(uri);
+        if (executor == null)
             return null;
 
         String permit = executor.getPermit();

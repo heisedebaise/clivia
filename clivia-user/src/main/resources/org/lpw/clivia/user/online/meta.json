@@ -33,7 +33,11 @@
     ],
     "query": {
         "type": "grid",
-        "reload": true,
+        "search": [
+            {
+                "name": "uid"
+            }
+        ],
         "ops": [
             {
                 "service": "sign-out",

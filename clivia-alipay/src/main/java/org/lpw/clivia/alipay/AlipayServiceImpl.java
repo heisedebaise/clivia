@@ -152,7 +152,7 @@ public class AlipayServiceImpl implements AlipayService, TransferListener {
         JSONObject obj = new JSONObject();
         obj.put("out_trade_no", orderNo);
         obj.put("subject", subject);
-        obj.put("total_amount", numeric.toString(amount * 0.01D, "0.00"));
+        obj.put("total_amount", numeric.toString(object.getIntValue("amount") * 0.01D, "0.00"));
         obj.put("product_code", code);
 
         return obj.toJSONString();

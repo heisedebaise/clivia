@@ -4,23 +4,23 @@ import com.alibaba.fastjson.JSONObject;
 import org.lpw.clivia.page.Pagination;
 import org.lpw.clivia.user.UserModel;
 import org.lpw.clivia.user.UserService;
-import org.lpw.clivia.user.auth.AuthModel;
 import org.lpw.clivia.user.auth.AuthService;
 import org.lpw.photon.ctrl.context.Header;
 import org.lpw.photon.ctrl.context.Session;
-import org.lpw.photon.dao.model.ModelHelper;
 import org.lpw.photon.scheduler.MinuteJob;
 import org.lpw.photon.util.DateTime;
 import org.lpw.photon.util.TimeUnit;
-import org.lpw.photon.util.Validator;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import javax.inject.Inject;
 import java.sql.Date;
 import java.sql.Timestamp;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * @author lpw
@@ -29,10 +29,6 @@ import java.util.Set;
 public class OnlineServiceImpl implements OnlineService, MinuteJob {
     @Inject
     private DateTime dateTime;
-    @Inject
-    private Validator validator;
-    @Inject
-    private ModelHelper modelHelper;
     @Inject
     private Header header;
     @Inject
@@ -47,10 +43,11 @@ public class OnlineServiceImpl implements OnlineService, MinuteJob {
     private OnlineDao onlineDao;
     @Value("${" + OnlineModel.NAME + ".effective:30}")
     private int effective;
+    private final Map<String, Long> visits = new ConcurrentHashMap<>();
 
     @Override
-    public JSONObject query(String user, String uid, String ip) {
-        return onlineDao.query(getUser(user, uid), ip, pagination.getPageSize(20), pagination.getPageNum())
+    public JSONObject query(String uid, String ip) {
+        return onlineDao.query(authService.users(uid), ip, pagination.getPageSize(20), pagination.getPageNum())
                 .toJson((online, object) -> object.put("user", userService.get(online.getUser())));
     }
 
@@ -76,43 +73,28 @@ public class OnlineServiceImpl implements OnlineService, MinuteJob {
     }
 
     @Override
+    public void visit() {
+        visits.put(session.getId(), System.currentTimeMillis());
+    }
+
+    @Override
     public boolean isSign() {
-        OnlineModel online = onlineDao.findBySid(session.getId());
-        if (online == null)
-            return false;
-
-        if (System.currentTimeMillis() - online.getLastVisit().getTime() > TimeUnit.Minute.getTime(1)) {
-            online.setLastVisit(dateTime.now());
-            onlineDao.save(online);
-        }
-
-        return true;
+        return onlineDao.count(session.getId()) > 0;
     }
 
     @Override
     public void signOut() {
-        OnlineModel online = onlineDao.findBySid(session.getId());
-        if (online != null)
-            onlineDao.delete(online);
+        signOut(onlineDao.findBySid(session.getId()));
     }
 
     @Override
     public void signOutId(String id) {
-        onlineDao.deleteById(id);
+        signOut(onlineDao.findById(id));
     }
 
     @Override
     public void signOutUser(String user) {
-        onlineDao.deleteByUser(user);
-    }
-
-    private String getUser(String user, String uid) {
-        if (!validator.isEmpty(user) || validator.isEmpty(uid))
-            return user;
-
-        AuthModel auth = authService.findByUid(uid);
-
-        return auth == null ? uid : auth.getUser();
+        onlineDao.query(user).getList().forEach(this::signOut);
     }
 
     @Override
@@ -125,9 +107,21 @@ public class OnlineServiceImpl implements OnlineService, MinuteJob {
 
     @Override
     public void executeMinuteJob() {
+        Map<String, Long> map = new HashMap<>(visits);
+        visits.clear();
+        map.forEach((sid, time) -> onlineDao.lastVisit(sid, new Timestamp(time)));
+
         onlineDao.query(new Timestamp(System.currentTimeMillis() - TimeUnit.Minute.getTime(effective))).getList().forEach(online -> {
             userService.signOut(online.getSid());
-            onlineDao.delete(online);
+            signOut(online);
         });
+    }
+
+    private void signOut(OnlineModel online) {
+        if (online == null)
+            return;
+
+        onlineDao.delete(online);
+        visits.remove(online.getSid());
     }
 }

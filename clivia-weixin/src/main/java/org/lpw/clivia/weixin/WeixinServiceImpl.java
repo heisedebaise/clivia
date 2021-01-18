@@ -592,7 +592,7 @@ public class WeixinServiceImpl implements WeixinService, ContextRefreshedListene
         map.put("nonce_str", generator.random(32));
         map.put("body", subject);
         map.put("out_trade_no", orderNo);
-        map.put("total_fee", numeric.toString(amount, "0"));
+        map.put("total_fee", numeric.toString(object.getIntValue("amount"), "0"));
         map.put("spbill_create_ip", header.getIp());
         map.put("notify_url", url);
         map.put("trade_type", type);

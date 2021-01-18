@@ -12,12 +12,11 @@ public interface OnlineService {
     /**
      * 检索在线数据集。
      *
-     * @param user 用户ID。
-     * @param uid  认证ID。
-     * @param ip   IP地址。
+     * @param uid 认证ID。
+     * @param ip  IP地址。
      * @return 在线数据集。
      */
-    JSONObject query(String user, String uid, String ip);
+    JSONObject query(String uid, String ip);
 
     /**
      * 根据SID获取在线信息。
@@ -33,6 +32,11 @@ public interface OnlineService {
      * @param user 用户。
      */
     void signIn(UserModel user);
+
+    /**
+     * 访问。
+     */
+    void visit();
 
     /**
      * 判断当前用户是否已登入。

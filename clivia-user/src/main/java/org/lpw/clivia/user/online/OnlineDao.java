@@ -4,24 +4,29 @@ import org.lpw.photon.dao.jdbc.SqlTable;
 import org.lpw.photon.dao.orm.PageList;
 
 import java.sql.Timestamp;
+import java.util.Set;
 
 /**
  * @author lpw
  */
 interface OnlineDao {
-    PageList<OnlineModel> query(String user, String ip, int pageSize, int pageNum);
+    PageList<OnlineModel> query(Set<String> user, String ip, int pageSize, int pageNum);
 
     PageList<OnlineModel> query(Timestamp visit);
 
+    PageList<OnlineModel> query(String user);
+
+    OnlineModel findById(String id);
+
     OnlineModel findBySid(String sid);
+
+    int count(String sid);
 
     SqlTable user(Timestamp[] lastVisit);
 
     void save(OnlineModel online);
 
+    void lastVisit(String sid, Timestamp lastVisit);
+
     void delete(OnlineModel online);
-
-    void deleteById(String id);
-
-    void deleteByUser(String user);
 }

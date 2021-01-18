@@ -1,6 +1,7 @@
 package org.lpw.clivia.user.crosier;
 
 import org.lpw.clivia.user.UserService;
+import org.lpw.clivia.user.online.OnlineService;
 import org.lpw.photon.ctrl.Failure;
 import org.lpw.photon.ctrl.Interceptor;
 import org.lpw.photon.ctrl.Invocation;
@@ -27,6 +28,8 @@ public class CrosierInterceptorImpl implements Interceptor {
     private UserService userService;
     @Inject
     private CrosierService crosierService;
+    @Inject
+    private OnlineService onlineService;
     @Value("${" + CrosierModel.NAME + ".on:false}")
     private boolean on;
 
@@ -37,6 +40,7 @@ public class CrosierInterceptorImpl implements Interceptor {
 
     @Override
     public Object execute(Invocation invocation) throws Exception {
+        onlineService.visit();
         if (!on)
             return invocation.invoke();
 

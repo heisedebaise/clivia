@@ -39,6 +39,9 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public Set<String> users(String uid) {
+        if (validator.isEmpty(uid))
+            return null;
+
         Set<String> set = new HashSet<>();
         authDao.search(uid).getList().forEach(auth -> set.add(auth.getUser()));
 

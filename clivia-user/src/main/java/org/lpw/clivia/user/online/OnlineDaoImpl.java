@@ -11,6 +11,7 @@ import org.springframework.stereotype.Repository;
 
 import javax.inject.Inject;
 import java.sql.Timestamp;
+import java.util.Set;
 
 /**
  * @author lpw
@@ -25,8 +26,9 @@ class OnlineDaoImpl implements OnlineDao {
     private DaoHelper daoHelper;
 
     @Override
-    public PageList<OnlineModel> query(String user, String ip, int pageSize, int pageNum) {
-        return daoHelper.newQueryBuilder().where("c_user", DaoOperation.Equals, user)
+    public PageList<OnlineModel> query(Set<String> user, String ip, int pageSize, int pageNum) {
+        return daoHelper.newQueryBuilder()
+                .in("c_user", user)
                 .where("c_ip", DaoOperation.Equals, ip)
                 .where("c_grade", DaoOperation.Less, 99)
                 .order("c_last_visit desc")
@@ -39,8 +41,23 @@ class OnlineDaoImpl implements OnlineDao {
     }
 
     @Override
+    public PageList<OnlineModel> query(String user) {
+        return liteOrm.query(new LiteQuery(OnlineModel.class).where("c_user=?"), new Object[]{user});
+    }
+
+    @Override
+    public OnlineModel findById(String id) {
+        return liteOrm.findById(OnlineModel.class, id);
+    }
+
+    @Override
     public OnlineModel findBySid(String sid) {
         return liteOrm.findOne(new LiteQuery(OnlineModel.class).where("c_sid=?"), new Object[]{sid});
+    }
+
+    @Override
+    public int count(String sid) {
+        return liteOrm.count(new LiteQuery(OnlineModel.class).where("c_sid=?"), new Object[]{sid});
     }
 
     @Override
@@ -54,17 +71,12 @@ class OnlineDaoImpl implements OnlineDao {
     }
 
     @Override
+    public void lastVisit(String sid, Timestamp lastVisit) {
+        liteOrm.update(new LiteQuery(OnlineModel.class).set("c_last_visit=?").where("c_sid=?"), new Object[]{lastVisit, sid});
+    }
+
+    @Override
     public void delete(OnlineModel online) {
         liteOrm.delete(online);
-    }
-
-    @Override
-    public void deleteById(String id) {
-        liteOrm.deleteById(OnlineModel.class, id);
-    }
-
-    @Override
-    public void deleteByUser(String user) {
-        liteOrm.delete(new LiteQuery(OnlineModel.class).where("c_user=?"), new Object[]{user});
     }
 }
