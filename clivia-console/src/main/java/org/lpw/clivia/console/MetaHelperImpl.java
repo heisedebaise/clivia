@@ -260,6 +260,14 @@ public class MetaHelperImpl implements MetaHelper, ContextRefreshedListener, Cro
             }
             if (json.containsKey(obj, "toolbar"))
                 upload(prefix, "upload", obj.getJSONArray("toolbar"));
+            else if (json.has(object, "key", "setting")) {
+                JSONObject save = new JSONObject();
+                save.put("label", "save");
+                save.put("service", "/keyvalue/saves");
+                JSONArray toolbar = new JSONArray();
+                toolbar.add(save);
+                obj.put("toolbar", toolbar);
+            }
         }
 
         string = object.toJSONString();
