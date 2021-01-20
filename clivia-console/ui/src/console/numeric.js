@@ -1,4 +1,4 @@
-const toMoney = function (value, empty) {
+const toMoney = (value, empty) => {
     if (!value) return empty || '';
 
     try {
@@ -8,7 +8,7 @@ const toMoney = function (value, empty) {
     }
 }
 
-const fromMoney = function (value) {
+const fromMoney = value => {
     if (!value) return 0;
 
     try {
@@ -18,7 +18,7 @@ const fromMoney = function (value) {
     }
 }
 
-const toPercent = function (value) {
+const toPercent = value => {
     if (!value) return '0.00 %';
 
     try {
@@ -28,7 +28,7 @@ const toPercent = function (value) {
     }
 }
 
-const fromPercent = function (value) {
+const fromPercent = value => {
     if (!value) return 0;
 
     try {
@@ -43,9 +43,20 @@ const fromPercent = function (value) {
     }
 }
 
+const toInt = (value, defaultValue) => {
+    if (!value) return defaultValue;
+
+    try {
+        return parseInt(value);
+    } catch (e) {
+        return defaultValue;
+    }
+}
+
 export {
     toMoney,
     fromMoney,
     toPercent,
-    fromPercent
+    fromPercent,
+    toInt
 };

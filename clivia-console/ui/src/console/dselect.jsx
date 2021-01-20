@@ -11,22 +11,8 @@ class DSelect extends React.Component {
 
         this.vname = props.vname || 'id';
         this.lname = props.lname || 'name';
-        let dlname = props.dlname || this.lname;
-
-        let options = [];
-        if (props.value && props.data) {
-            let option = { value: props.value, label: props.value };
-            if (dlname) {
-                if (dlname.indexOf('+') > -1)
-                    // eslint-disable-next-line
-                    eval('option.label=' + dlname.replace(/option/g, 'props.data'));
-                else
-                    option.label = props.data[dlname];
-            }
-            options.push(option);
-        }
         this.state = {
-            options: options,
+            options: [],
             value: props.value
         };
     }
@@ -48,28 +34,25 @@ class DSelect extends React.Component {
                 else if (this.props.search[i].form)
                     parameter[this.props.search[i].name || this.props.search[i].form] = this.props.form.value(this.props.search[i].form, null);
             }
-        }
+        } else
+            parameter.value = value;
         service(this.props.body.uri(this.props.uri, this.props.service), { ...parameter, ...this.props.parameter }).then(data => {
             if (data === null) return;
 
             let options = []
             for (let option of data.list || data) {
                 let label = option[this.vname];
-                if (this.lname) {
-                    if (this.lname.indexOf('+') > -1)
-                        // eslint-disable-next-line
-                        eval('label=' + this.lname);
-                    else
-                        label = option[this.lname];
-                }
+                if (this.lname.indexOf('+') > -1)
+                    // eslint-disable-next-line
+                    eval('label=' + this.lname);
+                else
+                    label = option[this.lname];
                 options.push({
                     label: label,
                     value: option[this.vname]
                 });
             }
-            this.setState({
-                options: options
-            });
+            this.setState({ options });
         });
     }
 

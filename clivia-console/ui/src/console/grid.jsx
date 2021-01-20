@@ -89,11 +89,13 @@ class Grid extends React.Component {
                     let options = {};
                     let vname = prop.vname || 'id';
                     let lname = prop.lname || 'name';
-                    for (let d of data) {
-                        let option = { label: d[lname] };
-                        if (prop.dlname && prop.dlname.indexOf('+') > -1)
+                    for (let d of data.list || data) {
+                        let option = d;
+                        if (lname.indexOf('+') > -1)
                             // eslint-disable-next-line
-                            eval('option.label=' + prop.dlname);
+                            eval('option.label=' + lname);
+                        else
+                            option.label = d[lname];
                         options[d[vname]] = option.label;
                     }
                     let dselect = this.state.dselect;
