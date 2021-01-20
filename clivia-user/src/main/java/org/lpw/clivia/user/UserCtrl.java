@@ -70,7 +70,6 @@ public class UserCtrl {
     }
 
     @Execute(name = "sign-in", permit = Permit.always, validates = {
-            @Validate(validator = Validators.NOT_EMPTY, parameter = "uid", failureCode = 1),
             @Validate(validator = UserService.VALIDATOR_EXISTS_TYPE, parameter = "type", failureCode = 27),
             @Validate(validator = UserService.VALIDATOR_PASSWORD, parameters = {"password", "type"}, failureCode = 3),
             @Validate(validator = UserService.VALIDATOR_SIGN_IN, parameters = {"uid", "password", "type", "grade"}, failureCode = 6)

@@ -116,6 +116,20 @@
             "response": "model"
         },
         {
+            "uri": "sign-in",
+            "name": "sid-sign-in",
+            "psid": true,
+            "parameters": [
+                {
+                    "name": "type",
+                    "type": "string",
+                    "require": true,
+                    "description": ".type.sid"
+                }
+            ],
+            "response": "model"
+        },
+        {
             "uri": "sign",
             "psid": true,
             "response": "model"

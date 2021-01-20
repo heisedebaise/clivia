@@ -48,8 +48,8 @@ class Main extends React.Component {
                     }
                     if (service.sign) {
                         if (!service.parameters) service.parameters = [];
-                        service.parameters.push({ name: 'sign-time', type: 'long', description: '签名时间戳，精确到毫秒。' });
-                        service.parameters.push({ name: 'sign', type: 'string', description: '参数签名，规则参考【通用->参数签名】页。' });
+                        service.parameters.push({ name: 'sign-time', type: 'long', require: true, description: '签名时间戳，精确到毫秒。' });
+                        service.parameters.push({ name: 'sign', type: 'string', require: true, description: '参数签名，规则参考【通用->参数签名】页。' });
                     }
                     if (module.model) {
                         if (service.response === 'model')

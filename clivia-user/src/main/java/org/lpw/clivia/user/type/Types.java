@@ -19,6 +19,10 @@ public interface Types {
      * 短信验证码账号类型KEY。
      */
     String Sms = "sms";
+    /**
+     * SID账号类型KEY。
+     */
+    String Sid = "sid";
 
     /**
      * 是否支持类型KEY。

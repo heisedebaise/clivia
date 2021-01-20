@@ -45,7 +45,7 @@ public class SelfTypeImpl extends TypeSupport {
 
     @Override
     public UserModel auth(String uid, String password, String grade) {
-        if (validator.isEmpty(password))
+        if (validator.isEmpty(uid) || validator.isEmpty(password))
             return null;
 
         AuthModel auth = authService.findByUid(uid);

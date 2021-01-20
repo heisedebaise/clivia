@@ -25,13 +25,14 @@
                 "permit": true
             },
             {
-                "name": "setting.global.user.delete",
+                "name": "setting.global.sign-up.sid",
                 "type": "switch",
                 "permit": true
             },
             {
-                "name": "setting.global.payment.amount",
-                "type": "money"
+                "name": "setting.global.user.delete",
+                "type": "switch",
+                "permit": true
             }
         ],
         "toolbar": [
