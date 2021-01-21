@@ -162,49 +162,8 @@ class Base extends React.Component {
         let items = [];
         if (this.props.meta.info)
             items.push(<div key={'info:' + this.props.meta.info} className="console-info" dangerouslySetInnerHTML={{ __html: this.state[this.props.meta.info] }} />);
-        for (let prop of meta.props(this.props.props, this.props.meta.props)) {
-            let item = {
-                key: prop.name,
-                className: 'console-form-item console-form-item-' + (items.length % 2 === 0 ? 'even' : 'odd'),
-                label: prop.label
-            };
-            if (prop.type && prop.type.startsWith('read-only')) {
-                items.push(<Form.Item {...item}>{this.readonly(prop)}</Form.Item>);
-            } else if (prop.type === 'image') {
-                items.push(<Form.Item {...item}><Image name={prop.name} upload={prop.upload} size={prop.size || 1} value={this.state[prop.name] || ''} form={this} /></Form.Item>);
-            } else if (prop.type === 'file') {
-                items.push(<Form.Item {...item}><File name={prop.name} upload={prop.upload} size={prop.size || 1} value={this.state[prop.name] || ''} form={this} /></Form.Item>);
-            } else if (prop.type === 'dselect') {
-                items.push(<Form.Item {...item}><DSelect body={this.props.body} uri={this.props.uri} {...prop} value={this.state[prop.name]} data={this.props.data} form={this} /></Form.Item>);
-            } else if (prop.type === 'refresh') {
-                items.push(<Form.Item {...item}>{this.state[prop.name] || ''} {prop.service ? <Button icon={<SyncOutlined alt={prop.label} />} onClick={this.refresh.bind(this, prop)} /> : null}</Form.Item>);
-            } else if (prop.type === 'editor') {
-                items.push(<Form.Item {...item}><Editor name={prop.name} value={this.state[prop.name] || ''} form={this} /></Form.Item>);
-            } else if (prop.type === 'html') {
-                items.push(<Form.Item {...item}><div dangerouslySetInnerHTML={{ __html: this.state[prop.name] || '' }} /></Form.Item>);
-            } else if (prop.type === 'agreement') {
-                let value = this.state[prop.agreement] || { uri: '', name: '' };
-                if (value) {
-                    let label = value.name;
-                    let index = label.lastIndexOf('.');
-                    if (index > -1) label = label.substring(0, index);
-                    item.className += ' console-form-agreement';
-                    item.label = 'agreement';
-                    items.push(<Form.Item {...item}><a href={value.uri + '?filename=' + value.name} target="_blank" rel="noopener noreferrer">{label}</a></Form.Item>);
-                }
-            } else if (prop.type === 'category') {
-                let list = prop.category;
-                if (!list && this.props.parameter && this.props.parameter.key)
-                    list = this.props.parameter.key;
-                items.push(<Form.Item {...item}><Category list={list} pointTo={prop.pointTo} name={prop.name} value={this.state[prop.name]} form={this} /></Form.Item>);
-            } else if (prop.type === 'user') {
-                items.push(<Form.Item {...item}><User data={this.state[prop.name]} /></Form.Item>);
-            } else {
-                if (prop.type === 'switch')
-                    item.valuePropName = 'checked';
-                items.push(<Form.Item {...item} name={prop.name}>{this.input(prop)}</Form.Item>);
-            }
-        }
+        for (let prop of meta.props(this.props.props, this.props.meta.props))
+            this.item(items, prop, '');
 
         return (
             <Form ref={this.form} {...layout} initialValues={this.state}>
@@ -212,6 +171,64 @@ class Base extends React.Component {
                 <Form.Item className="console-form-toolbar" label="toolbar">{this.toolbar()}</Form.Item>
             </Form>
         );
+    }
+
+    item = (items, prop, key) => {
+        let item = {
+            key: key + prop.name,
+            className: 'console-form-item console-form-item-' + (items.length % 2 === 0 ? 'even' : 'odd'),
+            label: prop.label
+        };
+        if (prop.type && prop.type.startsWith('read-only')) {
+            items.push(<Form.Item {...item}>{this.readonly(prop)}</Form.Item>);
+        } else if (prop.type === 'image') {
+            items.push(<Form.Item {...item}><Image name={prop.name} upload={prop.upload} size={prop.size || 1} value={this.state[prop.name] || ''} form={this} /></Form.Item>);
+        } else if (prop.type === 'file') {
+            items.push(<Form.Item {...item}><File name={prop.name} upload={prop.upload} size={prop.size || 1} value={this.state[prop.name] || ''} form={this} /></Form.Item>);
+        } else if (prop.type === 'dselect') {
+            items.push(<Form.Item {...item}><DSelect body={this.props.body} uri={this.props.uri} {...prop} value={this.state[prop.name]} data={this.props.data} form={this} /></Form.Item>);
+        } else if (prop.type === 'refresh') {
+            items.push(<Form.Item {...item}>{this.state[prop.name] || ''} {prop.service ? <Button icon={<SyncOutlined alt={prop.label} />} onClick={this.refresh.bind(this, prop)} /> : null}</Form.Item>);
+        } else if (prop.type === 'editor') {
+            items.push(<Form.Item {...item}><Editor name={prop.name} value={this.state[prop.name] || ''} form={this} /></Form.Item>);
+        } else if (prop.type === 'html') {
+            items.push(<Form.Item {...item}><div dangerouslySetInnerHTML={{ __html: this.state[prop.name] || '' }} /></Form.Item>);
+        } else if (prop.type === 'array') {
+            let is = [];
+            for (let i = 0; i < 5; i++) {
+                for (let child of prop.children) {
+                    child.name += ':' + i;
+                    this.item(is, child, prop.name + ':');
+                }
+            }
+            items.push(
+                <div key={prop.name} className="console-form-children">
+                    <div className="console-form-children-title">{prop.label}</div>
+                    {is}
+                </div>
+            );
+        } else if (prop.type === 'agreement') {
+            let value = this.state[prop.agreement] || { uri: '', name: '' };
+            if (value) {
+                let label = value.name;
+                let index = label.lastIndexOf('.');
+                if (index > -1) label = label.substring(0, index);
+                item.className += ' console-form-agreement';
+                item.label = 'agreement';
+                items.push(<Form.Item {...item}><a href={value.uri + '?filename=' + value.name} target="_blank" rel="noopener noreferrer">{label}</a></Form.Item>);
+            }
+        } else if (prop.type === 'category') {
+            let list = prop.category;
+            if (!list && this.props.parameter && this.props.parameter.key)
+                list = this.props.parameter.key;
+            items.push(<Form.Item {...item}><Category list={list} pointTo={prop.pointTo} name={prop.name} value={this.state[prop.name]} form={this} /></Form.Item>);
+        } else if (prop.type === 'user') {
+            items.push(<Form.Item {...item}><User data={this.state[prop.name]} /></Form.Item>);
+        } else {
+            if (prop.type === 'switch')
+                item.valuePropName = 'checked';
+            items.push(<Form.Item {...item} name={prop.name}>{this.input(prop)}</Form.Item>);
+        }
     }
 
     readonly = prop => {

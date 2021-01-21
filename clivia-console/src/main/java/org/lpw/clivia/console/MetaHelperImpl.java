@@ -122,8 +122,9 @@ public class MetaHelperImpl implements MetaHelper, ContextRefreshedListener, Cro
                     }
                 }
             }
-
             setLabel(prefix, obj, k);
+            if (obj.containsKey("children"))
+                setLabel(all, type, uri, prefix, obj.getJSONArray("children"), k);
         }
     }
 
@@ -245,19 +246,15 @@ public class MetaHelperImpl implements MetaHelper, ContextRefreshedListener, Cro
             return;
 
         String prefix = object.getString("key") + ".";
-        if (object.containsKey("props")) {
-            upload(prefix, "image", object.getJSONArray("props"));
-            upload(prefix, "file", object.getJSONArray("props"));
-        }
+        if (object.containsKey("props"))
+            upload(prefix, object);
         for (String key : object.keySet()) {
             if (kup.contains(key))
                 continue;
 
             JSONObject obj = object.getJSONObject(key);
-            if (json.containsKey(obj, "props")) {
-                upload(prefix, "image", obj.getJSONArray("props"));
-                upload(prefix, "file", obj.getJSONArray("props"));
-            }
+            if (json.containsKey(obj, "props"))
+                upload(prefix, obj);
             if (json.containsKey(obj, "toolbar"))
                 upload(prefix, "upload", obj.getJSONArray("toolbar"));
             else if (json.has(object, "key", "setting")) {
@@ -275,6 +272,12 @@ public class MetaHelperImpl implements MetaHelper, ContextRefreshedListener, Cro
             map.put(object.getString("key"), string);
         if (object.containsKey("uri"))
             map.put(object.getString("uri"), string);
+    }
+
+    private void upload(String prefix, JSONObject object) {
+        JSONArray props = object.getJSONArray("props");
+        upload(prefix, "image", props);
+        upload(prefix, "file", props);
     }
 
     private void upload(String prefix, String type, JSONArray array) {
