@@ -18,10 +18,21 @@
 }
 
 .console-form-children {
-    border: 1px solid #f0f0f0;
+    border: 1px solid #91d5ff
 }
 
 .console-form-children-title {
+    padding: 8px 0;
+    background-color: #e6f7ff;
+    text-align: center;
+}
+
+.console-form-children-divider {
+    border-top: 1px solid #91d5ff;
+}
+
+.console-form-children-plus {
+    padding: 8px 0;
     text-align: center;
 }
 

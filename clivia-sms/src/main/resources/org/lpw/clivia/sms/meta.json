@@ -15,17 +15,7 @@
         },
         {
             "name": "config",
-            "type": "array",
-            "children": [
-                {
-                    "name": "name"
-                },
-                {
-                    "name": "state",
-                    "type": "switch",
-                    "service": "state"
-                }
-            ]
+            "type": "text-area"
         },
         {
             "name": "state",

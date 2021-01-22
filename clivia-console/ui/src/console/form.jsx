@@ -1,6 +1,6 @@
 import React from 'react';
 import { Form, Radio, Checkbox, Select, DatePicker, Switch, Input, Button, message } from 'antd';
-import { PaperClipOutlined, SyncOutlined } from '@ant-design/icons';
+import { PaperClipOutlined, SyncOutlined, PlusOutlined } from '@ant-design/icons';
 import moment from 'moment';
 import { service, url } from '../http';
 import meta from './meta';
@@ -41,6 +41,7 @@ class Base extends React.Component {
         this.state = props.data || {};
         this.format(this.state);
         this.values = {};
+        this.itemIndex = 0;
     }
 
     componentDidMount = () => {
@@ -88,7 +89,12 @@ class Base extends React.Component {
                 values[prop.name] = toPercent(value);
             else if (prop.type === 'switch')
                 values[prop.name] = value === 1 || value === '1';
-            else if (value) {
+            else if (prop.type === 'array') {
+                let array = toArray(value);
+                for (let i = 0; i < array.length; i++)
+                    for (let k in array[i])
+                        values[prop.name + ':' + k + ':' + i] = array[i][k];
+            } else if (value) {
                 if (prop.type === 'date')
                     values[prop.name] = moment(value, 'YYYY-MM-DD');
                 else if (prop.type === 'datetime')
@@ -174,9 +180,33 @@ class Base extends React.Component {
     }
 
     item = (items, prop, key) => {
+        if (prop.type === 'array') {
+            let is = [];
+            let array = toArray(this.state[prop.name]);
+            for (let i = 0; i < array.length; i++) {
+                is.push(<div key={prop.name + ':divider:' + i} className="console-form-children-divider" />);
+                for (let child of prop.children) {
+                    let c = JSON.parse(JSON.stringify(child));
+                    c.name = prop.name + ':' + c.name + ':' + i;
+                    this.item(is, c, prop.name + ':');
+                }
+            }
+            items.push(
+                <div key={prop.name} className="console-form-children">
+                    <div className="console-form-children-title">{prop.label}</div>
+                    {is}
+                    <div className="console-form-children-divider" />
+                    <div className="console-form-children-plus"><button type="primary" onClick={this.plus.bind(this, prop)}><PlusOutlined /></button></div>
+                </div>
+            );
+            this.itemIndex++;
+
+            return;
+        }
+
         let item = {
             key: key + prop.name,
-            className: 'console-form-item console-form-item-' + (items.length % 2 === 0 ? 'even' : 'odd'),
+            className: 'console-form-item console-form-item-' + (this.itemIndex++ % 2 === 0 ? 'odd' : 'even'),
             label: prop.label
         };
         if (prop.type && prop.type.startsWith('read-only')) {
@@ -193,20 +223,6 @@ class Base extends React.Component {
             items.push(<Form.Item {...item}><Editor name={prop.name} value={this.state[prop.name] || ''} form={this} /></Form.Item>);
         } else if (prop.type === 'html') {
             items.push(<Form.Item {...item}><div dangerouslySetInnerHTML={{ __html: this.state[prop.name] || '' }} /></Form.Item>);
-        } else if (prop.type === 'array') {
-            let is = [];
-            for (let i = 0; i < 5; i++) {
-                for (let child of prop.children) {
-                    child.name += ':' + i;
-                    this.item(is, child, prop.name + ':');
-                }
-            }
-            items.push(
-                <div key={prop.name} className="console-form-children">
-                    <div className="console-form-children-title">{prop.label}</div>
-                    {is}
-                </div>
-            );
         } else if (prop.type === 'agreement') {
             let value = this.state[prop.agreement] || { uri: '', name: '' };
             if (value) {
@@ -229,6 +245,17 @@ class Base extends React.Component {
                 item.valuePropName = 'checked';
             items.push(<Form.Item {...item} name={prop.name}>{this.input(prop)}</Form.Item>);
         }
+    }
+
+    plus = (prop) => {
+        let obj = {};
+        for (let child of prop.children)
+            obj[child.name] = '';
+        let data = toArray(this.state[prop.name]);
+        data.push(obj);
+        let state = {};
+        state[prop.name] = data;
+        this.setState(state);
     }
 
     readonly = prop => {
@@ -360,7 +387,33 @@ class Base extends React.Component {
 class Normal extends Base {
     load = () => service(this.props.body.uri(this.props.uri, this.props.meta.service), this.props.parameter);
 
-    submit = (mt, values) => service(this.props.body.uri(this.props.uri, mt.service || mt.type), { ...values, ...this.props.parameter });
+    submit = (mt, values) => {
+        for (let prop of this.props.meta.props) {
+            if (prop.type === 'array') {
+                let array = [];
+                for (let key in values) {
+                    if (values[key] === undefined)
+                        continue;
+
+                    if (key.indexOf(prop.name) > -1) {
+                        let ks = key.split(':');
+                        let index = toInt(ks[2]);
+                        let obj = array[index] || {};
+                        obj[ks[1]] = values[key];
+                        delete values[key];
+                        array[index] = obj;
+                    }
+                }
+                let arr = [];
+                for (let obj of array)
+                    if (obj)
+                        arr.push(obj);
+                values[prop.name] = JSON.stringify(arr);
+            }
+        }
+
+        return service(this.props.body.uri(this.props.uri, mt.service || mt.type), { ...values, ...this.props.parameter });
+    }
 }
 
 export default Normal;
