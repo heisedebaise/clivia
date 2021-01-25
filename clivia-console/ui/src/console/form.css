@@ -31,6 +31,15 @@
     border-top: 1px solid #91d5ff;
 }
 
+.console-form-children-remove {
+    float: right;
+    transform: translateY(-100%);
+    border-left: 1px solid #91d5ff;
+    border-top: 1px solid #91d5ff;
+    padding: 4px 8px;
+    cursor: pointer;
+}
+
 .console-form-children-plus {
     padding: 8px 0;
     text-align: center;

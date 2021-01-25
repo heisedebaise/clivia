@@ -1,6 +1,6 @@
 import React from 'react';
 import { Form, Radio, Checkbox, Select, DatePicker, Switch, Input, Button, message } from 'antd';
-import { PaperClipOutlined, SyncOutlined, PlusOutlined } from '@ant-design/icons';
+import { PaperClipOutlined, SyncOutlined, DeleteOutlined, PlusOutlined } from '@ant-design/icons';
 import moment from 'moment';
 import { service, url } from '../http';
 import meta from './meta';
@@ -165,6 +165,7 @@ class Base extends React.Component {
     }
 
     render = () => {
+        this.itemIndex = 0;
         let items = [];
         if (this.props.meta.info)
             items.push(<div key={'info:' + this.props.meta.info} className="console-info" dangerouslySetInnerHTML={{ __html: this.state[this.props.meta.info] }} />);
@@ -184,19 +185,25 @@ class Base extends React.Component {
             let is = [];
             let array = toArray(this.state[prop.name]);
             for (let i = 0; i < array.length; i++) {
+                if (array[i] === null)
+                    continue;
+
                 is.push(<div key={prop.name + ':divider:' + i} className="console-form-children-divider" />);
                 for (let child of prop.children) {
                     let c = JSON.parse(JSON.stringify(child));
                     c.name = prop.name + ':' + c.name + ':' + i;
                     this.item(is, c, prop.name + ':');
                 }
+                is.push(
+                    <div key={prop.name + ':remove:' + i} className="console-form-children-remove" onClick={this.remove.bind(this, prop, i)}><DeleteOutlined /></div>
+                );
             }
             items.push(
                 <div key={prop.name} className="console-form-children">
                     <div className="console-form-children-title">{prop.label}</div>
                     {is}
                     <div className="console-form-children-divider" />
-                    <div className="console-form-children-plus"><button type="primary" onClick={this.plus.bind(this, prop)}><PlusOutlined /></button></div>
+                    <div className="console-form-children-plus"><Button onClick={this.plus.bind(this, prop)}><PlusOutlined /></Button></div>
                 </div>
             );
             this.itemIndex++;
@@ -255,6 +262,14 @@ class Base extends React.Component {
         data.push(obj);
         let state = {};
         state[prop.name] = data;
+        this.setState(state);
+    }
+
+    remove = (prop, index) => {
+        let array = toArray(this.state[prop.name]);
+        array[index] = null;
+        let state = {};
+        state[prop.name] = array;
         this.setState(state);
     }
 
@@ -391,13 +406,23 @@ class Normal extends Base {
         for (let prop of this.props.meta.props) {
             if (prop.type === 'array') {
                 let array = [];
+                let state = toArray(this.state[prop.name]);
                 for (let key in values) {
-                    if (values[key] === undefined)
+                    if (values[key] === undefined) {
+                        delete values[key];
+
                         continue;
+                    }
 
                     if (key.indexOf(prop.name) > -1) {
                         let ks = key.split(':');
                         let index = toInt(ks[2]);
+                        if (state[index] === null) {
+                            delete values[key];
+
+                            continue;
+                        }
+
                         let obj = array[index] || {};
                         obj[ks[1]] = values[key];
                         delete values[key];

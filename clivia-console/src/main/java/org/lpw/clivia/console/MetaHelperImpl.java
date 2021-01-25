@@ -290,6 +290,8 @@ public class MetaHelperImpl implements MetaHelper, ContextRefreshedListener, Cro
                 else if (upload.indexOf('.') == -1)
                     prop.put("upload", prefix + upload);
             }
+            if (json.has(prop, "type", "array"))
+                upload(prefix, type, prop.getJSONArray("children"));
         }
     }
 
