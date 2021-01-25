@@ -59,12 +59,17 @@ class File extends React.Component {
         for (let file of this.state.list) {
             if (!file.uri) {
                 file.uri = file.response.path;
+                if (file.response.thumbnail)
+                    file.thumbnail = file.response.thumbnail;
                 file.url = url(file.uri);
             }
-            list.push({
+            let f = {
                 name: file.name,
                 uri: file.uri
-            });
+            };
+            if (file.thumbnail)
+                f.thumbnail = file.thumbnail;
+            list.push(f);
         }
         this.props.form.value(this.props.name, JSON.stringify(list));
     }
