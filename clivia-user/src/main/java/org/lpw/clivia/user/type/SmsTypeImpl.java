@@ -38,4 +38,9 @@ public class SmsTypeImpl extends TypeSupport {
     public Set<String> getUid(String uid, String password) {
         return Set.of(uid);
     }
+
+    @Override
+    public String getMobile(String uid, String password) {
+        return uid;
+    }
 }
