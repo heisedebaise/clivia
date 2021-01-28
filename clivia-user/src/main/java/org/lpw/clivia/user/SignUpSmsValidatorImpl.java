@@ -7,7 +7,7 @@ import org.springframework.stereotype.Controller;
 import javax.inject.Inject;
 
 @Controller(UserService.VALIDATOR_SIGN_UP_SMS)
-public class SignUpCaptchaValidatorImpl extends CaptchaValidatorSupport {
+public class SignUpSmsValidatorImpl extends CaptchaValidatorSupport {
     @Inject
     private KeyvalueService keyvalueService;
 
