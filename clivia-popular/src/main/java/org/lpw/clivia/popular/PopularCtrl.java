@@ -8,9 +8,6 @@ import org.springframework.stereotype.Controller;
 
 import javax.inject.Inject;
 
-/**
- * @author lpw
- */
 @Controller(PopularModel.NAME + ".ctrl")
 @Execute(name = "/popular/", key = PopularModel.NAME, code = "103")
 public class PopularCtrl {

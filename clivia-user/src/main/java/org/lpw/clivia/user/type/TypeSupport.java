@@ -5,9 +5,6 @@ import org.lpw.photon.util.Json;
 
 import javax.inject.Inject;
 
-/**
- * @author lpw
- */
 public abstract class TypeSupport implements Type {
     @Inject
     protected Json json;

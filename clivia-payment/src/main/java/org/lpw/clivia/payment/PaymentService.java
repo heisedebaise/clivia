@@ -4,9 +4,6 @@ import com.alibaba.fastjson.JSONObject;
 
 import java.util.Map;
 
-/**
- * @author lpw
- */
 public interface PaymentService {
     /**
      * 订单号是否存在验证器Bean名称。

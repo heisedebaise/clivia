@@ -1,8 +1,5 @@
 package org.lpw.clivia.cache;
 
-/**
- * @author lpw
- */
 public interface CacheService {
     /**
      * 删除缓存数据。

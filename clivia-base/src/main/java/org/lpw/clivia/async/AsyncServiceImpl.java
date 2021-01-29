@@ -28,9 +28,6 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
-/**
- * @author lpw
- */
 @Service(AsyncModel.NAME + ".service")
 public class AsyncServiceImpl implements AsyncService, SecondsJob, MinuteJob, ContextRefreshedListener {
     private static final String CACHE_STATE = AsyncModel.NAME + ".service.state:";

@@ -2,9 +2,6 @@ package org.lpw.clivia.keyvalue;
 
 import org.lpw.photon.dao.orm.PageList;
 
-/**
- * @author lpw
- */
 interface KeyvalueDao {
     PageList<KeyvalueModel> query(int pageSize, int pageNum);
 

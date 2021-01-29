@@ -8,9 +8,6 @@ import org.springframework.stereotype.Service;
 
 import javax.inject.Inject;
 
-/**
- * @author lpw
- */
 @Service(ShortcutModel.NAME + ".service")
 public class ShortcutServiceImpl implements ShortcutService {
     private static final String CACHE_CODE = ShortcutModel.NAME + ".service.code:";

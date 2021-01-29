@@ -13,9 +13,6 @@ import org.springframework.stereotype.Service;
 
 import javax.inject.Inject;
 
-/**
- * @author lpw
- */
 @Service(KeyvalueModel.NAME + ".service")
 public class KeyvalueServiceImpl implements KeyvalueService {
     @Inject

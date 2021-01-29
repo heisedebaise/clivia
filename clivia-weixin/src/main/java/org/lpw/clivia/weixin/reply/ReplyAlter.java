@@ -7,7 +7,6 @@ import java.util.Map;
 /**
  * 回复修改器。
  *
- * @author lpw
  */
 public interface ReplyAlter {
     /**

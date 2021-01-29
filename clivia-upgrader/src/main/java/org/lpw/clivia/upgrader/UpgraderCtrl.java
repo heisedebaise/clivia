@@ -9,9 +9,6 @@ import org.springframework.stereotype.Controller;
 
 import javax.inject.Inject;
 
-/**
- * @author lpw
- */
 @Controller(UpgraderModel.NAME + ".ctrl")
 @Execute(name = "/upgrader/", key = UpgraderModel.NAME, code = "107")
 public class UpgraderCtrl {

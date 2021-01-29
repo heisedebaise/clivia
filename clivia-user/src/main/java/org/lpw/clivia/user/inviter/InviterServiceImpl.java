@@ -13,9 +13,6 @@ import java.util.Calendar;
 import java.util.Optional;
 import java.util.Set;
 
-/**
- * @author lpw
- */
 @Service(InviterModel.NAME + ".service")
 public class InviterServiceImpl implements InviterService, HourJob {
     @Inject

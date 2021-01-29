@@ -10,9 +10,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-/**
- * @author lpw
- */
 @Service("clivia.user.types")
 public class TypesImpl implements Types, ContextRefreshedListener {
     private Map<String, Type> map;

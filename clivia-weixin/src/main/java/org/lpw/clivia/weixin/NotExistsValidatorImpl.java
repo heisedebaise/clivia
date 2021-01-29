@@ -6,9 +6,6 @@ import org.springframework.stereotype.Controller;
 
 import javax.inject.Inject;
 
-/**
- * @author lpw
- */
 @Controller(WeixinService.VALIDATOR_NOT_EXISTS)
 public class NotExistsValidatorImpl extends ValidatorSupport {
     @Inject

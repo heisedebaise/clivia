@@ -24,9 +24,6 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
-/**
- * @author lpw
- */
 @Service(PaymentModel.NAME + ".service")
 public class PaymentServiceImpl implements PaymentService, UserListener {
     private static final String LOCK_ORDER_NO = PaymentModel.NAME + ".service.order-no:";

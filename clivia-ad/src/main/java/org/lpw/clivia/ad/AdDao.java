@@ -4,9 +4,6 @@ import org.lpw.photon.dao.orm.PageList;
 
 import java.util.Set;
 
-/**
- * @author lpw
- */
 interface AdDao {
     PageList<AdModel> query(String type, int state, int pageSize, int pageNum);
 

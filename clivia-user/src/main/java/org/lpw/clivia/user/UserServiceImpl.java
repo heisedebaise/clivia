@@ -26,9 +26,6 @@ import java.sql.Date;
 import java.util.Optional;
 import java.util.Set;
 
-/**
- * @author lpw
- */
 @Service(UserModel.NAME + ".service")
 public class UserServiceImpl implements UserService {
     private static final String CACHE_MODEL = UserModel.NAME + ".service.model:";

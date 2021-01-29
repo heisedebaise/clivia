@@ -2,9 +2,6 @@ package org.lpw.clivia.weixin;
 
 import org.lpw.photon.dao.orm.PageList;
 
-/**
- * @author lpw
- */
 interface WeixinDao {
     PageList<WeixinModel> query();
 

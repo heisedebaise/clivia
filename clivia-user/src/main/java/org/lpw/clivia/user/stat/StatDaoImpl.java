@@ -10,9 +10,6 @@ import org.springframework.stereotype.Repository;
 import javax.inject.Inject;
 import java.sql.Date;
 
-/**
- * @author lpw
- */
 @Repository(StatModel.NAME + ".dao")
 class StatDaoImpl implements StatDao {
     @Inject

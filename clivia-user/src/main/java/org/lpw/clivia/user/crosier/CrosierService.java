@@ -4,9 +4,6 @@ import com.alibaba.fastjson.JSONArray;
 
 import java.util.Map;
 
-/**
- * @author lpw
- */
 public interface CrosierService {
     JSONArray signUpGrades();
 

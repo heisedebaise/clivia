@@ -26,9 +26,6 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
 
-/**
- * @author lpw
- */
 @Service(ApiModel.NAME + ".service")
 public class ApiServiceImpl implements ApiService, ContextRefreshedListener {
     @Inject

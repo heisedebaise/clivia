@@ -6,9 +6,6 @@ import org.springframework.stereotype.Controller;
 
 import javax.inject.Inject;
 
-/**
- * @author lpw
- */
 @Controller(ShortcutService.VALIDATOR_CODE_EXISTS)
 public class CodeExistsValidatorImpl extends ValidatorSupport {
     @Inject

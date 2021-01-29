@@ -10,9 +10,6 @@ import org.springframework.stereotype.Repository;
 
 import javax.inject.Inject;
 
-/**
- * @author lpw
- */
 @Repository(AccountModel.NAME + ".dao")
 class AccountDaoImpl implements AccountDao {
     @Inject

@@ -12,9 +12,6 @@ import javax.persistence.Table;
 
 import java.sql.Timestamp;
 
-/**
- * @author lpw
- */
 @Component(InviterModel.NAME + ".model")
 @Scope(BeanDefinition.SCOPE_PROTOTYPE)
 @Entity(name = InviterModel.NAME)

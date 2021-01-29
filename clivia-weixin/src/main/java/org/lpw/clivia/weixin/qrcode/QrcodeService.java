@@ -2,9 +2,6 @@ package org.lpw.clivia.weixin.qrcode;
 
 import com.alibaba.fastjson.JSONObject;
 
-/**
- * @author lpw
- */
 public interface QrcodeService {
     JSONObject query(String key, String appId, String user, String name, String scene, String time);
 

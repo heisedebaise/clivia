@@ -2,9 +2,6 @@ package org.lpw.clivia.category;
 
 import com.alibaba.fastjson.JSONArray;
 
-/**
- * @author lpw
- */
 public interface CategoryService {
     String VALIDATOR_EXISTS = CategoryModel.NAME + ".validator.exists";
     String VALIDATOR_LEAF = CategoryModel.NAME + ".validator.leaf";

@@ -9,9 +9,6 @@ import org.springframework.stereotype.Controller;
 
 import javax.inject.Inject;
 
-/**
- * @author lpw
- */
 @Controller(CrosierModel.NAME + ".ctrl")
 @Execute(name = "/user/crosier/", key = CrosierModel.NAME, code = "151")
 public class CrosierCtrl {

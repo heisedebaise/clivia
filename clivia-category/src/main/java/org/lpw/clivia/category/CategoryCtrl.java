@@ -9,9 +9,6 @@ import org.springframework.stereotype.Controller;
 
 import javax.inject.Inject;
 
-/**
- * @author lpw
- */
 @Controller(CategoryModel.NAME + ".ctrl")
 @Execute(name = "/category/", key = CategoryModel.NAME, code = "102")
 public class CategoryCtrl {

@@ -5,9 +5,6 @@ import org.lpw.clivia.account.log.LogModel;
 
 import java.util.Map;
 
-/**
- * @author lpw
- */
 public interface AccountType {
     /**
      * 获取类型名称。

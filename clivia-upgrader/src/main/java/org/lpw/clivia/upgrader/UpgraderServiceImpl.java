@@ -8,9 +8,6 @@ import org.springframework.stereotype.Service;
 
 import javax.inject.Inject;
 
-/**
- * @author lpw
- */
 @Service(UpgraderModel.NAME + ".service")
 public class UpgraderServiceImpl implements UpgraderService {
     @Inject

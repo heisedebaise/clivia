@@ -2,9 +2,6 @@ package org.lpw.clivia.weixin.template;
 
 import com.alibaba.fastjson.JSONObject;
 
-/**
- * @author lpw
- */
 public interface TemplateService {
     String VALIDATOR_EXISTS = TemplateModel.NAME + ".validator.exists";
 

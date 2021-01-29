@@ -10,9 +10,6 @@ import org.springframework.stereotype.Repository;
 import javax.inject.Inject;
 import java.sql.Timestamp;
 
-/**
- * @author lpw
- */
 @Repository(SmsModel.NAME + ".dao")
 class SmsDaoImpl implements SmsDao {
     @Inject

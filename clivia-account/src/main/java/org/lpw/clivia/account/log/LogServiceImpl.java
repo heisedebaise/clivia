@@ -21,9 +21,6 @@ import javax.inject.Inject;
 import java.util.Map;
 import java.util.Set;
 
-/**
- * @author lpw
- */
 @Service(LogModel.NAME + ".service")
 public class LogServiceImpl implements LogService, UserListener, SecondsJob {
     @Inject

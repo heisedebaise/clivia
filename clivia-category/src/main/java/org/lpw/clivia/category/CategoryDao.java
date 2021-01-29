@@ -2,9 +2,6 @@ package org.lpw.clivia.category;
 
 import org.lpw.photon.dao.orm.PageList;
 
-/**
- * @author lpw
- */
 interface CategoryDao {
     PageList<CategoryModel> query(String key, String parent);
 

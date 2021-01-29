@@ -13,9 +13,6 @@ import javax.inject.Inject;
 import java.sql.Timestamp;
 import java.util.Set;
 
-/**
- * @author lpw
- */
 @Repository(OnlineModel.NAME + ".dao")
 class OnlineDaoImpl implements OnlineDao {
     @Inject

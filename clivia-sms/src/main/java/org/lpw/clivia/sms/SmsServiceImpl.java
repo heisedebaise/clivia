@@ -23,9 +23,6 @@ import javax.inject.Inject;
 import java.util.HashMap;
 import java.util.Map;
 
-/**
- * @author lpw
- */
 @Service(SmsModel.NAME + ".service")
 public class SmsServiceImpl implements SmsService, ContextRefreshedListener {
     @Inject
@@ -69,7 +66,7 @@ public class SmsServiceImpl implements SmsService, ContextRefreshedListener {
 
     @Override
     public void save(SmsModel sms) {
-        SmsModel model = validator.isEmpty(sms.getId()) ? null : smsDao.findById(sms.getId());
+        SmsModel model = validator.isId(sms.getId()) ? smsDao.findById(sms.getId()) : null;
         if (model == null) {
             sms.setId(null);
             sms.setTime(dateTime.now());

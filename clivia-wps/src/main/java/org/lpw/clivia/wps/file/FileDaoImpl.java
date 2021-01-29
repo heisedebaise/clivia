@@ -6,9 +6,6 @@ import org.springframework.stereotype.Repository;
 
 import javax.inject.Inject;
 
-/**
- * @author lpw
- */
 @Repository(FileModel.NAME + ".dao")
 class FileDaoImpl implements FileDao {
     @Inject

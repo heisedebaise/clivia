@@ -8,7 +8,6 @@ import java.util.Set;
 /**
  * 认证类型处理器。
  *
- * @author lpw
  */
 public interface Types {
     /**

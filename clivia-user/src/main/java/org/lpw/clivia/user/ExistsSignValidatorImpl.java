@@ -6,9 +6,6 @@ import org.springframework.stereotype.Controller;
 
 import javax.inject.Inject;
 
-/**
- * @author lpw
- */
 @Controller(UserService.VALIDATOR_EXISTS_SIGN)
 public class ExistsSignValidatorImpl extends ValidatorSupport {
     @Inject

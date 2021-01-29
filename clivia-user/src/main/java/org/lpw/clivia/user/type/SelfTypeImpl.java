@@ -15,9 +15,6 @@ import org.springframework.stereotype.Service;
 import javax.inject.Inject;
 import java.util.Set;
 
-/**
- * @author lpw
- */
 @Service("clivia.user.type.self")
 public class SelfTypeImpl extends TypeSupport {
     private static final String PREFIX = "clivia.user.type.";

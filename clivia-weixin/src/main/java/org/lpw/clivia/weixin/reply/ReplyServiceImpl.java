@@ -2,8 +2,8 @@ package org.lpw.clivia.weixin.reply;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import org.lpw.clivia.popular.PopularService;
 import org.lpw.clivia.page.Pagination;
+import org.lpw.clivia.popular.PopularService;
 import org.lpw.clivia.weixin.WeixinModel;
 import org.lpw.clivia.weixin.WeixinService;
 import org.lpw.clivia.weixin.info.InfoService;
@@ -20,9 +20,6 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
-/**
- * @author lpw
- */
 @Service(ReplyModel.NAME + ".service")
 public class ReplyServiceImpl implements ReplyService {
     @Inject
@@ -55,7 +52,7 @@ public class ReplyServiceImpl implements ReplyService {
 
     @Override
     public void save(ReplyModel reply) {
-        ReplyModel model = validator.isEmpty(reply.getId()) ? null : replyDao.findById(reply.getId());
+        ReplyModel model = validator.isId(reply.getId()) ? replyDao.findById(reply.getId()) : null;
         if (model == null)
             reply.setId(null);
         replyDao.save(reply);

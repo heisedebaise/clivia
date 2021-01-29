@@ -7,9 +7,6 @@ import org.springframework.stereotype.Service;
 import java.util.HashMap;
 import java.util.Map;
 
-/**
- * @author lpw
- */
 @Service("clivia.account.types")
 public class AccountTypesImpl implements AccountTypes, ContextRefreshedListener {
     Map<String, AccountType> map;

@@ -25,6 +25,7 @@
         <module>clivia-weixin</module>
         <module>clivia-alipay</module>
         <module>clivia-wps</module>
+        <module>clivia-customerservice</module>
         <module>clivia-console</module>
         <module>clivia-api</module>
         <module>clivia-web</module>

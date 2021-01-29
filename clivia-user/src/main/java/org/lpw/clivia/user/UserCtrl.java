@@ -14,9 +14,6 @@ import org.springframework.stereotype.Controller;
 
 import javax.inject.Inject;
 
-/**
- * @author lpw
- */
 @Controller(UserModel.NAME + ".ctrl")
 @Execute(name = "/user/", key = UserModel.NAME, code = "151")
 public class UserCtrl {

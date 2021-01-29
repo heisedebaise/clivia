@@ -5,9 +5,6 @@ import org.lpw.photon.ctrl.validate.ValidateWrapper;
 import org.lpw.photon.ctrl.validate.ValidatorSupport;
 import org.springframework.stereotype.Controller;
 
-/**
- * @author lpw
- */
 @Controller(UserService.VALIDATOR_PASSWORD)
 public class PasswordValidatorImpl extends ValidatorSupport {
     @Override

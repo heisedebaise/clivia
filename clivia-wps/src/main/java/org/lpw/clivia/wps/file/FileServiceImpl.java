@@ -25,9 +25,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-/**
- * @author lpw
- */
 @Service(FileModel.NAME + ".service")
 public class FileServiceImpl implements FileService, ContextRefreshedListener {
     private static final String USER = "_w_user";

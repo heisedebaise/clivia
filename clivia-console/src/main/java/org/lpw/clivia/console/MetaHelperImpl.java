@@ -29,9 +29,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
-/**
- * @author lpw
- */
 @Service(ConsoleModel.NAME + ".meta")
 public class MetaHelperImpl implements MetaHelper, ContextRefreshedListener, CrosierValid {
     @Inject

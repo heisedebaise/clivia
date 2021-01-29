@@ -8,7 +8,6 @@ import java.util.Set;
 /**
  * DAO操作支持工具。
  *
- * @author lpw
  */
 public interface DaoHelper {
     /**

@@ -14,9 +14,6 @@ import javax.inject.Inject;
 import java.util.HashSet;
 import java.util.Set;
 
-/**
- * @author lpw
- */
 public abstract class UserTypeSupport extends TypeSupport {
     @Inject
     protected Context context;

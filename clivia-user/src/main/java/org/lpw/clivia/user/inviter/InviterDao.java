@@ -2,9 +2,6 @@ package org.lpw.clivia.user.inviter;
 
 import java.sql.Timestamp;
 
-/**
- * @author lpw
- */
 interface InviterDao {
     InviterModel findByPsid(String psid);
 

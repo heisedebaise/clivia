@@ -2,9 +2,6 @@ package org.lpw.clivia.upgrader;
 
 import com.alibaba.fastjson.JSONObject;
 
-/**
- * @author lpw
- */
 public interface UpgraderService {
     JSONObject query();
 

@@ -3,9 +3,6 @@ package org.lpw.clivia.ad;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 
-/**
- * @author lpw
- */
 public interface AdService {
     /**
      * 存在验证器Bean名称。

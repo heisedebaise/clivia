@@ -4,9 +4,6 @@ import org.lpw.photon.dao.orm.PageList;
 
 import java.sql.Timestamp;
 
-/**
- * @author lpw
- */
 interface InfoDao {
     PageList<InfoModel> query(Timestamp time);
 

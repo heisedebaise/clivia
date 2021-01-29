@@ -6,9 +6,6 @@ import org.springframework.stereotype.Controller;
 
 import javax.inject.Inject;
 
-/**
- * @author lpw
- */
 @Controller(TransferService.VALIDATOR_SUCCESS)
 public class SuccessValidatorImpl extends ValidatorSupport {
     @Inject

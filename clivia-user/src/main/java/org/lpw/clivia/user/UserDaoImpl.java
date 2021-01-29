@@ -12,9 +12,6 @@ import javax.inject.Inject;
 import java.sql.Timestamp;
 import java.util.Set;
 
-/**
- * @author lpw
- */
 @Repository(UserModel.NAME + ".dao")
 class UserDaoImpl implements UserDao {
     @Inject

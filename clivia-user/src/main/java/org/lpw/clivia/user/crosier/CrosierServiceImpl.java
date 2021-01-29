@@ -25,9 +25,6 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
-/**
- * @author lpw
- */
 @Service(CrosierModel.NAME + ".service")
 public class CrosierServiceImpl implements CrosierService, ContextRefreshedListener {
     @Inject

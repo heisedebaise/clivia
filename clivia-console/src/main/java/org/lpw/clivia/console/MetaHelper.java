@@ -3,9 +3,6 @@ package org.lpw.clivia.console;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 
-/**
- * @author lpw
- */
 public interface MetaHelper {
     /**
      * 获取元数据。

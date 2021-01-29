@@ -13,9 +13,6 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
-/**
- * @author lpw
- */
 @Service(AdModel.NAME + ".service")
 public class AdServiceImpl implements AdService {
     @Inject
@@ -51,7 +48,7 @@ public class AdServiceImpl implements AdService {
 
     @Override
     public void save(AdModel ad) {
-        AdModel model = validator.isEmpty(ad.getId()) ? null : adDao.findById(ad.getId());
+        AdModel model = validator.isId(ad.getId()) ? adDao.findById(ad.getId()) : null;
         if (model == null)
             ad.setId(null);
         else

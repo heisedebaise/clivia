@@ -6,9 +6,6 @@ import org.springframework.stereotype.Repository;
 
 import javax.inject.Inject;
 
-/**
- * @author lpw
- */
 @Repository(ShortcutModel.NAME + ".dao")
 class ShortcutDaoImpl implements ShortcutDao {
     @Inject

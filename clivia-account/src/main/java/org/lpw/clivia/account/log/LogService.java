@@ -6,9 +6,6 @@ import org.lpw.clivia.account.AccountModel;
 
 import java.util.Map;
 
-/**
- * @author lpw
- */
 public interface LogService {
     /**
      * 状态。

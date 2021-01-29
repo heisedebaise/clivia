@@ -9,9 +9,6 @@ import org.springframework.stereotype.Repository;
 
 import javax.inject.Inject;
 
-/**
- * @author lpw
- */
 @Repository(WpsModel.NAME + ".dao")
 class WpsDaoImpl implements WpsDao {
     @Inject

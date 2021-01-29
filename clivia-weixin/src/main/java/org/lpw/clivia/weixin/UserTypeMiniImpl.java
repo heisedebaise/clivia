@@ -6,9 +6,6 @@ import org.springframework.stereotype.Service;
 
 import javax.inject.Inject;
 
-/**
- * @author lpw
- */
 @Service(WeixinModel.NAME + ".user-type.mini")
 public class UserTypeMiniImpl extends UserTypeSupport {
     @Inject

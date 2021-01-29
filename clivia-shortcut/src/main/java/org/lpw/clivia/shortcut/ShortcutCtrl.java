@@ -10,9 +10,6 @@ import org.springframework.stereotype.Controller;
 
 import javax.inject.Inject;
 
-/**
- * @author lpw
- */
 @Controller(ShortcutModel.NAME + ".ctrl")
 @Execute(name = "/shortcut/", key = ShortcutModel.NAME, code = "104")
 public class ShortcutCtrl {

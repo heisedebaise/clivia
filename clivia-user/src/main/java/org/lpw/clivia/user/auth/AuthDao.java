@@ -2,9 +2,6 @@ package org.lpw.clivia.user.auth;
 
 import org.lpw.photon.dao.orm.PageList;
 
-/**
- * @author lpw
- */
 interface AuthDao {
     PageList<AuthModel> query(String user);
 

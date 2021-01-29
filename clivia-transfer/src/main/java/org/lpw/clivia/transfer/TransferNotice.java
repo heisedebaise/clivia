@@ -5,7 +5,6 @@ import com.alibaba.fastjson.JSONObject;
 /**
  * 转账完成通知。
  *
- * @author lpw
  */
 public interface TransferNotice {
     /**

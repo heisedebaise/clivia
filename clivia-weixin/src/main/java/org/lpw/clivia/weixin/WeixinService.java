@@ -7,9 +7,6 @@ import java.io.OutputStream;
 import java.util.Map;
 import java.util.function.Function;
 
-/**
- * @author lpw
- */
 public interface WeixinService {
     /**
      * 微信key是否存在验证器Bean名称。

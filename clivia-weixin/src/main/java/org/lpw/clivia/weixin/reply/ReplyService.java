@@ -3,9 +3,6 @@ package org.lpw.clivia.weixin.reply;
 import com.alibaba.fastjson.JSONObject;
 import org.lpw.clivia.weixin.WeixinModel;
 
-/**
- * @author lpw
- */
 public interface ReplyService {
     /**
      * 检索。

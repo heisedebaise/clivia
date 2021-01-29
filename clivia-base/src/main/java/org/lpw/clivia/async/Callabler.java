@@ -2,9 +2,6 @@ package org.lpw.clivia.async;
 
 import java.util.concurrent.Callable;
 
-/**
- * @author lpw
- */
 interface Callabler extends Callable<String> {
     /**
      * 设置执行实例。

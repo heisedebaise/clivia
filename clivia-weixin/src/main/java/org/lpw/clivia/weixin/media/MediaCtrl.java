@@ -9,9 +9,6 @@ import org.springframework.stereotype.Controller;
 
 import javax.inject.Inject;
 
-/**
- * @author lpw
- */
 @Controller(MediaModel.NAME + ".ctrl")
 @Execute(name = "/weixin/media/", key = MediaModel.NAME, code = "155")
 public class MediaCtrl {

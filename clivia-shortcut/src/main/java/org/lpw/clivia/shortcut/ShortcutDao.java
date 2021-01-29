@@ -1,8 +1,5 @@
 package org.lpw.clivia.shortcut;
 
-/**
- * @author lpw
- */
 interface ShortcutDao {
     ShortcutModel find(String code);
 

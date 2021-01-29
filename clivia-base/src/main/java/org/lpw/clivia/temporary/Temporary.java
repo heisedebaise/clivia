@@ -5,7 +5,6 @@ import java.io.InputStream;
 /**
  * 临时文件。
  *
- * @author lpw
  */
 public interface Temporary {
     /**

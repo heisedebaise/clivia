@@ -6,9 +6,6 @@ import org.springframework.stereotype.Controller;
 
 import javax.inject.Inject;
 
-/**
- * @author lpw
- */
 @Controller(AsyncModel.NAME + ".ctrl")
 @Execute(name = "/async/")
 public class AsyncCtrl {

@@ -5,9 +5,6 @@ import org.lpw.photon.dao.orm.PageList;
 import java.sql.Timestamp;
 import java.util.Set;
 
-/**
- * @author lpw
- */
 interface UserDao {
     PageList<UserModel> query(Set<String> ids, String idcard, String name, String nick, String mobile, String email, String weixin, String qq,
                               String code, int minGrade, int maxGrade, int state, String register, String from, int pageSize, int pageNum);

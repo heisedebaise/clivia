@@ -5,9 +5,6 @@ import org.springframework.stereotype.Controller;
 
 import javax.inject.Inject;
 
-/**
- * @author lpw
- */
 @Controller("clivia.util.pagination")
 public class PaginationImpl implements Pagination {
     @Inject

@@ -17,9 +17,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-/**
- * @author lpw
- */
 @Service(PopularModel.NAME + ".service")
 public class PopularServiceImpl implements PopularService, MinuteJob {
     private static final String CACHE_PUBLISH = PopularModel.NAME + ".publish:";

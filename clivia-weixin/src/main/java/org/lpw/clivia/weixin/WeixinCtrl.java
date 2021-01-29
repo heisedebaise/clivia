@@ -18,9 +18,6 @@ import org.springframework.stereotype.Controller;
 import javax.inject.Inject;
 import java.util.Map;
 
-/**
- * @author lpw
- */
 @Controller(WeixinModel.NAME + ".ctrl")
 @Execute(name = "/weixin/", key = WeixinModel.NAME, code = "155")
 public class WeixinCtrl {

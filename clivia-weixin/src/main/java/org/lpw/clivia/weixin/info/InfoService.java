@@ -4,9 +4,6 @@ import com.alibaba.fastjson.JSONArray;
 
 import java.util.List;
 
-/**
- * @author lpw
- */
 public interface InfoService {
     /**
      * 检索。

@@ -3,9 +3,6 @@ package org.lpw.clivia.weixin.media;
 import org.lpw.photon.ctrl.upload.ImageUploadListener;
 import org.springframework.stereotype.Controller;
 
-/**
- * @author lpw
- */
 @Controller(MediaModel.NAME + ".upload-listener")
 public class UploadListenerImpl extends ImageUploadListener {
     @Override

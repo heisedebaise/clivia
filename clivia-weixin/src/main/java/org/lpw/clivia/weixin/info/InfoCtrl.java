@@ -8,9 +8,6 @@ import org.springframework.stereotype.Controller;
 
 import javax.inject.Inject;
 
-/**
- * @author lpw
- */
 @Controller(InfoModel.NAME + ".ctrl")
 @Execute(name = "/weixin/info/", key = InfoModel.NAME, code = "155")
 public class InfoCtrl {

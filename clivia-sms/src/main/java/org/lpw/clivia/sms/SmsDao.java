@@ -4,9 +4,6 @@ import org.lpw.photon.dao.orm.PageList;
 
 import java.sql.Timestamp;
 
-/**
- * @author lpw
- */
 interface SmsDao {
     PageList<SmsModel> query(String scene, String pusher, String name, int state, int pageSize, int pageNum);
 

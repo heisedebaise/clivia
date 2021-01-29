@@ -11,9 +11,6 @@ import org.springframework.stereotype.Controller;
 
 import javax.inject.Inject;
 
-/**
- * @author lpw
- */
 @Controller(FileModel.NAME + ".ctrl")
 @Execute(name = "/wps/", key = FileModel.NAME, code = "157")
 public class FileCtrl {

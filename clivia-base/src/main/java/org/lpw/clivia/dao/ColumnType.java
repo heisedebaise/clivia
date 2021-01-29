@@ -1,8 +1,5 @@
 package org.lpw.clivia.dao;
 
-/**
- * @author lpw
- */
 public enum ColumnType {
     /**
      * 字符串。

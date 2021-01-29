@@ -3,7 +3,6 @@ package org.lpw.clivia.weixin;
 /**
  * 微信支付。
  *
- * @author lpw
  */
 public interface WeixinPay {
     /**

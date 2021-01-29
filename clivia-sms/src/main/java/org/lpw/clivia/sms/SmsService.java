@@ -3,9 +3,6 @@ package org.lpw.clivia.sms;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 
-/**
- * @author lpw
- */
 public interface SmsService {
     String VALIDATOR_CAPTCHA = SmsModel.NAME + ".validator.captcha";
 

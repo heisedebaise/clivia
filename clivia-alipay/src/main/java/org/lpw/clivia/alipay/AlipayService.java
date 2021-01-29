@@ -5,9 +5,6 @@ import com.alibaba.fastjson.JSONObject;
 
 import java.util.Map;
 
-/**
- * @author lpw
- */
 public interface AlipayService {
     /**
      * 支付宝APP ID是否不存在验证器Bean名称。

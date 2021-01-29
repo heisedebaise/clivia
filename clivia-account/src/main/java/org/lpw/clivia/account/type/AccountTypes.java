@@ -1,8 +1,5 @@
 package org.lpw.clivia.account.type;
 
-/**
- * @author lpw
- */
 public interface AccountTypes {
     /**
      * 存入。

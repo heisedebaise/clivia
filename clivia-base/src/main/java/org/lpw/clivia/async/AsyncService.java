@@ -4,9 +4,6 @@ import com.alibaba.fastjson.JSONObject;
 
 import java.util.concurrent.Callable;
 
-/**
- * @author lpw
- */
 public interface AsyncService {
     /**
      * 提交。

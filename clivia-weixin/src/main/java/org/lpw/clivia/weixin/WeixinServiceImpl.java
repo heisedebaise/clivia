@@ -56,9 +56,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 
-/**
- * @author lpw
- */
 @Service(WeixinModel.NAME + ".service")
 public class WeixinServiceImpl implements WeixinService, ContextRefreshedListener, HourJob, MinuteJob {
     private static final String CACHE_TICKET_SESSION_ID = WeixinModel.NAME + ".ticket-session-id:";

@@ -4,9 +4,6 @@ import com.alibaba.fastjson.JSONObject;
 
 import java.util.Map;
 
-/**
- * @author lpw
- */
 public interface ChromeService {
     /**
      * 引用KEY是否存在验证器Bean名称。

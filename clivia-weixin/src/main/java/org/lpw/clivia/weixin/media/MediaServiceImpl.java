@@ -18,9 +18,6 @@ import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
-/**
- * @author lpw
- */
 @Service(MediaModel.NAME + ".service")
 public class MediaServiceImpl implements MediaService {
     @Inject

@@ -23,9 +23,6 @@ import javax.inject.Inject;
 import java.util.List;
 import java.util.Map;
 
-/**
- * @author lpw
- */
 @Service(AccountModel.NAME + ".service")
 public class AccountServiceImpl implements AccountService, UserListener {
     private static final String LOCK_USER = AccountModel.NAME + ".service.lock:";

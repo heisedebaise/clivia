@@ -10,9 +10,6 @@ import javax.inject.Inject;
 import java.util.Set;
 import java.util.concurrent.Callable;
 
-/**
- * @author lpw
- */
 @Service(AsyncModel.NAME + ".callabler")
 @Scope(BeanDefinition.SCOPE_PROTOTYPE)
 public class CallablerImpl implements Callabler {

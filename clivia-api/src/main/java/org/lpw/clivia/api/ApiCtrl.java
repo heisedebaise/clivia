@@ -8,9 +8,6 @@ import org.springframework.stereotype.Controller;
 
 import javax.inject.Inject;
 
-/**
- * @author lpw
- */
 @Controller(ApiModel.NAME + ".ctrl")
 @Execute(name = "/api/", key = ApiModel.NAME, code = "192")
 public class ApiCtrl {

@@ -8,9 +8,6 @@ import org.springframework.stereotype.Controller;
 import javax.inject.Inject;
 import java.util.Set;
 
-/**
- * @author lpw
- */
 @Controller(AuthService.VALIDATOR_UID_NOT_EXISTS)
 public class UidNotExistsValidatorImpl extends ValidatorSupport {
     @Inject

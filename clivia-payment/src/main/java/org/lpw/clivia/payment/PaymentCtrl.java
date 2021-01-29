@@ -11,9 +11,6 @@ import org.springframework.stereotype.Controller;
 
 import javax.inject.Inject;
 
-/**
- * @author lpw
- */
 @Controller(PaymentModel.NAME + ".ctrl")
 @Execute(name = "/payment/", key = PaymentModel.NAME, code = "153")
 public class PaymentCtrl {

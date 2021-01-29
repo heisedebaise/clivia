@@ -9,9 +9,6 @@ import org.springframework.stereotype.Repository;
 import javax.inject.Inject;
 import java.util.Set;
 
-/**
- * @author lpw
- */
 @Repository(AdModel.NAME + ".dao")
 class AdDaoImpl implements AdDao {
     @Inject

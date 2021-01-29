@@ -7,9 +7,6 @@ import org.springframework.stereotype.Repository;
 
 import javax.inject.Inject;
 
-/**
- * @author lpw
- */
 @Repository(CrosierModel.NAME + ".dao")
 class CrosierDaoImpl implements CrosierDao {
     @Inject

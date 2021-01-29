@@ -4,9 +4,6 @@ import com.alibaba.fastjson.JSONArray;
 
 import java.util.Set;
 
-/**
- * @author lpw
- */
 public interface AuthService {
     /**
      * UID不存在验证器Bean名称。

@@ -7,9 +7,6 @@ import org.springframework.stereotype.Repository;
 
 import javax.inject.Inject;
 
-/**
- * @author lpw
- */
 @Repository(WeixinModel.NAME + ".dao")
 class WeixinDaoImpl implements WeixinDao {
     @Inject

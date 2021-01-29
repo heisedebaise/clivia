@@ -6,9 +6,6 @@ import org.lpw.photon.dao.orm.PageList;
 import java.sql.Timestamp;
 import java.util.Set;
 
-/**
- * @author lpw
- */
 interface OnlineDao {
     PageList<OnlineModel> query(Set<String> user, String ip, int pageSize, int pageNum);
 

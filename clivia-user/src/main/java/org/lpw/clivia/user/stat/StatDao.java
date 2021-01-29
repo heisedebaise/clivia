@@ -4,9 +4,6 @@ import org.lpw.photon.dao.orm.PageList;
 
 import java.sql.Date;
 
-/**
- * @author lpw
- */
 interface StatDao {
     PageList<StatModel> query(String date, int pageSize, int pageNum);
 

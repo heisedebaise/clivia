@@ -2,9 +2,6 @@ package org.lpw.clivia.weixin.media;
 
 import com.alibaba.fastjson.JSONObject;
 
-/**
- * @author lpw
- */
 public interface MediaService {
     String VALIDATOR_EXISTS = MediaModel.NAME + ".validator.exists";
 

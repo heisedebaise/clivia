@@ -2,9 +2,6 @@ package org.lpw.clivia.weixin.reply;
 
 import org.lpw.photon.dao.orm.PageList;
 
-/**
- * @author lpw
- */
 interface ReplyDao {
     PageList<ReplyModel> query(String key, String receiveType, String receiveMessage, int state, int pageSize, int pageNum);
 

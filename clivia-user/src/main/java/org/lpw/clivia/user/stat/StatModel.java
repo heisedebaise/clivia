@@ -12,9 +12,6 @@ import javax.persistence.Table;
 
 import java.sql.Date;
 
-/**
- * @author lpw
- */
 @Component(StatModel.NAME + ".model")
 @Scope(BeanDefinition.SCOPE_PROTOTYPE)
 @Entity(name = StatModel.NAME)

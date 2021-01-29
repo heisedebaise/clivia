@@ -6,9 +6,6 @@ import org.lpw.photon.dao.orm.PageList;
 
 import java.sql.Date;
 
-/**
- * @author lpw
- */
 public interface UserService {
     /**
      * 类型是否存在验证器Bean名称。

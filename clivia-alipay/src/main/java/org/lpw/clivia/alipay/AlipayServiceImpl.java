@@ -33,9 +33,6 @@ import org.springframework.stereotype.Service;
 import javax.inject.Inject;
 import java.util.Map;
 
-/**
- * @author lpw
- */
 @Service(AlipayModel.NAME + ".service")
 public class AlipayServiceImpl implements AlipayService, TransferListener {
     @Inject

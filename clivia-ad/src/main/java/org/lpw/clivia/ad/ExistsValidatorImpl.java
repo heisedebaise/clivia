@@ -6,9 +6,6 @@ import org.springframework.stereotype.Controller;
 
 import javax.inject.Inject;
 
-/**
- * @author lpw
- */
 @Controller(AdService.VALIDATOR_EXISTS)
 public class ExistsValidatorImpl extends ValidatorSupport {
     @Inject

@@ -8,9 +8,6 @@ import org.springframework.stereotype.Controller;
 
 import javax.inject.Inject;
 
-/**
- * @author lpw
- */
 @Controller("clivia.cache.ctrl")
 @Execute(name = "/cache/")
 public class CacheCtrl {

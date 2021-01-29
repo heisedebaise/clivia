@@ -3,7 +3,6 @@ package org.lpw.clivia.transfer;
 /**
  * 转账监听器。
  *
- * @author lpw
  */
 public interface TransferListener {
     /**

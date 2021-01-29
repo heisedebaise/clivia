@@ -3,7 +3,6 @@ package org.lpw.clivia.user;
 /**
  * 用户监听器。
  *
- * @author lpw
  */
 public interface UserListener {
     /**

@@ -5,7 +5,6 @@ import com.alibaba.fastjson.JSONArray;
 /**
  * 角色等级。
  *
- * @author lpw
  */
 public interface CrosierGrade {
     /**

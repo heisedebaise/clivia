@@ -12,9 +12,6 @@ import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
 
-/**
- * @author lpw
- */
 @Service(CategoryModel.NAME + ".service")
 public class CategoryServiceImpl implements CategoryService {
     @Inject

@@ -10,9 +10,6 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
-/**
- * @author lpw
- */
 @Component(ReplyModel.NAME + ".model")
 @Scope(BeanDefinition.SCOPE_PROTOTYPE)
 @Entity(name = ReplyModel.NAME)

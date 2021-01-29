@@ -2,9 +2,6 @@ package org.lpw.clivia.popular;
 
 import org.lpw.photon.dao.orm.PageList;
 
-/**
- * @author lpw
- */
 interface PopularDao {
     PageList<PopularModel> query(String key, int pageSize, int pageNum);
 

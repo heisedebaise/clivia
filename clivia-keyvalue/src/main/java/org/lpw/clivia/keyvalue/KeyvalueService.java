@@ -3,9 +3,6 @@ package org.lpw.clivia.keyvalue;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 
-/**
- * @author lpw
- */
 public interface KeyvalueService {
     String VALIDATOR_KEY_NOT_EXISTS = KeyvalueModel.NAME + ".validator.key.not-exists";
 

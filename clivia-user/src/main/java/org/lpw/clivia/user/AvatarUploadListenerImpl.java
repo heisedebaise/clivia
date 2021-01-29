@@ -7,9 +7,6 @@ import org.springframework.stereotype.Controller;
 
 import javax.inject.Inject;
 
-/**
- * @author lpw
- */
 @Controller(UserModel.NAME + ".upload-listener.avatar")
 public class AvatarUploadListenerImpl implements UploadListener {
     @Inject

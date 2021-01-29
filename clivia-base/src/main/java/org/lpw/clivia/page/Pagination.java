@@ -3,7 +3,6 @@ package org.lpw.clivia.page;
 /**
  * 分页。
  *
- * @author lpw
  */
 public interface Pagination {
     /**

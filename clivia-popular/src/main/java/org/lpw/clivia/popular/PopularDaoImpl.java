@@ -7,9 +7,6 @@ import org.springframework.stereotype.Repository;
 
 import javax.inject.Inject;
 
-/**
- * @author lpw
- */
 @Repository(PopularModel.NAME + ".dao")
 class PopularDaoImpl implements PopularDao {
     @Inject

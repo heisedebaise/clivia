@@ -2,9 +2,6 @@ package org.lpw.clivia.alipay;
 
 import org.lpw.photon.dao.orm.PageList;
 
-/**
- * @author lpw
- */
 interface AlipayDao {
     PageList<AlipayModel> query();
 

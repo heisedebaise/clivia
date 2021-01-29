@@ -12,9 +12,6 @@ import javax.inject.Inject;
 import java.io.File;
 import java.io.InputStream;
 
-/**
- * @author lpw
- */
 @Component("clivia.temporary")
 public class TemporaryImpl implements Temporary, HourJob {
     @Inject

@@ -3,9 +3,6 @@ package org.lpw.clivia.popular;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 
-/**
- * @author lpw
- */
 public interface PopularService {
     /**
      * 是否存在验证器Bean名称。

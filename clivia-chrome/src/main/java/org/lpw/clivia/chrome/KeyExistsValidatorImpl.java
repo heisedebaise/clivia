@@ -6,9 +6,6 @@ import org.springframework.stereotype.Controller;
 
 import javax.inject.Inject;
 
-/**
- * @author lpw
- */
 @Controller(ChromeService.VALIDATOR_KEY_EXISTS)
 public class KeyExistsValidatorImpl extends ValidatorSupport {
     @Inject

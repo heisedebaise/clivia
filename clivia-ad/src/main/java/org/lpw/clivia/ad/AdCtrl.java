@@ -8,9 +8,6 @@ import org.springframework.stereotype.Controller;
 
 import javax.inject.Inject;
 
-/**
- * @author lpw
- */
 @Controller(AdModel.NAME + ".ctrl")
 @Execute(name = "/ad/", key = AdModel.NAME, code = "106")
 public class AdCtrl {

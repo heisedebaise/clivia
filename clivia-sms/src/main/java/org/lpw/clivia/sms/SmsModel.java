@@ -12,9 +12,6 @@ import javax.persistence.Table;
 
 import java.sql.Timestamp;
 
-/**
- * @author lpw
- */
 @Component(SmsModel.NAME + ".model")
 @Scope(BeanDefinition.SCOPE_PROTOTYPE)
 @Entity(name = SmsModel.NAME)

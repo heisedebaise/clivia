@@ -1,8 +1,5 @@
 package org.lpw.clivia.shortcut;
 
-/**
- * @author lpw
- */
 public interface ShortcutService {
     /**
      * 编码是否存在验证器Bean名称。

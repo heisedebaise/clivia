@@ -7,9 +7,6 @@ import org.springframework.stereotype.Repository;
 
 import javax.inject.Inject;
 
-/**
- * @author lpw
- */
 @Repository(AuthModel.NAME + ".dao")
 class AuthDaoImpl implements AuthDao {
     @Inject

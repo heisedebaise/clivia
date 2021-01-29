@@ -16,9 +16,6 @@ import org.springframework.stereotype.Service;
 import javax.inject.Inject;
 import java.util.Map;
 
-/**
- * @author lpw
- */
 @Service(ChromeModel.NAME + ".service")
 public class ChromeServiceImpl implements ChromeService {
     private static final String CACHE = ChromeModel.NAME + ".service.key:";

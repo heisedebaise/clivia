@@ -16,9 +16,6 @@ import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 
-/**
- * @author lpw
- */
 @Service(InfoModel.NAME + ".service")
 public class InfoServiceImpl implements InfoService, MinuteJob {
     @Inject

@@ -9,9 +9,6 @@ import org.springframework.stereotype.Repository;
 
 import javax.inject.Inject;
 
-/**
- * @author lpw
- */
 @Repository(MediaModel.NAME + ".dao")
 class MediaDaoImpl implements MediaDao {
     @Inject

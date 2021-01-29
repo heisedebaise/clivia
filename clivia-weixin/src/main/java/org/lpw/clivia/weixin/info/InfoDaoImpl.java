@@ -8,9 +8,6 @@ import org.springframework.stereotype.Repository;
 import javax.inject.Inject;
 import java.sql.Timestamp;
 
-/**
- * @author lpw
- */
 @Repository(InfoModel.NAME + ".dao")
 class InfoDaoImpl implements InfoDao {
     @Inject

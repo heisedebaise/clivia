@@ -11,9 +11,6 @@ import org.springframework.stereotype.Repository;
 import javax.inject.Inject;
 import java.sql.Timestamp;
 
-/**
- * @author lpw
- */
 @Repository(TransferModel.NAME + ".dao")
 class TransferDaoImpl implements TransferDao {
     @Inject

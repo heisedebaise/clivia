@@ -5,9 +5,6 @@ import org.springframework.stereotype.Service;
 
 import javax.inject.Inject;
 
-/**
- * @author lpw
- */
 @Service("clivia.cache.service")
 public class CacheServiceImpl implements CacheService {
     @Inject

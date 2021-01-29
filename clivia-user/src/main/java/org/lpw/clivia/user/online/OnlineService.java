@@ -5,9 +5,6 @@ import org.lpw.clivia.user.UserModel;
 
 import java.sql.Date;
 
-/**
- * @author lpw
- */
 public interface OnlineService {
     /**
      * 检索在线数据集。

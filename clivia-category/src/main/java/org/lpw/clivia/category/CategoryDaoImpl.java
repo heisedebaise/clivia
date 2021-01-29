@@ -7,9 +7,6 @@ import org.springframework.stereotype.Repository;
 
 import javax.inject.Inject;
 
-/**
- * @author lpw
- */
 @Repository(CategoryModel.NAME + ".dao")
 class CategoryDaoImpl implements CategoryDao {
     @Inject

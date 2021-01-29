@@ -2,9 +2,6 @@ package org.lpw.clivia.console;
 
 import com.alibaba.fastjson.JSONArray;
 
-/**
- * @author lpw
- */
 public interface MenuHelper {
     /**
      * 获取菜单。

@@ -30,9 +30,6 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
-/**
- * @author lpw
- */
 @Service(TransferModel.NAME + ".service")
 public class TransferServiceImpl implements TransferService, UserListener, ContextRefreshedListener, SecondsJob {
     private static final String LOCK_ORDER_NO = TransferModel.NAME + ".service.order-no:";

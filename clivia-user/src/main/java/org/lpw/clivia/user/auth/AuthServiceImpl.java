@@ -12,9 +12,6 @@ import javax.inject.Inject;
 import java.util.HashSet;
 import java.util.Set;
 
-/**
- * @author lpw
- */
 @Service(AuthModel.NAME + ".service")
 public class AuthServiceImpl implements AuthService {
     private static final String CACHE_UID = AuthModel.NAME + ".service.uid:";

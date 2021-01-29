@@ -7,9 +7,6 @@ import org.springframework.stereotype.Repository;
 
 import javax.inject.Inject;
 
-/**
- * @author lpw
- */
 @Repository(UpgraderModel.NAME + ".dao")
 class UpgraderDaoImpl implements UpgraderDao {
     @Inject

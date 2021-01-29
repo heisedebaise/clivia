@@ -14,9 +14,6 @@ import javax.inject.Inject;
 import java.sql.Date;
 import java.util.Calendar;
 
-/**
- * @author lpw
- */
 @Service(StatModel.NAME + ".service")
 public class StatServiceImpl implements StatService, MinuteJob {
     @Inject

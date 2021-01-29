@@ -13,9 +13,6 @@ import org.springframework.stereotype.Service;
 
 import javax.inject.Inject;
 
-/**
- * @author lpw
- */
 @Service(QrcodeModel.NAME + ".service")
 public class QrcodeServiceImpl implements QrcodeService {
     @Inject

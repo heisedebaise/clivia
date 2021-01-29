@@ -7,9 +7,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.Map;
 
-/**
- * @author lpw
- */
 @Service(AccountTypeSupport.NAME + AccountTypes.PROFIT)
 public class ProfitImpl extends AccountTypeSupport implements AccountType {
     @Override

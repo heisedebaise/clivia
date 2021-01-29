@@ -1,8 +1,5 @@
 package org.lpw.clivia.user.inviter;
 
-/**
- * @author lpw
- */
 public interface InviterService {
     /**
      * 设置邀请码。

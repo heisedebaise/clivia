@@ -11,9 +11,6 @@ import org.springframework.stereotype.Controller;
 
 import javax.inject.Inject;
 
-/**
- * @author lpw
- */
 @Controller(TransferModel.NAME + ".ctrl")
 @Execute(name = "/transfer/", key = TransferModel.NAME, code = "154")
 public class TransferCtrl {

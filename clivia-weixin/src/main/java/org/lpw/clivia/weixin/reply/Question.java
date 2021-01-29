@@ -3,7 +3,6 @@ package org.lpw.clivia.weixin.reply;
 /**
  * 问题。
  *
- * @author lpw
  */
 public interface Question {
     /**

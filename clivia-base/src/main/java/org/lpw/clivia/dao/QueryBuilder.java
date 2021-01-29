@@ -15,7 +15,6 @@ import java.util.Set;
 /**
  * 检索构建器。
  *
- * @author lpw
  */
 public class QueryBuilder {
     private final LiteOrm liteOrm;

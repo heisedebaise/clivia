@@ -8,9 +8,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-/**
- * @author lpw
- */
 public abstract class AccountTypeSupport implements AccountType {
     static final String NAME = "clivia.account.type.";
 

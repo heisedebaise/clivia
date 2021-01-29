@@ -14,9 +14,6 @@ import java.sql.Timestamp;
 import java.util.List;
 import java.util.Set;
 
-/**
- * @author lpw
- */
 @Repository("clivia.util.dao-helper")
 public class DaoHelperImpl implements DaoHelper {
     @Inject

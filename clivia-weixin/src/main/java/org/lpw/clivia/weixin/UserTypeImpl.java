@@ -4,9 +4,6 @@ import com.alibaba.fastjson.JSONObject;
 import org.lpw.clivia.user.UserModel;
 import org.springframework.stereotype.Service;
 
-/**
- * @author lpw
- */
 @Service(WeixinModel.NAME + ".user-type")
 public class UserTypeImpl extends UserTypeSupport {
     @Override

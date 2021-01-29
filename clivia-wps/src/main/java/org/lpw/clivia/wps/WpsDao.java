@@ -2,9 +2,6 @@ package org.lpw.clivia.wps;
 
 import org.lpw.photon.dao.orm.PageList;
 
-/**
- * @author lpw
- */
 interface WpsDao {
     PageList<WpsModel> query(String key, String name, String appId, int pageSize, int pageNum);
 

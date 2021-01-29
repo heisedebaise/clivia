@@ -14,9 +14,6 @@ import javax.inject.Inject;
 import java.util.HashMap;
 import java.util.Map;
 
-/**
- * @author lpw
- */
 @Controller(AlipayModel.NAME + ".ctrl")
 @Execute(name = "/alipay/", key = AlipayModel.NAME, code = "156")
 public class AlipayCtrl {

@@ -10,9 +10,6 @@ import org.springframework.stereotype.Controller;
 
 import javax.inject.Inject;
 
-/**
- * @author lpw
- */
 @Controller(AuthModel.NAME + ".ctrl")
 @Execute(name = "/user/auth/", key = AuthModel.NAME, code = "151")
 public class AuthCtrl {

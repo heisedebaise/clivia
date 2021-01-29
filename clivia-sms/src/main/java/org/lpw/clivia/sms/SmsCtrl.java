@@ -8,9 +8,6 @@ import org.springframework.stereotype.Controller;
 
 import javax.inject.Inject;
 
-/**
- * @author lpw
- */
 @Controller(SmsModel.NAME + ".ctrl")
 @Execute(name = "/sms/", key = SmsModel.NAME, code = "108")
 public class SmsCtrl {

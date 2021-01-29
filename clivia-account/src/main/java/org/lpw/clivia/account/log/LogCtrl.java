@@ -9,9 +9,6 @@ import org.springframework.stereotype.Controller;
 
 import javax.inject.Inject;
 
-/**
- * @author lpw
- */
 @Controller(LogModel.NAME + ".ctrl")
 @Execute(name = "/account/log/", key = LogModel.NAME, code = "152")
 public class LogCtrl {

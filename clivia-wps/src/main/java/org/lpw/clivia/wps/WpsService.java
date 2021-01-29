@@ -2,9 +2,6 @@ package org.lpw.clivia.wps;
 
 import com.alibaba.fastjson.JSONObject;
 
-/**
- * @author lpw
- */
 public interface WpsService {
     String VALIDATOR_KEY_NOT_EXISTS = WpsModel.NAME + ".validator.key.not-exists";
 

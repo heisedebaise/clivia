@@ -9,9 +9,6 @@ import org.springframework.stereotype.Controller;
 
 import javax.inject.Inject;
 
-/**
- * @author lpw
- */
 @Controller(ConsoleModel.NAME + ".ctrl")
 @Execute(name = "/console/", key = ConsoleModel.NAME, code = "191")
 public class ConsoleCtrl {

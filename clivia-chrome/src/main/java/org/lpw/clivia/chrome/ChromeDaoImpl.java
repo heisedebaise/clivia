@@ -8,9 +8,6 @@ import org.springframework.stereotype.Repository;
 
 import javax.inject.Inject;
 
-/**
- * @author lpw
- */
 @Repository(ChromeModel.NAME + ".dao")
 class ChromeDaoImpl implements ChromeDao {
     @Inject

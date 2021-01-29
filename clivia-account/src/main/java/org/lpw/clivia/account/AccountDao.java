@@ -2,9 +2,6 @@ package org.lpw.clivia.account;
 
 import org.lpw.photon.dao.orm.PageList;
 
-/**
- * @author lpw
- */
 interface AccountDao {
     PageList<AccountModel> query(String user, String owner, int type, String balance, int pageSize, int pageNum);
 

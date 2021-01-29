@@ -8,9 +8,6 @@ import org.springframework.stereotype.Controller;
 
 import javax.inject.Inject;
 
-/**
- * @author lpw
- */
 @Controller(ReplyModel.NAME + ".ctrl")
 @Execute(name = "/weixin/reply/", key = ReplyModel.NAME, code = "155")
 public class ReplyCtrl {

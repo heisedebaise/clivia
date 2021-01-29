@@ -2,9 +2,6 @@ package org.lpw.clivia.account.log;
 
 import org.lpw.photon.dao.orm.PageList;
 
-/**
- * @author lpw
- */
 interface LogDao {
     PageList<LogModel> query(String user, String owner, String type, String channel, int state, String start, int pageSize, int pageNum);
 

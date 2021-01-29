@@ -6,9 +6,6 @@ import org.springframework.stereotype.Controller;
 
 import javax.inject.Inject;
 
-/**
- * @author lpw
- */
 @Controller(InviterModel.NAME + ".ctrl")
 @Execute(name = "/user/inviter/", key = InviterModel.NAME, code = "151")
 public class InviterCtrl {

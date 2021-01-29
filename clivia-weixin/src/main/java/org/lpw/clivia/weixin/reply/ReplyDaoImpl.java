@@ -8,9 +8,6 @@ import org.springframework.stereotype.Repository;
 
 import javax.inject.Inject;
 
-/**
- * @author lpw
- */
 @Repository(ReplyModel.NAME + ".dao")
 class ReplyDaoImpl implements ReplyDao {
     @Inject

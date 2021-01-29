@@ -3,7 +3,6 @@ package org.lpw.clivia.dao;
 /**
  * DAO操作类型。
  *
- * @author lpw
  */
 public enum DaoOperation {
     /**

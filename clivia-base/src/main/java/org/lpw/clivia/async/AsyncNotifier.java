@@ -3,7 +3,6 @@ package org.lpw.clivia.async;
 /**
  * 通知器。
  *
- * @author lpw
  */
 public interface AsyncNotifier {
     /**

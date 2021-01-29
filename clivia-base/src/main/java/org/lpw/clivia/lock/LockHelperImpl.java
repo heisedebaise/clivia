@@ -12,9 +12,6 @@ import javax.inject.Inject;
 import java.util.HashSet;
 import java.util.Set;
 
-/**
- * @author lpw
- */
 @Service(LockModel.NAME + ".helper")
 public class LockHelperImpl implements LockHelper, Atomicable, SecondsJob {
     @Inject

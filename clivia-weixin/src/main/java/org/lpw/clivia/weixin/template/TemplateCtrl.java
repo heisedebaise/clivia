@@ -9,9 +9,6 @@ import org.springframework.stereotype.Controller;
 
 import javax.inject.Inject;
 
-/**
- * @author lpw
- */
 @Controller(TemplateModel.NAME + ".ctrl")
 @Execute(name = "/weixin/template/", key = TemplateModel.NAME, code = "155")
 public class TemplateCtrl {

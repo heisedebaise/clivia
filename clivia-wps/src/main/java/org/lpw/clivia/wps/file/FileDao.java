@@ -1,8 +1,5 @@
 package org.lpw.clivia.wps.file;
 
-/**
- * @author lpw
- */
 interface FileDao {
     FileModel findById(String id);
 

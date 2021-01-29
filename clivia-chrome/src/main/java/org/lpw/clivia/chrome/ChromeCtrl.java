@@ -15,9 +15,6 @@ import org.springframework.stereotype.Controller;
 
 import javax.inject.Inject;
 
-/**
- * @author lpw
- */
 @Controller(ChromeModel.NAME + ".ctrl")
 @Execute(name = "/chrome/", key = ChromeModel.NAME, code = "105")
 public class ChromeCtrl {

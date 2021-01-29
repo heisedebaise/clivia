@@ -5,7 +5,6 @@ import java.util.Set;
 /**
  * 分类监听器。
  *
- * @author lpw
  */
 public interface CategoryListener {
     /**
