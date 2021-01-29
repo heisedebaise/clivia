@@ -1,5 +1,6 @@
 package org.lpw.clivia.customerservice;
 
+import org.lpw.clivia.Permit;
 import org.lpw.photon.ctrl.context.Request;
 import org.lpw.photon.ctrl.execute.Execute;
 import org.lpw.photon.ctrl.validate.Validate;
@@ -46,9 +47,8 @@ public class CustomerserviceCtrl {
         return "";
     }
 
-    @Execute(name = "one", validates = {
-            @Validate(validator = Validators.NOT_EMPTY, parameter = "type", failureCode = 1),
-            @Validate(validator = Validators.SIGN)
+    @Execute(name = "one", permit = Permit.always, validates = {
+            @Validate(validator = Validators.NOT_EMPTY, parameter = "type", failureCode = 1)
     })
     public Object one() {
         return customerserviceService.one(request.get("type"));
