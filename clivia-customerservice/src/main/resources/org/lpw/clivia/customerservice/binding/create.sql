@@ -1,5 +1,5 @@
-DROP TABLE IF EXISTS t_binding;
-CREATE TABLE t_binding
+DROP TABLE IF EXISTS t_customerservice_binding;
+CREATE TABLE t_customerservice_binding
 (
   c_id CHAR(36) NOT NULL COMMENT '主键',
   c_user CHAR(36) NOT NULL COMMENT '用户',

@@ -15,9 +15,9 @@ import java.sql.Timestamp;
 @Component(BindingModel.NAME + ".model")
 @Scope(BeanDefinition.SCOPE_PROTOTYPE)
 @Entity(name = BindingModel.NAME)
-@Table(name = "t_binding")
+@Table(name = "t_customerservice_binding")
 public class BindingModel extends ModelSupport {
-    static final String NAME = "clivia.binding";
+    static final String NAME = "clivia.customerservice.binding";
 
     private String user; // 用户
     private String type; // 类型

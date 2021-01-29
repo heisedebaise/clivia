@@ -1,6 +1,6 @@
 {
-    "key": "clivia.binding",
-    "uri": "/binding/",
+    "key": "clivia.customerservice.binding",
+    "uri": "/customerservice/binding/",
     "props": [
         {
             "name": "user"
