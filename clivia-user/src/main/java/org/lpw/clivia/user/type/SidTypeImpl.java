@@ -6,13 +6,17 @@ import org.lpw.clivia.user.UserService;
 import org.lpw.clivia.user.auth.AuthModel;
 import org.lpw.clivia.user.auth.AuthService;
 import org.lpw.photon.ctrl.context.Session;
+import org.lpw.photon.util.Message;
 import org.springframework.stereotype.Service;
 
 import javax.inject.Inject;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicInteger;
 
 @Service("clivia.user.type.sid")
 public class SidTypeImpl extends TypeSupport {
+    @Inject
+    private Message message;
     @Inject
     private Session session;
     @Inject
@@ -45,5 +49,10 @@ public class SidTypeImpl extends TypeSupport {
     @Override
     public Set<String> getUid(String uid, String password) {
         return Set.of(session.getId());
+    }
+
+    @Override
+    public String getNick(String uid, String password) {
+        return message.get("clivia.user.sid.nick");
     }
 }
