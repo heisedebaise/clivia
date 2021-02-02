@@ -23,7 +23,8 @@ class Image extends React.Component {
             }
 
             let uri = this.state.changed ? this.state.uri : this.props.value;
-            uri = uri ? (uri + ',' + data.path) : data.path;
+            let path = data.thumbnail || data.path;
+            uri = uri ? (uri + ',' + path) : path;
             this.setState({
                 uri: uri,
                 changed: true,

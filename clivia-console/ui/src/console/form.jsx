@@ -1,8 +1,8 @@
 import React from 'react';
 import { Form, Radio, Checkbox, Select, DatePicker, Switch, Input, Button, message } from 'antd';
-import { PaperClipOutlined, SyncOutlined, DeleteOutlined, PlusOutlined } from '@ant-design/icons';
+import { SyncOutlined, DeleteOutlined, PlusOutlined } from '@ant-design/icons';
 import moment from 'moment';
-import { service, url } from '../http';
+import { service } from '../http';
 import meta from './meta';
 import { toMoney, fromMoney, toPercent, fromPercent, toInt } from './numeric';
 import { toArray } from '../json';
@@ -284,19 +284,8 @@ class Base extends React.Component {
         if (prop.type === 'read-only:image')
             return <Image name={prop.name} upload={prop.upload} size={prop.size || 1} readonly={true} value={this.state[prop.name] || ''} form={this} />;
 
-        if (prop.type === 'read-only:file') {
-            let files = [];
-            try {
-                for (let file of toArray(value)) {
-                    files.push(<div key={'file-' + files.length} className="console-form-file">
-                        <PaperClipOutlined />
-                        <a href={url(file.uri)} target="_blank" rel="noopener noreferrer">{file.name}</a>
-                    </div>);
-                }
-            } catch (e) { }
-
-            return files;
-        }
+        if (prop.type === 'read-only:file')
+            return <File name={prop.name} upload={prop.upload} readonly={true} value={this.state[prop.name] || ''} form={this} />;
 
         if (prop.labels)
             return prop.multiple ? this.multiple(prop.labels, value) : (prop.labels[value] || '');

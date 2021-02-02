@@ -1,96 +1,32 @@
 import React from 'react';
-import { Upload, Button, message } from 'antd';
-import { UploadOutlined } from '@ant-design/icons';
-import { url } from '../http';
+import { Upload, Button } from 'antd';
+import { PaperClipOutlined, UploadOutlined } from '@ant-design/icons';
+import UploadSupport from './upload';
 import { toArray } from '../json';
+import { url } from '../http';
 
-class File extends React.Component {
+class File extends UploadSupport {
     state = {
         list: null
     }
 
-    change = ({ file }) => {
-        if (file.status === 'uploading') {
-            let list = this.list();
-            for (let f of list)
-                if (f.uid === file.uid)
-                    return;
-
-            list.push(file);
-            this.setState({ list });
-
-            return;
-        }
-
-        if (file.status === 'done') {
-            if (file.response.success) {
-                this.value();
-
-                return;
-            }
-
-            let list = [];
-            for (let f of this.list())
-                if (f.uid !== file.uid)
-                    list.push(f);
-            this.setState({ list });
-            message.warn(file.response.message);
-
-            return;
-        }
-
-        if (file.status === 'removed') {
-            let list = [];
-            for (let f of this.list()) {
-                if (f.uid === file.uid)
-                    continue;
-
-                list.push(f);
-            }
-            this.setState({ list: list });
-            this.value();
-
-            return;
-        }
-    }
-
-    value = () => {
-        let list = [];
-        for (let file of this.state.list) {
-            if (!file.uri) {
-                file.uri = file.response.path;
-                if (file.response.thumbnail)
-                    file.thumbnail = file.response.thumbnail;
-                file.url = url(file.uri);
-            }
-            let f = {
-                name: file.name,
-                uri: file.uri
-            };
-            if (file.thumbnail)
-                f.thumbnail = file.thumbnail;
-            list.push(f);
-        }
-        this.props.form.value(this.props.name, JSON.stringify(list));
-    }
-
-    list = () => {
-        if (this.state.list !== null)
-            return this.state.list;
-
-        let list = this.props.value ? toArray(this.props.value) : [];
-        for (let i = 0; i < list.length; i++) {
-            list[i].uid = '' + i;
-            list[i].url = url(list[i].uri);
-            list[i].status = 'done';
-        }
-
-        return list;
-    }
-
     render = () => {
+        if (this.props.readonly) {
+            let files = [];
+            try {
+                for (let file of toArray(this.props.value)) {
+                    files.push(<div key={'file-' + files.length} className="console-form-file">
+                        <PaperClipOutlined />
+                        <a href={url(file.uri)} target="_blank" rel="noopener noreferrer">{file.name}</a>
+                    </div>);
+                }
+            } catch (e) { }
+
+            return files;
+        }
+
         let props = {
-            action: url('/photon/ctrl-http/upload'),
+            action: this.action,
             name: this.props.upload,
             multiple: true,
             progress: {
