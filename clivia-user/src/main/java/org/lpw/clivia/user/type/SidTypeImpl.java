@@ -1,5 +1,6 @@
 package org.lpw.clivia.user.type;
 
+import org.lpw.clivia.increment.IncrementService;
 import org.lpw.clivia.keyvalue.KeyvalueService;
 import org.lpw.clivia.user.UserModel;
 import org.lpw.clivia.user.UserService;
@@ -7,20 +8,24 @@ import org.lpw.clivia.user.auth.AuthModel;
 import org.lpw.clivia.user.auth.AuthService;
 import org.lpw.photon.ctrl.context.Session;
 import org.lpw.photon.util.Message;
+import org.lpw.photon.util.Numeric;
 import org.springframework.stereotype.Service;
 
 import javax.inject.Inject;
 import java.util.Set;
-import java.util.concurrent.atomic.AtomicInteger;
 
 @Service("clivia.user.type.sid")
 public class SidTypeImpl extends TypeSupport {
     @Inject
     private Message message;
     @Inject
+    private Numeric numeric;
+    @Inject
     private Session session;
     @Inject
     private KeyvalueService keyvalueService;
+    @Inject
+    private IncrementService incrementService;
     @Inject
     private UserService userService;
     @Inject
@@ -53,6 +58,6 @@ public class SidTypeImpl extends TypeSupport {
 
     @Override
     public String getNick(String uid, String password) {
-        return message.get("clivia.user.sid.nick");
+        return message.get("clivia.user.sid.nick", numeric.toString(incrementService.get("clivia.user.sid.nick"), "000"));
     }
 }
