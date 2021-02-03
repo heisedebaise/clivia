@@ -6,7 +6,7 @@
 
     <groupId>org.lpw.clivia</groupId>
     <artifactId>clivia-wps</artifactId>
-    <version>0.3</version>
+    <version>1.0</version>
 
     <name>clivia-wps</name>
     <url>https://github.com/heisedebaise/clivia</url>
@@ -15,12 +15,12 @@
         <dependency>
             <groupId>org.lpw.photon</groupId>
             <artifactId>photon-ctrl-http</artifactId>
-            <version>0.2</version>
+            <version>1.0</version>
         </dependency>
         <dependency>
             <groupId>org.lpw.clivia</groupId>
             <artifactId>clivia-user</artifactId>
-            <version>0.3</version>
+            <version>1.0</version>
         </dependency>
     </dependencies>
 </project>

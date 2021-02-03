@@ -6,7 +6,7 @@
 
     <groupId>org.lpw.clivia</groupId>
     <artifactId>clivia-alipay</artifactId>
-    <version>0.3</version>
+    <version>1.0</version>
 
     <name>clivia-alipay</name>
     <url>https://github.com/heisedebaise/clivia</url>
@@ -15,7 +15,7 @@
         <dependency>
             <groupId>com.alipay.sdk</groupId>
             <artifactId>alipay-sdk-java</artifactId>
-            <version>4.11.33.ALL</version>
+            <version>4.11.47.ALL</version>
             <exclusions>
                 <exclusion>
                     <groupId>com.alibaba</groupId>
@@ -26,12 +26,12 @@
         <dependency>
             <groupId>org.lpw.clivia</groupId>
             <artifactId>clivia-payment</artifactId>
-            <version>0.3</version>
+            <version>1.0</version>
         </dependency>
         <dependency>
             <groupId>org.lpw.clivia</groupId>
             <artifactId>clivia-transfer</artifactId>
-            <version>0.3</version>
+            <version>1.0</version>
         </dependency>
     </dependencies>
 </project>

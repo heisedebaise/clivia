@@ -6,7 +6,7 @@
 
     <groupId>org.lpw.clivia</groupId>
     <artifactId>clivia-user</artifactId>
-    <version>0.3</version>
+    <version>1.0</version>
 
     <name>clivia-user</name>
     <url>https://github.com/heisedebaise/clivia</url>
@@ -15,17 +15,17 @@
         <dependency>
             <groupId>org.lpw.clivia</groupId>
             <artifactId>clivia-keyvalue</artifactId>
-            <version>0.3</version>
+            <version>1.0</version>
         </dependency>
         <dependency>
             <groupId>org.lpw.clivia</groupId>
             <artifactId>clivia-sms</artifactId>
-            <version>0.3</version>
+            <version>1.0</version>
         </dependency>
         <dependency>
             <groupId>org.lpw.clivia</groupId>
             <artifactId>clivia-increment</artifactId>
-            <version>0.3</version>
+            <version>1.0</version>
         </dependency>
     </dependencies>
 </project>
