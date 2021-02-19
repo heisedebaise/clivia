@@ -194,16 +194,18 @@ class Base extends React.Component {
                     c.name = prop.name + ':' + c.name + ':' + i;
                     this.item(is, c, prop.name + ':');
                 }
-                is.push(
-                    <div key={prop.name + ':remove:' + i} className="console-form-children-remove" onClick={this.remove.bind(this, prop, i)}><DeleteOutlined /></div>
-                );
+                if (!prop.fix) {
+                    is.push(
+                        <div key={prop.name + ':remove:' + i} className="console-form-children-remove" onClick={this.remove.bind(this, prop, i)}><DeleteOutlined /></div>
+                    );
+                }
             }
             items.push(
                 <div key={prop.name} className="console-form-children">
                     <div className="console-form-children-title">{prop.label}</div>
                     {is}
-                    <div className="console-form-children-divider" />
-                    <div className="console-form-children-plus"><Button onClick={this.plus.bind(this, prop)}><PlusOutlined /></Button></div>
+                    {prop.fix ? null : <div className="console-form-children-divider" />}
+                    {prop.fix ? null : <div className="console-form-children-plus"><Button onClick={this.plus.bind(this, prop)}><PlusOutlined /></Button></div>}
                 </div>
             );
             this.itemIndex++;
