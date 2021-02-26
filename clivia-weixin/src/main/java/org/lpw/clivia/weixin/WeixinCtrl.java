@@ -146,7 +146,7 @@ public class WeixinCtrl {
         return weixinService.authorize(request.get("key"), request.get("uri"), request.get("scope"));
     }
 
-    @Execute(name = "auth", validates = {
+    @Execute(name = "auth", permit = Permit.always, validates = {
             @Validate(validator = Validators.NOT_EMPTY, parameter = "key", failureCode = 2),
             @Validate(validator = Validators.NOT_EMPTY, parameter = "code", failureCode = 51),
             @Validate(validator = WeixinService.VALIDATOR_EXISTS, parameter = "key", failureCode = 52)
