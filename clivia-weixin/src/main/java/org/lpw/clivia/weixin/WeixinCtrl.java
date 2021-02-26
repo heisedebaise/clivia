@@ -136,6 +136,16 @@ public class WeixinCtrl {
         return weixinService.findByKey(request.get("key")).getAppId();
     }
 
+    @Execute(name = "authorize", permit = Permit.always, validates = {
+            @Validate(validator = Validators.NOT_EMPTY, parameter = "key", failureCode = 2),
+            @Validate(validator = Validators.NOT_EMPTY, parameter = "uri", failureCode = 25),
+            @Validate(validator = Validators.NOT_EMPTY, parameter = "scope", failureCode = 26),
+            @Validate(validator = WeixinService.VALIDATOR_EXISTS, parameter = "key", failureCode = 52)
+    })
+    public Object authorize() {
+        return weixinService.authorize(request.get("key"), request.get("uri"), request.get("scope"));
+    }
+
     @Execute(name = "auth", validates = {
             @Validate(validator = Validators.NOT_EMPTY, parameter = "key", failureCode = 2),
             @Validate(validator = Validators.NOT_EMPTY, parameter = "code", failureCode = 51),

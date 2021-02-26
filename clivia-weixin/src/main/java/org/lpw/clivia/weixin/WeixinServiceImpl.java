@@ -406,6 +406,14 @@ public class WeixinServiceImpl implements WeixinService, ContextRefreshedListene
     }
 
     @Override
+    public String authorize(String key, String uri, String scope) {
+        WeixinModel weixin = weixinDao.findByKey(key);
+
+        return "https://open.weixin.qq.com/connect/oauth2/authorize?appid=" + weixin.getAppId() + "&redirect_uri=" + codec.encodeUrl(ctrlHelper.url(uri), null)
+                + "&response_type=code&scope=" + scope + "#wechat_redirect";
+    }
+
+    @Override
     public JSONObject auth(String key, String code) {
         if (code.equals("subscribe-sign-in")) {
             JSONObject object = session.get(SESSION_SUBSCRIBE_SIGN_IN);

@@ -109,6 +109,16 @@ public interface WeixinService {
     JSONObject subscribeSignIn();
 
     /**
+     * 获取认证Code URL。
+     *
+     * @param key   配置key。
+     * @param uri   回调URI。
+     * @param scope 应用授权作用域。
+     * @return 认证Code URL。
+     */
+    String authorize(String key, String uri, String scope);
+
+    /**
      * 认证用户信息。
      *
      * @param key  配置key。
