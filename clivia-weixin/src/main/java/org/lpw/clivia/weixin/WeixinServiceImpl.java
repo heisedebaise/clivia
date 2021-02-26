@@ -541,7 +541,7 @@ public class WeixinServiceImpl implements WeixinService, ContextRefreshedListene
     }
 
     @Override
-    public JSONObject prepayMini(String key, String user, String openId, String subject, int amount, String billNo, String notice) {
+    public JSONObject prepayJsapi(String key, String user, String openId, String subject, int amount, String billNo, String notice) {
         Map<String, String> map = prepay(key, user, openId, subject, amount, billNo, notice, "JSAPI", new HashMap<>());
         if (map == null)
             return null;
@@ -555,7 +555,7 @@ public class WeixinServiceImpl implements WeixinService, ContextRefreshedListene
 
         JSONObject object = new JSONObject();
         object.putAll(param);
-        object.put("sign", sign(param, findByKey(key).getMchKey()));
+        object.put("paySign", sign(param, findByKey(key).getMchKey()));
 
         return object;
     }

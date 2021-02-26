@@ -195,15 +195,15 @@ public class WeixinCtrl {
                 request.getAsInt("amount"), request.get("billNo"), request.get("notice")));
     }
 
-    @Execute(name = "prepay-mini", validates = {
+    @Execute(name = "prepay-jsapi,prepay-mini", validates = {
             @Validate(validator = Validators.NOT_EMPTY, parameter = "key", failureCode = 2),
             @Validate(validator = Validators.NOT_EMPTY, parameter = "subject", failureCode = 21),
             @Validate(validator = Validators.GREATER_THAN, number = {0}, parameter = "amount", failureCode = 22),
             @Validate(validator = UserService.VALIDATOR_EXISTS_SIGN, parameter = "user", failureCode = 23),
             @Validate(validator = WeixinService.VALIDATOR_EXISTS, parameter = "key", failureCode = 24)
     })
-    public Object prepayMini() {
-        return prepay(weixinService.prepayMini(request.get("key"), request.get("user"), request.get("openId"), request.get("subject"),
+    public Object prepayJsapi() {
+        return prepay(weixinService.prepayJsapi(request.get("key"), request.get("user"), request.get("openId"), request.get("subject"),
                 request.getAsInt("amount"), request.get("billNo"), request.get("notice")));
     }
 

@@ -175,7 +175,7 @@ public interface WeixinService {
     JSONObject prepayApp(String key, String user, String subject, int amount, String billNo, String notice);
 
     /**
-     * 生成小程序支付参数。
+     * 生成JSAPI/小程序支付参数。
      *
      * @param key     引用key。
      * @param user    用户ID。
@@ -186,7 +186,7 @@ public interface WeixinService {
      * @param notice  异步通知。
      * @return 支付参数。
      */
-    JSONObject prepayMini(String key, String user, String openId, String subject, int amount, String billNo, String notice);
+    JSONObject prepayJsapi(String key, String user, String openId, String subject, int amount, String billNo, String notice);
 
     /**
      * 异步通知。
