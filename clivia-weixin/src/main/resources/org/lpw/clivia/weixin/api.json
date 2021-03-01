@@ -30,6 +30,48 @@
                 }
             ],
             "response": ".sign-in.response"
+        },
+        {
+            "name": ".code.url",
+            "uri": "code",
+            "parameters": [
+                {
+                    "name": "key",
+                    "type": "string",
+                    "require": true
+                },
+                {
+                    "name": "uri",
+                    "type": "string",
+                    "require": true,
+                    "description": ".code.url.uri"
+                },
+                {
+                    "name": "scope",
+                    "type": "string",
+                    "require": true,
+                    "description": ".code.url.scope"
+                }
+            ],
+            "response": ".code.url"
+        },
+        {
+            "name": ".auth",
+            "uri": "auth",
+            "parameters": [
+                {
+                    "name": "key",
+                    "type": "string",
+                    "require": true
+                },
+                {
+                    "name": "code",
+                    "type": "string",
+                    "require": true,
+                    "description": ".auth.code"
+                }
+            ],
+            "response": ".auth.response"
         }
     ]
 }

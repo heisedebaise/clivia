@@ -406,10 +406,11 @@ public class WeixinServiceImpl implements WeixinService, ContextRefreshedListene
     }
 
     @Override
-    public String authorize(String key, String uri, String scope) {
+    public String code(String key, String uri, String scope) {
         WeixinModel weixin = weixinDao.findByKey(key);
 
-        return "https://open.weixin.qq.com/connect/oauth2/authorize?appid=" + weixin.getAppId() + "&redirect_uri=" + codec.encodeUrl(ctrlHelper.url(uri), null)
+        return "https://open.weixin.qq.com/connect/oauth2/authorize?appid=" + weixin.getAppId() + "&redirect_uri="
+                + codec.encodeUrl(uri.contains("://") ? uri : ctrlHelper.url(uri), null)
                 + "&response_type=code&scope=" + scope + "#wechat_redirect";
     }
 

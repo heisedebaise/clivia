@@ -5,11 +5,12 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.serializer.SerializerFeature;
 import org.lpw.photon.bean.BeanFactory;
-import org.lpw.photon.bean.ContextRefreshedListener;
+import org.lpw.photon.cache.Cache;
 import org.lpw.photon.ctrl.execute.Execute;
 import org.lpw.photon.dao.model.Model;
 import org.lpw.photon.dao.model.ModelTable;
 import org.lpw.photon.dao.model.ModelTables;
+import org.lpw.photon.util.Context;
 import org.lpw.photon.util.Io;
 import org.lpw.photon.util.Json;
 import org.lpw.photon.util.Logger;
@@ -24,10 +25,12 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Locale;
 import java.util.Set;
 
 @Service(ApiModel.NAME + ".service")
-public class ApiServiceImpl implements ApiService, ContextRefreshedListener {
+public class ApiServiceImpl implements ApiService {
+    @Inject private Context context;
     @Inject
     private Io io;
     @Inject
@@ -41,22 +44,17 @@ public class ApiServiceImpl implements ApiService, ContextRefreshedListener {
     @Inject
     private Logger logger;
     @Inject
+    private Cache cache;
+    @Inject
     private ModelTables modelTables;
     private final Set<String> model = Set.of("model", "pagination");
-    private JSONArray array;
 
     @Override
     public JSONArray get() {
-        return array;
+        return cache.computeIfAbsent(ApiModel.NAME + "." + context.getLocale().toString(), key -> read(), false);
     }
 
-    @Override
-    public int getContextRefreshedSort() {
-        return 192;
-    }
-
-    @Override
-    public void onContextRefreshed() {
+    private JSONArray read() {
         List<JSONObject> list = new ArrayList<>();
         modelTables.getModelClasses().forEach(modelClass -> {
             try (InputStream inputStream = modelClass.getResourceAsStream("api.json");
@@ -71,10 +69,12 @@ public class ApiServiceImpl implements ApiService, ContextRefreshedListener {
             }
         });
         list.sort(Comparator.comparing(o -> (o.getIntValue("sort") + ":" + o.getString("uri"))));
-        array = new JSONArray();
+        JSONArray array = new JSONArray();
         array.addAll(list);
         if (logger.isInfoEnable())
             logger.info("API配置集{}", array);
+
+        return array;
     }
 
     private void put(List<JSONObject> list, Class<? extends Model> modelClass, String string) {
