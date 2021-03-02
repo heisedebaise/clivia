@@ -167,7 +167,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public JSONObject sign(boolean refresh) {
+    public JSONObject sign() {
         if (!onlineService.isSign())
             return new JSONObject();
 
@@ -175,9 +175,7 @@ public class UserServiceImpl implements UserService {
         if (user == null)
             return new JSONObject();
 
-        if (refresh)
-            cache.remove(CACHE_JSON + user.getId());
-        JSONObject object = getJson(user.getId(), refresh ? null : user);
+        JSONObject object = getJson(user.getId(), null);
         JSONObject auth3 = session.get(SESSION_AUTH3);
         if (auth3 != null)
             object.put("auth3", auth3);
@@ -328,7 +326,7 @@ public class UserServiceImpl implements UserService {
         if (user == null)
             user = userDao.findByCode(idUidCode);
 
-        return user == null ? sign(false) : modelHelper.toJson(user);
+        return user == null ? sign() : modelHelper.toJson(user);
     }
 
     @Override
@@ -531,6 +529,13 @@ public class UserServiceImpl implements UserService {
     @Override
     public void clearCache() {
         clearCache(fromSession());
+    }
+
+    @Override
+    public void clearCache(String id) {
+        UserModel user = findById(id);
+        if (user != null)
+            clearCache(user);
     }
 
     private void clearCache(UserModel user) {

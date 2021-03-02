@@ -13,7 +13,7 @@ public class SignValidatorImpl extends ValidatorSupport {
 
     @Override
     public boolean validate(ValidateWrapper validate, String parameter) {
-        return !userService.sign(false).isEmpty();
+        return !userService.sign().isEmpty();
     }
 
     @Override

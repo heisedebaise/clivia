@@ -50,7 +50,7 @@ public class CrosierInterceptorImpl implements Interceptor {
             return invocation.invoke();
         }
 
-        logger.warn(null, "未授权用户[{}:{}]访问[{}:{}:{}]。", header.getIp(), userService.sign(false), request.getUri(), header.getMap(), request.getMap());
+        logger.warn(null, "未授权用户[{}:{}]访问[{}:{}:{}]。", header.getIp(), userService.sign(), request.getUri(), header.getMap(), request.getMap());
 
         return Failure.NotPermit;
     }

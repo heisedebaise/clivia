@@ -78,10 +78,9 @@ public interface UserService {
     /**
      * 获取当前用户登入信息。
      *
-     * @param refresh 刷新。
      * @return 当前用户登入信息；如果未登入则返回空JSON数据。
      */
-    JSONObject sign(boolean refresh);
+    JSONObject sign();
 
     /**
      * 获取当前用户ID。
@@ -356,4 +355,11 @@ public interface UserService {
      * 清空当前用户缓存数据。
      */
     void clearCache();
+
+    /**
+     * 清空缓存。
+     *
+     * @param id ID值。
+     */
+    void clearCache(String id);
 }
