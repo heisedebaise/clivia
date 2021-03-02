@@ -132,6 +132,13 @@
         {
             "uri": "sign",
             "psid": true,
+            "parameters": [
+                {
+                    "name": "refresh",
+                    "type": "boolean",
+                    "description": ".sign.refresh"
+                }
+            ],
             "response": "model"
         },
         {

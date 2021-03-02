@@ -78,9 +78,10 @@ public interface UserService {
     /**
      * 获取当前用户登入信息。
      *
+     * @param refresh 刷新。
      * @return 当前用户登入信息；如果未登入则返回空JSON数据。
      */
-    JSONObject sign();
+    JSONObject sign(boolean refresh);
 
     /**
      * 获取当前用户ID。

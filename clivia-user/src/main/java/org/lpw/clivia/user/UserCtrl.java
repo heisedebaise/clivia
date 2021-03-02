@@ -77,7 +77,7 @@ public class UserCtrl {
 
     @Execute(name = "sign", permit = Permit.always)
     public Object sign() {
-        return userService.sign();
+        return userService.sign(request.getAsBoolean("refresh"));
     }
 
     @Execute(name = "sign-out", permit = Permit.always)

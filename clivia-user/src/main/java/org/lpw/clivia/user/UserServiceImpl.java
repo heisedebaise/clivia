@@ -167,7 +167,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public JSONObject sign() {
+    public JSONObject sign(boolean refresh) {
         if (!onlineService.isSign())
             return new JSONObject();
 
@@ -175,7 +175,9 @@ public class UserServiceImpl implements UserService {
         if (user == null)
             return new JSONObject();
 
-        JSONObject object = getJson(user.getId(), user);
+        if (refresh)
+            cache.remove(CACHE_JSON + user.getId());
+        JSONObject object = getJson(user.getId(), refresh ? null : user);
         JSONObject auth3 = session.get(SESSION_AUTH3);
         if (auth3 != null)
             object.put("auth3", auth3);
@@ -326,7 +328,7 @@ public class UserServiceImpl implements UserService {
         if (user == null)
             user = userDao.findByCode(idUidCode);
 
-        return user == null ? sign() : modelHelper.toJson(user);
+        return user == null ? sign(false) : modelHelper.toJson(user);
     }
 
     @Override
@@ -341,22 +343,19 @@ public class UserServiceImpl implements UserService {
     }
 
     private JSONObject getJson(String id, UserModel user) {
-        String cacheKey = CACHE_JSON + id;
-        JSONObject object = cache.get(cacheKey);
-        if (object == null) {
-            if (user == null)
-                user = findById(id);
-            if (user == null)
-                object = new JSONObject();
-            else {
-                object = modelHelper.toJson(user);
-                object.put("secret", !validator.isEmpty(user.getSecret()));
-                object.put("auth", authService.query(user.getId()));
-            }
-            cache.put(cacheKey, object, false);
-        }
+        return cache.computeIfAbsent(CACHE_JSON + id, key -> {
+            UserModel model = user;
+            if (model == null)
+                model = findById(id);
+            if (model == null)
+                return new JSONObject();
 
-        return object;
+            JSONObject object = modelHelper.toJson(model);
+            object.put("secret", !validator.isEmpty(model.getSecret()));
+            object.put("auth", authService.query(model.getId()));
+
+            return object;
+        }, false);
     }
 
     @Override

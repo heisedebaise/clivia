@@ -21,6 +21,6 @@ public class AvatarUploadListenerImpl implements UploadListener {
 
     @Override
     public boolean isUploadEnable(UploadReader uploadReader) {
-        return image.is(uploadReader.getContentType(), uploadReader.getFileName()) && !userService.sign().isEmpty();
+        return image.is(uploadReader.getContentType(), uploadReader.getFileName()) && !userService.sign(false).isEmpty();
     }
 }
