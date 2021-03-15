@@ -33,3 +33,7 @@ git push.
 ```bash
 sh bin/push.sh
 ```
+
+## root user
+
+When you log in to the `root` user for the first time, an account will be created automatically, and the password will be the one you provided when logging in. The root user has all permissions.
