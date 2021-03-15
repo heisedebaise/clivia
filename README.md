@@ -22,6 +22,8 @@ build console ui.
 sh bin/console.sh
 ```
 
+deploy to a [tomcat in podman](https://github.com/heisedebaise/docker/tree/master/tomcat:9.0).
+
 git push.
 
 ```bash
