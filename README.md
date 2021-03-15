@@ -1,6 +1,6 @@
 # clivia
 
-dependency on [tephra](/heisedebaise/photon)
+dependency on [tephra](https://github.com/heisedebaise/photon).
 
 ## bin
 
