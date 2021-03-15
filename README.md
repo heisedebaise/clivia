@@ -1,6 +1,6 @@
 # clivia
 
-dependency on [tephra](../photon)
+dependency on [tephra](/heisedebaise/photon)
 
 ## bin
 
@@ -14,6 +14,12 @@ install.
 
 ```bash
 sh bin/install.sh
+```
+
+build console ui.
+
+```bash
+sh bin/console.sh
 ```
 
 git push.
