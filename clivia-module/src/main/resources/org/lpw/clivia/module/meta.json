@@ -1,0 +1,66 @@
+{
+    "key": "clivia.module",
+    "uri": "/module/",
+    "props": [
+        {
+            "name": "code"
+        },
+        {
+            "name": "name"
+        },
+        {
+            "name": "execute",
+            "values": [
+                "query",
+                "save",
+                "delete",
+                "user"
+            ],
+            "multiple": true
+        },
+        {
+            "name": "columns",
+            "type": "array",
+            "children": [
+                {
+                    "name": "name",
+                    "label": ".column.name"
+                }
+            ]
+        }
+    ],
+    "query": {
+        "type": "grid",
+        "ops": [
+            {
+                "type": "modify"
+            },
+            {
+                "type": "delete"
+            }
+        ],
+        "toolbar": [
+            {
+                "type": "create"
+            }
+        ]
+    },
+    "create": {
+        "type": "form",
+        "toolbar": [
+            {
+                "service": "save",
+                "success": "query"
+            }
+        ]
+    },
+    "modify": {
+        "type": "form",
+        "toolbar": [
+            {
+                "service": "save",
+                "success": "query"
+            }
+        ]
+    }
+}

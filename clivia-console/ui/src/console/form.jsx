@@ -329,8 +329,10 @@ class Base extends React.Component {
         if (prop.values) {
             let options = [];
             let keys = Object.keys(prop.values);
-            for (let index in keys)
-                options.push({ label: prop.values[keys[index]], value: keys[index] });
+            for (let index in keys) {
+                let key = keys[index];
+                options.push({ label: prop.values[key] || key, value: key });
+            }
 
             if (prop.multiple)
                 return options.length < 5 ? <Checkbox.Group options={options} /> : <Select options={options} mode="multiple" allowClear />;
