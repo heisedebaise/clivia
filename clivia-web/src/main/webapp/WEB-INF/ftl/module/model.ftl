@@ -1,4 +1,4 @@
-package org.lpw.clivia.module;
+package ${data.pkg};
 
 import org.lpw.photon.dao.model.Jsonable;
 import org.lpw.photon.dao.model.ModelSupport;

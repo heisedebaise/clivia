@@ -66,20 +66,42 @@ public class ModuleServiceImpl implements ModuleService {
         String name = project + "-" + module.getName();
         String path = context.getAbsolutePath(output + name) + "/";
         io.delete(path);
-        String java = path + "src/main/java/" + pkg.replace('.', '/') + "/" + module.getName() + "/";
+        String java = path + "src/main/java/" + pkg.replace('.', '/') + "/" + main(module, "/") + module.getName() + "/";
         io.mkdirs(java);
         String resources = path + "src/main/resources/" + pkg.replace('.', '/') + "/" + module.getName() + "/";
         io.mkdirs(resources);
         JSONArray columns = json.toArray(module.getColumns());
+        String upper = upper(module.getName());
         try {
             if (validator.isEmpty(module.getMain()))
                 pom(name, path);
+            model(module, upper, columns, java);
             create(module, columns, resources);
             message(project, module, columns, resources);
             meta(project, module, columns, resources);
         } catch (Throwable throwable) {
             logger.warn(throwable, "生成模块[{}]时发生异常！", json.toObject(module));
         }
+    }
+
+    private String upper(String string) {
+        StringBuilder sb = new StringBuilder();
+        boolean upper = true;
+        for (char ch : string.toCharArray()) {
+            if (ch == '_') {
+                upper = true;
+
+                continue;
+            }
+
+            if (upper) {
+                sb.append((char) (ch - 'a' + 'A'));
+                upper = false;
+            } else
+                sb.append(ch);
+        }
+
+        return sb.toString();
     }
 
     private void pom(String name, String path) throws IOException {
@@ -90,6 +112,15 @@ public class ModuleServiceImpl implements ModuleService {
         map.put("version", version);
         map.put("url", url);
         freemarker.process("/module/pom", map, outputStream);
+        outputStream.close();
+    }
+
+    private void model(ModuleModel module, String upper, JSONArray columns, String path) throws IOException {
+        OutputStream outputStream = new FileOutputStream(path + upper + "Model.java");
+        Map<String, Object> map = new HashMap<>();
+        map.put("pkg", pkg + "." + main(module, ".") + module.getName());
+        map.put("columns", columns);
+        freemarker.process("/module/model", map, outputStream);
         outputStream.close();
     }
 
