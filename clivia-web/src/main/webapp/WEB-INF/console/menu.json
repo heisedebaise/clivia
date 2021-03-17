@@ -57,6 +57,15 @@
         ]
     },
     {
+        "label": "开发",
+        "items": [
+            {
+                "label": "模块",
+                "service": "/module/query"
+            }
+        ]
+    },
+    {
         "label": "系统",
         "items": [
             {

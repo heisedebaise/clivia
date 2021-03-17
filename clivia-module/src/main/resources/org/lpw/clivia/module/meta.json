@@ -3,6 +3,9 @@
     "uri": "/module/",
     "props": [
         {
+            "name": "main"
+        },
+        {
             "name": "code"
         },
         {
@@ -27,6 +30,10 @@
                     "label": ".column.name"
                 },
                 {
+                    "name": "explain",
+                    "label": ".column.explain"
+                },
+                {
                     "name": "type",
                     "label": ".column.type",
                     "values": [
@@ -46,16 +53,41 @@
                 {
                     "name": "require",
                     "label": ".column.require",
-                    "labels": ".column.requires"
+                    "labels": ".column.no-yes"
+                },
+                {
+                    "name": "search",
+                    "label": ".column.search",
+                    "labels": ".column.no-yes"
+                },
+                {
+                    "name": "order",
+                    "label": ".column.order",
+                    "labels": ".column.orders"
                 }
             ]
         }
     ],
     "query": {
         "type": "grid",
+        "props": [
+            {
+                "name": "code"
+            },
+            {
+                "name": "name"
+            },
+            {
+                "name": "execute"
+            }
+        ],
         "ops": [
             {
                 "type": "modify"
+            },
+            {
+                "service": "generate",
+                "reload": true
             },
             {
                 "type": "delete"

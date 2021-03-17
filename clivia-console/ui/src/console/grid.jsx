@@ -41,9 +41,12 @@ class Grid extends React.Component {
             let column = { key: prop.name, title: prop.label };
             if (prop.labels)
                 column.render = model => this.style(prop, model, prop.multiple ? this.multiple(prop.labels, this.value(model, prop.name)) : prop.labels[this.value(model, prop.name)]);
-            else if (prop.values)
-                column.render = model => this.style(prop, model, prop.multiple ? this.multiple(prop.values, this.value(model, prop.name)) : prop.values[this.value(model, prop.name)]);
-            else if (prop.type === 'money' || prop.type === 'read-only:money')
+            else if (prop.values) {
+                if (prop.values instanceof Array)
+                    column.render = model => this.value(model, prop.name);
+                else
+                    column.render = model => this.style(prop, model, prop.multiple ? this.multiple(prop.values, this.value(model, prop.name)) : prop.values[this.value(model, prop.name)]);
+            } else if (prop.type === 'money' || prop.type === 'read-only:money')
                 column.render = model => this.style(prop, model, toMoney(this.value(model, prop.name), prop.empty));
             else if (prop.type === 'percent' || prop.type === 'read-only:percent')
                 column.render = model => this.style(prop, model, toPercent(this.value(model, prop.name)));

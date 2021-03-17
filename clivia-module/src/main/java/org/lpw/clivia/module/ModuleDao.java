@@ -7,8 +7,6 @@ interface ModuleDao {
 
     ModuleModel findById(String id);
 
-    ModuleModel findByName(String name);
-
     void save(ModuleModel module);
 
     void delete(String id);

@@ -328,10 +328,16 @@ class Base extends React.Component {
 
         if (prop.values) {
             let options = [];
-            let keys = Object.keys(prop.values);
-            for (let index in keys) {
-                let key = keys[index];
-                options.push({ label: prop.values[key] || key, value: key });
+            if (prop.values instanceof Array) {
+                for (let value of prop.values)
+                    options.push({ label: value, value: value });
+            }
+            else if (prop.values instanceof Object) {
+                let keys = Object.keys(prop.values);
+                for (let index in keys) {
+                    let key = keys[index];
+                    options.push({ label: prop.values[key] || key, value: key });
+                }
             }
 
             if (prop.multiple)

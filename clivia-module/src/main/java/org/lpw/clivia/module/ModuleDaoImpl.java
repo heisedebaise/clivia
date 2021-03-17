@@ -23,11 +23,6 @@ class ModuleDaoImpl implements ModuleDao {
     }
 
     @Override
-    public ModuleModel findByName(String name) {
-        return liteOrm.findOne(new LiteQuery(ModuleModel.class).where("c_name=?"), new Object[]{name});
-    }
-
-    @Override
     public void save(ModuleModel module) {
         liteOrm.save(module);
     }

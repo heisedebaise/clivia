@@ -17,21 +17,10 @@ import javax.persistence.Table;
 public class ModuleModel extends ModelSupport {
     static final String NAME = "clivia.module";
 
-    private String main; // 主模块
     private String code; // 编码前缀
     private String name; // 名称
     private String execute; // 操作
     private String columns; // 字段集
-
-    @Jsonable
-    @Column(name = "c_main")
-    public String getMain() {
-        return main;
-    }
-
-    public void setMain(String main) {
-        this.main = main;
-    }
 
     @Jsonable
     @Column(name = "c_code")

@@ -4,12 +4,12 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>org.lpw.clivia</groupId>
-    <artifactId>clivia-module</artifactId>
-    <version>1.0</version>
+    <groupId>${data.groupId}</groupId>
+    <artifactId>${data.name}</artifactId>
+    <version>${data.version}</version>
 
-    <name>clivia-module</name>
-    <url>https://github.com/heisedebaise/clivia</url>
+    <name>${data.name}</name>
+    <url>${data.url}</url>
 
     <dependencies>
         <dependency>
