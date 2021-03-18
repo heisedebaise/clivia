@@ -154,6 +154,7 @@ public class ModuleServiceImpl implements ModuleService {
         map.put("date", date);
         map.put("timestamp", timestamp);
         map.put("uri", "/" + main(module, "/") + module.getName() + "/");
+        map.put("code", module.getCode());
         map.put("execute", module.getExecute());
         map.put("key", key);
         if (!order.isEmpty())
@@ -167,6 +168,8 @@ public class ModuleServiceImpl implements ModuleService {
             output(java + upperName + "Dao.java", "/module/dao", map);
             output(java + upperName + "DaoImpl.java", "/module/dao-impl", map);
             output(java + upperName + "Service.java", "/module/service", map);
+            output(java + upperName + "ServiceImpl.java", "/module/service-impl", map);
+            output(java + upperName + "Ctrl.java", "/module/ctrl", map);
             output(resources + "create.sql", "/module/create", map);
             output(resources + "message.properties", "/module/message", map);
             output(resources + "meta.json", "/module/meta", map);
