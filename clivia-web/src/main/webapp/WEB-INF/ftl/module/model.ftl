@@ -9,56 +9,33 @@ import org.springframework.stereotype.Component;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
+<#if data.date gt 0>
+import java.sql.Date;
+</#if>
+<#if data.timestamp gt 0>
+import java.sql.Timestamp;
+</#if>
 
-@Component(ModuleModel.NAME + ".model")
+@Component(${data.name}Model.NAME + ".model")
 @Scope(BeanDefinition.SCOPE_PROTOTYPE)
-@Entity(name = ModuleModel.NAME)
-@Table(name = "t_module")
-public class ModuleModel extends ModelSupport {
-    static final String NAME = "clivia.module";
+@Entity(name = ${data.name}Model.NAME)
+@Table(name = "t_${data.table}")
+public class ${data.name}Model extends ModelSupport {
+    static final String NAME = "${data.beanName}";
 
-    private String code; // 编码前缀
-    private String name; // 名称
-    private String execute; // 操作
-    private String columns; // 字段集
-
-    @Jsonable
-    @Column(name = "c_code")
-    public String getCode() {
-        return code;
-    }
-
-    public void setCode(String code) {
-        this.code = code;
-    }
+<#list data.columns as column>
+    private ${column.javaType} ${column.field}; // ${column.explain}
+</#list>
+<#list data.columns as column>
 
     @Jsonable
-    @Column(name = "c_name")
-    public String getName() {
-        return name;
+    @Column(name = "c_${column.name}")
+    public ${column.javaType} get${column.method}() {
+        return ${column.field};
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void set${column.method}(${column.javaType} ${column.field}) {
+        this.${column.field} = ${column.field};
     }
-
-    @Jsonable
-    @Column(name = "c_execute")
-    public String getExecute() {
-        return execute;
-    }
-
-    public void setExecute(String execute) {
-        this.execute = execute;
-    }
-
-    @Jsonable
-    @Column(name = "c_columns")
-    public String getColumns() {
-        return columns;
-    }
-
-    public void setColumns(String columns) {
-        this.columns = columns;
-    }
+</#list>
 }

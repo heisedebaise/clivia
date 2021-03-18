@@ -1,23 +1,19 @@
-<#assign search=0 />
 {
-    "key": "${data.key}",
+    "key": "${data.beanName}",
     "uri": "${data.uri}",
     "props": [
 <#list data.columns as column>
         {
             "name": "${column.name}"
         }<#if column_index<data.columns?size-1>,</#if>
-        <#if column.search?? && column.search==1>
-            <#assign search++ />
-        </#if>
 </#list>
     ]<#if data.execute?? && data.execute?length gt 0>,</#if>
 <#if data.execute?contains("query")>
     "query": {
-        "type": "grid"<#if search gt 0 || data.execute?contains("save") || data.execute?contains("delete")>,</#if>
-    <#if search gt 0>
+        "type": "grid"<#if data.search gt 0 || data.execute?contains("save") || data.execute?contains("delete")>,</#if>
+    <#if data.search gt 0>
         "search": [
-        <#assign s=search/>
+        <#assign s=data.search/>
         <#list data.columns as column>
             <#if column.search?? && column.search==1>
                 <#assign s--/>
@@ -73,10 +69,10 @@
 </#if>
 <#if data.execute?contains("user")>
     "user": {
-        "type": "grid"<#if search gt 0>,</#if>
-    <#if search gt 0>
+        "type": "grid"<#if data.search gt 0>,</#if>
+    <#if data.search gt 0>
         "search": [
-        <#assign s=search/>
+        <#assign s=data.search/>
         <#list data.columns as column>
             <#if column.search?? && column.search==1>
                 <#assign s--/>
