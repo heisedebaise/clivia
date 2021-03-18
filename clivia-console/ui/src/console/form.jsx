@@ -197,10 +197,10 @@ class Base extends React.Component {
                 if (!prop.fix) {
                     is.push(
                         <div key={prop.name + ':toolbar:' + i} className="console-form-children-toolbar">
-                            {i > 0 ? <div onClick={this.move.bind(this, prop, i, 0)}><VerticalAlignTopOutlined /></div> : null}
-                            {i > 0 ? <div onClick={this.move.bind(this, prop, i, i - 1)}><ArrowUpOutlined /></div> : null}
-                            {i < array.length - 1 ? <div onClick={this.move.bind(this, prop, i, i + 1)}><ArrowDownOutlined /></div> : null}
-                            {i < array.length - 1 ? <div onClick={this.move.bind(this, prop, i, array.length - 1)}><VerticalAlignBottomOutlined /></div> : null}
+                            {i > 0 ? <div onClick={this.move.bind(this, prop, array.length, i, 0)}><VerticalAlignTopOutlined /></div> : null}
+                            {i > 0 ? <div onClick={this.move.bind(this, prop, array.length, i, i - 1)}><ArrowUpOutlined /></div> : null}
+                            {i < array.length - 1 ? <div onClick={this.move.bind(this, prop, array.length, i, i + 1)}><ArrowDownOutlined /></div> : null}
+                            {i < array.length - 1 ? <div onClick={this.move.bind(this, prop, array.length, i, array.length - 1)}><VerticalAlignBottomOutlined /></div> : null}
                             <div onClick={this.remove.bind(this, prop, i)}><DeleteOutlined /></div>
                         </div>
                     );
@@ -274,52 +274,34 @@ class Base extends React.Component {
     }
 
     move = (prop, length, from, to) => {
-        console.log(this.state);
         let state = {};
         for (let child of prop.children) {
-            console.log(child);
             if (from < to) {
+                for (let i = 0; i < from; i++)
+                    this.moveCopy(prop, child, state, i, i);
                 for (let i = from; i < to; i++)
-                    state[prop.name + ':' + child.name + ':' + i] = this.state[prop.name + ':' + child.name + ':' + (i + 1)];
-                state[prop.name + ':' + child.name + ':' + to] = this.state[prop.name + ':' + child.name + ':' + from];
+                    this.moveCopy(prop, child, state, i + 1, i);
+                this.moveCopy(prop, child, state, from, to);
+                for (let i = to + 1; i < length; i++)
+                    this.moveCopy(prop, child, state, i, i);
             }
             else {
-                state[prop.name + ':' + child.name + ':' + to] = this.state[prop.name + ':' + child.name + ':' + from];
+                for (let i = 0; i < to; i++)
+                    this.moveCopy(prop, child, state, i, i);
+                this.moveCopy(prop, child, state, from, to);
                 for (let i = to; i < from; i++)
-                    state[prop.name + ':' + child.name + ':' + i] = this.state[prop.name + ':' + child.name + ':' + (i + 1)];
+                    this.moveCopy(prop, child, state, i, i + 1);
+                for (let i = from + 1; i < length; i++)
+                    this.moveCopy(prop, child, state, i, i);
             }
         }
-        this.setState(state);
-        // if (to < 0)
-        //     return;
+        this.setState(state, () => this.form.current.setFieldsValue(state));
+    }
 
-        // let array = toArray(this.state[prop.name]);
-        // if (to >= array.length)
-        //     return;
-
-        // let arr = [];
-        // for (let i = 0; i < array.length; i++) {
-        //     if (i === from)
-        //         continue;
-
-        //     if (from < to) {
-        //         arr.push(array[i]);
-        //         if (i === to)
-        //             arr.push(array[from]);
-        //     } else {
-        //         if (i === to)
-        //             arr.push(array[from]);
-        //         arr.push(array[i]);
-        //     }
-        // }
-        // let state = {};
-        // state[prop.name] = arr;
-        // this.setState(state,()=>{
-        //     console.log(this.state);
-        // });
-        // console.log(array);
-        // console.log(arr);
-        // console.log(state);
+    moveCopy = (prop, child, state, source, target) => {
+        let value = this.state[prop.name + ':' + child.name + ':' + source];
+        // if (value || value === 0)
+            state[prop.name + ':' + child.name + ':' + target] = value;
     }
 
     remove = (prop, index) => {
