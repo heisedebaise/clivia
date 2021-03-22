@@ -21,10 +21,12 @@ public class ${data.name}Ctrl {
 <#if data.search gt 0 && (data.execute?contains("query") || data.execute?contains("user"))>
     <#assign search=""/>
     <#list data.columns as column>
-        <#if column.type=="int">
-            <#assign search+="request.getAsInt(\""+column.field+"\"), "/>
-        <#else>
-            <#assign search+="request.get(\""+column.field+"\"), "/>
+        <#if column.search?? && column.search==1>
+            <#if column.type=="int">
+                <#assign search+="request.getAsInt(\""+column.field+"\"), "/>
+            <#else>
+                <#assign search+="request.get(\""+column.field+"\"), "/>
+            </#if>
         </#if>
     </#list>
 </#if>
