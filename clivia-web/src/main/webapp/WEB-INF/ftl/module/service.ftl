@@ -3,6 +3,15 @@ package ${data.pkg};
 
 import com.alibaba.fastjson.JSONObject;
 </#if>
+<#if data.date==2 || data.timestamp==2>
+
+    <#if data.date==2>
+import java.sql.Date;
+    </#if>
+    <#if data.timestamp==2>
+import java.sql.Timestamp;
+    </#if>
+</#if>
 
 public interface ${data.name}Service {
 <#if data.execute?contains("query")>

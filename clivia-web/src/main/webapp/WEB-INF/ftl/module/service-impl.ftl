@@ -10,6 +10,12 @@ import org.lpw.photon.util.Validator;
 import org.springframework.stereotype.Service;
 
 import javax.inject.Inject;
+<#if data.date==2>
+import java.sql.Date;
+</#if>
+<#if data.timestamp==2>
+import java.sql.Timestamp;
+</#if>
 
 @Service(${data.name}Model.NAME + ".service")
 public class ${data.name}ServiceImpl implements ${data.name}Service {
