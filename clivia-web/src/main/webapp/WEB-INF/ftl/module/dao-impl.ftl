@@ -12,6 +12,12 @@ import org.lpw.photon.dao.orm.lite.LiteQuery;
 import org.springframework.stereotype.Repository;
 
 import javax.inject.Inject;
+<#if data.date==2>
+import java.sql.Date;
+</#if>
+<#if data.timestamp==2>
+import java.sql.Timestamp;
+</#if>
 
 @Repository(${data.name}Model.NAME + ".dao")
 class ${data.name}DaoImpl implements ${data.name}Dao {
