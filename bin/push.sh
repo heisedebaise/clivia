@@ -3,4 +3,4 @@
 source bin/gitadd.sh
 git commit -m dev
 git push
-echo 'haha'
+git push hy
