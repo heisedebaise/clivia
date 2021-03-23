@@ -1,3 +1,3 @@
 <#list data.columns as column>
-${data.beanName}.${column.name}=${codec.unicode(column.explain)}
+${data.beanName}.${column.field}=${codec.unicode(column.explain)}
 </#list>
