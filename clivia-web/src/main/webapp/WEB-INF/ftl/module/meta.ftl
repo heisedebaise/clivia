@@ -4,7 +4,7 @@
     "props": [
 <#list data.columns as column>
         {
-            "name": "${column.name}"
+            "name": "${column.field}"
         }<#if column_index<data.columns?size-1>,</#if>
 </#list>
     ]<#if data.execute?? && data.execute?length gt 0>,</#if>
@@ -18,7 +18,7 @@
             <#if column.search?? && column.search==1>
                 <#assign s--/>
             {
-                "name": "${column.name}"
+                "name": "${column.field}"
             }<#if s gt 0>,</#if>
             </#if>
         </#list>
@@ -77,7 +77,7 @@
             <#if column.search?? && column.search==1>
                 <#assign s--/>
             {
-                "name": "${column.name}"
+                "name": "${column.field}"
             }<#if s gt 0>,</#if>
             </#if>
         </#list>
