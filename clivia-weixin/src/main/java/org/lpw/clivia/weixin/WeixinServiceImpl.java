@@ -507,7 +507,7 @@ public class WeixinServiceImpl implements WeixinService, ContextRefreshedListene
     @Override
     public void prepayQrCode(String key, String user, String subject, int amount, String billNo, String notice, int size,
                              String logo, OutputStream outputStream) {
-        Map<String, String> map = prepay(key, user, null, subject, amount, billNo, notice, "NATIVE", new HashMap<>());
+        Map<String, String> map = prepay(key, user, null, subject, amount, billNo, notice, "NATIVE");
         if (map == null)
             return;
 
@@ -517,7 +517,7 @@ public class WeixinServiceImpl implements WeixinService, ContextRefreshedListene
     @Override
     public String prepayQrCodeBase64(String key, String user, String subject, int amount, String billNo, String notice,
                                      int size, String logo) {
-        Map<String, String> map = prepay(key, user, null, subject, amount, billNo, notice, "NATIVE", new HashMap<>());
+        Map<String, String> map = prepay(key, user, null, subject, amount, billNo, notice, "NATIVE");
 
         return map == null ? null : qrCode.create(map.get("code_url"), size > 0 ? size : qrCodeSize, getLogo(logo));
     }
@@ -530,7 +530,7 @@ public class WeixinServiceImpl implements WeixinService, ContextRefreshedListene
 
     @Override
     public JSONObject prepayApp(String key, String user, String subject, int amount, String billNo, String notice) {
-        Map<String, String> map = prepay(key, user, null, subject, amount, billNo, notice, "APP", new HashMap<>());
+        Map<String, String> map = prepay(key, user, null, subject, amount, billNo, notice, "APP");
         if (map == null)
             return null;
 
@@ -551,7 +551,7 @@ public class WeixinServiceImpl implements WeixinService, ContextRefreshedListene
 
     @Override
     public JSONObject prepayJsapi(String key, String user, String openId, String subject, int amount, String billNo, String notice) {
-        Map<String, String> map = prepay(key, user, openId, subject, amount, billNo, notice, "JSAPI", new HashMap<>());
+        Map<String, String> map = prepay(key, user, openId, subject, amount, billNo, notice, "JSAPI");
         if (map == null)
             return null;
 
@@ -569,8 +569,14 @@ public class WeixinServiceImpl implements WeixinService, ContextRefreshedListene
         return object;
     }
 
-    private Map<String, String> prepay(String key, String user, String openId, String subject, int amount, String billNo, String notice,
-                                       String type, Map<String, String> map) {
+    @Override
+    public String prepayH5(String key, String user, String subject, int amount, String billNo, String notice) {
+        Map<String, String> map = prepay(key, user, null, subject, amount, billNo, notice, "MWEB");
+
+        return map == null || !map.containsKey("mweb_url") ? null : map.get("mweb_url");
+    }
+
+    private Map<String, String> prepay(String key, String user, String openId, String subject, int amount, String billNo, String notice, String type) {
         String url = ctrlHelper.url("/weixin/notice");
         if (url == null) {
             logger.warn(null, "root未配置！");
@@ -585,6 +591,7 @@ public class WeixinServiceImpl implements WeixinService, ContextRefreshedListene
             return null;
         }
 
+        Map<String, String> map = new HashMap<>();
         JSONObject object = paymentService.create("weixin", weixin.getAppId(), user, amount, billNo, notice, map);
         String orderNo;
         if (!json.containsKey(object, "orderNo") || validator.isEmpty(orderNo = object.getString("orderNo"))) {

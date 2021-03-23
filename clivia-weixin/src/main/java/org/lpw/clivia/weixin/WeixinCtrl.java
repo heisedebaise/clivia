@@ -217,7 +217,19 @@ public class WeixinCtrl {
                 request.getAsInt("amount"), request.get("billNo"), request.get("notice")));
     }
 
-    private Object prepay(JSONObject object) {
+    @Execute(name = "prepay-h5", validates = {
+            @Validate(validator = Validators.NOT_EMPTY, parameter = "key", failureCode = 2),
+            @Validate(validator = Validators.NOT_EMPTY, parameter = "subject", failureCode = 21),
+            @Validate(validator = Validators.GREATER_THAN, number = {0}, parameter = "amount", failureCode = 22),
+            @Validate(validator = UserService.VALIDATOR_EXISTS_SIGN, parameter = "user", failureCode = 23),
+            @Validate(validator = WeixinService.VALIDATOR_EXISTS, parameter = "key", failureCode = 24)
+    })
+    public Object prepayH5() {
+        return prepay(weixinService.prepayH5(request.get("key"), request.get("user"), request.get("subject"),
+                request.getAsInt("amount"), request.get("billNo"), request.get("notice")));
+    }
+
+    private Object prepay(Object object) {
         return object == null ? templates.get().failure(2427, message.get(WeixinModel.NAME + ".prepay.failure"),
                 null, null) : object;
     }
