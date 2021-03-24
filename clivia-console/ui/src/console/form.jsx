@@ -300,7 +300,7 @@ class Base extends React.Component {
 
     moveCopy = (prop, child, state, source, target) => {
         let value = this.state[prop.name + ':' + child.name + ':' + source];
-        // if (value || value === 0)
+        if (value || value === 0)
             state[prop.name + ':' + child.name + ':' + target] = value;
     }
 
