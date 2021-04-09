@@ -12,6 +12,8 @@ public interface KeyvalueService {
 
     JSONObject object(String key);
 
+    boolean exists(String key);
+
     String value(String key);
 
     int valueAsInt(String key, int defaultValue);

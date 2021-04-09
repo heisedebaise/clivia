@@ -54,6 +54,11 @@ public class KeyvalueServiceImpl implements KeyvalueService {
     }
 
     @Override
+    public boolean exists(String key) {
+        return keyvalueDao.findByKey(key) != null;
+    }
+
+    @Override
     public String value(String key) {
         return cache.computeIfAbsent(getCacheKey(":value:" + key), k -> {
             KeyvalueModel keyvalue = keyvalueDao.findByKey(key);
