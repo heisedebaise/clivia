@@ -5,14 +5,13 @@ import com.alibaba.fastjson.JSONObject;
 
 public interface KeyvalueService {
     String VALIDATOR_KEY_NOT_EXISTS = KeyvalueModel.NAME + ".validator.key.not-exists";
+    String VALIDATOR_KEY_EXISTS = KeyvalueModel.NAME + ".validator.key.exists";
 
     JSONObject query(String key);
 
     JSONArray list(String key);
 
     JSONObject object(String key);
-
-    boolean exists(String key);
 
     String value(String key);
 
