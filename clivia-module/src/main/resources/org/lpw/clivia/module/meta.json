@@ -96,6 +96,10 @@
                 "type": "delete"
             }
         ],
+        "opsize": [
+            3,
+            3
+        ],
         "toolbar": [
             {
                 "type": "create"
