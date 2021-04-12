@@ -1,5 +1,5 @@
 import React from 'react';
-import { Form, Radio, Checkbox, Select, DatePicker, Switch, Input, Button, message } from 'antd';
+import { Form, Radio, Checkbox, Select, DatePicker, Switch, AutoComplete, Input, Button, message } from 'antd';
 import { SyncOutlined, VerticalAlignTopOutlined, ArrowUpOutlined, ArrowDownOutlined, VerticalAlignBottomOutlined, DeleteOutlined, PlusOutlined } from '@ant-design/icons';
 import moment from 'moment';
 import { service } from '../http';
@@ -54,6 +54,18 @@ class Base extends React.Component {
         }
 
         for (let prop of meta.props(this.props.props, this.props.meta.props)) {
+            if (prop.type === 'auto-complete' && prop.service && prop.vname) {
+                service(prop.service, prop.parameter).then(data => {
+                    if (data === null) return;
+
+                    let options = [];
+                    for (let d of data.list || data)
+                        options.push({ value: d[prop.vname] });
+                    let state = {};
+                    state['auto-complete:' + prop.name] = options;
+                    this.setState(state);
+                });
+            }
             if (prop.type === 'agreement') {
                 service('/keyvalue/object', { key: prop.agreement }).then(data => {
                     if (data === null) return;
@@ -392,6 +404,8 @@ class Base extends React.Component {
         if (prop.type === 'text-area') return <Input.TextArea autoSize={{ minRows: 2 }} />;
 
         if (prop.type === 'password') return <Input.Password />;
+
+        if (prop.type === 'auto-complete') return <AutoComplete options={this.state['auto-complete:' + prop.name]} />
 
         return <Input />
     }
