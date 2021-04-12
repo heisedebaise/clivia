@@ -29,7 +29,7 @@
         },
         {
             "name": "gender",
-            "labels": ".genders"
+            "labels": "genders"
         },
         {
             "name": "birthday",
@@ -61,6 +61,67 @@
     ],
     "query": {
         "type": "grid",
+        "props": [
+            {
+                "name": "avatar",
+                "type": "image"
+            },
+            {
+                "label": "details",
+                "type": "multi-line",
+                "lines": [
+                    {
+                        "name": "idcard"
+                    },
+                    {
+                        "name": "name"
+                    },
+                    {
+                        "name": "nick"
+                    },
+                    {
+                        "name": "mobile"
+                    },
+                    {
+                        "name": "email"
+                    },
+                    {
+                        "name": "weixin"
+                    },
+                    {
+                        "name": "qq"
+                    },
+                    {
+                        "name": "gender"
+                    },
+                    {
+                        "name": "birthday"
+                    },
+                    {
+                        "name": "from"
+                    }
+                ]
+            },
+            {
+                "name": "code",
+                "type": "read-only"
+            },
+            {
+                "name": "register",
+                "type": "read-only"
+            },
+            {
+                "name": "grade",
+                "type": "dselect",
+                "service": "/user/crosier/grades",
+                "vname": "grade"
+            },
+            {
+                "name": "state",
+                "type": "switch",
+                "service": "state"
+            }
+        ],
         "search": [
             {
                 "name": "uid"
@@ -95,7 +156,7 @@
             },
             {
                 "name": "state",
-                "labels": ".states"
+                "labels": "states"
             },
             {
                 "name": "from"
@@ -113,6 +174,9 @@
             {
                 "type": "delete"
             }
+        ],
+        "opsize": [
+            8
         ],
         "toolbar": [
             {

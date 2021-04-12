@@ -114,6 +114,28 @@ class Grid extends React.Component {
                 column.render = model => this.style(prop, model, <User data={this.value(model, prop.name)} />);
             else if (prop.style)
                 column.render = model => this.style(prop, model, this.value(model, prop.name));
+            else if (prop.type === 'multi-line') {
+                column.render = model => {
+                    let lines = [];
+                    for (let line of meta.props(props.props, prop.lines)) {
+                        let value = this.value(model, line.name);
+                        if (!value && value !== 0)
+                            continue;
+
+                        if (line.labels)
+                            value = line.labels[value];
+                        else if (line.values && !(line.values instanceof Array))
+                            value = line.values[value];
+                        else if (line.type === 'money' || line.type === 'read-only:money')
+                            value = toMoney(value);
+                        else if (line.type === 'percent' || line.type === 'read-only:percent')
+                            value = toPercent(value);
+                        lines.push(<div key={'line:' + model.id + ':' + line.name}>{line.label} : {this.style(line, model, value)}</div>);
+                    }
+
+                    return lines;
+                }
+            }
             else
                 column.dataIndex = (prop.name || '').split('.');
             this.columns.push(column);
@@ -129,18 +151,23 @@ class Grid extends React.Component {
                             mops.push(op);
 
                     let ops = [];
-                    if (mops.length <= 2) {
-                        for (let op of mops) {
-                            if (ops.length > 0) ops.push(<Divider key="divider" type="vertical" />);
-                            ops.push(this.action(op, model));
+                    let opsize = props.meta.opsize || [2];
+                    if (opsize.length < 2)
+                        opsize[1] = 2;
+                    if (mops.length <= opsize[0]) {
+                        for (let i in mops) {
+                            if (i > 0) ops.push(i % opsize[1] === 0 ? <br key={'br-' + i} /> : <Divider key={'divider-' + i} type="vertical" />);
+                            ops.push(this.action(mops[i], model));
                         }
                     } else {
-                        ops.push(this.action(mops[0], model));
-                        ops.push(<Divider key="divider" type="vertical" />);
-                        let items = [];
-                        for (let i = 1; i < mops.length; i++) {
-                            items.push(<Menu.Item key={mops[i].label}>{this.action(mops[i], model)}</Menu.Item>);
+                        opsize[0]--;
+                        for (let i = 0; i < opsize[0]; i++) {
+                            ops.push(this.action(mops[i], model));
+                            ops.push(i > 0 && (i % opsize[1] === 0) ? <br key={'br-' + i} /> : <Divider key={'divider-' + i} type="vertical" />);
                         }
+                        let items = [];
+                        for (let i = opsize[0]; i < mops.length; i++)
+                            items.push(<Menu.Item key={mops[i].label}>{this.action(mops[i], model)}</Menu.Item>);
                         ops.push(<Dropdown key="more" overlay={<Menu>{items}</Menu>}><span className="console-grid-op">更多</span></Dropdown>);
                     }
 
