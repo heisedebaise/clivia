@@ -385,7 +385,7 @@ class Base extends React.Component {
 
         if (prop.type === 'date') return <DatePicker />;
 
-        if (prop.type === 'datetime') return <DatePicker showTime={true} />;
+        if (prop.type === 'datetime') return <DatePicker showTime={prop.time || true} />;
 
         if (prop.type === 'switch') return <Switch disabled={!prop.service && !prop.permit} onChange={this.switch.bind(this, prop)} />;
 
