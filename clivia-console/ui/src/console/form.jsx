@@ -207,7 +207,7 @@ class Base extends React.Component {
                     if (prop.type === 'read-only:array') {
                         if (c.type) {
                             if (!c.type.startsWith('read-only'))
-                                c.type = 'read-only:' + type;
+                                c.type = 'read-only:' + prop.type;
                         } else
                             c.type = 'read-only';
                     }
