@@ -193,7 +193,7 @@ class Base extends React.Component {
     }
 
     item = (items, prop, key) => {
-        if (prop.type === 'array') {
+        if (prop.type === 'array' || prop.type === 'read-only:array') {
             let is = [];
             let array = toArray(this.state[prop.name]);
             for (let i = 0; i < array.length; i++) {
@@ -204,6 +204,13 @@ class Base extends React.Component {
                 for (let child of prop.children) {
                     let c = JSON.parse(JSON.stringify(child));
                     c.name = prop.name + ':' + c.name + ':' + i;
+                    if (prop.type === 'read-only:array') {
+                        if (c.type) {
+                            if (!c.type.startsWith('read-only'))
+                                c.type = 'read-only:' + type;
+                        } else
+                            c.type = 'read-only';
+                    }
                     this.item(is, c, prop.name + ':');
                 }
                 if (!prop.fix) {

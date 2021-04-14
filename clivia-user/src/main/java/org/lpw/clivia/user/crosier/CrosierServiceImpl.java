@@ -58,11 +58,9 @@ public class CrosierServiceImpl implements CrosierService, ContextRefreshedListe
 
     @Override
     public JSONArray signUpGrades() {
-        if (crosierGrade.isPresent())
-            return crosierGrade.get().signUpGrades();
-
         JSONArray array = new JSONArray();
-        signUpGrades(array, "0");
+        for (int grade : intGrades())
+            signUpGrades(array, numeric.toString(grade));
         signUpGrades(array, "other");
 
         return array;
@@ -70,18 +68,15 @@ public class CrosierServiceImpl implements CrosierService, ContextRefreshedListe
 
     private void signUpGrades(JSONArray array, String value) {
         JSONObject object = new JSONObject();
-        object.put("label", message.get(CrosierModel.NAME + ".grade." + value));
+        object.put("label", name(value));
         object.put("value", value);
         array.add(object);
     }
 
     @Override
     public int signUpGrade(String grade) {
-        if (crosierGrade.isPresent())
-            return crosierGrade.get().signUpGrade(grade);
-
         int g = numeric.toInt(grade);
-        for (int n : grades)
+        for (int n : intGrades())
             if (g == n)
                 return n;
 
@@ -91,19 +86,20 @@ public class CrosierServiceImpl implements CrosierService, ContextRefreshedListe
     @Override
     public JSONArray grades() {
         return cache.computeIfAbsent(CrosierModel.NAME + context.getLocale().toString(), key -> {
-            if (crosierGrade.isPresent())
-                return crosierGrade.get().grades();
-
             JSONArray grades = new JSONArray();
-            for (int n : this.grades) {
-                JSONObject grade = new JSONObject();
-                grade.put("grade", n);
-                grade.put("name", message.get(CrosierModel.NAME + ".grade." + n));
-                grades.add(grade);
+            for (int grade : intGrades()) {
+                JSONObject object = new JSONObject();
+                object.put("grade", grade);
+                object.put("name", name(numeric.toString(grade)));
+                grades.add(object);
             }
 
             return grades;
         }, false);
+    }
+
+    private String name(String grade) {
+        return message.get((crosierGrade.isPresent() ? crosierGrade.get().name() : (CrosierModel.NAME + ".grade.")) + grade);
     }
 
     @Override
@@ -214,8 +210,12 @@ public class CrosierServiceImpl implements CrosierService, ContextRefreshedListe
 
     @Override
     public void onContextRefreshed() {
-        for (int grade : grades)
+        for (int grade : intGrades())
             valid(grade);
+    }
+
+    private int[] intGrades() {
+        return crosierGrade.isPresent() ? crosierGrade.get().grades() : grades;
     }
 
     private void valid(int grade) {
