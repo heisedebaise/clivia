@@ -101,7 +101,7 @@ class Base extends React.Component {
                 values[prop.name] = toPercent(value);
             else if (prop.type === 'switch')
                 values[prop.name] = value === 1 || value === '1';
-            else if (prop.type === 'array') {
+            else if (prop.type === 'array' || prop.type === 'read-only:array') {
                 let array = toArray(value);
                 for (let i = 0; i < array.length; i++)
                     for (let k in array[i])
@@ -204,10 +204,10 @@ class Base extends React.Component {
                 for (let child of prop.children) {
                     let c = JSON.parse(JSON.stringify(child));
                     c.name = prop.name + ':' + c.name + ':' + i;
-                    if (prop.type === 'read-only:array') {
+                    if (prop.type === 'read-only:array' || (prop.editable === 'last' && i < array.length - 1)) {
                         if (c.type) {
                             if (!c.type.startsWith('read-only'))
-                                c.type = 'read-only:' + prop.type;
+                                c.type = 'read-only:' + c.type;
                         } else
                             c.type = 'read-only';
                     }

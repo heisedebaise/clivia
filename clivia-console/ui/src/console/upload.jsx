@@ -8,47 +8,50 @@ class UploadSupport extends React.Component {
 
     change = ({ file }) => {
         if (file.status === 'uploading') {
-            let list = this.list();
-            for (let f of list)
-                if (f.uid === file.uid)
-                    return;
-
-            list.push(file);
-            this.setState({ list });
+            this.changed(file, true);
 
             return;
         }
 
         if (file.status === 'done') {
             if (file.response.success) {
+                this.changed(file, true);
                 this.value();
 
                 return;
             }
 
-            let list = [];
-            for (let f of this.list())
-                if (f.uid !== file.uid)
-                    list.push(f);
-            this.setState({ list });
+            this.changed(file, false);
             message.warn(file.response.message);
 
             return;
         }
 
         if (file.status === 'removed') {
-            let list = [];
-            for (let f of this.list()) {
-                if (f.uid === file.uid)
-                    continue;
-
-                list.push(f);
-            }
-            this.setState({ list: list });
+            this.changed(file, false);
             this.value();
 
             return;
         }
+    }
+
+    changed = (file, replace) => {
+        let list = [];
+        let exists = false;
+        for (let f of this.list()) {
+            if (f.uid === file.uid) {
+                exists = true;
+                if (replace)
+                    list.push(file);
+
+                continue;
+            }
+
+            list.push(f);
+        }
+        if (!exists)
+            list.push(file);
+        this.setState({ list });
     }
 
     value = () => {

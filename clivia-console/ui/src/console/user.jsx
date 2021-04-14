@@ -14,7 +14,7 @@ class User extends React.Component {
             <div className="user">
                 {this.avatar()}
                 <div className="user-info">
-                    {uids.map(uid => <div className="user-uid">{uid}</div>)}
+                    {uids.map(uid => <div key={uid} className="user-uid">{uid}</div>)}
                     {this.line(uids, 'nick')}
                     {this.line(uids, 'name')}
                     {this.line(uids, 'mobile')}
