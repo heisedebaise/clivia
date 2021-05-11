@@ -1,14 +1,13 @@
 package org.lpw.clivia.user.auth;
 
+import javax.inject.Inject;
+
 import org.lpw.clivia.user.UserService;
-import org.lpw.clivia.user.type.Types;
 import org.lpw.photon.ctrl.context.Request;
 import org.lpw.photon.ctrl.execute.Execute;
 import org.lpw.photon.ctrl.validate.Validate;
 import org.lpw.photon.ctrl.validate.Validators;
 import org.springframework.stereotype.Controller;
-
-import javax.inject.Inject;
 
 @Controller(AuthModel.NAME + ".ctrl")
 @Execute(name = "/user/auth/", key = AuthModel.NAME, code = "151")

@@ -1,24 +1,24 @@
 package org.lpw.clivia.weixin.reply;
 
-import com.alibaba.fastjson.JSONArray;
-import com.alibaba.fastjson.JSONObject;
-import org.lpw.clivia.page.Pagination;
-import org.lpw.clivia.popular.PopularService;
-import org.lpw.clivia.weixin.WeixinModel;
-import org.lpw.clivia.weixin.WeixinService;
-import org.lpw.clivia.weixin.info.InfoService;
-import org.lpw.photon.util.Http;
-import org.lpw.photon.util.Logger;
-import org.lpw.photon.util.Validator;
-import org.lpw.photon.wormhole.WormholeHelper;
-import org.springframework.stereotype.Service;
-
-import javax.inject.Inject;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+
+import javax.inject.Inject;
+
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
+
+import org.lpw.clivia.page.Pagination;
+import org.lpw.clivia.popular.PopularService;
+import org.lpw.clivia.weixin.WeixinModel;
+import org.lpw.clivia.weixin.WeixinService;
+import org.lpw.photon.util.Http;
+import org.lpw.photon.util.Logger;
+import org.lpw.photon.util.Validator;
+import org.springframework.stereotype.Service;
 
 @Service(ReplyModel.NAME + ".service")
 public class ReplyServiceImpl implements ReplyService {
@@ -29,15 +29,11 @@ public class ReplyServiceImpl implements ReplyService {
     @Inject
     private Logger logger;
     @Inject
-    private WormholeHelper wormholeHelper;
-    @Inject
     private Pagination pagination;
     @Inject
     private PopularService popularService;
     @Inject
     private WeixinService weixinService;
-    @Inject
-    private InfoService infoService;
     @Inject
     private Optional<Set<ReplyAlter>> alters;
     @Inject

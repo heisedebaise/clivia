@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 import java.util.Map;
 
 @Service(AccountTypeSupport.NAME + AccountTypes.CONSUME)
-public class ConsumeImpl extends AccountTypeSupport implements AccountType {
+public class ConsumeImpl extends AccountTypeSupport {
     @Override
     public String getName() {
         return AccountTypes.CONSUME;

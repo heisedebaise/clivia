@@ -1,20 +1,21 @@
 package org.lpw.clivia.chrome;
 
+import java.util.Map;
+
+import javax.inject.Inject;
+
 import com.alibaba.fastjson.JSONObject;
+
 import org.lpw.clivia.async.AsyncService;
-import org.lpw.clivia.temporary.Temporary;
 import org.lpw.clivia.page.Pagination;
+import org.lpw.clivia.temporary.Temporary;
 import org.lpw.photon.cache.Cache;
 import org.lpw.photon.chrome.ChromeHelper;
 import org.lpw.photon.dao.model.ModelHelper;
 import org.lpw.photon.util.Converter;
 import org.lpw.photon.util.Io;
-import org.lpw.photon.util.Logger;
 import org.lpw.photon.util.Validator;
 import org.springframework.stereotype.Service;
-
-import javax.inject.Inject;
-import java.util.Map;
 
 @Service(ChromeModel.NAME + ".service")
 public class ChromeServiceImpl implements ChromeService {
@@ -28,8 +29,6 @@ public class ChromeServiceImpl implements ChromeService {
     private Converter converter;
     @Inject
     private Io io;
-    @Inject
-    private Logger logger;
     @Inject
     private ModelHelper modelHelper;
     @Inject

@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 import java.util.Map;
 
 @Service(AccountTypeSupport.NAME + AccountTypes.WITHDRAW)
-public class WithdrawImpl extends AccountTypeSupport implements AccountType {
+public class WithdrawImpl extends AccountTypeSupport {
     @Override
     public String getName() {
         return AccountTypes.WITHDRAW;

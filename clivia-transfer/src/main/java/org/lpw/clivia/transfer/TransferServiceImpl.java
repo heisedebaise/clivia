@@ -1,6 +1,18 @@
 package org.lpw.clivia.transfer;
 
+import java.sql.Date;
+import java.sql.Timestamp;
+import java.util.Calendar;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
+
+import javax.inject.Inject;
+
 import com.alibaba.fastjson.JSONObject;
+
 import org.lpw.clivia.lock.LockHelper;
 import org.lpw.clivia.page.Pagination;
 import org.lpw.clivia.user.UserListener;
@@ -13,22 +25,10 @@ import org.lpw.photon.dao.model.ModelHelper;
 import org.lpw.photon.scheduler.SecondsJob;
 import org.lpw.photon.util.DateTime;
 import org.lpw.photon.util.Generator;
-import org.lpw.photon.util.Http;
 import org.lpw.photon.util.Json;
-import org.lpw.photon.util.Numeric;
 import org.lpw.photon.util.TimeUnit;
 import org.lpw.photon.util.Validator;
 import org.springframework.stereotype.Service;
-
-import javax.inject.Inject;
-import java.sql.Date;
-import java.sql.Timestamp;
-import java.util.Calendar;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
 
 @Service(TransferModel.NAME + ".service")
 public class TransferServiceImpl implements TransferService, UserListener, ContextRefreshedListener, SecondsJob {
@@ -41,11 +41,7 @@ public class TransferServiceImpl implements TransferService, UserListener, Conte
     @Inject
     private Validator validator;
     @Inject
-    private Numeric numeric;
-    @Inject
     private Json json;
-    @Inject
-    private Http http;
     @Inject
     private ModelHelper modelHelper;
     @Inject

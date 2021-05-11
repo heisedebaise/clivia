@@ -1,24 +1,22 @@
 package org.lpw.clivia.keyvalue;
 
+import javax.inject.Inject;
+
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+
 import org.lpw.clivia.page.Pagination;
 import org.lpw.photon.cache.Cache;
 import org.lpw.photon.dao.model.ModelHelper;
 import org.lpw.photon.util.Generator;
-import org.lpw.photon.util.Json;
 import org.lpw.photon.util.Numeric;
 import org.lpw.photon.util.Validator;
 import org.springframework.stereotype.Service;
-
-import javax.inject.Inject;
 
 @Service(KeyvalueModel.NAME + ".service")
 public class KeyvalueServiceImpl implements KeyvalueService {
     @Inject
     private Validator validator;
-    @Inject
-    private Json json;
     @Inject
     private Cache cache;
     @Inject

@@ -1,5 +1,10 @@
 package org.lpw.clivia.alipay;
 
+import java.util.HashMap;
+import java.util.Map;
+
+import javax.inject.Inject;
+
 import org.lpw.clivia.Permit;
 import org.lpw.clivia.user.UserService;
 import org.lpw.photon.ctrl.context.Request;
@@ -7,22 +12,13 @@ import org.lpw.photon.ctrl.execute.Execute;
 import org.lpw.photon.ctrl.template.Templates;
 import org.lpw.photon.ctrl.validate.Validate;
 import org.lpw.photon.ctrl.validate.Validators;
-import org.lpw.photon.util.Message;
 import org.springframework.stereotype.Controller;
-
-import javax.inject.Inject;
-import java.util.HashMap;
-import java.util.Map;
 
 @Controller(AlipayModel.NAME + ".ctrl")
 @Execute(name = "/alipay/", key = AlipayModel.NAME, code = "156")
 public class AlipayCtrl {
     @Inject
-    private Message message;
-    @Inject
     private Request request;
-    @Inject
-    private Templates templates;
     @Inject
     private AlipayService alipayService;
 

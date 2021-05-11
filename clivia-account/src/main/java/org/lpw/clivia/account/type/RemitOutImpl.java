@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 import java.util.Map;
 
 @Service(AccountTypeSupport.NAME + AccountTypes.REMIT_OUT)
-public class RemitOutImpl extends AccountTypeSupport implements AccountType {
+public class RemitOutImpl extends AccountTypeSupport {
     @Override
     public String getName() {
         return AccountTypes.REMIT_OUT;

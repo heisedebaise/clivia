@@ -1,23 +1,5 @@
 package org.lpw.clivia.async;
 
-import com.alibaba.fastjson.JSONObject;
-import org.lpw.photon.bean.BeanFactory;
-import org.lpw.photon.bean.ContextRefreshedListener;
-import org.lpw.photon.cache.Cache;
-import org.lpw.photon.scheduler.MinuteJob;
-import org.lpw.photon.scheduler.SecondsJob;
-import org.lpw.photon.util.Context;
-import org.lpw.photon.util.DateTime;
-import org.lpw.photon.util.Generator;
-import org.lpw.photon.util.Io;
-import org.lpw.photon.util.Logger;
-import org.lpw.photon.util.Numeric;
-import org.lpw.photon.util.Thread;
-import org.lpw.photon.util.TimeUnit;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Service;
-
-import javax.inject.Inject;
 import java.sql.Timestamp;
 import java.util.HashSet;
 import java.util.Map;
@@ -28,19 +10,27 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
+import javax.inject.Inject;
+
+import com.alibaba.fastjson.JSONObject;
+
+import org.lpw.photon.bean.BeanFactory;
+import org.lpw.photon.bean.ContextRefreshedListener;
+import org.lpw.photon.cache.Cache;
+import org.lpw.photon.scheduler.MinuteJob;
+import org.lpw.photon.scheduler.SecondsJob;
+import org.lpw.photon.util.DateTime;
+import org.lpw.photon.util.Logger;
+import org.lpw.photon.util.Thread;
+import org.lpw.photon.util.TimeUnit;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
+
 @Service(AsyncModel.NAME + ".service")
 public class AsyncServiceImpl implements AsyncService, SecondsJob, MinuteJob, ContextRefreshedListener {
     private static final String CACHE_STATE = AsyncModel.NAME + ".service.state:";
     @Inject
     private DateTime dateTime;
-    @Inject
-    private Numeric numeric;
-    @Inject
-    private Generator generator;
-    @Inject
-    private Context context;
-    @Inject
-    private Io io;
     @Inject
     private Logger logger;
     @Inject

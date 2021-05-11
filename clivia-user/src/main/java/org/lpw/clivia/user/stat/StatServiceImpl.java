@@ -1,18 +1,19 @@
 package org.lpw.clivia.user.stat;
 
+import java.sql.Date;
+import java.util.Calendar;
+
+import javax.inject.Inject;
+
 import com.alibaba.fastjson.JSONObject;
+
 import org.lpw.clivia.page.Pagination;
 import org.lpw.clivia.user.UserService;
 import org.lpw.clivia.user.online.OnlineService;
 import org.lpw.photon.dao.model.ModelHelper;
 import org.lpw.photon.scheduler.MinuteJob;
 import org.lpw.photon.util.DateTime;
-import org.lpw.photon.util.TimeUnit;
 import org.springframework.stereotype.Service;
-
-import javax.inject.Inject;
-import java.sql.Date;
-import java.util.Calendar;
 
 @Service(StatModel.NAME + ".service")
 public class StatServiceImpl implements StatService, MinuteJob {

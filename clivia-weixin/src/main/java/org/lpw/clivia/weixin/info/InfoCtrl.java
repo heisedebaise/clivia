@@ -1,18 +1,15 @@
 package org.lpw.clivia.weixin.info;
 
-import org.lpw.photon.ctrl.context.Request;
+import javax.inject.Inject;
+
 import org.lpw.photon.ctrl.execute.Execute;
 import org.lpw.photon.ctrl.validate.Validate;
 import org.lpw.photon.ctrl.validate.Validators;
 import org.springframework.stereotype.Controller;
 
-import javax.inject.Inject;
-
 @Controller(InfoModel.NAME + ".ctrl")
 @Execute(name = "/weixin/info/", key = InfoModel.NAME, code = "155")
 public class InfoCtrl {
-    @Inject
-    private Request request;
     @Inject
     private InfoService infoService;
 

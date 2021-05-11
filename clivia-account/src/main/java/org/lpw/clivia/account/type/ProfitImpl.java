@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 import java.util.Map;
 
 @Service(AccountTypeSupport.NAME + AccountTypes.PROFIT)
-public class ProfitImpl extends AccountTypeSupport implements AccountType {
+public class ProfitImpl extends AccountTypeSupport {
     @Override
     public String getName() {
         return AccountTypes.PROFIT;

@@ -1,16 +1,13 @@
 package org.lpw.clivia.user;
 
+import javax.inject.Inject;
+
 import org.lpw.photon.ctrl.validate.ValidateWrapper;
 import org.lpw.photon.ctrl.validate.ValidatorSupport;
-import org.lpw.photon.util.Converter;
 import org.springframework.stereotype.Controller;
-
-import javax.inject.Inject;
 
 @Controller(UserService.VALIDATOR_SIGN_IN)
 public class SignInValidatorImpl extends ValidatorSupport {
-    @Inject
-    private Converter converter;
     @Inject
     private UserService userService;
 

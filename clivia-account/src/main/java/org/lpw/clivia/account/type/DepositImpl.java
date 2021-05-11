@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 import java.util.Map;
 
 @Service(AccountTypeSupport.NAME + AccountTypes.DEPOSIT)
-public class DepositImpl extends AccountTypeSupport implements AccountType {
+public class DepositImpl extends AccountTypeSupport {
     @Override
     public String getName() {
         return AccountTypes.DEPOSIT;

@@ -1,9 +1,13 @@
 package org.lpw.clivia.weixin;
 
+import java.util.Map;
+
+import javax.inject.Inject;
+
 import com.alibaba.fastjson.JSONObject;
+
 import org.lpw.clivia.Permit;
 import org.lpw.clivia.user.UserService;
-import org.lpw.photon.ctrl.Forward;
 import org.lpw.photon.ctrl.context.Request;
 import org.lpw.photon.ctrl.context.Response;
 import org.lpw.photon.ctrl.execute.Execute;
@@ -14,9 +18,6 @@ import org.lpw.photon.util.Message;
 import org.lpw.photon.util.Validator;
 import org.lpw.photon.util.Xml;
 import org.springframework.stereotype.Controller;
-
-import javax.inject.Inject;
-import java.util.Map;
 
 @Controller(WeixinModel.NAME + ".ctrl")
 @Execute(name = "/weixin/", key = WeixinModel.NAME, code = "155")
@@ -33,10 +34,6 @@ public class WeixinCtrl {
     private Response response;
     @Inject
     private Templates templates;
-    @Inject
-    private Forward forward;
-    @Inject
-    private UserService userService;
     @Inject
     private WeixinService weixinService;
 
