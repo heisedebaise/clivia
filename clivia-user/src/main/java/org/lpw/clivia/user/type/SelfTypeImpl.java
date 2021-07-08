@@ -6,6 +6,7 @@ import org.lpw.clivia.user.UserService;
 import org.lpw.clivia.user.auth.AuthModel;
 import org.lpw.clivia.user.auth.AuthService;
 import org.lpw.photon.cache.Cache;
+import org.lpw.photon.ctrl.context.Request;
 import org.lpw.photon.util.Converter;
 import org.lpw.photon.util.Numeric;
 import org.lpw.photon.util.TimeUnit;
@@ -28,6 +29,8 @@ public class SelfTypeImpl extends TypeSupport {
     private Numeric numeric;
     @Inject
     private Cache cache;
+    @Inject
+    private Request request;
     @Inject
     private KeyvalueService keyvalueService;
     @Inject
@@ -56,8 +59,8 @@ public class SelfTypeImpl extends TypeSupport {
         String cacheKey = CACHE_PASS + user.getId();
         String[] failures = converter.toArray(cache.get(cacheKey), ",");
         int failure = failures.length < 2 ? 0 : numeric.toInt(failures[0]);
-        if (failure > 0 && System.currentTimeMillis() - numeric.toLong(failures[1]) >
-                TimeUnit.Minute.getTime(keyvalueService.valueAsInt(PREFIX + "pass.lock", 5))) {
+        if (failure > 0 && System.currentTimeMillis() - numeric.toLong(failures[1]) > TimeUnit.Minute
+                .getTime(keyvalueService.valueAsInt(PREFIX + "pass.lock", 5))) {
             failure = 0;
             cache.remove(cacheKey);
         }
@@ -93,6 +96,8 @@ public class SelfTypeImpl extends TypeSupport {
 
     @Override
     public String getNick(String uid, String password) {
-        return uid;
+        String nick = request.get("nick");
+
+        return validator.isEmpty(nick) ? uid : nick;
     }
 }
