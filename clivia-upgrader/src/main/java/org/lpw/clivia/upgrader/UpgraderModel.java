@@ -20,7 +20,7 @@ public class UpgraderModel extends ModelSupport {
     private int version; // 版本号
     private String name; // 版本名
     private int forced; // 强制升级：0-否；1-是
-    private int client; // 客户端：0-Android；1-iOS
+    private int client; // 客户端：0-Android；1-iOS；2-Windows；3-Mac；4-Linux
     private String explain; // 说明
     private String url; // 升级地址
 
