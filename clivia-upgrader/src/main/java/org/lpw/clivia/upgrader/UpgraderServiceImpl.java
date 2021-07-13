@@ -3,6 +3,7 @@ package org.lpw.clivia.upgrader;
 import com.alibaba.fastjson.JSONObject;
 import org.lpw.clivia.page.Pagination;
 import org.lpw.photon.dao.model.ModelHelper;
+import org.lpw.photon.util.Json;
 import org.lpw.photon.util.Validator;
 import org.springframework.stereotype.Service;
 
@@ -12,6 +13,8 @@ import javax.inject.Inject;
 public class UpgraderServiceImpl implements UpgraderService {
     @Inject
     private Validator validator;
+    @Inject
+    private Json json;
     @Inject
     private ModelHelper modelHelper;
     @Inject
@@ -25,10 +28,15 @@ public class UpgraderServiceImpl implements UpgraderService {
     }
 
     @Override
-    public JSONObject latest(int version, int client) {
-        UpgraderModel upgrader = upgraderDao.latest(version, client);
+    public JSONObject latest(int client) {
+        UpgraderModel upgrader = upgraderDao.latest(client);
+        if (upgrader == null)
+            return new JSONObject();
 
-        return upgrader == null ? new JSONObject() : modelHelper.toJson(upgrader);
+        JSONObject object = modelHelper.toJson(upgrader);
+        object.put("explain", json.toObject(upgrader.getExplain(), false));
+
+        return object;
     }
 
     @Override

@@ -7,7 +7,7 @@ interface UpgraderDao {
 
     UpgraderModel findById(String id);
 
-    UpgraderModel latest(int version, int client);
+    UpgraderModel latest(int client);
 
     void save(UpgraderModel upgrader);
 

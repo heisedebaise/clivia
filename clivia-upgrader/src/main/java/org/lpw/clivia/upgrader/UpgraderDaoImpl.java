@@ -14,7 +14,8 @@ class UpgraderDaoImpl implements UpgraderDao {
 
     @Override
     public PageList<UpgraderModel> query(int pageSize, int pageNum) {
-        return liteOrm.query(new LiteQuery(UpgraderModel.class).order("c_version desc").size(pageSize).page(pageNum), null);
+        return liteOrm.query(new LiteQuery(UpgraderModel.class).order("c_version desc").size(pageSize).page(pageNum),
+                null);
     }
 
     @Override
@@ -23,8 +24,9 @@ class UpgraderDaoImpl implements UpgraderDao {
     }
 
     @Override
-    public UpgraderModel latest(int version, int client) {
-        return liteOrm.findOne(new LiteQuery(UpgraderModel.class).where("c_version>? and c_client=?").order("c_version desc"), new Object[]{version, client});
+    public UpgraderModel latest(int client) {
+        return liteOrm.findOne(new LiteQuery(UpgraderModel.class).where("c_client=?").order("c_version desc"),
+                new Object[] { client });
     }
 
     @Override
