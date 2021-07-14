@@ -94,7 +94,7 @@ class Base extends React.Component {
         for (let prop of meta.props(this.props.props, this.props.meta.props)) {
             let value = values[prop.name];
             if (prop.labels)
-                values[prop.name] = toInt(value, 0);
+                values[prop.name] = '' + toInt(value, 0);
             else if (prop.type === 'money')
                 values[prop.name] = toMoney(value, prop.empty);
             else if (prop.type === 'percent')
@@ -374,7 +374,7 @@ class Base extends React.Component {
         if (prop.labels) {
             let options = [];
             for (let index in prop.labels)
-                options.push({ label: prop.labels[index], value: toInt(index, 0) });
+                options.push({ label: prop.labels[index], value: '' + toInt(index, 0) });
 
             if (prop.multiple)
                 return options.length < 5 ? <Checkbox.Group options={options} /> : <Select options={options} mode="multiple" allowClear />;
