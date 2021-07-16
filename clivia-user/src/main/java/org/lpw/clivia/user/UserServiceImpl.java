@@ -231,6 +231,32 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public boolean gesture(String oldGesture, String newGesture) {
+        UserModel user = fromSession();
+        if (!validator.isEmpty(user.getGesture()) && !user.getGesture().equals(password(oldGesture)))
+            return false;
+
+        user.setGesture(password(newGesture));
+        save(user);
+        session.set(SESSION, user);
+
+        return true;
+    }
+
+    @Override
+    public boolean gestureOff(String gesture) {
+        UserModel user = fromSession();
+        if (!validator.isEmpty(user.getGesture()) && !user.getGesture().equals(password(gesture)))
+            return false;
+
+        user.setGesture("");
+        save(user);
+        session.set(SESSION, user);
+
+        return true;
+    }
+
+    @Override
     public boolean secret(String oldPassword, String newPassword) {
         UserModel user = fromSession();
         if (!validator.isEmpty(user.getSecret()) && !user.getSecret().equals(password(oldPassword)))
@@ -349,6 +375,7 @@ public class UserServiceImpl implements UserService {
                 return new JSONObject();
 
             JSONObject object = modelHelper.toJson(model);
+            object.put("gesture", !validator.isEmpty(model.getGesture()));
             object.put("secret", !validator.isEmpty(model.getSecret()));
             object.put("auth", authService.query(model.getId()));
 
@@ -357,10 +384,11 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public JSONObject query(String uid, String idcard, String name, String nick, String mobile, String email, String weixin, String qq, String code,
-                            int minGrade, int maxGrade, int state, String register, String from) {
-        return userDao.query(authService.users(uid), idcard, name, nick, mobile, email, weixin, qq, code,
-                minGrade, maxGrade, state, register, from, pagination.getPageSize(20), pagination.getPageNum()).toJson();
+    public JSONObject query(String uid, String idcard, String name, String nick, String mobile, String email,
+                            String weixin, String qq, String code, int minGrade, int maxGrade, int state, String register,
+                            String from) {
+        return userDao.query(authService.users(uid), idcard, name, nick, mobile, email, weixin, qq, code, minGrade,
+                maxGrade, state, register, from, pagination.getPageSize(20), pagination.getPageNum()).toJson();
     }
 
     @Override
@@ -405,7 +433,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void info(String id, String idcard, String name, String nick, String mobile, String email, String weixin, String qq, int gender) {
+    public void info(String id, String idcard, String name, String nick, String mobile, String email, String weixin,
+                     String qq, int gender) {
         UserModel user = findById(id);
         if (!validator.isEmpty(idcard))
             user.setIdcard(idcard);
@@ -475,8 +504,9 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserModel create(String uid, String password, String idcard, String name, String nick, String mobile, String email, String weixin, String qq,
-                            String avatar, int gender, Date birthday, String inviter, int grade, int state) {
+    public UserModel create(String uid, String password, String idcard, String name, String nick, String mobile,
+                            String email, String weixin, String qq, String avatar, int gender, Date birthday, String inviter, int grade,
+                            int state) {
         UserModel user = new UserModel();
         user.setPassword(password(password));
         user.setIdcard(idcard);

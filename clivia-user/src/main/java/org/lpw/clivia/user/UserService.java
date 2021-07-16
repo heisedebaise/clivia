@@ -125,6 +125,23 @@ public interface UserService {
     boolean password(String oldPassword, String newPassword);
 
     /**
+     * 修改手势密码。
+     *
+     * @param oldGesture 旧手势密码。
+     * @param newGesture 新手势密码。
+     * @return 如果修改成功则返回true；否则返回false。
+     */
+    boolean gesture(String oldGesture, String newGesture);
+
+    /**
+     * 关闭手势密码。
+     *
+     * @param gesture 手势密码。
+     * @return 关闭成功则返回true；否则返回false。
+     */
+    boolean gestureOff(String gesture);
+
+    /**
      * 修改安全密码。
      *
      * @param oldPassword 旧密码。
@@ -231,8 +248,8 @@ public interface UserService {
      * @param from     来源。
      * @return 用户信息集。
      */
-    JSONObject query(String uid, String idcard, String name, String nick, String mobile, String email, String weixin, String qq, String code,
-                     int minGrade, int maxGrade, int state, String register, String from);
+    JSONObject query(String uid, String idcard, String name, String nick, String mobile, String email, String weixin,
+                     String qq, String code, int minGrade, int maxGrade, int state, String register, String from);
 
     /**
      * 获取推荐用户集。
@@ -272,7 +289,8 @@ public interface UserService {
      * @param qq     QQ号。
      * @param gender 性别：0-未知；1-男；2-女。
      */
-    void info(String id, String idcard, String name, String nick, String mobile, String email, String weixin, String qq, int gender);
+    void info(String id, String idcard, String name, String nick, String mobile, String email, String weixin, String qq,
+              int gender);
 
     /**
      * 设置用户等级。
@@ -341,8 +359,8 @@ public interface UserService {
      * @param state    状态。
      * @return 用户信息。
      */
-    UserModel create(String uid, String password, String idcard, String name, String nick, String mobile, String email, String weixin, String qq,
-                     String avatar, int gender, Date birthday, String inviter, int grade, int state);
+    UserModel create(String uid, String password, String idcard, String name, String nick, String mobile, String email,
+                     String weixin, String qq, String avatar, int gender, Date birthday, String inviter, int grade, int state);
 
     /**
      * 删除。

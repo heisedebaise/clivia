@@ -3,6 +3,7 @@ CREATE TABLE t_user
 (
   c_id CHAR(36) NOT NULL COMMENT '主键',
   c_password CHAR(32) DEFAULT NULL COMMENT '密码',
+  c_gesture CHAR(32) DEFAULT NULL COMMENT '手势密码',
   c_secret CHAR(32) DEFAULT NULL COMMENT '安全密码',
   c_idcard VARCHAR(255) DEFAULT NULL COMMENT '身份证号',
   c_name VARCHAR(255) DEFAULT NULL COMMENT '姓名',

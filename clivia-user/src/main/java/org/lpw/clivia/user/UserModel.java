@@ -20,6 +20,7 @@ public class UserModel extends ModelSupport {
     static final String NAME = "clivia.user";
 
     private String password; // 密码
+    private String gesture; // 手势密码
     private String secret; // 安全密码
     private String idcard; // 身份证号
     private String name; // 姓名
@@ -46,6 +47,15 @@ public class UserModel extends ModelSupport {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    @Column(name = "c_gesture")
+    public String getGesture() {
+        return gesture;
+    }
+
+    public void setGesture(String gesture) {
+        this.gesture = gesture;
     }
 
     @Column(name = "c_secret")
