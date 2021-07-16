@@ -160,6 +160,17 @@ public class UserServiceImpl implements UserService {
         return true;
     }
 
+    @Override
+    public boolean signInGesture(String id, String gesture) {
+        UserModel user = userDao.findById(id);
+        if (user == null || user.getState() != 1 || !password(gesture).equals(user.getGesture()))
+            return false;
+
+        signIn(user, id);
+
+        return true;
+    }
+
     private void signIn(UserModel user, String uid) {
         onlineService.signIn(user);
         session.set(SESSION, user);
@@ -385,8 +396,8 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public JSONObject query(String uid, String idcard, String name, String nick, String mobile, String email,
-                            String weixin, String qq, String code, int minGrade, int maxGrade, int state, String register,
-                            String from) {
+            String weixin, String qq, String code, int minGrade, int maxGrade, int state, String register,
+            String from) {
         return userDao.query(authService.users(uid), idcard, name, nick, mobile, email, weixin, qq, code, minGrade,
                 maxGrade, state, register, from, pagination.getPageSize(20), pagination.getPageNum()).toJson();
     }
@@ -434,7 +445,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void info(String id, String idcard, String name, String nick, String mobile, String email, String weixin,
-                     String qq, int gender) {
+            String qq, int gender) {
         UserModel user = findById(id);
         if (!validator.isEmpty(idcard))
             user.setIdcard(idcard);
@@ -505,8 +516,8 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserModel create(String uid, String password, String idcard, String name, String nick, String mobile,
-                            String email, String weixin, String qq, String avatar, int gender, Date birthday, String inviter, int grade,
-                            int state) {
+            String email, String weixin, String qq, String avatar, int gender, Date birthday, String inviter, int grade,
+            int state) {
         UserModel user = new UserModel();
         user.setPassword(password(password));
         user.setIdcard(idcard);
