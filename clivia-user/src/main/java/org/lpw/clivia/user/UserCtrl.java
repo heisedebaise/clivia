@@ -192,7 +192,7 @@ public class UserCtrl {
         @Execute(name = "find-by-code", validates = {
                         @Validate(validator = Validators.NOT_EMPTY, parameter = "code", failureCode = 26),
                         @Validate(validator = Validators.SIGN) })
-        public Object find() {
+        public Object findByCode() {
                 return userService.findByCode(request.get("code"));
         }
 
@@ -209,6 +209,13 @@ public class UserCtrl {
                         @Validate(validator = Validators.SIGN) })
         public Object findOrSign() {
                 return userService.findOrSign(request.get("idUidCode"));
+        }
+
+        @Execute(name = "find", permit = "0", validates = {
+                        @Validate(validator = Validators.NOT_EMPTY, parameter = "idUidCode", failureCode = 31),
+                        @Validate(validator = UserService.VALIDATOR_SIGN) })
+        public Object find() {
+                return userService.find(request.get("idUidCode"));
         }
 
         @Execute(name = "query", validates = {

@@ -363,7 +363,21 @@ public class UserServiceImpl implements UserService {
         if (user == null)
             user = userDao.findByCode(idUidCode);
 
-        return user == null ? sign() : modelHelper.toJson(user);
+        return user == null ? sign() : getJson(user.getId(), user);
+    }
+
+    @Override
+    public JSONObject find(String idUidCode) {
+        UserModel user = findById(idUidCode);
+        if (user == null) {
+            AuthModel auth = authService.findByUid(idUidCode);
+            if (auth != null)
+                user = findById(auth.getUser());
+        }
+        if (user == null)
+            user = userDao.findByCode(idUidCode);
+
+        return user == null ? new JSONObject() : getJson(user.getId(), user);
     }
 
     @Override

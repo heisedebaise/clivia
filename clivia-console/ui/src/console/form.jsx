@@ -143,7 +143,9 @@ class Base extends React.Component {
                 continue;
             };
 
-            if (prop.type === 'date')
+            if (prop.labels)
+                values[prop.name] = toInt(value);
+            else if (prop.type === 'date')
                 values[prop.name] = value.format("YYYY-MM-DD");
             else if (prop.type === 'datetime')
                 values[prop.name] = value.format("YYYY-MM-DD HH:mm:ss");
@@ -462,6 +464,11 @@ class Normal extends Base {
     submit = (mt, values) => {
         for (let prop of this.props.meta.props) {
             if (prop.type === 'array') {
+                let labels = {};
+                for (let child of prop.children)
+                    if (child.labels)
+                        labels[child.name] = true;
+
                 let array = [];
                 let state = toArray(this.state[prop.name]);
                 for (let key in values) {
@@ -481,7 +488,7 @@ class Normal extends Base {
                         }
 
                         let obj = array[index] || {};
-                        obj[ks[1]] = values[key];
+                        obj[ks[1]] = labels[ks[1]] ? toInt(values[key]) : values[key];
                         delete values[key];
                         array[index] = obj;
                     }

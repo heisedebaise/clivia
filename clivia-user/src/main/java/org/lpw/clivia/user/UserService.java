@@ -230,6 +230,14 @@ public interface UserService {
     JSONObject findOrSign(String idUidCode);
 
     /**
+     * 查找用户。
+     *
+     * @param idUidCode 用户ID或UID或code值。
+     * @return 用户信息，不存在则返回空JSON{}。
+     */
+    JSONObject find(String idUidCode);
+
+    /**
      * 填充数据。
      *
      * @param array 数组数组。
