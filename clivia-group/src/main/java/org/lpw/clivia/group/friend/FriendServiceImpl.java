@@ -3,13 +3,16 @@ package org.lpw.clivia.group.friend;
 import com.alibaba.fastjson.JSONObject;
 import org.lpw.clivia.page.Pagination;
 import org.lpw.clivia.user.UserService;
+import org.lpw.photon.scheduler.DateJob;
 import org.lpw.photon.util.DateTime;
 import org.springframework.stereotype.Service;
+
+import java.util.Calendar;
 
 import javax.inject.Inject;
 
 @Service(FriendModel.NAME + ".service")
-public class FriendServiceImpl implements FriendService {
+public class FriendServiceImpl implements FriendService, DateJob {
     @Inject
     private DateTime dateTime;
     @Inject
@@ -21,7 +24,8 @@ public class FriendServiceImpl implements FriendService {
 
     @Override
     public JSONObject user() {
-        return friendDao.query(userService.id(), pagination.getPageSize(20), pagination.getPageNum()).toJson();
+        return friendDao.query(userService.id(), pagination.getPageSize(20), pagination.getPageNum())
+                .toJson((friend, object) -> object.put("proposer", userService.get(friend.getProposer())));
     }
 
     @Override
@@ -38,5 +42,12 @@ public class FriendServiceImpl implements FriendService {
         friend.setMemo(memo);
         friend.setTime(dateTime.now());
         friendDao.save(friend);
+    }
+
+    @Override
+    public void executeDateJob() {
+        Calendar calendar = Calendar.getInstance();
+        calendar.add(Calendar.DAY_OF_MONTH, -7);
+        friendDao.state(0, 3, dateTime.getStart(calendar.getTime()));
     }
 }

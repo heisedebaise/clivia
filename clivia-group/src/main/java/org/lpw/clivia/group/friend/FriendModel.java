@@ -21,7 +21,7 @@ public class FriendModel extends ModelSupport {
     private String user; // 用户
     private String proposer; // 申请人
     private String memo; // 备注
-    private int state; // 状态：0-待处理；1-已通过；2-已拒绝
+    private int state; // 状态：0-待处理；1-已通过；2-已拒绝；3-已过期
     private Timestamp time; // 时间
 
     @Jsonable

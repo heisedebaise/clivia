@@ -7,6 +7,8 @@ import org.lpw.photon.dao.orm.lite.LiteOrm;
 import org.lpw.photon.dao.orm.lite.LiteQuery;
 import org.springframework.stereotype.Repository;
 
+import java.sql.Timestamp;
+
 import javax.inject.Inject;
 
 @Repository(FriendModel.NAME + ".dao")
@@ -31,5 +33,11 @@ class FriendDaoImpl implements FriendDao {
     @Override
     public void save(FriendModel friend) {
         liteOrm.save(friend);
+    }
+
+    @Override
+    public void state(int oldState, int newState, Timestamp time) {
+        liteOrm.update(new LiteQuery(FriendModel.class).set("c_state=?").where("c_state=? and c_time<?"),
+                new Object[] { newState, oldState, time });
     }
 }
