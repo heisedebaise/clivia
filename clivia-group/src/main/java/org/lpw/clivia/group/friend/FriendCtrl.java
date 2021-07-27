@@ -32,4 +32,9 @@ public class FriendCtrl {
 
         return "";
     }
+
+    @Execute(name = "agree", permit = "0", validates = { @Validate(validator = UserService.VALIDATOR_SIGN) })
+    public Object agree() {
+        return friendService.user();
+    }
 }

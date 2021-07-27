@@ -6,4 +6,6 @@ public interface FriendService {
     JSONObject user();
 
     void add(String user, String memo);
+
+    void agree(String id);
 }

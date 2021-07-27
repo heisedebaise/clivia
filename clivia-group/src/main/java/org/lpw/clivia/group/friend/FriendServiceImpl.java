@@ -50,4 +50,14 @@ public class FriendServiceImpl implements FriendService, DateJob {
         calendar.add(Calendar.DAY_OF_MONTH, -7);
         friendDao.state(0, 3, dateTime.getStart(calendar.getTime()));
     }
+
+    @Override
+    public void agree(String id) {
+        FriendModel friend = friendDao.findById(id);
+        if (friend == null || !friend.getUser().equals(userService.id()))
+            return;
+
+        friend.setState(1);
+        friendDao.save(friend);
+    }
 }

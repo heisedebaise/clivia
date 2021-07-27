@@ -7,9 +7,11 @@ import org.lpw.photon.dao.orm.PageList;
 interface FriendDao {
     PageList<FriendModel> query(String user, int pageSize, int pageNum);
 
+    FriendModel findById(String id);
+
     FriendModel find(String user, String proposer);
 
     void save(FriendModel friend);
 
-    void state(int oldState,int newState,Timestamp time);
+    void state(int oldState, int newState, Timestamp time);
 }
