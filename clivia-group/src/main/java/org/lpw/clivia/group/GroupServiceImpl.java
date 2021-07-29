@@ -22,4 +22,11 @@ public class GroupServiceImpl implements GroupService {
     public JSONObject user() {
         return groupDao.query(pagination.getPageSize(20), pagination.getPageNum()).toJson();
     }
+
+    @Override
+    public void friend(String user) {
+        GroupModel group = new GroupModel();
+        group.setCount(2);
+        groupDao.save(group);
+    }
 }

@@ -53,11 +53,20 @@ public class FriendServiceImpl implements FriendService, DateJob {
 
     @Override
     public void agree(String id) {
+        state(id, 1);
+    }
+
+    @Override
+    public void reject(String id) {
+        state(id, 2);
+    }
+
+    private void state(String id, int state) {
         FriendModel friend = friendDao.findById(id);
-        if (friend == null || !friend.getUser().equals(userService.id()))
+        if (friend == null || friend.getState() != 0 || !friend.getUser().equals(userService.id()))
             return;
 
-        friend.setState(1);
+        friend.setState(state);
         friendDao.save(friend);
     }
 }

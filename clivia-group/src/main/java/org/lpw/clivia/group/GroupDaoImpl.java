@@ -26,4 +26,9 @@ class GroupDaoImpl implements GroupDao {
     public PageList<GroupModel> query(Set<String> ids) {
         return daoHelper.newQueryBuilder().in("c_id", ids).query(GroupModel.class, 0, 0);
     }
+
+    @Override
+    public void save(GroupModel group) {
+        liteOrm.save(group);
+    }
 }

@@ -7,4 +7,6 @@ public interface GroupService {
     JSONObject query();
 
     JSONObject user();
+
+    void friend(String user);
 }

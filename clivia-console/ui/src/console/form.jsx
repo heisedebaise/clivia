@@ -105,7 +105,7 @@ class Base extends React.Component {
                 let array = toArray(value);
                 for (let i = 0; i < array.length; i++)
                     for (let k in array[i])
-                        values[prop.name + ':' + k + ':' + i] = array[i][k];
+                        values[prop.name + ':' + k + ':' + i] = '' + array[i][k];
             } else if (value) {
                 if (prop.type === 'date')
                     values[prop.name] = moment(value, 'YYYY-MM-DD');

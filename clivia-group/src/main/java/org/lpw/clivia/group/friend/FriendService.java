@@ -8,4 +8,6 @@ public interface FriendService {
     void add(String user, String memo);
 
     void agree(String id);
+
+    void reject(String id);
 }

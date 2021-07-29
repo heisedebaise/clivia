@@ -35,6 +35,15 @@ public class FriendCtrl {
 
     @Execute(name = "agree", permit = "0", validates = { @Validate(validator = UserService.VALIDATOR_SIGN) })
     public Object agree() {
-        return friendService.user();
+        friendService.agree(request.get("id"));
+
+        return "";
+    }
+
+    @Execute(name = "reject", permit = "0", validates = { @Validate(validator = UserService.VALIDATOR_SIGN) })
+    public Object reject() {
+        friendService.reject(request.get("id"));
+
+        return "";
     }
 }
