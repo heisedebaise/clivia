@@ -105,7 +105,7 @@ public class GroupServiceImpl implements GroupService {
     @Override
     public GroupModel friend(String[] users) {
         GroupModel group = new GroupModel();
-        group.setCount(2);
+        group.setCount(users.length);
         group.setTime(dateTime.now());
         groupDao.save(group);
         memberService.create(group.getId(), users, null);
