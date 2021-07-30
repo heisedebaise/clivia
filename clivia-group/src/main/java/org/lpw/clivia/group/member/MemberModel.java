@@ -20,6 +20,7 @@ public class MemberModel extends ModelSupport {
 
     private String group; // 群组
     private String user; // 用户
+    private int type; // 类型：0-好友；1-群组
     private int grade; // 等级：0-普通；1-管理员；2-群主
     private String memo; // 备注
     private int state; // 状态：0-正常；1-禁言；2-黑名单
@@ -43,6 +44,16 @@ public class MemberModel extends ModelSupport {
 
     public void setUser(String user) {
         this.user = user;
+    }
+
+    @Jsonable
+    @Column(name = "c_type")
+    public int getType() {
+        return type;
+    }
+
+    public void setType(int type) {
+        this.type = type;
     }
 
     @Jsonable

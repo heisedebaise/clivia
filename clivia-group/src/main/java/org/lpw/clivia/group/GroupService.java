@@ -3,10 +3,7 @@ package org.lpw.clivia.group;
 import com.alibaba.fastjson.JSONObject;
 
 public interface GroupService {
+    JSONObject friend();
 
-    JSONObject query();
-
-    JSONObject user();
-
-    void friend(String user);
+    GroupModel friend(String[] users);
 }

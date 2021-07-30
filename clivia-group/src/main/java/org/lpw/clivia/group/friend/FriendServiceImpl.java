@@ -1,15 +1,17 @@
 package org.lpw.clivia.group.friend;
 
+import java.util.Calendar;
+
+import javax.inject.Inject;
+
 import com.alibaba.fastjson.JSONObject;
+
+import org.lpw.clivia.group.GroupService;
 import org.lpw.clivia.page.Pagination;
 import org.lpw.clivia.user.UserService;
 import org.lpw.photon.scheduler.DateJob;
 import org.lpw.photon.util.DateTime;
 import org.springframework.stereotype.Service;
-
-import java.util.Calendar;
-
-import javax.inject.Inject;
 
 @Service(FriendModel.NAME + ".service")
 public class FriendServiceImpl implements FriendService, DateJob {
@@ -19,6 +21,8 @@ public class FriendServiceImpl implements FriendService, DateJob {
     private Pagination pagination;
     @Inject
     private UserService userService;
+    @Inject
+    private GroupService groupService;
     @Inject
     private FriendDao friendDao;
 
@@ -53,7 +57,9 @@ public class FriendServiceImpl implements FriendService, DateJob {
 
     @Override
     public void agree(String id) {
-        state(id, 1);
+        FriendModel friend = state(id, 1);
+        if (friend != null)
+            groupService.friend(new String[] { friend.getUser(), friend.getProposer() });
     }
 
     @Override
@@ -61,12 +67,14 @@ public class FriendServiceImpl implements FriendService, DateJob {
         state(id, 2);
     }
 
-    private void state(String id, int state) {
+    private FriendModel state(String id, int state) {
         FriendModel friend = friendDao.findById(id);
         if (friend == null || friend.getState() != 0 || !friend.getUser().equals(userService.id()))
-            return;
+            return null;
 
         friend.setState(state);
         friendDao.save(friend);
+
+        return friend;
     }
 }

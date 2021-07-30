@@ -13,13 +13,20 @@ class MemberDaoImpl implements MemberDao {
     private LiteOrm liteOrm;
 
     @Override
-    public PageList<MemberModel> query(int pageSize, int pageNum) {
-        return liteOrm.query(new LiteQuery(MemberModel.class).size(pageSize).page(pageNum), null);
+    public PageList<MemberModel> query(String group) {
+        return liteOrm.query(new LiteQuery(MemberModel.class).where("c_group=?"), new Object[] { group });
     }
 
     @Override
-    public MemberModel findById(String id) {
-        return liteOrm.findById(MemberModel.class, id);
+    public PageList<MemberModel> query(String user, int type) {
+        return liteOrm.query(new LiteQuery(MemberModel.class).where("c_user=? and c_type=? and c_state in(0,1)"),
+                new Object[] { user, type });
+    }
+
+    @Override
+    public MemberModel find(String group, String user) {
+        return liteOrm.findOne(new LiteQuery(MemberModel.class).where("c_user=? and c_group=?"),
+                new Object[] { user, group });
     }
 
     @Override

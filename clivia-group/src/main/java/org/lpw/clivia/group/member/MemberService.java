@@ -1,10 +1,12 @@
 package org.lpw.clivia.group.member;
 
-import com.alibaba.fastjson.JSONObject;
+import java.util.List;
+import java.util.Set;
 
 public interface MemberService {
+    Set<String> user(int type);
 
-    JSONObject user();
+    List<MemberModel> list(String group);
 
-    void save(String group, String[] users);
+    void create(String group, String[] users, String owner);
 }

@@ -2,7 +2,7 @@ DROP TABLE IF EXISTS t_group;
 CREATE TABLE t_group
 (
   c_id CHAR(36) NOT NULL COMMENT '主键',
-  c_type INT DEFAULT 0 COMMENT '类型：0-好友；1-群组；2-临时',
+  c_type INT DEFAULT 0 COMMENT '类型：0-好友；1-群组',
   c_name VARCHAR(255) DEFAULT NULL COMMENT '名称',
   c_avatar VARCHAR(255) DEFAULT NULL COMMENT '头像',
   c_notice TEXT DEFAULT NULL COMMENT '公告',

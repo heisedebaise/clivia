@@ -1,37 +1,62 @@
 package org.lpw.clivia.group.member;
 
-import com.alibaba.fastjson.JSONObject;
-import org.lpw.clivia.page.Pagination;
-import org.lpw.photon.util.Validator;
-import org.springframework.stereotype.Service;
-
-import java.util.Arrays;
+import java.sql.Timestamp;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import javax.inject.Inject;
+
+import org.lpw.clivia.user.UserService;
+import org.lpw.photon.util.DateTime;
+import org.lpw.photon.util.Validator;
+import org.springframework.stereotype.Service;
 
 @Service(MemberModel.NAME + ".service")
 public class MemberServiceImpl implements MemberService {
     @Inject
     private Validator validator;
     @Inject
-    private Pagination pagination;
+    private DateTime dateTime;
+    @Inject
+    private UserService userService;
     @Inject
     private MemberDao memberDao;
 
     @Override
-    public JSONObject user() {
-        return memberDao.query(pagination.getPageSize(20), pagination.getPageNum()).toJson();
+    public Set<String> user(int type) {
+        Set<String> groups = new HashSet<>();
+        memberDao.query(userService.id(), type).getList().forEach(member -> groups.add(member.getGroup()));
+
+        return groups;
     }
 
     @Override
-    public void save(String group, String[] users) {
+    public List<MemberModel> list(String group) {
+        return memberDao.query(group).getList();
+    }
+
+    @Override
+    public void create(String group, String[] users, String owner) {
         Set<String> set = new HashSet<>();
         for (String user : users)
             if (!validator.isEmpty(user))
                 set.add(user);
         if (set.isEmpty())
             return;
+
+        Timestamp now = dateTime.now();
+        for (String user : set) {
+            if (memberDao.find(group, user) != null)
+                continue;
+
+            MemberModel member = new MemberModel();
+            member.setGroup(group);
+            member.setUser(user);
+            if (user.equals(owner))
+                member.setGrade(2);
+            member.setTime(now);
+            memberDao.save(member);
+        }
     }
 }

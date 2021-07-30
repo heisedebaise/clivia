@@ -17,17 +17,8 @@ public class GroupCtrl {
     @Inject
     private GroupService groupService;
 
-    @Execute(name = "query", validates = {
-            @Validate(validator = Validators.SIGN)
-    })
-    public Object query() {
-        return groupService.query();
-    }
-
-    @Execute(name = "user", validates = {
-            @Validate(validator = UserService.VALIDATOR_SIGN)
-    })
-    public Object user() {
-        return groupService.user();
+    @Execute(name = "friend", permit = "0", validates = { @Validate(validator = UserService.VALIDATOR_SIGN) })
+    public Object friend() {
+        return groupService.friend();
     }
 }

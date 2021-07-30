@@ -18,7 +18,7 @@ import java.sql.Timestamp;
 public class GroupModel extends ModelSupport {
     static final String NAME = "clivia.group";
 
-    private int type; // 类型：0-好友；1-群组；2-临时
+    private int type; // 类型：0-好友；1-群组
     private String name; // 名称
     private String avatar; // 头像
     private String notice; // 公告
