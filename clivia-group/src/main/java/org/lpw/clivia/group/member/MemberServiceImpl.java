@@ -9,13 +9,10 @@ import javax.inject.Inject;
 
 import org.lpw.clivia.user.UserService;
 import org.lpw.photon.util.DateTime;
-import org.lpw.photon.util.Validator;
 import org.springframework.stereotype.Service;
 
 @Service(MemberModel.NAME + ".service")
 public class MemberServiceImpl implements MemberService {
-    @Inject
-    private Validator validator;
     @Inject
     private DateTime dateTime;
     @Inject
@@ -37,16 +34,9 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
-    public void create(String group, String[] users, String owner) {
-        Set<String> set = new HashSet<>();
-        for (String user : users)
-            if (!validator.isEmpty(user))
-                set.add(user);
-        if (set.isEmpty())
-            return;
-
+    public void create(String group, Set<String> users, String owner) {
         Timestamp now = dateTime.now();
-        for (String user : set) {
+        for (String user : users) {
             if (memberDao.find(group, user) != null)
                 continue;
 

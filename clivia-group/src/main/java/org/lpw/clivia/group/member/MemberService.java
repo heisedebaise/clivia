@@ -8,5 +8,5 @@ public interface MemberService {
 
     List<MemberModel> list(String group);
 
-    void create(String group, String[] users, String owner);
+    void create(String group, Set<String> users, String owner);
 }

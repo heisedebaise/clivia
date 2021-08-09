@@ -45,7 +45,8 @@ public class KeyvalueServiceImpl implements KeyvalueService {
     public JSONObject object(String key) {
         return cache.computeIfAbsent(getCacheKey(":object:" + key), k -> {
             JSONObject object = new JSONObject();
-            keyvalueDao.query(key, 0, 0).getList().forEach(keyvalue -> object.put(keyvalue.getKey(), keyvalue.getValue()));
+            keyvalueDao.query(key, 0, 0).getList()
+                    .forEach(keyvalue -> object.put(keyvalue.getKey(), keyvalue.getValue()));
 
             return object;
         }, false);
@@ -68,6 +69,13 @@ public class KeyvalueServiceImpl implements KeyvalueService {
     @Override
     public double valueAsDouble(String key, double defaultValue) {
         return numeric.toDouble(value(key), defaultValue);
+    }
+
+    @Override
+    public boolean exists(String key, String value) {
+        String v = value(key);
+
+        return v != null && v.equals(value);
     }
 
     @Override

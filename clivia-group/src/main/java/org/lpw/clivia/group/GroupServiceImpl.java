@@ -1,8 +1,11 @@
 package org.lpw.clivia.group;
 
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.inject.Inject;
 
@@ -11,6 +14,7 @@ import com.alibaba.fastjson.JSONObject;
 
 import org.lpw.clivia.group.member.MemberModel;
 import org.lpw.clivia.group.member.MemberService;
+import org.lpw.clivia.keyvalue.KeyvalueService;
 import org.lpw.clivia.user.UserModel;
 import org.lpw.clivia.user.UserService;
 import org.lpw.photon.cache.Cache;
@@ -30,6 +34,8 @@ public class GroupServiceImpl implements GroupService {
     @Inject
     private Pinyin pinyin;
     @Inject
+    private KeyvalueService keyvalueService;
+    @Inject
     private UserService userService;
     @Inject
     private MemberService memberService;
@@ -37,12 +43,12 @@ public class GroupServiceImpl implements GroupService {
     private GroupDao groupDao;
 
     @Override
-    public JSONObject friend() {
+    public JSONObject friends() {
         String user = userService.id();
-        return cache.computeIfAbsent(GroupModel.NAME + ":friend:" + user, key -> {
+        return cache.computeIfAbsent(friendsCacheKey(user), key -> {
             Map<String, JSONArray> map = new HashMap<>();
             for (GroupModel group : groupDao.query(memberService.user(0)).getList()) {
-                JSONObject friend = friend(group, user);
+                JSONObject friend = friend(user, group);
                 if (friend == null)
                     continue;
 
@@ -56,7 +62,7 @@ public class GroupServiceImpl implements GroupService {
         }, false);
     }
 
-    private JSONObject friend(GroupModel group, String user) {
+    private JSONObject friend(String user, GroupModel group) {
         List<MemberModel> members = memberService.list(group.getId());
         if (members.isEmpty())
             return null;
@@ -103,13 +109,49 @@ public class GroupServiceImpl implements GroupService {
     }
 
     @Override
-    public GroupModel friend(String[] users) {
+    public JSONObject find(String idUidCode) {
+        JSONObject user = userService.find(idUidCode);
+        if (user.containsKey("id")
+                && keyvalueService.exists(friendsKey(userService.id(), user.getString("id")), "true"))
+            user.put("friend", true);
+
+        return user;
+    }
+
+    @Override
+    public void friend(String[] users) {
+        Set<String> set = new HashSet<>();
+        for (String user : users)
+            if (!validator.isEmpty(user))
+                set.add(user);
+        if (set.isEmpty())
+            return;
+
         GroupModel group = new GroupModel();
         group.setCount(users.length);
         group.setTime(dateTime.now());
         groupDao.save(group);
-        memberService.create(group.getId(), users, null);
+        memberService.create(group.getId(), set, null);
 
-        return group;
+        if (set.size() == 2) {
+            Iterator<String> iterator = set.iterator();
+            String u1 = iterator.next();
+            String u2 = iterator.next();
+            keyvalueService.save(friendsKey(u1, u2), "true");
+            keyvalueService.save(friendsKey(u2, u1), "true");
+        }
+        set.forEach(this::cleanFriendsCache);
+    }
+
+    private String friendsKey(String user, String friend) {
+        return GroupModel.NAME + ":friends:" + user + ":" + friend;
+    }
+
+    private void cleanFriendsCache(String user) {
+        cache.remove(friendsCacheKey(user));
+    }
+
+    private String friendsCacheKey(String user) {
+        return GroupModel.NAME + ":friends:" + user;
     }
 }
