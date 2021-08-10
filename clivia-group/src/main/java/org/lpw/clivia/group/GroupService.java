@@ -7,5 +7,5 @@ public interface GroupService {
 
     JSONObject find(String idUidCode);
 
-    void friend(String[] users);
+    GroupModel friend(String[] users);
 }

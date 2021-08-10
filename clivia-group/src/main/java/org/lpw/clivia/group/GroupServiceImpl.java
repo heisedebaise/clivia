@@ -47,12 +47,21 @@ public class GroupServiceImpl implements GroupService {
         String user = userService.id();
         return cache.computeIfAbsent(friendsCacheKey(user), key -> {
             Map<String, JSONArray> map = new HashMap<>();
+            boolean self = false;
             for (GroupModel group : groupDao.query(memberService.user(0)).getList()) {
                 JSONObject friend = friend(user, group);
                 if (friend == null)
                     continue;
 
                 map.computeIfAbsent(label(friend.getString("nick")), k -> new JSONArray()).add(friend);
+                if (!self && friend.getString("user").equals(user))
+                    self = true;
+            }
+
+            if (!self) {
+                JSONObject friend = friend(user, friend(new String[] { user }));
+                if (friend != null)
+                    map.computeIfAbsent(label(friend.getString("nick")), k -> new JSONArray()).add(friend);
             }
 
             JSONObject object = new JSONObject();
@@ -119,13 +128,13 @@ public class GroupServiceImpl implements GroupService {
     }
 
     @Override
-    public void friend(String[] users) {
+    public GroupModel friend(String[] users) {
         Set<String> set = new HashSet<>();
         for (String user : users)
             if (!validator.isEmpty(user))
                 set.add(user);
         if (set.isEmpty())
-            return;
+            return null;
 
         GroupModel group = new GroupModel();
         group.setCount(users.length);
@@ -133,14 +142,16 @@ public class GroupServiceImpl implements GroupService {
         groupDao.save(group);
         memberService.create(group.getId(), set, null);
 
-        if (set.size() == 2) {
-            Iterator<String> iterator = set.iterator();
-            String u1 = iterator.next();
-            String u2 = iterator.next();
-            keyvalueService.save(friendsKey(u1, u2), "true");
-            keyvalueService.save(friendsKey(u2, u1), "true");
-        }
+        Iterator<String> iterator = set.iterator();
+        String u1 = iterator.next();
+        String u2 = u1;
+        if (iterator.hasNext())
+            u2 = iterator.next();
+        keyvalueService.save(friendsKey(u1, u2), "true");
+        keyvalueService.save(friendsKey(u2, u1), "true");
         set.forEach(this::cleanFriendsCache);
+
+        return group;
     }
 
     private String friendsKey(String user, String friend) {
