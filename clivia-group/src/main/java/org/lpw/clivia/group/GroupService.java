@@ -8,4 +8,6 @@ public interface GroupService {
     JSONObject find(String idUidCode);
 
     GroupModel friend(String[] users);
+
+    void cleanFriendsCache(String user);
 }

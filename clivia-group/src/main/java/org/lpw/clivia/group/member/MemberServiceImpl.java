@@ -7,6 +7,7 @@ import java.util.Set;
 
 import javax.inject.Inject;
 
+import org.lpw.clivia.group.GroupService;
 import org.lpw.clivia.user.UserService;
 import org.lpw.photon.util.DateTime;
 import org.springframework.stereotype.Service;
@@ -17,6 +18,8 @@ public class MemberServiceImpl implements MemberService {
     private DateTime dateTime;
     @Inject
     private UserService userService;
+    @Inject
+    private GroupService groupService;
     @Inject
     private MemberDao memberDao;
 
@@ -34,6 +37,11 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
+    public MemberModel find(String group, String user) {
+        return memberDao.find(group, user);
+    }
+
+    @Override
     public void create(String group, Set<String> users, String owner) {
         Timestamp now = dateTime.now();
         for (String user : users) {
@@ -48,5 +56,13 @@ public class MemberServiceImpl implements MemberService {
             member.setTime(now);
             memberDao.save(member);
         }
+    }
+
+    @Override
+    public void memo(String id, String memo) {
+        MemberModel member = memberDao.findById(id);
+        member.setMemo(memo);
+        memberDao.save(member);
+        groupService.cleanFriendsCache(userService.id());
     }
 }

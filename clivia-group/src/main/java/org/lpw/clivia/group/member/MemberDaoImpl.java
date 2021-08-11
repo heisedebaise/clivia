@@ -24,6 +24,11 @@ class MemberDaoImpl implements MemberDao {
     }
 
     @Override
+    public MemberModel findById(String id) {
+        return liteOrm.findById(MemberModel.class, id);
+    }
+
+    @Override
     public MemberModel find(String group, String user) {
         return liteOrm.findOne(new LiteQuery(MemberModel.class).where("c_user=? and c_group=?"),
                 new Object[] { user, group });

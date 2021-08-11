@@ -96,8 +96,10 @@ public class GroupServiceImpl implements GroupService {
 
         JSONObject object = new JSONObject();
         object.put("id", group.getId());
+        object.put("group", member.getGroup());
         object.put("user", member.getUser());
-        object.put("nick", validator.isEmpty(member.getMemo()) ? user.getNick() : member.getMemo());
+        object.put("nick", user.getNick());
+        object.put("memo", member.getMemo());
         object.put("avatar", user.getAvatar());
 
         return object;
@@ -120,9 +122,39 @@ public class GroupServiceImpl implements GroupService {
     @Override
     public JSONObject find(String idUidCode) {
         JSONObject user = userService.find(idUidCode);
-        if (user.containsKey("id")
-                && keyvalueService.exists(friendsKey(userService.id(), user.getString("id")), "true"))
-            user.put("friend", true);
+        if (!user.containsKey("id"))
+            return user;
+
+        String uid = userService.id();
+        String group = keyvalueService.value(friendsKey(uid, user.getString("id")));
+        if (validator.isEmpty(group))
+            return user;
+
+        List<MemberModel> members = memberService.list(group);
+        if (members.isEmpty())
+            return user;
+
+        MemberModel member = null;
+        if (members.size() == 1) {
+            MemberModel mm = members.get(0);
+            if (mm.getUser().equals(uid))
+                member = mm;
+        } else {
+            for (MemberModel mm : members) {
+                if (!mm.getUser().equals(uid)) {
+                    member = mm;
+
+                    break;
+                }
+            }
+        }
+        if (member == null)
+            return user;
+
+        user.put("group", group);
+        user.put("member", member.getId());
+        user.put("memo", member.getMemo());
+        user.put("friend", true);
 
         return user;
     }
@@ -147,8 +179,8 @@ public class GroupServiceImpl implements GroupService {
         String u2 = u1;
         if (iterator.hasNext())
             u2 = iterator.next();
-        keyvalueService.save(friendsKey(u1, u2), "true");
-        keyvalueService.save(friendsKey(u2, u1), "true");
+        keyvalueService.save(friendsKey(u1, u2), group.getId());
+        keyvalueService.save(friendsKey(u2, u1), group.getId());
         set.forEach(this::cleanFriendsCache);
 
         return group;
@@ -158,7 +190,8 @@ public class GroupServiceImpl implements GroupService {
         return GroupModel.NAME + ":friends:" + user + ":" + friend;
     }
 
-    private void cleanFriendsCache(String user) {
+    @Override
+    public void cleanFriendsCache(String user) {
         cache.remove(friendsCacheKey(user));
     }
 
