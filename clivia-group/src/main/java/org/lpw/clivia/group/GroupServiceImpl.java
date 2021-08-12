@@ -18,6 +18,7 @@ import org.lpw.clivia.keyvalue.KeyvalueService;
 import org.lpw.clivia.user.UserModel;
 import org.lpw.clivia.user.UserService;
 import org.lpw.photon.cache.Cache;
+import org.lpw.photon.dao.model.ModelHelper;
 import org.lpw.photon.util.DateTime;
 import org.lpw.photon.util.Pinyin;
 import org.lpw.photon.util.Validator;
@@ -34,6 +35,8 @@ public class GroupServiceImpl implements GroupService {
     @Inject
     private Pinyin pinyin;
     @Inject
+    private ModelHelper modelHelper;
+    @Inject
     private KeyvalueService keyvalueService;
     @Inject
     private UserService userService;
@@ -41,6 +44,20 @@ public class GroupServiceImpl implements GroupService {
     private MemberService memberService;
     @Inject
     private GroupDao groupDao;
+
+    @Override
+    public JSONObject get(String id) {
+        return cache.computeIfAbsent(groupCacheKey(id), key -> {
+            GroupModel group = groupDao.findById(id);
+            JSONArray members = new JSONArray();
+            memberService.list(id).forEach(member -> members.add(friend(group, member)));
+            
+            JSONObject object = modelHelper.toJson(group);
+            object.put("members", members);
+
+            return object;
+        }, false);
+    }
 
     @Override
     public JSONObject friends() {
@@ -188,6 +205,10 @@ public class GroupServiceImpl implements GroupService {
 
     private String friendsKey(String user, String friend) {
         return GroupModel.NAME + ":friends:" + user + ":" + friend;
+    }
+
+    private String groupCacheKey(String id) {
+        return GroupModel.NAME + ":" + id;
     }
 
     @Override

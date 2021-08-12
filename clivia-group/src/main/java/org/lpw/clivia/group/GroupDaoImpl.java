@@ -22,6 +22,11 @@ class GroupDaoImpl implements GroupDao {
     }
 
     @Override
+    public GroupModel findById(String id) {
+        return liteOrm.findById(GroupModel.class, id);
+    }
+
+    @Override
     public void save(GroupModel group) {
         liteOrm.save(group);
     }
