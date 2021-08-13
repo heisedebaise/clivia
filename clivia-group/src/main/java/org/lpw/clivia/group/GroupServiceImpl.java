@@ -48,11 +48,22 @@ public class GroupServiceImpl implements GroupService {
     @Override
     public JSONObject get(String id) {
         return cache.computeIfAbsent(groupCacheKey(id), key -> {
+            String user = userService.id();
             GroupModel group = groupDao.findById(id);
-            JSONArray members = new JSONArray();
-            memberService.list(id).forEach(member -> members.add(friend(group, member)));
-            
             JSONObject object = modelHelper.toJson(group);
+            JSONArray members = new JSONArray();
+            memberService.list(id).forEach(member -> {
+                JSONObject m = member(group, member);
+                if (m == null)
+                    return;
+
+                if (group.getType() == 0) {
+                    if (members.isEmpty() || !m.getString("user").equals(user))
+                        object.put("name", m.getString("nick"));
+                }
+                members.add(m);
+            });
+
             object.put("members", members);
 
             return object;
@@ -96,23 +107,23 @@ public class GroupServiceImpl implements GroupService {
         if (members.size() == 1) {
             MemberModel member = members.get(0);
 
-            return member.getUser().equals(user) ? friend(group, member) : null;
+            return member.getUser().equals(user) ? member(group, member) : null;
         }
 
         for (MemberModel member : members)
             if (!member.getUser().equals(user))
-                return member.getState() == 0 || member.getState() == 1 ? friend(group, member) : null;
+                return member.getState() == 0 || member.getState() == 1 ? member(group, member) : null;
 
         return null;
     }
 
-    private JSONObject friend(GroupModel group, MemberModel member) {
+    private JSONObject member(GroupModel group, MemberModel member) {
         UserModel user = userService.findById(member.getUser());
         if (user == null)
             return null;
 
         JSONObject object = new JSONObject();
-        object.put("id", group.getId());
+        object.put("id", member.getId());
         object.put("group", member.getGroup());
         object.put("user", member.getUser());
         object.put("nick", user.getNick());
