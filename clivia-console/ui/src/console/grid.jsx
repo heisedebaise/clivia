@@ -296,7 +296,7 @@ class Grid extends React.Component {
         }
 
         if (op.type === 'download') {
-            window.location.href = this.props.body.uri(this.props.uri, op.service || op.type) + (model && model.id ? ('?id=' + model.id) : '');
+            window.open('about:blank').location.href = this.props.body.uri(this.props.uri, op.service || op.type) + (model && model.id ? ('?id=' + model.id) : '');
 
             return;
         }
