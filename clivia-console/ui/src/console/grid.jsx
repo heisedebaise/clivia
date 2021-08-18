@@ -296,7 +296,16 @@ class Grid extends React.Component {
         }
 
         if (op.type === 'download') {
-            window.open('about:blank').location.href = this.props.body.uri(this.props.uri, op.service || op.type) + (model && model.id ? ('?id=' + model.id) : '');
+            let href = this.props.body.uri(this.props.uri, op.service || op.type);
+            if (model && model.id) href += '?id=' + model.id;
+            else {
+                let values = this.searches();
+                for (let key in values) {
+                    href += href.indexOf('?') == -1 ? '?' : '&';
+                    href += key + '=' + encodeURIComponent(values[key]);
+                }
+            }
+            window.open('about:blank').location.href = href;
 
             return;
         }
