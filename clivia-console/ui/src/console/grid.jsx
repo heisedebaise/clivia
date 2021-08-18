@@ -301,8 +301,12 @@ class Grid extends React.Component {
             else {
                 let values = this.searches();
                 for (let key in values) {
+                    let value = values[key];
+                    if (!value)
+                        continue;
+
                     href += href.indexOf('?') == -1 ? '?' : '&';
-                    href += key + '=' + encodeURIComponent(values[key]);
+                    href += key + '=' + encodeURIComponent(value);
                 }
             }
             window.open('about:blank').location.href = href;
