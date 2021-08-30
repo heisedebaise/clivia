@@ -1,12 +1,9 @@
 package org.lpw.clivia.group;
 
-import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 
 public interface GroupService {
     String VALIDATOR_EXISTS = GroupModel.NAME + ".exists";
-
-    JSONArray gets();
 
     JSONObject get(String id);
 

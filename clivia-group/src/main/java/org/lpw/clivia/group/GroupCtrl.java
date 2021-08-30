@@ -2,7 +2,6 @@ package org.lpw.clivia.group;
 
 import javax.inject.Inject;
 
-import org.lpw.clivia.Permit;
 import org.lpw.clivia.group.member.MemberService;
 import org.lpw.clivia.user.UserService;
 import org.lpw.photon.ctrl.context.Request;
@@ -18,11 +17,6 @@ public class GroupCtrl {
     private Request request;
     @Inject
     private GroupService groupService;
-
-    @Execute(name = "gets", permit = Permit.always, validates = { @Validate(validator = Validators.SIGN) })
-    public Object gets() {
-        return groupService.gets();
-    }
 
     @Execute(name = "get", permit = "0", validates = {
             @Validate(validator = Validators.ID, parameter = "id", failureCode = 1),
