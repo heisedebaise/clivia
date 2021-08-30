@@ -129,6 +129,7 @@ public class GroupServiceImpl implements GroupService {
         object.put("nick", user.getNick());
         object.put("memo", member.getMemo());
         object.put("avatar", user.getAvatar());
+        object.put("state", member.getState());
         object.put("time", dateTime.toString(member.getTime()));
 
         return object;
