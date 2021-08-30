@@ -7,6 +7,7 @@ import javax.inject.Inject;
 import org.lpw.clivia.dao.DaoHelper;
 import org.lpw.photon.dao.orm.PageList;
 import org.lpw.photon.dao.orm.lite.LiteOrm;
+import org.lpw.photon.dao.orm.lite.LiteQuery;
 import org.springframework.stereotype.Repository;
 
 @Repository(GroupModel.NAME + ".dao")
@@ -15,6 +16,11 @@ class GroupDaoImpl implements GroupDao {
     private LiteOrm liteOrm;
     @Inject
     private DaoHelper daoHelper;
+
+    @Override
+    public PageList<GroupModel> query() {
+        return liteOrm.query(new LiteQuery(GroupModel.class), null);
+    }
 
     @Override
     public PageList<GroupModel> query(Set<String> ids) {

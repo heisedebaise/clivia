@@ -5,6 +5,8 @@ import java.util.Set;
 import org.lpw.photon.dao.orm.PageList;
 
 interface GroupDao {
+    PageList<GroupModel> query();
+
     PageList<GroupModel> query(Set<String> ids);
 
     GroupModel findById(String id);

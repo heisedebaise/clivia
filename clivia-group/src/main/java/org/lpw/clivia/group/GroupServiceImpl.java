@@ -46,6 +46,18 @@ public class GroupServiceImpl implements GroupService {
     private GroupDao groupDao;
 
     @Override
+    public JSONArray gets() {
+        JSONArray array = new JSONArray();
+        groupDao.query().getList().forEach(group -> {
+            JSONObject object = modelHelper.toJson(group);
+            object.put("members", modelHelper.toJson(memberService.list(group.getId())));
+            array.add(object);
+        });
+
+        return array;
+    }
+
+    @Override
     public JSONObject get(String id) {
         return cache.computeIfAbsent(groupCacheKey(id), key -> {
             String user = userService.id();
