@@ -42,6 +42,14 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
+    public String groups() {
+        StringBuilder sb = new StringBuilder();
+        memberDao.query(userService.id(), -1).getList().forEach(member -> sb.append(',').append(member.getGroup()));
+
+        return sb.length() == 0 ? "" : sb.substring(1);
+    }
+
+    @Override
     public void create(String group, Set<String> users, String owner) {
         Timestamp now = dateTime.now();
         for (String user : users) {

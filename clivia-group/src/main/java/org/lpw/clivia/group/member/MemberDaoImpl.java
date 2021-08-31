@@ -19,6 +19,10 @@ class MemberDaoImpl implements MemberDao {
 
     @Override
     public PageList<MemberModel> query(String user, int type) {
+        if (type == -1)
+            return liteOrm.query(new LiteQuery(MemberModel.class).where("c_user=? and c_state in(0,1)"),
+                    new Object[] { user });
+
         return liteOrm.query(new LiteQuery(MemberModel.class).where("c_user=? and c_type=? and c_state in(0,1)"),
                 new Object[] { user, type });
     }

@@ -13,6 +13,8 @@ public interface MemberService {
 
     MemberModel find(String group, String user);
 
+    String groups();
+
     void create(String group, Set<String> users, String owner);
 
     void memo(String id, String memo);

@@ -17,6 +17,11 @@ public class MemberCtrl {
     @Inject
     private MemberService memberService;
 
+    @Execute(name = "groups", permit = "0", validates = { @Validate(validator = UserService.VALIDATOR_SIGN) })
+    public Object groups() {
+        return memberService.groups();
+    }
+
     @Execute(name = "memo", permit = "0", validates = {
             @Validate(validator = Validators.ID, parameter = "id", failureCode = 101),
             @Validate(validator = Validators.ID, parameter = "group", failureCode = 102),
