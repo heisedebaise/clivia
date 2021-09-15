@@ -8,6 +8,7 @@ import org.lpw.clivia.user.auth.AuthService;
 import org.lpw.photon.cache.Cache;
 import org.lpw.photon.ctrl.context.Request;
 import org.lpw.photon.util.Converter;
+import org.lpw.photon.util.Logger;
 import org.lpw.photon.util.Numeric;
 import org.lpw.photon.util.TimeUnit;
 import org.lpw.photon.util.Validator;
@@ -30,6 +31,8 @@ public class SelfTypeImpl extends TypeSupport {
     @Inject
     private Cache cache;
     @Inject
+    private Logger logger;
+    @Inject
     private Request request;
     @Inject
     private KeyvalueService keyvalueService;
@@ -45,16 +48,28 @@ public class SelfTypeImpl extends TypeSupport {
 
     @Override
     public UserModel auth(String uid, String password, String grade) {
-        if (validator.isEmpty(uid) || validator.isEmpty(password))
+        if (validator.isEmpty(uid) || validator.isEmpty(password)) {
+            if (logger.isDebugEnable())
+                logger.debug("user.sign-in:uid={},password={}", uid, password);
+
             return null;
+        }
 
         AuthModel auth = authService.findByUid(uid);
-        if (auth == null)
+        if (auth == null) {
+            if (logger.isDebugEnable())
+                logger.debug("user.sign-in:uid={},password={},auth=null", uid, password);
+
             return null;
+        }
 
         UserModel user = userService.findById(auth.getUser());
-        if (user == null)
+        if (user == null) {
+            if (logger.isDebugEnable())
+                logger.debug("user.sign-in:uid={},password={},auth={},user=null", uid, password, auth.getUser());
+
             return null;
+        }
 
         String cacheKey = CACHE_PASS + user.getId();
         String[] failures = converter.toArray(cache.get(cacheKey), ",");
@@ -75,6 +90,9 @@ public class SelfTypeImpl extends TypeSupport {
             return user;
 
         cache.put(cacheKey, failure + 1 + "," + System.currentTimeMillis(), false);
+        if (logger.isDebugEnable())
+            logger.debug("user.sign-in:uid={},password={},auth={},user={},failure={}", uid, password, auth.getUser(),
+                    user.getId(), failure + 1);
 
         return null;
     }
