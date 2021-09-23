@@ -305,7 +305,7 @@ class Grid extends React.Component {
                     if (!value)
                         continue;
 
-                    href += href.indexOf('?') == -1 ? '?' : '&';
+                    href += href.indexOf('?') === -1 ? '?' : '&';
                     href += key + '=' + encodeURIComponent(value);
                 }
             }
