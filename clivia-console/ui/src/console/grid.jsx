@@ -108,7 +108,9 @@ class Grid extends React.Component {
                     });
                 });
                 column.render = model => this.style(prop, model, this.dselect(prop, model));
-            } else if (prop.type === 'editor' || prop.type === 'html')
+            } else if (prop.type === 'password')
+                column.render = model => this.style(prop, model, '***');
+            else if (prop.type === 'editor' || prop.type === 'html')
                 column.render = model => this.style(prop, model, <div dangerouslySetInnerHTML={{ __html: this.value(model, prop.name) }} />);
             else if (prop.type === 'user')
                 column.render = model => this.style(prop, model, <User data={this.value(model, prop.name)} />);
