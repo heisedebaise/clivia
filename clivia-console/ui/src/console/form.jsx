@@ -462,6 +462,7 @@ class Normal extends Base {
     load = () => service(this.props.body.uri(this.props.uri, this.props.meta.service), this.props.parameter);
 
     submit = (mt, values) => {
+        let data = { ...this.state, ...values }
         for (let prop of this.props.meta.props) {
             if (prop.type === 'array') {
                 let labels = {};
@@ -471,9 +472,9 @@ class Normal extends Base {
 
                 let array = [];
                 let state = toArray(this.state[prop.name]);
-                for (let key in values) {
-                    if (values[key] === undefined) {
-                        delete values[key];
+                for (let key in data) {
+                    if (data[key] === undefined) {
+                        delete data[key];
 
                         continue;
                     }
@@ -482,14 +483,14 @@ class Normal extends Base {
                         let ks = key.split(':');
                         let index = toInt(ks[2]);
                         if (state[index] === null) {
-                            delete values[key];
+                            delete data[key];
 
                             continue;
                         }
 
                         let obj = array[index] || {};
-                        obj[ks[1]] = labels[ks[1]] ? toInt(values[key]) : values[key];
-                        delete values[key];
+                        obj[ks[1]] = labels[ks[1]] ? toInt(data[key]) : data[key];
+                        delete data[key];
                         array[index] = obj;
                     }
                 }
@@ -497,11 +498,11 @@ class Normal extends Base {
                 for (let obj of array)
                     if (obj)
                         arr.push(obj);
-                values[prop.name] = JSON.stringify(arr);
+                data[prop.name] = JSON.stringify(arr);
             }
         }
 
-        return service(this.props.body.uri(this.props.uri, mt.service || mt.type), { ...values, ...this.props.parameter });
+        return service(this.props.body.uri(this.props.uri, mt.service || mt.type), { ...data, ...this.props.parameter });
     }
 }
 

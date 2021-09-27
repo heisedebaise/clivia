@@ -560,6 +560,8 @@ public class UserServiceImpl implements UserService {
         user.setState(state);
         userDao.save(user);
         authService.create(user.getId(), uid, Types.Self, mobile, email, nick, avatar);
+        UserModel model = user;
+        listeners.ifPresent(set -> set.forEach(listener -> listener.userSignUp(model)));
 
         return user;
     }
