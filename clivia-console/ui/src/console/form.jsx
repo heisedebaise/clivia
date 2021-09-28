@@ -8,6 +8,7 @@ import { toMoney, fromMoney, toPercent, fromPercent, toInt } from './numeric';
 import { toArray } from '../json';
 import Image from './image';
 import File from './file';
+import Folder from './folder';
 import DSelect from './dselect';
 import Editor from './editor';
 import Category from './category';
@@ -251,6 +252,8 @@ class Base extends React.Component {
             items.push(<Form.Item {...item}><Image name={prop.name} upload={prop.upload} size={prop.size || 1} value={this.state[prop.name] || ''} form={this} /></Form.Item>);
         } else if (prop.type === 'file') {
             items.push(<Form.Item {...item}><File name={prop.name} upload={prop.upload} size={prop.size || 1} value={this.state[prop.name] || ''} form={this} /></Form.Item>);
+        } else if (prop.type === 'folder') {
+            items.push(<Form.Item {...item}><Folder name={prop.name} value={this.state[prop.name] || ''} form={this} /></Form.Item>);
         } else if (prop.type === 'dselect') {
             items.push(<Form.Item {...item}><DSelect body={this.props.body} uri={this.props.uri} {...prop} value={this.state[prop.name]} data={this.props.data} form={this} /></Form.Item>);
         } else if (prop.type === 'refresh') {
