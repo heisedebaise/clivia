@@ -23,7 +23,6 @@ class Folder extends React.Component {
     change = (e) => {
         if (!e || !e.target || !e.target.files || e.target.files.length === 0) return;
 
-        console.log(e.target.files[0]);
         let path = e.target.files[0].path;
         if (!path) return;
 
