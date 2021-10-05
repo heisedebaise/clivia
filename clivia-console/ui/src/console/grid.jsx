@@ -19,14 +19,15 @@ class Grid extends React.Component {
             list: [],
             dselect: {},
             pagination: false,
-            preview: null
+            preview: null,
+            delete: null,
         };
 
         let columns = meta.props(props.props, props.meta.props);
         if (props.meta.search && props.meta.search.length > 0) {
             this.form = React.createRef();
             this.searchProps = meta.props(columns, props.meta.search);
-            this.search = <Search key="search" props={this.searchProps} toolbar={props.meta.toolbar} grid={this} form={this.form} dselect={this.state.dselect} />;
+            this.search = true;
         } else if (props.meta.toolbar && props.meta.toolbar.length > 0) {
             this.toolbar = [];
             for (let toolbar of props.meta.toolbar) {
@@ -241,7 +242,18 @@ class Grid extends React.Component {
             return;
         }
 
-        if (op.type === 'delete' || op.reload) {
+        if (op.type === 'delete') {
+            this.setState({
+                delete: {
+                    op: op,
+                    model: model,
+                }
+            });
+
+            return;
+        }
+
+        if (op.reload) {
             this.reload(op, model, {});
 
             return;
@@ -327,7 +339,14 @@ class Grid extends React.Component {
 
     preview = e => this.setState({ preview: e.currentTarget.src });
 
-    cancel = () => this.setState({ preview: null });
+    cancelPreview = () => this.setState({ preview: null });
+
+    cancelDelete = () => this.setState({ delete: null });
+
+    okDelete = () => {
+        this.reload(this.state.delete.op, this.state.delete.model, {});
+        this.setState({ delete: null });
+    }
 
     switch = (op, model, check) => {
         let parameter = {};
@@ -417,17 +436,39 @@ class Grid extends React.Component {
         let elements = [];
         if (this.props.meta.info)
             elements.push(<div key={'info:' + this.props.meta.info} className="console-info" dangerouslySetInnerHTML={{ __html: this.state[this.props.meta.info] }} />);
-        if (this.search) elements.push(this.search);
+        if (this.search) elements.push(<Search key="search" props={this.searchProps} toolbar={this.props.meta.toolbar} grid={this} form={this.form} dselect={this.state.dselect} />);
         else if (this.toolbar) elements.push(<div key="toolbar" className="console-grid-toolbar">{this.toolbar}</div>);
         elements.push(<Table key="table" columns={this.columns} dataSource={this.state.list} rowKey="id" pagination={this.state.pagination}
             onChange={this.load} className="console-grid" />);
         elements.push(
-            <Modal key="preview" visible={this.state.preview != null} footer={null} onCancel={this.cancel}>
+            <Modal key="preview" visible={this.state.preview != null} footer={null} onCancel={this.cancelPreview}>
                 <img style={{ width: '100%' }} src={this.state.preview} alt="" />
             </Modal>
         );
+        elements.push(
+            <Modal key="delete" visible={this.state.delete} title={this.state.delete ? this.state.delete.op.label : ''} onCancel={this.cancelDelete} onOk={this.okDelete}>
+                {this.deleteItems()}
+            </Modal>);
 
         return elements;
+    }
+
+    deleteItems = () => {
+        if (!this.state.delete) return null;
+
+        let items = [];
+        for (let prop of this.props.props) {
+            let value = this.state.delete.model[prop.name];
+            if (prop.labels) value = prop.labels[value];
+            else if (prop.type === 'dselect')
+                value = this.dselect(prop, this.state.delete.model);
+            items.push(<Row key={prop.name}>
+                <Col span={6}>{prop.label}</Col>
+                <Col span={18}>{value}</Col>
+            </Row>);
+        }
+
+        return items;
     }
 }
 
@@ -436,7 +477,7 @@ class Search extends React.Component {
         let cols = [];
         let initialValues = {};
         for (let column of this.props.props) {
-            if (column.labels) initialValues[column.name] = '';
+            if (column.labels || column.values || column.type === 'dselect') initialValues[column.name] = '';
 
             let item = { label: column.label };
             if (column.type !== 'range')
@@ -481,6 +522,17 @@ class Search extends React.Component {
                 options.push({ label: column.values[keys[index]], value: keys[index] });
 
             return options.length <= 3 ? <Radio.Group options={options} /> : <Select options={options} />;
+        }
+
+        if (column.type === 'dselect') {
+            let options = [{ label: '全部', value: '' }];
+            let values = this.props.dselect[column.name];
+            if (values) {
+                for (let key in values)
+                    options.push({ label: values[key], value: key });
+            }
+
+            return <Select options={options} />;
         }
 
         if (column.type === 'date')
