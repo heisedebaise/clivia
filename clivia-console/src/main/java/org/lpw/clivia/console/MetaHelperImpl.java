@@ -76,8 +76,6 @@ public class MetaHelperImpl implements MetaHelper, ContextRefreshedListener, Cro
             String[] prefixOp = new String[]{prefix[0], ConsoleModel.NAME + ".op"};
             String[] ln = new String[]{"label", "name"};
             String[] lst = new String[]{"label", "service", "type"};
-            if (meta.containsKey("props"))
-                setLabel(all, false, uri, prefix, meta.getJSONArray("props"), ln);
             for (String mk : meta.keySet()) {
                 if (kup.contains(mk))
                     continue;
@@ -93,6 +91,8 @@ public class MetaHelperImpl implements MetaHelper, ContextRefreshedListener, Cro
                     if (object.containsKey(action))
                         setLabel(all, true, uri, prefixOp, object.getJSONArray(action), lst);
             }
+            if (meta.containsKey("props"))
+                setLabel(all, false, uri, prefix, meta.getJSONArray("props"), ln);
 
             return meta;
         }, false);
@@ -180,14 +180,14 @@ public class MetaHelperImpl implements MetaHelper, ContextRefreshedListener, Cro
             return props;
 
         JSONArray array = new JSONArray();
-        JSONArray ps = meta.getJSONArray("props");
+        JSONArray mps = meta.getJSONArray("props");
         for (int i = 0, size = props.size(); i < size; i++) {
             JSONObject prop = props.getJSONObject(i);
             if (prop.containsKey("name")) {
-                for (int j = 0, s = ps.size(); j < s; j++) {
-                    JSONObject p = ps.getJSONObject(j);
-                    if (prop.getString("name").equals(p.getString("name"))) {
-                        JSONObject object = json.copy(p);
+                for (int j = 0, s = mps.size(); j < s; j++) {
+                    JSONObject mp = mps.getJSONObject(j);
+                    if (prop.getString("name").equals(mp.getString("name"))) {
+                        JSONObject object = json.copy(mp);
                         object.putAll(prop);
                         prop = object;
 
