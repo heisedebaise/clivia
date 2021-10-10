@@ -453,19 +453,32 @@ class Grid extends React.Component {
         );
         elements.push(
             <Modal key="more" visible={this.state.more} title={this.state.more ? this.state.more.label : ''} onCancel={this.cancelMore} footer={null}>
-                {this.state.more ? this.state.more.value : ''}
+                {this.moreContent()}
             </Modal>
         );
         elements.push(
             <Modal key="delete" visible={this.state.delete} title={this.state.delete ? this.state.delete.op.label : ''} onCancel={this.cancelDelete} onOk={this.okDelete}>
-                {this.deleteItems()}
+                {this.deleteContent()}
             </Modal>
         );
 
         return elements;
     }
 
-    deleteItems = () => {
+    moreContent = () => {
+        if (!this.state.more || !this.state.more.value) return '';
+
+        if (this.state.more.value.indexOf('\n') === -1) return this.state.more.value;
+
+        let values = [];
+        let key = 0;
+        for (let v of this.state.more.value.split('\n'))
+            values.push(<div key={'more:' + (key++)}>{v}</div>);
+
+        return values;
+    }
+
+    deleteContent = () => {
         if (!this.state.delete) return null;
 
         let items = [];

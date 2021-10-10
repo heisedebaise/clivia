@@ -42,6 +42,7 @@ class Base extends React.Component {
         this.state = props.data || {};
         this.format(this.state);
         this.values = {};
+        this.binds = {};
         this.itemIndex = 0;
     }
 
@@ -78,7 +79,16 @@ class Base extends React.Component {
                     this.setState(data);
                 });
             }
+
+            if (prop.bind && prop.service) {
+                if (!this.binds[prop.bind])
+                    this.binds[prop.bind] = [];
+                this.binds[prop.bind].push({ name: prop.name, service: prop.service });
+            }
         }
+
+        for (let name in this.binds)
+            this.change({ name: name }, { 'target': { 'value': this.state[name] } });
     }
 
     data = data => {
@@ -359,7 +369,18 @@ class Base extends React.Component {
         if (value === 0)
             return 0;
 
-        return value || '';
+        if (!value)
+            return '';
+
+        if (value.indexOf('\n') === -1)
+            return value;
+
+        let values = [];
+        let key = 0;
+        for (let v of value.split('\n'))
+            values.push(<div key={'readonly:' + prop.name + ':' + (key++)}>{v}</div>);
+
+        return values;
     }
 
     multiple = (values, value) => {
@@ -384,7 +405,7 @@ class Base extends React.Component {
             if (prop.multiple)
                 return options.length < 5 ? <Checkbox.Group options={options} /> : <Select options={options} mode="multiple" allowClear />;
 
-            return options.length < 5 ? <Radio.Group options={options} /> : <Select options={options} />;
+            return options.length < 5 ? <Radio.Group options={options} onChange={this.change.bind(this, prop)} /> : <Select options={options} />;
         }
 
         if (prop.values) {
@@ -432,6 +453,23 @@ class Base extends React.Component {
 
             this.props.body.load(this.props.uri, this.props.parameter, data);
         });
+    }
+
+    change = (prop, e) => {
+        let binds = this.binds[prop.name];
+        if (!binds) return;
+
+        for (let bind of binds) {
+            let param = {};
+            param[prop.name] = e.target.value;
+            service(this.props.body.uri(this.props.uri, bind.service), param).then(data => {
+                if (data === null) return;
+
+                let state = {};
+                state[bind.name] = data;
+                this.setState(state);
+            });
+        }
     }
 
     toolbar = () => {
