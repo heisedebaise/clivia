@@ -50,6 +50,14 @@
     color: rgba(0, 0, 0, 0.65);
 }
 
+.console-grid-more {
+    display: inline-block;
+    margin-left: 4px;
+    border: 1px solid #ccc;
+    padding: 0 4px;
+    cursor: pointer;
+}
+
 .console-grid-op {
     color: #1890ff;
     cursor: pointer;

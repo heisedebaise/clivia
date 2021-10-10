@@ -1,6 +1,6 @@
 import React from 'react';
 import { Form, Row, Col, Radio, Select, DatePicker, Input, Button, Table, Divider, Menu, Dropdown, Modal, Switch } from 'antd';
-import { MinusOutlined, PaperClipOutlined } from '@ant-design/icons';
+import { MinusOutlined, PaperClipOutlined, DashOutlined } from '@ant-design/icons';
 import { service, url } from '../http';
 import meta from './meta';
 import { toMoney, toPercent } from './numeric';
@@ -20,6 +20,7 @@ class Grid extends React.Component {
             dselect: {},
             pagination: false,
             preview: null,
+            more: null,
             delete: null,
         };
 
@@ -41,28 +42,28 @@ class Grid extends React.Component {
         for (let prop of columns) {
             let column = { key: prop.name, title: prop.label };
             if (prop.labels)
-                column.render = model => this.style(prop, model, prop.multiple ? this.multiple(prop.labels, this.value(model, prop.name)) : prop.labels[this.value(model, prop.name)]);
+                column.render = model => this.format(prop, model, prop.multiple ? this.multiple(prop.labels, this.value(model, prop.name)) : prop.labels[this.value(model, prop.name)]);
             else if (prop.values) {
                 if (prop.values instanceof Array)
-                    column.render = model => this.value(model, prop.name);
+                    column.render = model => this.format(prop, model, this.value(model, prop.name));
                 else
-                    column.render = model => this.style(prop, model, prop.multiple ? this.multiple(prop.values, this.value(model, prop.name)) : prop.values[this.value(model, prop.name)]);
+                    column.render = model => this.format(prop, model, prop.multiple ? this.multiple(prop.values, this.value(model, prop.name)) : prop.values[this.value(model, prop.name)]);
             } else if (prop.type === 'money' || prop.type === 'read-only:money')
-                column.render = model => this.style(prop, model, toMoney(this.value(model, prop.name), prop.empty));
+                column.render = model => this.format(prop, model, toMoney(this.value(model, prop.name), prop.empty));
             else if (prop.type === 'percent' || prop.type === 'read-only:percent')
-                column.render = model => this.style(prop, model, toPercent(this.value(model, prop.name)));
+                column.render = model => this.format(prop, model, toPercent(this.value(model, prop.name)));
             else if (prop.type === 'image' || prop.type === 'read-only:image') {
                 column.render = model => {
                     let value = this.value(model, prop.name);
-                    if (value === '') return this.style(prop, model, '');
+                    if (value === '') return this.format(prop, model, '');
 
-                    if (value.indexOf(',') === -1) return this.style(prop, model, <img src={url(value)} alt="" onClick={this.preview} />);
+                    if (value.indexOf(',') === -1) return this.format(prop, model, <img src={url(value)} alt="" onClick={this.preview} />);
 
                     let imgs = [];
                     for (let img of value.split(','))
                         imgs.push(<img key={prop.name + imgs.length} src={url(img)} alt="" onClick={this.preview} />);
 
-                    return this.style(prop, model, imgs);
+                    return this.format(prop, model, imgs);
                 }
             } else if (prop.type === 'file' || prop.type === 'read-only:file') {
                 column.render = model => {
@@ -74,7 +75,7 @@ class Grid extends React.Component {
                         </div>);
                     }
 
-                    return this.style(prop, model, files);
+                    return this.format(prop, model, files);
                 }
             } else if (prop.type === 'switch') {
                 column.render = model => {
@@ -84,7 +85,7 @@ class Grid extends React.Component {
                     else
                         s.disabled = true;
 
-                    return this.style(prop, model, <Switch {...s} />);
+                    return this.format(prop, model, <Switch {...s} />);
                 }
             } else if (prop.type === 'dselect') {
                 service(props.body.uri(props.uri, prop.service), prop.parameter).then(data => {
@@ -108,15 +109,13 @@ class Grid extends React.Component {
                         dselect: dselect
                     });
                 });
-                column.render = model => this.style(prop, model, this.dselect(prop, model));
+                column.render = model => this.format(prop, model, this.dselect(prop, model));
             } else if (prop.type === 'password')
-                column.render = model => this.style(prop, model, '***');
+                column.render = model => this.format(prop, model, '***');
             else if (prop.type === 'editor' || prop.type === 'html')
-                column.render = model => this.style(prop, model, <div dangerouslySetInnerHTML={{ __html: this.value(model, prop.name) }} />);
+                column.render = model => this.format(prop, model, <div dangerouslySetInnerHTML={{ __html: this.value(model, prop.name) }} />);
             else if (prop.type === 'user')
-                column.render = model => this.style(prop, model, <User data={this.value(model, prop.name)} />);
-            else if (prop.style)
-                column.render = model => this.style(prop, model, this.value(model, prop.name));
+                column.render = model => this.format(prop, model, <User data={this.value(model, prop.name)} />);
             else if (prop.type === 'multi-line') {
                 column.render = model => {
                     let lines = [];
@@ -133,14 +132,14 @@ class Grid extends React.Component {
                             value = toMoney(value);
                         else if (line.type === 'percent' || line.type === 'read-only:percent')
                             value = toPercent(value);
-                        lines.push(<div key={'line:' + model.id + ':' + line.name}>{line.label} : {this.style(line, model, value)}</div>);
+                        lines.push(<div key={'line:' + model.id + ':' + line.name}>{line.label} : {this.format(line, model, value)}</div>);
                     }
 
                     return lines;
                 }
             }
             else
-                column.dataIndex = (prop.name || '').split('.');
+                column.render = model => this.format(prop, model, this.value(model, prop.name));
             this.columns.push(column);
         }
         if (props.meta.ops && props.meta.ops.length > 0) {
@@ -217,7 +216,10 @@ class Grid extends React.Component {
         return this.state.dselect[prop.name][value];
     }
 
-    style = (prop, model, element) => {
+    format = (prop, model, element) => {
+        if (element && typeof (element) === 'string' && element.length && element.length > 64)
+            element = <div>{element.substring(0, 64)}<span className="console-grid-more" onClick={this.more.bind(this, { label: prop.label, value: element })}><DashOutlined /></span></div>;
+
         if (prop.style) {
             for (let style of prop.style) {
                 try {
@@ -341,6 +343,10 @@ class Grid extends React.Component {
 
     cancelPreview = () => this.setState({ preview: null });
 
+    more = lv => this.setState({ more: lv });
+
+    cancelMore = () => this.setState({ more: null });
+
     cancelDelete = () => this.setState({ delete: null });
 
     okDelete = () => {
@@ -446,9 +452,15 @@ class Grid extends React.Component {
             </Modal>
         );
         elements.push(
+            <Modal key="more" visible={this.state.more} title={this.state.more ? this.state.more.label : ''} onCancel={this.cancelMore} footer={null}>
+                {this.state.more ? this.state.more.value : ''}
+            </Modal>
+        );
+        elements.push(
             <Modal key="delete" visible={this.state.delete} title={this.state.delete ? this.state.delete.op.label : ''} onCancel={this.cancelDelete} onOk={this.okDelete}>
                 {this.deleteItems()}
-            </Modal>);
+            </Modal>
+        );
 
         return elements;
     }
