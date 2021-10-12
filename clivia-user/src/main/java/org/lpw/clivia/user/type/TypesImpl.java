@@ -4,14 +4,19 @@ import com.alibaba.fastjson.JSONObject;
 import org.lpw.clivia.user.UserModel;
 import org.lpw.photon.bean.BeanFactory;
 import org.lpw.photon.bean.ContextRefreshedListener;
+import org.lpw.photon.util.Logger;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
+import javax.inject.Inject;
+
 @Service("clivia.user.types")
 public class TypesImpl implements Types, ContextRefreshedListener {
+    @Inject
+    private Logger logger;
     private Map<String, Type> map;
 
     @Override
@@ -68,5 +73,7 @@ public class TypesImpl implements Types, ContextRefreshedListener {
     public void onContextRefreshed() {
         map = new HashMap<>();
         BeanFactory.getBeans(Type.class).forEach(type -> map.put(type.getKey(), type));
+        if (logger.isInfoEnable())
+            logger.info("加载用户认证Type[{}]。", map);
     }
 }
