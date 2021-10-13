@@ -65,7 +65,7 @@ public class SmsServiceImpl implements SmsService, ContextRefreshedListener {
         BeanFactory.getBeans(SmsScene.class).forEach(scene -> scene.scenes().forEach((key, value) -> {
             JSONObject object = new JSONObject();
             object.put("id", key);
-            object.put("name", value);
+            object.put("name", message.get(value));
             scenes.add(object);
         }));
 
@@ -74,7 +74,15 @@ public class SmsServiceImpl implements SmsService, ContextRefreshedListener {
 
     @Override
     public JSONArray pushers() {
-        return pushersArray;
+        JSONArray pushers = new JSONArray();
+        BeanFactory.getBeans(SmsPusher.class).forEach(pusher -> {
+            JSONObject object = new JSONObject();
+            object.put("id", pusher.key());
+            object.put("name", message.get(pusher.name()));
+            pushers.add(object);
+        });
+
+        return pushers;
     }
 
     @Override
@@ -102,7 +110,7 @@ public class SmsServiceImpl implements SmsService, ContextRefreshedListener {
     public Object push(String scene, String mobile, String content) {
         SmsModel sms = smsDao.find(scene, 1);
         if (sms == null) {
-            logger.warn(null, "无可用的SMS推送配置！");
+            logger.warn(null, "无可用的SMS推送配置[{}:{}:{}]！", scene, mobile, content);
 
             return templates.get().failure(108901, message.get(SmsModel.NAME + ".null"), null, null);
         }
@@ -112,14 +120,14 @@ public class SmsServiceImpl implements SmsService, ContextRefreshedListener {
 
         SmsPusher pusher = pushers.get(sms.getPusher());
         if (pusher == null) {
-            logger.warn(null, "无可用的SMS推送器！");
+            logger.warn(null, "无可用的SMS推送器[{}:{}:{}:{}]！", scene, sms.getPusher(), mobile, content);
 
             return templates.get().failure(108902, message.get(SmsModel.NAME + ".no-pusher"), null, null);
         }
 
         Object object = pusher.push(sms.getConfig(), mobile, content);
         if (logger.isInfoEnable())
-            logger.info("发送短信[{}:{}:{}:{}]。", mobile, sms.getConfig(), content, object);
+            logger.info("发送[{}:{}]短信[{}:{}:{}:{}]。", scene, sms.getPusher(), mobile, sms.getConfig(), content, object);
         if (object == null)
             return templates.get().failure(108903, message.get(SmsModel.NAME + ".push.fail"), null, null);
 
