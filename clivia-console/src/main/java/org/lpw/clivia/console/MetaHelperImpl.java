@@ -1,10 +1,24 @@
 package org.lpw.clivia.console;
 
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.InputStream;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+
+import javax.inject.Inject;
+
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+
 import org.lpw.clivia.user.UserService;
 import org.lpw.clivia.user.crosier.CrosierService;
 import org.lpw.clivia.user.crosier.CrosierValid;
+import org.lpw.photon.bean.BeanFactory;
 import org.lpw.photon.bean.ContextRefreshedListener;
 import org.lpw.photon.cache.Cache;
 import org.lpw.photon.dao.model.ModelTables;
@@ -17,17 +31,6 @@ import org.lpw.photon.util.Message;
 import org.lpw.photon.util.Validator;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-
-import javax.inject.Inject;
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.InputStream;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
 
 @Service(ConsoleModel.NAME + ".meta")
 public class MetaHelperImpl implements MetaHelper, ContextRefreshedListener, CrosierValid {
@@ -55,14 +58,16 @@ public class MetaHelperImpl implements MetaHelper, ContextRefreshedListener, Cro
     private CrosierService crosierService;
     @Value("${" + ConsoleModel.NAME + ".console:/WEB-INF/console/}")
     private String console;
+    private final Map<String, MetaDeclare> declares = new HashMap<>();
     private final Map<String, String> map = new ConcurrentHashMap<>();
     private final Map<Integer, Set<String>> cacheKeys = new ConcurrentHashMap<>();
     private final Set<String> kup = Set.of("key", "uri", "props");
-    private final String[] actions = {"ops", "toolbar"};
+    private final String[] actions = { "ops", "toolbar" };
 
     @Override
     public JSONObject get(String key, boolean all) {
-        String cacheKey = ConsoleModel.NAME + ".meta:" + key + ":" + all + ":" + userService.grade() + ":" + context.getLocale().toString();
+        String cacheKey = ConsoleModel.NAME + ".meta:" + key + ":" + all + ":" + userService.grade() + ":"
+                + context.getLocale().toString();
         if (!all)
             cacheKeys.computeIfAbsent(userService.grade(), k -> new HashSet<>()).add(cacheKey);
 
@@ -72,21 +77,24 @@ public class MetaHelperImpl implements MetaHelper, ContextRefreshedListener, Cro
                 return new JSONObject();
 
             String uri = meta.getString("uri");
-            String[] prefix = new String[]{meta.getString("key")};
-            String[] prefixOp = new String[]{prefix[0], ConsoleModel.NAME + ".op"};
-            String[] ln = new String[]{"label", "name"};
-            String[] lst = new String[]{"label", "service", "type"};
+            String[] prefix = new String[] { meta.getString("key") };
+            String[] prefixOp = new String[] { prefix[0], ConsoleModel.NAME + ".op" };
+            String[] ln = new String[] { "label", "name" };
+            String[] lst = new String[] { "label", "service", "type" };
             for (String mk : meta.keySet()) {
                 if (kup.contains(mk))
                     continue;
 
                 JSONObject object = meta.getJSONObject(mk);
-                JSONArray props = props(meta, object);
+                JSONArray props = props(meta, object, "props", uri, mk);
                 if (!validator.isEmpty(props))
                     object.put("props", props);
                 setLabel(all, false, uri, prefix, props, ln);
-                if (object.containsKey("search"))
-                    setLabel(true, false, uri, prefix, object.getJSONArray("search"), ln);
+                if (object.containsKey("search")) {
+                    JSONArray search = props(meta, object, "search", uri, "search");
+                    setLabel(true, false, uri, prefix, search, ln);
+                    object.put("search", search);
+                }
                 for (String action : actions)
                     if (object.containsKey(action))
                         setLabel(all, true, uri, prefixOp, object.getJSONArray(action), lst);
@@ -108,8 +116,8 @@ public class MetaHelperImpl implements MetaHelper, ContextRefreshedListener, Cro
             if (!all && !validator.isEmpty(service)) {
                 if (service.charAt(0) != '/')
                     service = uri + service;
-                if (!json.hasTrue(obj, "permit") &&
-                        !crosierService.permit(service, obj.containsKey("parameter") ? json.toMap(obj.getJSONObject("parameter")) : new HashMap<>())) {
+                if (!json.hasTrue(obj, "permit") && !crosierService.permit(service,
+                        obj.containsKey("parameter") ? json.toMap(obj.getJSONObject("parameter")) : new HashMap<>())) {
                     if (json.has(obj, "type", "switch") || json.has(obj, "type", "refresh"))
                         obj.remove("service");
                     else {
@@ -170,12 +178,44 @@ public class MetaHelperImpl implements MetaHelper, ContextRefreshedListener, Cro
         return message.get((key));
     }
 
+    private JSONArray props(JSONObject meta, JSONObject m, String name, String uri, String service) {
+        JSONArray props = props(meta, m, name);
+        if (declares.containsKey(uri)) {
+            JSONArray array = declares.get(uri).getProps(service);
+            if (!validator.isEmpty(array)) {
+                Map<String, JSONObject> map = new HashMap<>();
+                for (int i = 0, size = props.size(); i < size; i++) {
+                    JSONObject prop = props.getJSONObject(i);
+                    map.put(prop.getString("name"), prop);
+                }
+
+                JSONArray ps = new JSONArray();
+                for (int i = 0, size = array.size(); i < size; i++) {
+                    JSONObject object = array.getJSONObject(i);
+                    JSONObject p = new JSONObject();
+                    String n = object.getString("name");
+                    if (map.containsKey(n))
+                        p.putAll(map.get(n));
+                    p.putAll(object);
+                    ps.add(p);
+                }
+                props = ps;
+            }
+        }
+
+        return props;
+    }
+
     @Override
     public JSONArray props(JSONObject meta, JSONObject m) {
-        if (!json.containsKey(m, "props"))
+        return props(meta, m, "props");
+    }
+
+    private JSONArray props(JSONObject meta, JSONObject m, String name) {
+        if (!json.containsKey(m, name))
             return json.containsKey(meta, "props") ? meta.getJSONArray("props") : null;
 
-        JSONArray props = m.getJSONArray("props");
+        JSONArray props = m.getJSONArray(name);
         if (!json.containsKey(meta, "props"))
             return props;
 
@@ -208,9 +248,10 @@ public class MetaHelperImpl implements MetaHelper, ContextRefreshedListener, Cro
 
     @Override
     public void onContextRefreshed() {
+        BeanFactory.getBeans(MetaDeclare.class).forEach(declare -> declares.put(declare.getUri(), declare));
         modelTables.getModelClasses().forEach(modelClass -> {
             try (InputStream inputStream = modelClass.getResourceAsStream("meta.json");
-                 ByteArrayOutputStream outputStream = new ByteArrayOutputStream()) {
+                    ByteArrayOutputStream outputStream = new ByteArrayOutputStream()) {
                 if (inputStream == null)
                     return;
 

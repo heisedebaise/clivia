@@ -1,8 +1,7 @@
 {
     "key": "clivia.user",
     "uri": "/user/",
-    "props": [
-        {
+    "props": [{
             "name": "avatar",
             "type": "image"
         },
@@ -61,16 +60,14 @@
     ],
     "query": {
         "type": "grid",
-        "props": [
-            {
+        "props": [{
                 "name": "avatar",
                 "type": "image"
             },
             {
-                "label": "details",
+                "name": "details",
                 "type": "multi-line",
-                "lines": [
-                    {
+                "lines": [{
                         "name": "idcard"
                     },
                     {
@@ -122,8 +119,7 @@
                 "service": "state"
             }
         ],
-        "search": [
-            {
+        "search": [{
                 "name": "uid"
             },
             {
@@ -162,8 +158,7 @@
                 "name": "from"
             }
         ],
-        "ops": [
-            {
+        "ops": [{
                 "label": "modify",
                 "service": "update"
             },
@@ -178,16 +173,16 @@
         "opsize": [
             8
         ],
-        "toolbar": [
-            {
-                "type": "create"
+        "toolbar": [{
+            "type": "create",
+            "parameter": {
+                "state": 1
             }
-        ]
+        }]
     },
     "create": {
         "type": "form",
-        "props": [
-            {
+        "props": [{
                 "name": "uid"
             },
             {
@@ -230,28 +225,23 @@
                 "name": "state"
             }
         ],
-        "toolbar": [
-            {
-                "type": "save",
-                "service": "create",
-                "success": "query"
-            }
-        ]
+        "toolbar": [{
+            "type": "save",
+            "service": "create",
+            "success": "query"
+        }]
     },
     "update": {
         "type": "form",
-        "toolbar": [
-            {
-                "type": "save",
-                "service": "update",
-                "success": "query"
-            }
-        ]
+        "toolbar": [{
+            "type": "save",
+            "service": "update",
+            "success": "query"
+        }]
     },
     "sign": {
         "type": "form",
-        "props": [
-            {
+        "props": [{
                 "name": "avatar"
             },
             {
@@ -293,16 +283,13 @@
                 "agreement": "setting.agreement.user.sign-up"
             }
         ],
-        "toolbar": [
-            {
-                "service": "modify"
-            }
-        ]
+        "toolbar": [{
+            "service": "modify"
+        }]
     },
     "password": {
         "type": "form",
-        "props": [
-            {
+        "props": [{
                 "label": ".password.old",
                 "name": "old",
                 "type": "password"
@@ -318,11 +305,9 @@
                 "type": "password"
             }
         ],
-        "toolbar": [
-            {
-                "label": "modify",
-                "service": "password"
-            }
-        ]
+        "toolbar": [{
+            "label": "modify",
+            "service": "password"
+        }]
     }
 }

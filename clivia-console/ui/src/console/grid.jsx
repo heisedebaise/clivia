@@ -239,7 +239,9 @@ class Grid extends React.Component {
 
     operate = (op, model) => {
         if (op.type === 'create' || op.type === 'ucreate') {
-            this.props.body.load(this.props.body.uri(this.props.uri, op.service || op.type), this.props.parameter, model && model.id ? { parent: model.id } : {});
+            let data = model && model.id ? { parent: model.id } : {};
+            if (op.parameter) data = { ...data, ...op.parameter };
+            this.props.body.load(this.props.body.uri(this.props.uri, op.service || op.type), this.props.parameter, data);
 
             return;
         }
