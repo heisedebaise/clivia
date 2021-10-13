@@ -40,7 +40,7 @@ public class UserCtrl {
         @Execute(name = "sign-up-sms", permit = Permit.always, validates = {
                         @Validate(validator = Validators.MOBILE, parameter = "mobile", failureCode = 10) })
         public Object signUpSms() {
-                return smsService.captcha("sign-up", request.get("mobile"));
+                return smsService.captcha(UserService.SMS_SIGN_UP, request.get("mobile"));
         }
 
         @Execute(name = "sign-up", permit = Permit.always, validates = {
@@ -64,7 +64,7 @@ public class UserCtrl {
         @Execute(name = "sign-in-sms", permit = Permit.always, validates = {
                         @Validate(validator = Validators.MOBILE, parameter = "mobile", failureCode = 10) })
         public Object signInSms() {
-                return smsService.captcha("sign-in", request.get("mobile"));
+                return smsService.captcha(UserService.SMS_SIGN_IN, request.get("mobile"));
         }
 
         @Execute(name = "sign-in", permit = Permit.always, validates = {

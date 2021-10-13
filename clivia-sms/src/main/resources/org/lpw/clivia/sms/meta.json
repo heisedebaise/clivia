@@ -1,14 +1,15 @@
 {
     "key": "clivia.sms",
     "uri": "/sms/",
-    "props": [
-        {
-            "name": "scene"
+    "props": [{
+            "name": "scene",
+            "type": "dselect",
+            "service": "scenes"
         },
         {
             "name": "pusher",
             "type": "dselect",
-            "service": "lvs"
+            "service": "pushers"
         },
         {
             "name": "name"
@@ -29,8 +30,7 @@
     ],
     "query": {
         "type": "grid",
-        "search": [
-            {
+        "search": [{
                 "name": "scene"
             },
             {
@@ -41,36 +41,29 @@
                 "labels": "states"
             }
         ],
-        "ops": [
-            {
+        "ops": [{
                 "type": "modify"
             },
             {
                 "type": "delete"
             }
         ],
-        "toolbar": [
-            {
-                "type": "create"
-            }
-        ]
+        "toolbar": [{
+            "type": "create"
+        }]
     },
     "create": {
         "type": "form",
-        "toolbar": [
-            {
-                "service": "save",
-                "success": "query"
-            }
-        ]
+        "toolbar": [{
+            "service": "save",
+            "success": "query"
+        }]
     },
     "modify": {
         "type": "form",
-        "toolbar": [
-            {
-                "service": "save",
-                "success": "query"
-            }
-        ]
+        "toolbar": [{
+            "service": "save",
+            "success": "query"
+        }]
     }
 }

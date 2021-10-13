@@ -8,7 +8,9 @@ public interface SmsService {
 
     JSONObject query(String scene, String pusher, String name, int state);
 
-    JSONArray lvs();
+    JSONArray scenes();
+
+    JSONArray pushers();
 
     void save(SmsModel sms);
 

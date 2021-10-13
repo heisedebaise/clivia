@@ -16,51 +16,48 @@ public class SmsCtrl {
     @Inject
     private SmsService smsService;
 
-    @Execute(name = "query", validates = {
-            @Validate(validator = Validators.SIGN)
-    })
+    @Execute(name = "query", validates = { @Validate(validator = Validators.SIGN) })
     public Object query() {
-        return smsService.query(request.get("scene"), request.get("pusher"), request.get("name"), request.getAsInt("state", -1));
+        return smsService.query(request.get("scene"), request.get("pusher"), request.get("name"),
+                request.getAsInt("state", -1));
     }
 
-    @Execute(name = "lvs", validates = {
-            @Validate(validator = Validators.SIGN)
-    })
+    @Execute(name = "scenes", validates = { @Validate(validator = Validators.SIGN) })
+    public Object scenes() {
+        return smsService.scenes();
+    }
+
+    @Execute(name = "pushers", validates = { @Validate(validator = Validators.SIGN) })
     public Object lvs() {
-        return smsService.lvs();
+        return smsService.pushers();
     }
 
     @Execute(name = "save", validates = {
             @Validate(validator = Validators.NOT_EMPTY, parameter = "scene", failureCode = 2),
-            @Validate(validator = Validators.MAX_LENGTH, number = {100}, parameter = "scene", failureCode = 3),
+            @Validate(validator = Validators.MAX_LENGTH, number = { 100 }, parameter = "scene", failureCode = 3),
             @Validate(validator = Validators.NOT_EMPTY, parameter = "pusher", failureCode = 4),
-            @Validate(validator = Validators.MAX_LENGTH, number = {100}, parameter = "pusher", failureCode = 5),
-            @Validate(validator = Validators.MAX_LENGTH, number = {100}, parameter = "name", failureCode = 6),
+            @Validate(validator = Validators.MAX_LENGTH, number = { 100 }, parameter = "pusher", failureCode = 5),
+            @Validate(validator = Validators.MAX_LENGTH, number = { 100 }, parameter = "name", failureCode = 6),
             @Validate(validator = Validators.NOT_EMPTY, parameter = "config", failureCode = 7),
-            @Validate(validator = Validators.BETWEEN, number = {0, 1}, parameter = "state", failureCode = 8),
-            @Validate(validator = Validators.SIGN)
-    })
+            @Validate(validator = Validators.BETWEEN, number = { 0, 1 }, parameter = "state", failureCode = 8),
+            @Validate(validator = Validators.SIGN) })
     public Object save() {
         smsService.save(request.setToModel(SmsModel.class));
 
         return "";
     }
 
-    @Execute(name = "state", validates = {
-            @Validate(validator = Validators.ID, parameter = "id", failureCode = 1),
-            @Validate(validator = Validators.BETWEEN, number = {0, 1}, parameter = "state", failureCode = 8),
-            @Validate(validator = Validators.SIGN)
-    })
+    @Execute(name = "state", validates = { @Validate(validator = Validators.ID, parameter = "id", failureCode = 1),
+            @Validate(validator = Validators.BETWEEN, number = { 0, 1 }, parameter = "state", failureCode = 8),
+            @Validate(validator = Validators.SIGN) })
     public Object state() {
         smsService.state(request.get("id"), request.getAsInt("state"));
 
         return "";
     }
 
-    @Execute(name = "delete", validates = {
-            @Validate(validator = Validators.ID, parameter = "id", failureCode = 1),
-            @Validate(validator = Validators.SIGN)
-    })
+    @Execute(name = "delete", validates = { @Validate(validator = Validators.ID, parameter = "id", failureCode = 1),
+            @Validate(validator = Validators.SIGN) })
     public Object delete() {
         smsService.delete(request.get("id"));
 

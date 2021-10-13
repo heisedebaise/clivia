@@ -52,7 +52,7 @@ public class SmsServiceImpl implements SmsService, ContextRefreshedListener {
     @Inject
     private SmsDao smsDao;
     private final Map<String, SmsPusher> pushers = new HashMap<>();
-    private final JSONArray lvs = new JSONArray();
+    private final JSONArray pushersArray = new JSONArray();
 
     @Override
     public JSONObject query(String scene, String pusher, String name, int state) {
@@ -60,8 +60,21 @@ public class SmsServiceImpl implements SmsService, ContextRefreshedListener {
     }
 
     @Override
-    public JSONArray lvs() {
-        return lvs;
+    public JSONArray scenes() {
+        JSONArray scenes = new JSONArray();
+        BeanFactory.getBeans(SmsScene.class).forEach(scene -> scene.scenes().forEach((key, value) -> {
+            JSONObject object = new JSONObject();
+            object.put("id", key);
+            object.put("name", value);
+            scenes.add(object);
+        }));
+
+        return scenes;
+    }
+
+    @Override
+    public JSONArray pushers() {
+        return pushersArray;
     }
 
     @Override
@@ -154,7 +167,7 @@ public class SmsServiceImpl implements SmsService, ContextRefreshedListener {
             JSONObject lv = new JSONObject();
             lv.put("id", pusher.key());
             lv.put("name", pusher.name());
-            lvs.add(lv);
+            pushersArray.add(lv);
         });
     }
 }
