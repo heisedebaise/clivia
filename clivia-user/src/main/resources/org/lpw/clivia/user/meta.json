@@ -174,10 +174,7 @@
             8
         ],
         "toolbar": [{
-            "type": "create",
-            "parameter": {
-                "state": 1
-            }
+            "type": "create"
         }]
     },
     "create": {
