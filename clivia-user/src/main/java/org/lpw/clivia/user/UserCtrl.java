@@ -230,7 +230,7 @@ public class UserCtrl {
                                 request.get("register"), request.get("from"));
         }
 
-        @Execute(name = "create", validates = {
+        @Execute(name = "new", validates = {
                         @Validate(validator = Validators.NOT_EMPTY, parameter = "uid", failureCode = 1),
                         @Validate(validator = Validators.MAX_LENGTH, number = {
                                         100 }, parameter = "uid", failureCode = 2),

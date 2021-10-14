@@ -174,7 +174,10 @@
             8
         ],
         "toolbar": [{
-            "type": "create"
+            "type": "create",
+            "parameter": {
+                "state": 1
+            }
         }]
     },
     "create": {
@@ -224,7 +227,7 @@
         ],
         "toolbar": [{
             "type": "save",
-            "service": "create",
+            "service": "new",
             "success": "query"
         }]
     },
