@@ -375,12 +375,14 @@ class Grid extends React.Component {
         });
     }
 
-    load = pagination => {
+    load = (pagination, search) => {
         let parameter = this.searches();
         if (pagination)
             parameter.pageNum = pagination.current;
         if (this.props.parameter)
             parameter = { ...parameter, ...this.props.parameter };
+        if (search)
+            parameter['console-grid-search'] = true;
         service(this.props.uri, parameter).then(data => {
             if (data === null) return;
 
@@ -447,9 +449,9 @@ class Grid extends React.Component {
         if (this.search) elements.push(<Search key="search" props={this.searchProps} toolbar={this.props.meta.toolbar} grid={this} form={this.form} dselect={this.state.dselect} />);
         else if (this.toolbar) elements.push(<div key="toolbar" className="console-grid-toolbar">{this.toolbar}</div>);
         elements.push(<Table key="table" columns={this.columns} dataSource={this.state.list} rowKey="id" pagination={this.state.pagination}
-            onChange={this.load} className="console-grid" />);
+            onChange={this.load} className="console-grid" scroll={{ x: true }} />);
         elements.push(
-            <Modal key="preview" visible={this.state.preview != null} footer={null} onCancel={this.cancelPreview}>
+            <Modal key="preview" visible={this.state.preview != null} footer={null} onCancel={this.cancelPreview} >
                 <img style={{ width: '100%' }} src={this.state.preview} alt="" />
             </Modal>
         );
@@ -595,11 +597,10 @@ class Search extends React.Component {
     }
 
     value = (name, value) => {
-        console.log(name + ";" + value);
     }
 
     finish = () => {
-        this.props.grid.load(null);
+        this.props.grid.load(null, true);
     }
 }
 
