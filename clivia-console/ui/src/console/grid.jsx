@@ -217,8 +217,9 @@ class Grid extends React.Component {
     }
 
     format = (prop, model, element) => {
-        if (element && typeof (element) === 'string' && element.length && element.length > 64)
-            element = <div>{element.substring(0, 64)}<span className="console-grid-more" onClick={this.more.bind(this, { label: prop.label, value: element })}><DashOutlined /></span></div>;
+        let maxlen = prop.maxlen || 64;
+        if (element && typeof (element) === 'string' && element.length && element.length > maxlen)
+            element = <div>{element.substring(0, maxlen)}<span className="console-grid-more" onClick={this.more.bind(this, { label: prop.label, value: element })}><DashOutlined /></span></div>;
 
         if (prop.style) {
             for (let style of prop.style) {
