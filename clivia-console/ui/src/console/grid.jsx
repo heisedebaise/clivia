@@ -450,7 +450,7 @@ class Grid extends React.Component {
         if (this.search) elements.push(<Search key="search" props={this.searchProps} toolbar={this.props.meta.toolbar} grid={this} form={this.form} dselect={this.state.dselect} />);
         else if (this.toolbar) elements.push(<div key="toolbar" className="console-grid-toolbar">{this.toolbar}</div>);
         elements.push(<Table key="table" columns={this.columns} dataSource={this.state.list} rowKey="id" pagination={this.state.pagination}
-            onChange={this.load} className="console-grid" scroll={{ x: true }} />);
+            onChange={this.load} className="console-grid" scroll={this.scroll()} />);
         elements.push(
             <Modal key="preview" visible={this.state.preview != null} footer={null} onCancel={this.cancelPreview} >
                 <img style={{ width: '100%' }} src={this.state.preview} alt="" />
@@ -468,6 +468,20 @@ class Grid extends React.Component {
         );
 
         return elements;
+    }
+
+    scroll = () => {
+        let height = document.querySelector('.console-body').clientHeight;
+        let form = document.querySelector('.console-grid-search-form');
+        if (form)
+            height -= form.clientHeight;
+        let rows = Math.floor(height / 55 - 2.5);
+        let len = this.state.list ? this.state.list.length : 0;
+
+        if (len < rows)
+            return { x: true };
+
+        return { x: true, y: 55 * rows };
     }
 
     moreContent = () => {
