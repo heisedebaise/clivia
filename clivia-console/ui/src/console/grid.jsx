@@ -153,7 +153,13 @@ class Grid extends React.Component {
                             mops.push(op);
 
                     let ops = [];
-                    let opsize = props.meta.opsize || [2];
+                    let opsize = [2];
+                    if (props.meta.opsize) {
+                        if (props.meta.opsize.length > 0)
+                            opsize[0] = props.meta.opsize[0];
+                        if (props.meta.opsize.length > 1)
+                            opsize[1] = props.meta.opsize[1];
+                    }
                     if (opsize.length < 2)
                         opsize[1] = 2;
                     if (mops.length <= opsize[0]) {
@@ -168,8 +174,11 @@ class Grid extends React.Component {
                             ops.push(i > 0 && (i % opsize[1] === 0) ? <br key={'br-' + i} /> : <Divider key={'divider-' + i} type="vertical" />);
                         }
                         let items = [];
-                        for (let i = opsize[0]; i < mops.length; i++)
+                        for (let i = opsize[0]; i < mops.length; i++) {
+                            // console.log(i);
+                            // console.log(mops[i]);
                             items.push(<Menu.Item key={mops[i].label}>{this.action(mops[i], model)}</Menu.Item>);
+                        }
                         ops.push(<Dropdown key="more" overlay={<Menu>{items}</Menu>}><span className="console-grid-op">更多</span></Dropdown>);
                     }
 
