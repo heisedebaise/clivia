@@ -471,6 +471,9 @@ class Grid extends React.Component {
     }
 
     scroll = () => {
+        if (!this.props.meta.freeze)
+            return {};
+
         let height = document.querySelector('.console-body').clientHeight;
         let form = document.querySelector('.console-grid-search-form');
         if (form)
