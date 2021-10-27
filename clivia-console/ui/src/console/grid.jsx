@@ -174,11 +174,8 @@ class Grid extends React.Component {
                             ops.push(i > 0 && (i % opsize[1] === 0) ? <br key={'br-' + i} /> : <Divider key={'divider-' + i} type="vertical" />);
                         }
                         let items = [];
-                        for (let i = opsize[0]; i < mops.length; i++) {
-                            // console.log(i);
-                            // console.log(mops[i]);
+                        for (let i = opsize[0]; i < mops.length; i++)
                             items.push(<Menu.Item key={mops[i].label}>{this.action(mops[i], model)}</Menu.Item>);
-                        }
                         ops.push(<Dropdown key="more" overlay={<Menu>{items}</Menu>}><span className="console-grid-op">更多</span></Dropdown>);
                     }
 
