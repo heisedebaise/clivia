@@ -448,7 +448,7 @@ class Base extends React.Component {
     }
 
     refresh = (prop) => {
-        service(this.props.body.uri(this.props.uri, prop.service), { id: this.props.data.id }).then(data => {
+        service(this.props.body.uri(this.props.uri, prop.service), { id: this.state.id }).then(data => {
             if (data === null) return;
 
             this.props.body.load(this.props.uri, this.props.parameter, data);
