@@ -31,7 +31,8 @@ import org.springframework.stereotype.Service;
 
 @Service(ApiModel.NAME + ".service")
 public class ApiServiceImpl implements ApiService {
-    @Inject private Context context;
+    @Inject
+    private Context context;
     @Inject
     private Io io;
     @Inject
@@ -59,7 +60,7 @@ public class ApiServiceImpl implements ApiService {
         List<JSONObject> list = new ArrayList<>();
         modelTables.getModelClasses().forEach(modelClass -> {
             try (InputStream inputStream = modelClass.getResourceAsStream("api.json");
-                 ByteArrayOutputStream outputStream = new ByteArrayOutputStream()) {
+                    ByteArrayOutputStream outputStream = new ByteArrayOutputStream()) {
                 if (inputStream == null)
                     return;
 
@@ -125,6 +126,7 @@ public class ApiServiceImpl implements ApiService {
         if (model) {
             if (!object.containsKey("model")) {
                 JSONObject m = new JSONObject();
+                m.put("id", "");
                 modelTable.getPropertyNames().forEach(property -> m.put(property, ""));
                 object.put("model", m);
             }
