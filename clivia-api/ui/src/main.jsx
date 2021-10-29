@@ -15,6 +15,7 @@ class Main extends React.Component {
 
         this.state = {
             logo: '',
+            title: '',
             user: {},
             data: [],
             item: {}
@@ -115,19 +116,21 @@ class Main extends React.Component {
         for (let i = 0; i < items.length; i++) {
             let key = parent + '-' + i;
             let item = items[i];
+            this.map[key] = item;
             if (item.services)
                 menus.push(<Menu.SubMenu key={key} title={<span>{item.name}</span>} >{this.menu(item.services, key)}</Menu.SubMenu>);
-            else {
-                this.map[key] = item;
+            else
                 menus.push(<Menu.Item key={key}>{item.name}</Menu.Item>);
-            }
         }
 
         return menus;
     };
 
     show = e => {
-        this.setState({ item: this.map[e.key] });
+        this.setState({
+            title: this.map[e.key.substring(0, e.key.lastIndexOf('-'))].name + ' > ' + this.map[e.key].name,
+            item: this.map[e.key]
+        });
     }
 
     body = () => {
@@ -148,6 +151,7 @@ class Main extends React.Component {
 
         return (
             <Space direction="vertical" style={{ width: '100%' }}>
+                <h1>{this.state.title}</h1>
                 <Alert type="info" message={'接口地址：' + this.url + this.state.item.uri} />
                 <Grid header={true} data={this.state.item.headers} />
                 <Grid header={false} data={this.state.item.parameters} />
