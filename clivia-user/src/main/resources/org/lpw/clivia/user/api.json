@@ -1,32 +1,26 @@
 {
-    "services": [
-        {
+    "services": [{
             "uri": "inviter",
             "psid": true,
-            "parameters": [
-                {
-                    "name": "code",
-                    "type": "string",
-                    "require": true
-                }
-            ]
+            "parameters": [{
+                "name": "code",
+                "type": "string",
+                "require": true
+            }]
         },
         {
             "uri": "sign-up-sms",
             "psid": true,
-            "parameters": [
-                {
-                    "name": "mobile",
-                    "type": "string",
-                    "require": true
-                }
-            ]
+            "parameters": [{
+                "name": "mobile",
+                "type": "string",
+                "require": true
+            }]
         },
         {
             "uri": "sign-up",
             "psid": true,
-            "parameters": [
-                {
+            "parameters": [{
                     "name": "type",
                     "type": "string",
                     "require": true
@@ -59,8 +53,7 @@
         {
             "uri": "sign-in",
             "psid": true,
-            "parameters": [
-                {
+            "parameters": [{
                     "name": "type",
                     "type": "string",
                     "require": true
@@ -81,20 +74,17 @@
         {
             "uri": "sign-in-sms",
             "psid": true,
-            "parameters": [
-                {
-                    "name": "mobile",
-                    "type": "string",
-                    "require": true
-                }
-            ]
+            "parameters": [{
+                "name": "mobile",
+                "type": "string",
+                "require": true
+            }]
         },
         {
             "uri": "sign-in",
             "name": "sms-sign-in",
             "psid": true,
-            "parameters": [
-                {
+            "parameters": [{
                     "name": "type",
                     "type": "string",
                     "require": true,
@@ -119,14 +109,12 @@
             "uri": "sign-in",
             "name": "sid-sign-in",
             "psid": true,
-            "parameters": [
-                {
-                    "name": "type",
-                    "type": "string",
-                    "require": true,
-                    "description": ".type.sid"
-                }
-            ],
+            "parameters": [{
+                "name": "type",
+                "type": "string",
+                "require": true,
+                "description": ".type.sid"
+            }],
             "response": "model"
         },
         {
@@ -143,8 +131,7 @@
         {
             "uri": "modify",
             "psid": true,
-            "parameters": [
-                {
+            "parameters": [{
                     "name": "idcard",
                     "type": "string"
                 },
@@ -191,8 +178,7 @@
             "uri": "password",
             "name": ".password.change",
             "psid": true,
-            "parameters": [
-                {
+            "parameters": [{
                     "name": "old",
                     "type": "string",
                     "require": true,
@@ -210,8 +196,7 @@
             "uri": "secret",
             "name": ".secret.change",
             "psid": true,
-            "parameters": [
-                {
+            "parameters": [{
                     "name": "old",
                     "type": "string",
                     "require": true,
@@ -228,19 +213,16 @@
         {
             "uri": "reset-password-sms",
             "psid": true,
-            "parameters": [
-                {
-                    "name": "mobile",
-                    "type": "string",
-                    "require": true
-                }
-            ]
+            "parameters": [{
+                "name": "mobile",
+                "type": "string",
+                "require": true
+            }]
         },
         {
             "uri": "sms-reset-password",
             "psid": true,
-            "parameters": [
-                {
+            "parameters": [{
                     "name": "mobile",
                     "type": "string",
                     "require": true
@@ -253,7 +235,8 @@
                 {
                     "name": "password",
                     "type": "string",
-                    "require": true
+                    "require": true,
+                    "description": ".password.new"
                 }
             ]
         },
