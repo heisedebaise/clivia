@@ -242,6 +242,13 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public void resetPassword(String mobile, String password) {
+        UserModel user = userDao.findById(authService.findByUid(mobile).getUser());
+        user.setPassword(password(password));
+        save(user);
+    }
+
+    @Override
     public boolean gesture(String oldGesture, String newGesture) {
         UserModel user = fromSession();
         if (!validator.isEmpty(user.getGesture()) && !user.getGesture().equals(password(oldGesture)))

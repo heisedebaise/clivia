@@ -51,6 +51,10 @@ public interface UserService {
      * 注册短信验证码Scene。
      */
     String SMS_SIGN_UP = "sign-up";
+    /**
+     * 重置密码验证码Scene。
+     */
+    String SMS_RESET_PASSWORD = "reset-password";
 
     /**
      * 验证是否为code。
@@ -140,6 +144,14 @@ public interface UserService {
      * @return 如果修改成功则返回true；否则返回false。
      */
     boolean password(String oldPassword, String newPassword);
+
+    /**
+     * 设置密码。
+     * 
+     * @param mobile   手机号。
+     * @param password 新密码。
+     */
+    void resetPassword(String mobile, String password);
 
     /**
      * 修改手势密码。

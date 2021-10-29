@@ -226,6 +226,38 @@
             ]
         },
         {
+            "uri": "reset-password-sms",
+            "psid": true,
+            "parameters": [
+                {
+                    "name": "mobile",
+                    "type": "string",
+                    "require": true
+                }
+            ]
+        },
+        {
+            "uri": "sms-reset-password",
+            "psid": true,
+            "parameters": [
+                {
+                    "name": "mobile",
+                    "type": "string",
+                    "require": true
+                },
+                {
+                    "name": "sms",
+                    "type": "string",
+                    "require": true
+                },
+                {
+                    "name": "password",
+                    "type": "string",
+                    "require": true
+                }
+            ]
+        },
+        {
             "uri": "sign-out",
             "psid": true
         }

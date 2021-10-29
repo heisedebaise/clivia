@@ -139,6 +139,25 @@ public class UserCtrl {
                                                 null, null);
         }
 
+        @Execute(name = "reset-password-sms", permit = Permit.always, validates = {
+                        @Validate(validator = Validators.MOBILE, parameter = "mobile", failureCode = 10) })
+        public Object resetPasswordSms() {
+                return smsService.captcha(UserService.SMS_RESET_PASSWORD, request.get("mobile"));
+        }
+
+        @Execute(name = "sms-reset-password", permit = Permit.always, validates = {
+                        @Validate(validator = Validators.NOT_EMPTY, parameter = "password", failureCode = 14, failureArgKeys = {
+                                        UserModel.NAME + ".password.new" }),
+                        @Validate(validator = Validators.MOBILE, parameter = "mobile", failureCode = 10),
+                        @Validate(validator = SmsService.VALIDATOR_CAPTCHA, parameter = "sms", failureCode = 35),
+                        @Validate(validator = AuthService.VALIDATOR_UID_EXISTS, parameter = "mobile", failureCode = 28, failureKey = UserModel.NAME
+                                        + ".mobile.not-exists") })
+        public Object smsResetPassword() {
+                userService.resetPassword(request.get("mobile"), request.get("password"));
+
+                return "";
+        }
+
         @Execute(name = "gesture", permit = "0", validates = {
                         @Validate(validator = Validators.NOT_EMPTY, parameter = "new", failureCode = 14, failureArgKeys = {
                                         UserModel.NAME + ".password.new" }),

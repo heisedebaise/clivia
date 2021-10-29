@@ -10,6 +10,6 @@ public class SmsSceneImpl implements SmsScene {
     @Override
     public Map<String, String> scenes() {
         return Map.of(UserService.SMS_SIGN_IN, UserModel.NAME + ".sign-in", UserService.SMS_SIGN_UP,
-                UserModel.NAME + ".sign-up");
+                UserModel.NAME + ".sign-up", UserService.SMS_RESET_PASSWORD, UserModel.NAME + ".reset-password");
     }
 }
