@@ -1,5 +1,4 @@
-[
-    {
+[{
         "label": "主面板",
         "service": "/console/dashboard"
     },
@@ -8,20 +7,17 @@
     },
     {
         "label": "页面",
-        "items": [
-            {
-                "label": "自定义",
-                "page": "custom",
-                "parameter": {
-                    "name": "value"
-                }
+        "items": [{
+            "label": "自定义",
+            "page": "custom",
+            "parameter": {
+                "name": "value"
             }
-        ]
+        }]
     },
     {
         "label": "配置",
-        "items": [
-            {
+        "items": [{
                 "label": "键值",
                 "service": "/keyvalue/query"
             },
@@ -37,6 +33,13 @@
                 "service": "/category/faq-query",
                 "parameter": {
                     "key": "faq"
+                }
+            },
+            {
+                "label": "字典",
+                "service": "/dict/query",
+                "parameter": {
+                    "key": "dict"
                 }
             },
             {
@@ -62,17 +65,14 @@
     },
     {
         "label": "开发",
-        "items": [
-            {
-                "label": "模块",
-                "service": "/module/query"
-            }
-        ]
+        "items": [{
+            "label": "模块",
+            "service": "/module/query"
+        }]
     },
     {
         "label": "系统",
-        "items": [
-            {
+        "items": [{
                 "label": "全局设置",
                 "service": "/setting/global"
             },

@@ -51,12 +51,6 @@
     background-color: #fff;
 }
 
-h1 {
-    padding: 8px 16px;
-    background: #fafafa;
-    border-bottom: 1px solid #f0f0f0;
-}
-
 .api-title,
 .api-response-title {
     font-weight: bold;

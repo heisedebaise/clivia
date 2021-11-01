@@ -7,6 +7,7 @@ import Sign from './sign';
 import Grid from './grid';
 import Upload from './upload';
 import Setting from './setting';
+import Dict from './dict';
 import './main.css';
 
 class Main extends React.Component {
@@ -15,7 +16,6 @@ class Main extends React.Component {
 
         this.state = {
             logo: '',
-            title: '',
             user: {},
             data: [],
             item: {}
@@ -84,8 +84,29 @@ class Main extends React.Component {
                     page: 'sign'
                 }]
             }];
-            for (let d of data)
-                list.push(d);
+            for (let d of data) {
+                if (d.type === 'config') {
+                    if (d.dict) {
+                        let dicts = [];
+                        for (let dict of d.dict) {
+                            if (dict.key && dict.key.length > 0) {
+                                dicts.push({
+                                    key: dict.key,
+                                    name: dict.name,
+                                    page: 'dict'
+                                });
+                            }
+                        }
+                        if (dicts.length > 0) {
+                            list.push({
+                                name: '字典',
+                                services: dicts
+                            });
+                        }
+                    }
+                } else
+                    list.push(d);
+            }
             this.setState({ data: list }, () => this.show({ key: '0-0-0' }));
         });
     }
@@ -128,7 +149,6 @@ class Main extends React.Component {
 
     show = e => {
         this.setState({
-            title: this.map[e.key.substring(0, e.key.lastIndexOf('-'))].name + ' > ' + this.map[e.key].name,
             item: this.map[e.key]
         });
     }
@@ -144,6 +164,8 @@ class Main extends React.Component {
                     return <Upload url={this.url} meta={this.state.item} />;
                 case 'setting':
                     return <Setting url={this.url} meta={this.state.item} />;
+                case 'dict':
+                    return <Dict url={this.url} meta={this.state.item} />;
                 default:
                     return <div />;
             }
@@ -151,7 +173,6 @@ class Main extends React.Component {
 
         return (
             <Space direction="vertical" style={{ width: '100%' }}>
-                <h1>{this.state.title}</h1>
                 <Alert type="info" message={'接口地址：' + this.url + this.state.item.uri} />
                 <Grid header={true} data={this.state.item.headers} />
                 <Grid header={false} data={this.state.item.parameters} />
