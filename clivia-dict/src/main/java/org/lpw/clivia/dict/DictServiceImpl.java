@@ -26,7 +26,7 @@ public class DictServiceImpl implements DictService {
     @Override
     public JSONArray list(String key) {
         JSONArray array = new JSONArray();
-        dictDao.query(key, pagination.getPageSize(20), pagination.getPageNum()).getList().forEach(dict -> {
+        dictDao.query(key, 0, 0).getList().forEach(dict -> {
             JSONObject object = new JSONObject();
             object.put("value", dict.getValue());
             object.put("name", dict.getName());
