@@ -372,7 +372,7 @@ class Base extends React.Component {
         if (!value)
             return '';
 
-        if (value.indexOf('\n') === -1)
+        if (typeof value !== 'string' || value.indexOf('\n') === -1)
             return value;
 
         let values = [];
