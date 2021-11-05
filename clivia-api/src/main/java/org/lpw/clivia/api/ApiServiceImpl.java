@@ -117,7 +117,8 @@ public class ApiServiceImpl implements ApiService {
                     array.add(obj);
                 }
                 service.put("keys", array);
-            }
+            } else if (json.has(service, "page", "dict"))
+                message(service, "name", name, "dict", false);
             description(service, "headers", name);
             description(service, "parameters", name);
             if (response(service, name))
