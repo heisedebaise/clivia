@@ -37,6 +37,13 @@ public class DictServiceImpl implements DictService {
     }
 
     @Override
+    public String name(String key, String value) {
+        DictModel dict = dictDao.findByKeyValue(key, value);
+
+        return dict == null ? "" : dict.getName();
+    }
+
+    @Override
     public void save(DictModel dict) {
         DictModel model = validator.isId(dict.getId()) ? dictDao.findById(dict.getId()) : null;
         if (model == null)

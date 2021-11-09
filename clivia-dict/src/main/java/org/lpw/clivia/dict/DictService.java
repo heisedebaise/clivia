@@ -10,6 +10,8 @@ public interface DictService {
 
     JSONArray list(String key);
 
+    String name(String key, String value);
+
     void save(DictModel dict);
 
     void delete(String id);
