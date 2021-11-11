@@ -12,6 +12,8 @@ public interface DictService {
 
     String name(String key, String value);
 
+    String names(String key, String values);
+
     void save(DictModel dict);
 
     void delete(String id);

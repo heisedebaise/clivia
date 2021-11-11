@@ -6,6 +6,7 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 
 import org.lpw.clivia.page.Pagination;
+import org.lpw.photon.util.Converter;
 import org.lpw.photon.util.Validator;
 import org.springframework.stereotype.Service;
 
@@ -13,6 +14,8 @@ import org.springframework.stereotype.Service;
 public class DictServiceImpl implements DictService {
     @Inject
     private Validator validator;
+    @Inject
+    private Converter converter;
     @Inject
     private Pagination pagination;
     @Inject
@@ -41,6 +44,23 @@ public class DictServiceImpl implements DictService {
         DictModel dict = dictDao.findByKeyValue(key, value);
 
         return dict == null ? "" : dict.getName();
+    }
+
+    @Override
+    public String names(String key, String values) {
+        StringBuilder sb = new StringBuilder();
+        for (String value : converter.toArray(values, ",")) {
+            if (validator.isEmpty(value))
+                continue;
+
+            DictModel dict = dictDao.findByKeyValue(key, value);
+            if (dict == null)
+                continue;
+
+            sb.append(',').append(dict.getName());
+        }
+
+        return sb.length() == 0 ? "" : sb.substring(1);
     }
 
     @Override
