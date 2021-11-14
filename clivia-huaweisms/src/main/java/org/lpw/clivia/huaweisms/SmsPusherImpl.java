@@ -4,11 +4,13 @@ import java.util.Map;
 
 import javax.inject.Inject;
 
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 
 import org.lpw.clivia.sms.SmsPusher;
 import org.lpw.photon.crypto.Digest;
 import org.lpw.photon.util.Codec;
+import org.lpw.photon.util.Converter;
 import org.lpw.photon.util.DateTime;
 import org.lpw.photon.util.Generator;
 import org.lpw.photon.util.Http;
@@ -31,6 +33,8 @@ public class SmsPusherImpl implements SmsPusher {
     private Codec codec;
     @Inject
     private Validator validator;
+    @Inject
+    private Converter converter;
     @Inject
     private Http http;
     @Inject
@@ -63,8 +67,7 @@ public class SmsPusherImpl implements SmsPusher {
                                         digest.digest("sha256", (nonce + time + cfg.getString("secret")).getBytes())),
                                 nonce, time)),
                 Map.of("from", cfg.getString("from"), "to", mobile, "templateId", cfg.getString("templateId"),
-                        "templateParas", validator.isEmpty(content) ? "" : ("[\"" + content + "\"]"), "signature",
-                        cfg.getString("signature")));
+                        "templateParas", paras(content), "signature", cfg.getString("signature")));
         if (logger.isInfoEnable())
             logger.info("发送华为云短信[{}:{}:{}:{}]。", config, mobile, content, string);
         JSONObject object = json.toObject(string);
@@ -79,5 +82,16 @@ public class SmsPusherImpl implements SmsPusher {
         obj.put("message", object.getString("description"));
 
         return obj;
+    }
+
+    private String paras(String content) {
+        if (validator.isEmpty(content))
+            return "";
+
+        JSONArray array = new JSONArray();
+        for (String str : converter.toArray(content, ","))
+            array.add(str);
+
+        return array.toJSONString();
     }
 }
