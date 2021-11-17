@@ -3,7 +3,6 @@
 source bin/gitadd.sh
 git commit -m dev
 
-echo push to origin
 git push
 git push yjy
 git push sqxb
