@@ -18,6 +18,11 @@ public class PairServiceImpl implements PairService {
     }
 
     @Override
+    public int count(String owner, String value) {
+        return pairDao.count(owner, value);
+    }
+
+    @Override
     public Set<String> values(String owner) {
         Set<String> set = new HashSet<>();
         pairDao.query(owner).getList().forEach(pair -> set.add(pair.getValue()));
