@@ -53,8 +53,9 @@ public class SmsPusherImpl implements SmsPusher {
     @Override
     public Object push(String config, String mobile, String content) {
         JSONObject cfg = json.toObject(config);
-        if (cfg == null || !cfg.containsKey("url") || !cfg.containsKey("key") || !cfg.containsKey("secret")
-                || !cfg.containsKey("from") || !cfg.containsKey("templateId") || !cfg.containsKey("signature"))
+        if (!validator.isMobile(mobile) || cfg == null || !cfg.containsKey("url") || !cfg.containsKey("key")
+                || !cfg.containsKey("secret") || !cfg.containsKey("from") || !cfg.containsKey("templateId")
+                || !cfg.containsKey("signature"))
             return null;
 
         String nonce = generator.random(16);
