@@ -1,5 +1,6 @@
 package org.lpw.clivia.pair;
 
+import org.lpw.photon.dao.orm.PageList;
 import org.lpw.photon.dao.orm.lite.LiteOrm;
 import org.lpw.photon.dao.orm.lite.LiteQuery;
 import org.springframework.stereotype.Repository;
@@ -10,6 +11,11 @@ import javax.inject.Inject;
 class PairDaoImpl implements PairDao {
     @Inject
     private LiteOrm liteOrm;
+
+    @Override
+    public PageList<PairModel> query(String owner) {
+        return liteOrm.query(new LiteQuery(PairModel.class).where("c_owner=?"), new Object[] { owner });
+    }
 
     @Override
     public int count(String owner, String value) {

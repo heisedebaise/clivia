@@ -2,6 +2,9 @@ package org.lpw.clivia.pair;
 
 import org.springframework.stereotype.Service;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import javax.inject.Inject;
 
 @Service(PairModel.NAME + ".service")
@@ -12,6 +15,14 @@ public class PairServiceImpl implements PairService {
     @Override
     public int count(String owner) {
         return pairDao.count(owner);
+    }
+
+    @Override
+    public Set<String> values(String owner) {
+        Set<String> set = new HashSet<>();
+        pairDao.query(owner).getList().forEach(pair -> set.add(pair.getValue()));
+
+        return set;
     }
 
     @Override
