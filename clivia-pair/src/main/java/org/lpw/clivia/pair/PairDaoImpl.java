@@ -36,7 +36,8 @@ class PairDaoImpl implements PairDao {
 
     @Override
     public PairModel find(String owner, String value) {
-        return liteOrm.findOne(new LiteQuery(PairModel.class).where("c_owner=?"), new Object[] { owner });
+        return liteOrm.findOne(new LiteQuery(PairModel.class).where("c_owner=? and c_value=?"),
+                new Object[] { owner, value });
     }
 
     @Override
