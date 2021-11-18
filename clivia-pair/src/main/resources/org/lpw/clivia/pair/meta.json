@@ -1,0 +1,12 @@
+{
+    "key": "clivia.pair",
+    "uri": "/pair/",
+    "props": [
+        {
+            "name": "owner"
+        },
+        {
+            "name": "value"
+        }
+    ]
+}
