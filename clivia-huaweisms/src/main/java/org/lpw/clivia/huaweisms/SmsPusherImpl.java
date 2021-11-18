@@ -81,7 +81,7 @@ public class SmsPusherImpl implements SmsPusher {
 
         JSONObject obj = new JSONObject();
         obj.put("code", 108999);
-        obj.put("message", object.getString("description"));
+        obj.put("message", string);
 
         return obj;
     }
