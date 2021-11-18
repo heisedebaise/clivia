@@ -6,6 +6,8 @@ import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
+import java.sql.Timestamp;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
@@ -19,6 +21,7 @@ public class PairModel extends ModelSupport {
 
     private String owner; // 归属
     private String value; // 值
+    private Timestamp time; // 时间
 
     @Jsonable
     @Column(name = "c_owner")
@@ -38,5 +41,15 @@ public class PairModel extends ModelSupport {
 
     public void setValue(String value) {
         this.value = value;
+    }
+
+    @Jsonable
+    @Column(name = "c_time")
+    public Timestamp getTime() {
+        return time;
+    }
+
+    public void setTime(Timestamp time) {
+        this.time = time;
     }
 }

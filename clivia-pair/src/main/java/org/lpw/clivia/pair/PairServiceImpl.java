@@ -1,14 +1,20 @@
 package org.lpw.clivia.pair;
 
-import org.springframework.stereotype.Service;
-
 import java.util.HashSet;
 import java.util.Set;
+import java.util.function.Function;
 
 import javax.inject.Inject;
 
+import com.alibaba.fastjson.JSONObject;
+
+import org.lpw.photon.util.DateTime;
+import org.springframework.stereotype.Service;
+
 @Service(PairModel.NAME + ".service")
 public class PairServiceImpl implements PairService {
+    @Inject
+    private DateTime dateTime;
     @Inject
     private PairDao pairDao;
 
@@ -31,19 +37,23 @@ public class PairServiceImpl implements PairService {
     }
 
     @Override
-    public boolean save(String owner, String value) {
-        if (pairDao.count(owner, value) > 0)
-            return false;
+    public JSONObject query(String owner, boolean desc, int pageSize, int pageNum,
+            Function<String, JSONObject> function) {
+        return pairDao.query(owner, desc, pageSize, pageNum).toJson(pair -> function.apply(pair.getValue()));
+    }
 
-        PairModel pair = new PairModel();
-        pair.setOwner(owner);
-        pair.setValue(value);
+    @Override
+    public void save(String owner, String value) {
+        PairModel pair = pairDao.find(owner, value);
+        if (pair == null) {
+            pair = new PairModel();
+            pair.setOwner(owner);
+            pair.setValue(value);
+        }
+        pair.setTime(dateTime.now());
         try {
             pairDao.save(pair);
-
-            return true;
         } catch (Throwable throwable) {
-            return false;
         }
     }
 
