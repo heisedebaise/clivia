@@ -9,12 +9,15 @@ import javax.inject.Inject;
 import com.alibaba.fastjson.JSONObject;
 
 import org.lpw.photon.util.DateTime;
+import org.lpw.photon.util.Logger;
 import org.springframework.stereotype.Service;
 
 @Service(PairModel.NAME + ".service")
 public class PairServiceImpl implements PairService {
     @Inject
     private DateTime dateTime;
+    @Inject
+    private Logger logger;
     @Inject
     private PairDao pairDao;
 
@@ -54,6 +57,7 @@ public class PairServiceImpl implements PairService {
         try {
             pairDao.save(pair);
         } catch (Throwable throwable) {
+            logger.warn(throwable, "保存paie数据[{}:{}]时发生异常！", owner, value);
         }
     }
 
