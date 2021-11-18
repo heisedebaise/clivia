@@ -16,17 +16,28 @@ public class StatCtrl {
     @Inject
     private StatService statService;
 
-    @Execute(name = "query", validates = {
-            @Validate(validator = Validators.SIGN)
-    })
+    @Execute(name = "query", validates = { @Validate(validator = Validators.SIGN) })
     public Object query() {
         return statService.query(request.get("date"));
     }
 
-    @Execute(name = "today", validates = {
-            @Validate(validator = Validators.SIGN)
-    })
-    public Object today(){
+    @Execute(name = "today", validates = { @Validate(validator = Validators.SIGN) })
+    public Object today() {
         return statService.today();
+    }
+
+    @Execute(name = "line", validates = { @Validate(validator = Validators.SIGN) })
+    public Object line() {
+        return statService.week();
+    }
+
+    @Execute(name = "column", validates = { @Validate(validator = Validators.SIGN) })
+    public Object column() {
+        return statService.week();
+    }
+
+    @Execute(name = "pie", validates = { @Validate(validator = Validators.SIGN) })
+    public Object pie() {
+        return statService.pie();
     }
 }

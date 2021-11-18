@@ -5,6 +5,7 @@ import java.util.Calendar;
 
 import javax.inject.Inject;
 
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 
 import org.lpw.clivia.page.Pagination;
@@ -13,12 +14,15 @@ import org.lpw.clivia.user.online.OnlineService;
 import org.lpw.photon.dao.model.ModelHelper;
 import org.lpw.photon.scheduler.MinuteJob;
 import org.lpw.photon.util.DateTime;
+import org.lpw.photon.util.Message;
 import org.springframework.stereotype.Service;
 
 @Service(StatModel.NAME + ".service")
 public class StatServiceImpl implements StatService, MinuteJob {
     @Inject
     private DateTime dateTime;
+    @Inject
+    private Message message;
     @Inject
     private ModelHelper modelHelper;
     @Inject
@@ -42,6 +46,50 @@ public class StatServiceImpl implements StatService, MinuteJob {
             stat = new StatModel();
 
         return modelHelper.toJson(stat);
+    }
+
+    @Override
+    public JSONArray week() {
+        JSONArray array = new JSONArray();
+        String[] series = new String[] { message.get(StatModel.NAME + ".count"),
+                message.get(StatModel.NAME + ".register"), message.get(StatModel.NAME + ".online") };
+        statDao.query(null, 7, 1).getList().forEach(stat -> {
+            String x = dateTime.toString(stat.getDate(), "MMdd");
+            week(array, series[0], x, stat.getCount());
+            week(array, series[1], x, stat.getRegister());
+            week(array, series[2], x, stat.getOnline());
+        });
+
+        return array;
+    }
+
+    private void week(JSONArray array, String series, String x, int y) {
+        JSONObject object = new JSONObject();
+        object.put("series", series);
+        object.put("x", x);
+        object.put("y", y);
+        array.add(object);
+    }
+
+    @Override
+    public JSONArray pie() {
+        StatModel stat = statDao.find(dateTime.today());
+        if (stat == null)
+            stat = new StatModel();
+
+        JSONArray array = new JSONArray();
+        pie(array, message.get(StatModel.NAME + ".count"), stat.getCount());
+        pie(array, message.get(StatModel.NAME + ".register"), stat.getRegister());
+        pie(array, message.get(StatModel.NAME + ".online"), stat.getOnline());
+
+        return array;
+    }
+
+    private void pie(JSONArray array, String name, int value) {
+        JSONObject object = new JSONObject();
+        object.put("name", name);
+        object.put("value", value);
+        array.add(object);
     }
 
     @Override

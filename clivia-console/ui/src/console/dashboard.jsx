@@ -1,5 +1,6 @@
 import React from 'react';
 import { Row, Col, Card, Statistic, Table } from 'antd';
+import { Line, Column, Pie } from '@ant-design/charts';
 import { service } from '../http';
 import meta from './meta';
 import './dashboard.css';
@@ -65,6 +66,12 @@ class Dashboard extends React.Component {
                 return this.statistic(card);
             case 'grid':
                 return this.grid(card);
+            case 'line':
+                return this.line(card);
+            case 'column':
+                return this.column(card);
+            case 'pie':
+                return this.pie(card);
             default:
                 return null;
         }
@@ -82,6 +89,29 @@ class Dashboard extends React.Component {
         let data = this.state[card.key] || {};
 
         return <Table columns={card.columns} dataSource={data.list || data} pagination={false} />;
+    }
+
+    line = card => {
+        return <Line xField={card.meta.x || 'x'} yField={card.meta.y || 'y'} seriesField={card.meta.series || 'series'} data={this.state[card.key] || {}} />;
+    }
+
+    column = card => {
+        return <Column xField={card.meta.x || 'x'} yField={card.meta.y || 'y'} seriesField={card.meta.series || 'series'} isGroup={true} data={this.state[card.key] || {}} />;
+    }
+
+    pie = card => {
+        let config = {
+            colorField: card.meta.name || 'name',
+            angleField: card.meta.value || 'value',
+            label: {
+                type: 'outer',
+                content: '{name} {percentage}'
+            }
+        };
+        if (card.annulus)
+            config.innerRadius = 0.5;
+
+        return <Pie {...config} data={this.state[card.key] || {}} />;
     }
 
     load = () => {
