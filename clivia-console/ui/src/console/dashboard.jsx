@@ -103,13 +103,14 @@ class Dashboard extends React.Component {
         let config = {
             colorField: card.meta.name || 'name',
             angleField: card.meta.value || 'value',
+            radius: 0.8,
             label: {
                 type: 'outer',
                 content: '{name} {percentage}'
             }
         };
         if (card.annulus)
-            config.innerRadius = 0.5;
+            config.innerRadius = 0.6;
 
         return <Pie {...config} data={this.state[card.key] || {}} />;
     }

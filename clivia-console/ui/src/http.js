@@ -2,7 +2,7 @@ import {
     message
 } from 'antd';
 
-const root = 'http://localhost:8080';
+const root = 'http://192.168.20.150:8080';
 
 const service = (uri, body) => post(uri, body).then(json => {
     if (json === null) return null;
@@ -83,7 +83,12 @@ const header = () => {
     return header;
 }
 
-const url = uri => root + uri;
+const url = uri => {
+    if (uri.indexOf('://') > -1)
+        return uri;
+
+    return root + uri;
+}
 
 const psid = (header, loading) => {
     if (loading && post.loader) {
