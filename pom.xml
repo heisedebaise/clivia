@@ -39,6 +39,8 @@
 
     <module>clivia-pair</module>
 
+    <module>clivia-faq</module>
+
     <module>clivia-user</module>
 
     <module>clivia-account</module>
