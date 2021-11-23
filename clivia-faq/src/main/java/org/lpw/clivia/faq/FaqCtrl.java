@@ -17,9 +17,14 @@ public class FaqCtrl {
     @Inject
     private FaqService faqService;
 
-    @Execute(name = "query", permit = Permit.always, validates = { @Validate(validator = Validators.SIGN) })
+    @Execute(name = "query", permit = Permit.always)
     public Object query() {
         return faqService.query(request.get("key"));
+    }
+
+    @Execute(name = "get", permit = Permit.always)
+    public Object get() {
+        return faqService.get(request.get("id"));
     }
 
     @Execute(name = "save", validates = {
