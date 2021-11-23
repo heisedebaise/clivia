@@ -1,11 +1,7 @@
 {
     "key": "clivia.faq",
     "uri": "/faq/",
-    "props": [
-        {
-            "name": "key"
-        },
-        {
+    "props": [{
             "name": "sort"
         },
         {
@@ -15,46 +11,35 @@
             "name": "content"
         },
         {
-            "name": "read"
+            "name": "read",
+            "type": "read-only"
         }
     ],
     "query": {
         "type": "grid",
-        "search": [
-            {
-                "name": "key"
-            }
-        ],
-        "ops": [
-            {
+        "ops": [{
                 "type": "modify"
             },
             {
                 "type": "delete"
             }
         ],
-        "toolbar": [
-            {
-                "type": "create"
-            }
-        ]
+        "toolbar": [{
+            "type": "create"
+        }]
     },
     "create": {
         "type": "form",
-        "toolbar": [
-            {
-                "type": "save",
-                "success": "query"
-            }
-        ]
+        "toolbar": [{
+            "type": "save",
+            "success": "query"
+        }]
     },
     "modify": {
         "type": "form",
-        "toolbar": [
-            {
-                "type": "save",
-                "success": "query"
-            }
-        ]
+        "toolbar": [{
+            "type": "save",
+            "success": "query"
+        }]
     }
 }
