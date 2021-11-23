@@ -1,0 +1,11 @@
+{
+    "services": [{
+        "uri": "query",
+        "parameters": [{
+            "name": "key",
+            "type": "string",
+            "require": true
+        }],
+        "response": "pagination"
+    }]
+}
