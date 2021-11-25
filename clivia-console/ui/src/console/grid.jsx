@@ -585,7 +585,7 @@ class Search extends React.Component {
                     options.push({ label: values[key], value: key });
             }
 
-            return <Select options={options} />;
+            return <Select showSearch={true} options={options} filterOption={this.filter} />;
         }
 
         if (column.type === 'date')
@@ -618,6 +618,14 @@ class Search extends React.Component {
             return <Category list={column.category} pointTo={column.pointTo} name={column.name} form={this} />;
 
         return <Input />
+    }
+
+    filter = (input, option) => {
+        if (!option) return false;
+
+        if (input === '') return true;
+
+        return option.value.toLowerCase().indexOf(input.toLowerCase()) >= 0 || option.label.toLowerCase().indexOf(input.toLowerCase()) >= 0;
     }
 
     value = (name, value) => {
