@@ -530,7 +530,7 @@ class Search extends React.Component {
         let cols = [];
         let initialValues = {};
         for (let column of this.props.props) {
-            if (column.labels || column.values || column.type === 'dselect') initialValues[column.name] = '';
+            if (column.labels || column.values || column.type === 'dselect') initialValues[column.name] = column.value || '';
 
             let item = { label: column.label };
             if (column.type !== 'range')
@@ -583,11 +583,6 @@ class Search extends React.Component {
             if (values) {
                 for (let key in values)
                     options.push({ label: values[key], value: key });
-                if (column.value && this.props.form.current) {
-                    let fvs = this.props.form.current.getFieldsValue();
-                    fvs[column.name] = column.value;
-                    this.props.form.current.setFieldsValue(fvs);
-                }
             }
 
             return <Select showSearch={true} options={options} filterOption={this.filter} />;
