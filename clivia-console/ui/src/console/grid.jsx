@@ -583,6 +583,11 @@ class Search extends React.Component {
             if (values) {
                 for (let key in values)
                     options.push({ label: values[key], value: key });
+                if (column.value && this.props.form.current) {
+                    let fvs = this.props.form.current.getFieldsValue();
+                    fvs[column.name] = column.value;
+                    this.props.form.current.setFieldsValue(fvs);
+                }
             }
 
             return <Select showSearch={true} options={options} filterOption={this.filter} />;
