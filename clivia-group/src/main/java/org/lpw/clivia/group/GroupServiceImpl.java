@@ -47,56 +47,56 @@ public class GroupServiceImpl implements GroupService {
 
     @Override
     public JSONObject get(String id) {
-        // return cache.computeIfAbsent(groupCacheKey(id), key -> {
         String user = userService.id();
-        GroupModel group = groupDao.findById(id);
-        JSONObject object = modelHelper.toJson(group);
-        JSONArray members = new JSONArray();
-        memberService.list(id).forEach(member -> {
-            JSONObject m = member(group, member);
-            if (m == null)
-                return;
+        return cache.computeIfAbsent(groupCacheKey(id, user), key -> {
+            GroupModel group = groupDao.findById(id);
+            JSONObject object = modelHelper.toJson(group);
+            JSONArray members = new JSONArray();
+            memberService.list(id).forEach(member -> {
+                JSONObject m = member(group, member);
+                if (m == null)
+                    return;
 
-            if (group.getType() == 0) {
-                if (members.isEmpty() || !m.getString("user").equals(user))
-                    object.put("name", m.getString("nick"));
-            }
-            members.add(m);
-        });
+                if (group.getType() == 0) {
+                    if (members.isEmpty() || !m.getString("user").equals(user))
+                        object.put("name", m.getString("nick"));
+                }
+                members.add(m);
+            });
 
-        object.put("members", members);
+            object.put("members", members);
 
-        return object;
-        // }, false);
+            return object;
+        }, false);
     }
 
     @Override
     public JSONObject friends() {
         String user = userService.id();
-        // return cache.computeIfAbsent(friendsCacheKey(user), key -> {
-        Map<String, JSONArray> map = new HashMap<>();
-        boolean self = false;
-        for (GroupModel group : groupDao.query(memberService.user(0)).getList()) {
-            JSONObject friend = friend(user, group);
-            if (friend == null)
-                continue;
+        return cache.computeIfAbsent(friendsCacheKey(user), key -> {
+            Map<String, JSONArray> map = new HashMap<>();
+            boolean self = false;
+            for (GroupModel group : groupDao.query(memberService.user(0)).getList()) {
+                JSONObject friend = friend(user, group);
+                if (friend == null)
+                    continue;
 
-            map.computeIfAbsent(label(friend.getString("nick")), k -> new JSONArray()).add(friend);
-            if (!self && friend.getString("user").equals(user))
-                self = true;
-        }
-
-        if (!self) {
-            JSONObject friend = friend(user, friend(new String[] { user }));
-            if (friend != null)
                 map.computeIfAbsent(label(friend.getString("nick")), k -> new JSONArray()).add(friend);
-        }
+                if (!self && friend.getString("user").equals(user))
+                    self = true;
+            }
 
-        JSONObject object = new JSONObject();
-        map.forEach(object::put);
+            if (!self) {
+                JSONObject friend = friend(user, friend(new String[] { user }));
+                if (friend != null)
+                    map.computeIfAbsent(label(friend.getString("nick")), k -> new JSONArray()).add(friend);
+            }
 
-        return object;
-        // }, false);
+            JSONObject object = new JSONObject();
+            map.forEach(object::put);
+
+            return object;
+        }, false);
     }
 
     private JSONObject friend(String user, GroupModel group) {
@@ -220,8 +220,8 @@ public class GroupServiceImpl implements GroupService {
         return GroupModel.NAME + ":friends:" + user + ":" + friend;
     }
 
-    private String groupCacheKey(String id) {
-        return GroupModel.NAME + ":" + id + System.currentTimeMillis();
+    private String groupCacheKey(String id, String user) {
+        return GroupModel.NAME + ":" + id + ":" + user;
     }
 
     @Override
