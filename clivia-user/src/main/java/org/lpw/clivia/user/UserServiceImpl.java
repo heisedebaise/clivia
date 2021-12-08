@@ -23,7 +23,6 @@ import org.springframework.stereotype.Service;
 
 import javax.inject.Inject;
 import java.sql.Date;
-import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
 
@@ -432,10 +431,18 @@ public class UserServiceImpl implements UserService {
         if (!validator.isEmpty(code)) {
             UserModel user = userDao.findByCode(code);
 
-            return user == null ? new HashSet<>() : Set.of(user.getId());
+            return Set.of(user == null ? code : user.getId());
         }
 
-        return userDao.ids(idcard, name, nick, mobile, email, weixin, qq);
+        if (validator.isEmpty(idcard) && validator.isEmpty(name) && validator.isEmpty(nick) && validator.isEmpty(mobile)
+                && validator.isEmpty(email) && validator.isEmpty(weixin) && validator.isEmpty(qq))
+            return null;
+
+        Set<String> ids = userDao.ids(idcard, name, nick, mobile, email, weixin, qq);
+        if (ids.isEmpty())
+            ids.add("");
+
+        return ids;
     }
 
     @Override
