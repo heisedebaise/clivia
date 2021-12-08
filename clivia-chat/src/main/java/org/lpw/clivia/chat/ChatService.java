@@ -1,6 +1,9 @@
 package org.lpw.clivia.chat;
 
-public interface ChatService {
+import com.alibaba.fastjson.JSONObject;
 
-    void save(ChatModel chat);
+public interface ChatService {
+    JSONObject query(String group, long time);
+
+    void save(String group, String sender, String genre, String body);
 }

@@ -1,6 +1,7 @@
 package org.lpw.clivia.chat;
 
 import org.lpw.photon.dao.model.Jsonable;
+import org.lpw.photon.dao.model.Memory;
 import org.lpw.photon.dao.model.ModelSupport;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
@@ -9,12 +10,12 @@ import org.springframework.stereotype.Component;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
-import java.sql.Timestamp;
 
 @Component(ChatModel.NAME + ".model")
 @Scope(BeanDefinition.SCOPE_PROTOTYPE)
 @Entity(name = ChatModel.NAME)
 @Table(name = "t_chat")
+@Memory(name = "m_chat")
 public class ChatModel extends ModelSupport {
     static final String NAME = "clivia.chat";
 
@@ -22,7 +23,7 @@ public class ChatModel extends ModelSupport {
     private String sender; // 发送人
     private String genre; // 类型
     private String body; // 内容
-    private Timestamp time; // 时间
+    private long time; // 时间
 
     @Jsonable
     @Column(name = "c_group")
@@ -66,11 +67,11 @@ public class ChatModel extends ModelSupport {
 
     @Jsonable
     @Column(name = "c_time")
-    public Timestamp getTime() {
+    public long getTime() {
         return time;
     }
 
-    public void setTime(Timestamp time) {
+    public void setTime(long time) {
         this.time = time;
     }
 }

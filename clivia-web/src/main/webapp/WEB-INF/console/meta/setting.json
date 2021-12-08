@@ -56,5 +56,18 @@
                 "service": "/keyvalue/saves"
             }
         ]
+    },
+    "chat": {
+        "props": [
+            {
+                "name": "setting.chat.overdue"
+            }
+        ],
+        "toolbar": [
+            {
+                "label": "save",
+                "service": "/keyvalue/saves"
+            }
+        ]
     }
 }
