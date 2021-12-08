@@ -3,17 +3,26 @@ package org.lpw.clivia.user;
 import org.lpw.clivia.dao.ColumnType;
 import org.lpw.clivia.dao.DaoHelper;
 import org.lpw.clivia.dao.DaoOperation;
+import org.lpw.photon.dao.jdbc.Sql;
 import org.lpw.photon.dao.orm.PageList;
 import org.lpw.photon.dao.orm.lite.LiteOrm;
 import org.lpw.photon.dao.orm.lite.LiteQuery;
+import org.lpw.photon.util.Validator;
 import org.springframework.stereotype.Repository;
 
 import javax.inject.Inject;
 import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Repository(UserModel.NAME + ".dao")
 class UserDaoImpl implements UserDao {
+    @Inject
+    private Validator validator;
+    @Inject
+    private Sql sql;
     @Inject
     private LiteOrm liteOrm;
     @Inject
@@ -55,6 +64,32 @@ class UserDaoImpl implements UserDao {
     @Override
     public UserModel findByCode(String code) {
         return liteOrm.findOne(new LiteQuery(UserModel.class).where("c_code=?"), new Object[]{code});
+    }
+
+    @Override
+    public Set<String> ids(String idcard, String name, String nick, String mobile, String email, String weixin, String qq) {
+        StringBuilder sb = new StringBuilder("select c_id from t_user where");
+        List<Object> args = new ArrayList<>();
+        ids(sb, args, "c_name", name);
+        ids(sb, args, "c_nick", nick);
+        ids(sb, args, "c_mobile", mobile);
+        ids(sb, args, "c_email", email);
+        ids(sb, args, "c_weixin", weixin);
+        ids(sb, args, "c_qq", qq);
+        Set<String> set = new HashSet<>();
+        sql.query(sb.toString(), args.toArray()).forEach(list -> set.add((String) list.get(0)));
+
+        return set;
+    }
+
+    private void ids(StringBuilder sb, List<Object> args, String column, String value) {
+        if (validator.isEmpty(value))
+            return;
+
+        if (!args.isEmpty())
+            sb.append(" and");
+        sb.append(' ').append(column).append("=?");
+        args.add(value);
     }
 
     @Override

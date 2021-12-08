@@ -23,6 +23,7 @@ import org.springframework.stereotype.Service;
 
 import javax.inject.Inject;
 import java.sql.Date;
+import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
 
@@ -417,10 +418,24 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public JSONObject query(String uid, String idcard, String name, String nick, String mobile, String email,
-            String weixin, String qq, String code, int minGrade, int maxGrade, int state, String register,
-            String from) {
+                            String weixin, String qq, String code, int minGrade, int maxGrade, int state, String register,
+                            String from) {
         return userDao.query(authService.users(uid), idcard, name, nick, mobile, email, weixin, qq, code, minGrade,
                 maxGrade, state, register, from, pagination.getPageSize(20), pagination.getPageNum()).toJson();
+    }
+
+    @Override
+    public Set<String> ids(String uid, String idcard, String name, String nick, String mobile, String email, String weixin, String qq, String code) {
+        if (!validator.isEmpty(uid))
+            return authService.users(uid);
+
+        if (!validator.isEmpty(code)) {
+            UserModel user = userDao.findByCode(code);
+
+            return user == null ? new HashSet<>() : Set.of(user.getId());
+        }
+
+        return userDao.ids(idcard, name, nick, mobile, email, weixin, qq);
     }
 
     @Override
@@ -466,7 +481,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void info(String id, String idcard, String name, String nick, String mobile, String email, String weixin,
-            String qq, int gender) {
+                     String qq, int gender) {
         UserModel user = findById(id);
         if (!validator.isEmpty(idcard))
             user.setIdcard(idcard);
@@ -537,8 +552,8 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserModel create(String uid, String password, String idcard, String name, String nick, String mobile,
-            String email, String weixin, String qq, String avatar, int gender, Date birthday, String inviter, int grade,
-            int state) {
+                            String email, String weixin, String qq, String avatar, int gender, Date birthday, String inviter, int grade,
+                            int state) {
         UserModel user = new UserModel();
         user.setPassword(password(password));
         user.setIdcard(idcard);

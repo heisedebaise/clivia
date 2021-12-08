@@ -5,6 +5,7 @@ import com.alibaba.fastjson.JSONObject;
 import org.lpw.photon.dao.orm.PageList;
 
 import java.sql.Date;
+import java.util.Set;
 
 public interface UserService {
     /**
@@ -89,7 +90,7 @@ public interface UserService {
 
     /**
      * 手势登入验证。
-     * 
+     *
      * @param id      ID值。
      * @param gesture 手势密码。
      * @return 认证成功则返回true；否则返回false。
@@ -147,7 +148,7 @@ public interface UserService {
 
     /**
      * 设置密码。
-     * 
+     *
      * @param mobile   手机号。
      * @param password 新密码。
      */
@@ -286,8 +287,25 @@ public interface UserService {
      * @return 用户信息集。
      */
     JSONObject query(String uid, String idcard, String name, String nick, String mobile, String email,
-            String weixin, String qq, String code, int minGrade, int maxGrade, int state, String register,
-            String from);
+                     String weixin, String qq, String code, int minGrade, int maxGrade, int state, String register,
+                     String from);
+
+    /**
+     * 检索用户ID集。
+     *
+     * @param uid    UID。
+     * @param idcard 身份证号；为空则表示所有。
+     * @param name   姓名；为空则表示所有。
+     * @param nick   昵称；为空则表示所有。
+     * @param mobile 用户手机号；为空则表示所有。
+     * @param email  Email地址；为空则表示所有。
+     * @param weixin 微信号；为空则表示所有。
+     * @param qq     QQ号；为空则表示所有。
+     * @param code   唯一编码；为空则表示所有。
+     * @return 用户ID集。
+     */
+    Set<String> ids(String uid, String idcard, String name, String nick, String mobile, String email,
+                    String weixin, String qq, String code);
 
     /**
      * 获取推荐用户集。
@@ -328,7 +346,7 @@ public interface UserService {
      * @param gender 性别：0-未知；1-男；2-女。
      */
     void info(String id, String idcard, String name, String nick, String mobile, String email, String weixin,
-            String qq, int gender);
+              String qq, int gender);
 
     /**
      * 设置用户等级。
@@ -398,8 +416,8 @@ public interface UserService {
      * @return 用户信息。
      */
     UserModel create(String uid, String password, String idcard, String name, String nick, String mobile,
-            String email, String weixin, String qq, String avatar, int gender, Date birthday,
-            String inviter, int grade, int state);
+                     String email, String weixin, String qq, String avatar, int gender, Date birthday,
+                     String inviter, int grade, int state);
 
     /**
      * 删除。
