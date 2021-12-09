@@ -10,6 +10,7 @@ import org.lpw.clivia.user.UserService;
 import org.lpw.photon.cache.Cache;
 import org.lpw.photon.dao.model.ModelHelper;
 import org.lpw.photon.util.DateTime;
+import org.lpw.photon.util.Json;
 import org.lpw.photon.util.Pinyin;
 import org.lpw.photon.util.Validator;
 import org.springframework.stereotype.Service;
@@ -27,6 +28,8 @@ public class GroupServiceImpl implements GroupService {
     private Validator validator;
     @Inject
     private Pinyin pinyin;
+    @Inject
+    private Json json;
     @Inject
     private ModelHelper modelHelper;
     @Inject
@@ -148,6 +151,7 @@ public class GroupServiceImpl implements GroupService {
         if (!user.containsKey("id"))
             return user;
 
+        user = json.copy(user);
         String uid = userService.id();
         String group = keyvalueService.value(friendsKey(uid, user.getString("id")));
         if (validator.isEmpty(group))
