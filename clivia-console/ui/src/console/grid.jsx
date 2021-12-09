@@ -383,6 +383,9 @@ class Grid extends React.Component {
     }
 
     load = (pagination, search) => {
+        if (this.timeout)
+            window.clearTimeout(this.timeout);
+
         let parameter = this.searches();
         if (pagination)
             parameter.pageNum = pagination.current;
@@ -391,6 +394,8 @@ class Grid extends React.Component {
         if (search)
             parameter['console-grid-search'] = true;
         service(this.props.uri, parameter).then(data => {
+            if (this.props.meta.interval)
+                this.timeout = window.setTimeout(this.load, this.props.meta.interval * 1000);
             if (data === null) return;
 
             this.setState({
@@ -522,6 +527,11 @@ class Grid extends React.Component {
         }
 
         return items;
+    }
+
+    componentWillUnmount = () => {
+        if (this.timeout)
+            window.clearTimeout(this.timeout);
     }
 }
 
