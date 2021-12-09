@@ -10,6 +10,7 @@ import org.lpw.photon.util.Validator;
 import org.springframework.stereotype.Service;
 
 import javax.inject.Inject;
+import java.util.function.BiConsumer;
 
 @Service(ChatModel.NAME + ".service")
 public class ChatServiceImpl implements ChatService, HourJob {
@@ -26,8 +27,12 @@ public class ChatServiceImpl implements ChatService, HourJob {
 
     @Override
     public JSONObject query(String group, long time) {
-        return chatDao.query(group, time, pagination.getPageSize(20), pagination.getPageNum())
-                .toJson((chat, object) -> object.put("sender", userService.get(chat.getSender())));
+        return query(group, time, (chat, object) -> object.put("sender", userService.get(chat.getSender())));
+    }
+
+    @Override
+    public JSONObject query(String group, long time, BiConsumer<ChatModel, JSONObject> consumer) {
+        return chatDao.query(group, time, pagination.getPageSize(20), pagination.getPageNum()).toJson(consumer);
     }
 
     @Override
