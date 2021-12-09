@@ -1,17 +1,7 @@
 package org.lpw.clivia.group;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import javax.inject.Inject;
-
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-
 import org.lpw.clivia.group.member.MemberModel;
 import org.lpw.clivia.group.member.MemberService;
 import org.lpw.clivia.keyvalue.KeyvalueService;
@@ -23,6 +13,9 @@ import org.lpw.photon.util.DateTime;
 import org.lpw.photon.util.Pinyin;
 import org.lpw.photon.util.Validator;
 import org.springframework.stereotype.Service;
+
+import javax.inject.Inject;
+import java.util.*;
 
 @Service(GroupModel.NAME + ".service")
 public class GroupServiceImpl implements GroupService {
@@ -87,7 +80,7 @@ public class GroupServiceImpl implements GroupService {
             }
 
             if (!self) {
-                JSONObject friend = friend(user, friend(new String[] { user }));
+                JSONObject friend = friend(user, friend(new String[]{user}));
                 if (friend != null)
                     map.computeIfAbsent(label(friend.getString("nick")), k -> new JSONArray()).add(friend);
             }
@@ -206,9 +199,7 @@ public class GroupServiceImpl implements GroupService {
 
         Iterator<String> iterator = set.iterator();
         String u1 = iterator.next();
-        String u2 = u1;
-        if (iterator.hasNext())
-            u2 = iterator.next();
+        String u2 = iterator.hasNext() ? iterator.next() : u1;
         keyvalueService.save(friendsKey(u1, u2), group.getId());
         keyvalueService.save(friendsKey(u2, u1), group.getId());
         set.forEach(this::cleanFriendsCache);
