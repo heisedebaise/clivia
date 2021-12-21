@@ -1,5 +1,6 @@
 package org.lpw.clivia.ad;
 
+import org.lpw.clivia.Permit;
 import org.lpw.photon.ctrl.context.Request;
 import org.lpw.photon.ctrl.execute.Execute;
 import org.lpw.photon.ctrl.validate.Validate;
@@ -23,7 +24,7 @@ public class AdCtrl {
         return adService.query(request.get("type"), request.getAsInt("state", -1));
     }
 
-    @Execute(name = "publish")
+    @Execute(name = "publish", permit = Permit.always)
     public Object publish() {
         return adService.publish(request.get("type"));
     }
