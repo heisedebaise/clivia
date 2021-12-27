@@ -71,6 +71,23 @@ public class KeyvalueServiceImpl implements KeyvalueService {
     }
 
     @Override
+    public int[] valueAsInts(String key, String separator) {
+        String value = value(key);
+        if (validator.isEmpty(value))
+            return new int[0];
+
+        if (!value.contains(separator))
+            return new int[]{numeric.toInt(value)};
+
+        String[] array = value.split(separator);
+        int[] ns = new int[array.length];
+        for (int i = 0; i < array.length; i++)
+            ns[i] = numeric.toInt(array[i]);
+
+        return ns;
+    }
+
+    @Override
     public boolean exists(String key, String value) {
         String v = value(key);
 

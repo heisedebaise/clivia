@@ -19,6 +19,8 @@ public interface KeyvalueService {
 
     double valueAsDouble(String key, double defaultValue);
 
+    int[] valueAsInts(String key, String separator);
+
     boolean exists(String key, String value);
 
     void save(String key, String value);
