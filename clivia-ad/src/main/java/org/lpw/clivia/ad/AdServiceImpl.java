@@ -55,7 +55,6 @@ public class AdServiceImpl implements AdService {
             clean(model.getType());
         adDao.save(ad);
         clean(ad.getType());
-        clean("");
     }
 
     @Override
@@ -67,5 +66,6 @@ public class AdServiceImpl implements AdService {
 
     private void clean(String type) {
         cache.remove(AdModel.NAME + ":" + type);
+        cache.remove(AdModel.NAME + ":");
     }
 }
