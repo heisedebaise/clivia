@@ -55,6 +55,7 @@ public class AdServiceImpl implements AdService {
             clean(model.getType());
         adDao.save(ad);
         clean(ad.getType());
+        clean("");
     }
 
     @Override
