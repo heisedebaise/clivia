@@ -49,13 +49,15 @@ public class GroupServiceImpl implements GroupService {
             JSONObject object = modelHelper.toJson(group);
             JSONArray members = new JSONArray();
             memberService.list(id).forEach(member -> {
-                JSONObject m = member(group, member);
+                JSONObject m = member(member);
                 if (m == null)
                     return;
 
                 if (group.getType() == 0) {
-                    if (members.isEmpty() || !m.getString("user").equals(user))
+                    if (members.isEmpty() || !m.getString("user").equals(user)) {
+                        object.put("avatar", m.getString("avatar"));
                         object.put("name", m.getString("nick"));
+                    }
                 }
                 members.add(m);
             });
@@ -89,7 +91,7 @@ public class GroupServiceImpl implements GroupService {
             }
 
             JSONObject object = new JSONObject();
-            map.forEach(object::put);
+            object.putAll(map);
 
             return object;
         }, false);
@@ -103,17 +105,17 @@ public class GroupServiceImpl implements GroupService {
         if (members.size() == 1) {
             MemberModel member = members.get(0);
 
-            return member.getUser().equals(user) ? member(group, member) : null;
+            return member.getUser().equals(user) ? member(member) : null;
         }
 
         for (MemberModel member : members)
             if (!member.getUser().equals(user))
-                return member.getState() == 0 || member.getState() == 1 ? member(group, member) : null;
+                return member.getState() == 0 || member.getState() == 1 ? member(member) : null;
 
         return null;
     }
 
-    private JSONObject member(GroupModel group, MemberModel member) {
+    private JSONObject member(MemberModel member) {
         UserModel user = userService.findById(member.getUser());
         if (user == null)
             return null;
