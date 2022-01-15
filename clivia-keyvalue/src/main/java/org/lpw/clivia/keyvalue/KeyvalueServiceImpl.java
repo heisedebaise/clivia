@@ -53,11 +53,11 @@ public class KeyvalueServiceImpl implements KeyvalueService {
 
     @Override
     public String value(String key) {
-        return cache.computeIfAbsent(getCacheKey(":value:" + key), k -> {
+//        return cache.computeIfAbsent(getCacheKey(":value:" + key), k -> {
             KeyvalueModel keyvalue = keyvalueDao.findByKey(key);
 
             return keyvalue == null ? "" : keyvalue.getValue();
-        }, false);
+//        }, false);
     }
 
     @Override
