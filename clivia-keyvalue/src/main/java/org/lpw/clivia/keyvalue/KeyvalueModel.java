@@ -1,6 +1,7 @@
 package org.lpw.clivia.keyvalue;
 
 import org.lpw.photon.dao.model.Jsonable;
+import org.lpw.photon.dao.model.Memory;
 import org.lpw.photon.dao.model.ModelSupport;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
@@ -14,6 +15,7 @@ import javax.persistence.Table;
 @Scope(BeanDefinition.SCOPE_PROTOTYPE)
 @Entity(name = KeyvalueModel.NAME)
 @Table(name = "t_keyvalue")
+@Memory(name = "m_keyvalue")
 public class KeyvalueModel extends ModelSupport {
     static final String NAME = "clivia.keyvalue";
 
