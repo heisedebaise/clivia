@@ -143,6 +143,7 @@ public class KeyvalueServiceImpl implements KeyvalueService {
     @Override
     public void delete(String id) {
         keyvalueDao.delete(id);
+        cleanCache();
     }
 
     private void cleanCache() {
