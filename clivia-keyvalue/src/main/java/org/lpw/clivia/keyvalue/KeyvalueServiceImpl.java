@@ -3,7 +3,6 @@ package org.lpw.clivia.keyvalue;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import org.lpw.clivia.page.Pagination;
-import org.lpw.photon.cache.Cache;
 import org.lpw.photon.dao.model.ModelHelper;
 import org.lpw.photon.util.Generator;
 import org.lpw.photon.util.Numeric;
@@ -11,13 +10,13 @@ import org.lpw.photon.util.Validator;
 import org.springframework.stereotype.Service;
 
 import javax.inject.Inject;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 @Service(KeyvalueModel.NAME + ".service")
 public class KeyvalueServiceImpl implements KeyvalueService {
     @Inject
     private Validator validator;
-    @Inject
-    private Cache cache;
     @Inject
     private Generator generator;
     @Inject
@@ -28,6 +27,8 @@ public class KeyvalueServiceImpl implements KeyvalueService {
     private Pagination pagination;
     @Inject
     private KeyvalueDao keyvalueDao;
+    private final Map<String, String> values = new ConcurrentHashMap<>();
+    private final Map<String, JSONObject> objects = new ConcurrentHashMap<>();
 
     @Override
     public JSONObject query(String key) {
@@ -42,22 +43,22 @@ public class KeyvalueServiceImpl implements KeyvalueService {
 
     @Override
     public JSONObject object(String key) {
-        return cache.computeIfAbsent(getCacheKey(":object:" + key), k -> {
+        return objects.computeIfAbsent(key, k -> {
             JSONObject object = new JSONObject();
             keyvalueDao.query(key, 0, 0).getList()
                     .forEach(keyvalue -> object.put(keyvalue.getKey(), keyvalue.getValue()));
 
             return object;
-        }, false);
+        });
     }
 
     @Override
     public String value(String key) {
-//        return cache.computeIfAbsent(getCacheKey(":value:" + key), k -> {
+        return values.computeIfAbsent(key, k -> {
             KeyvalueModel keyvalue = keyvalueDao.findByKey(key);
 
             return keyvalue == null ? "" : keyvalue.getValue();
-//        }, false);
+        });
     }
 
     @Override
@@ -144,11 +145,8 @@ public class KeyvalueServiceImpl implements KeyvalueService {
         keyvalueDao.delete(id);
     }
 
-    private String getCacheKey(String key) {
-        return KeyvalueModel.NAME + key + cache.computeIfAbsent(KeyvalueModel.NAME, k -> generator.random(32), false);
-    }
-
     private void cleanCache() {
-        cache.remove(KeyvalueModel.NAME);
+        values.clear();
+        objects.clear();
     }
 }
