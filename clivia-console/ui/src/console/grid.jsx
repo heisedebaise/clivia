@@ -387,8 +387,10 @@ class Grid extends React.Component {
             window.clearTimeout(this.timeout);
 
         let parameter = this.searches();
-        if (pagination)
+        if (pagination) {
+            parameter.pageSize = pagination.pageSize;
             parameter.pageNum = pagination.current;
+        }
         if (this.props.parameter)
             parameter = { ...parameter, ...this.props.parameter };
         if (search)
@@ -414,7 +416,10 @@ class Grid extends React.Component {
                         state.pagination = {
                             total: data.count,
                             pageSize: data.size,
-                            current: data.number
+                            current: data.number,
+                            showTotal: (total, range) => {
+                                return range[0] + '-' + range[1] + ' 共' + total + '条';
+                            },
                         };
                     }
                     if (this.props.meta.info)
