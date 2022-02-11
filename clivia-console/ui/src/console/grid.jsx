@@ -44,10 +44,36 @@ class Grid extends React.Component {
             if (prop.labels)
                 column.render = model => this.format(prop, model, prop.multiple ? this.multiple(prop.labels, this.value(model, prop.name)) : prop.labels[this.value(model, prop.name)]);
             else if (prop.values) {
-                if (prop.values instanceof Array)
-                    column.render = model => this.format(prop, model, this.value(model, prop.name));
-                else
-                    column.render = model => this.format(prop, model, prop.multiple ? this.multiple(prop.values, this.value(model, prop.name)) : prop.values[this.value(model, prop.name)]);
+                column.render = model => {
+                    let value = this.value(model, prop.name);
+                    if (typeof (prop.values) !== 'string') {
+                        if (prop.multiple) {
+                            value = '';
+                            for (let v of value.split(',')) {
+                                if (prop.values instanceof Object)
+                                    value += ',' + prop.values[value];
+                                else if (prop.values instanceof Array)
+                                    for (let vs of prop.values)
+                                        if (vs.value === v)
+                                            value += ',' + vs.label;
+                            }
+                            if (value.length > 0) value = value.substring(1);
+                        } else {
+                            if (prop.values instanceof Object)
+                                value = prop.values[value];
+                            else if (prop.values instanceof Array) {
+                                for (let v of prop.values) {
+                                    if (v.value === value) {
+                                        value = v.label;
+
+                                        break;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    return this.format(prop, model, value);
+                };
             } else if (prop.type === 'money' || prop.type === 'read-only:money')
                 column.render = model => this.format(prop, model, toMoney(this.value(model, prop.name), prop.empty));
             else if (prop.type === 'percent' || prop.type === 'read-only:percent')
@@ -585,9 +611,19 @@ class Search extends React.Component {
 
         if (column.values) {
             let options = [{ label: '全部', value: '' }];
-            let keys = Object.keys(column.values);
-            for (let index in keys)
-                options.push({ label: column.values[keys[index]], value: keys[index] });
+            if (column.values instanceof Array) {
+                for (let value of column.values)
+                    options.push(value);
+            } else if (column.values instanceof Object) {
+                let keys = Object.keys(column.values);
+                for (let index in keys) {
+                    let key = keys[index];
+                    options.push({ label: column.values[key] || key, value: key });
+                }
+            } else if (typeof (column.values) === 'string') {
+                for (let value of column.values.split(','))
+                    options.push({ label: value, value: value });
+            }
 
             return options.length <= 3 ? <Radio.Group options={options} /> : <Select options={options} />;
         }

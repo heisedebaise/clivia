@@ -1,20 +1,7 @@
 package org.lpw.clivia.console;
 
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.InputStream;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
-
-import javax.inject.Inject;
-
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-
 import org.lpw.clivia.user.UserService;
 import org.lpw.clivia.user.crosier.CrosierService;
 import org.lpw.clivia.user.crosier.CrosierValid;
@@ -22,15 +9,16 @@ import org.lpw.photon.bean.BeanFactory;
 import org.lpw.photon.bean.ContextRefreshedListener;
 import org.lpw.photon.cache.Cache;
 import org.lpw.photon.dao.model.ModelTables;
-import org.lpw.photon.util.Context;
-import org.lpw.photon.util.Converter;
-import org.lpw.photon.util.Io;
-import org.lpw.photon.util.Json;
-import org.lpw.photon.util.Logger;
-import org.lpw.photon.util.Message;
-import org.lpw.photon.util.Validator;
+import org.lpw.photon.util.*;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+
+import javax.inject.Inject;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.InputStream;
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 @Service(ConsoleModel.NAME + ".meta")
 public class MetaHelperImpl implements MetaHelper, ContextRefreshedListener, CrosierValid {
@@ -62,7 +50,7 @@ public class MetaHelperImpl implements MetaHelper, ContextRefreshedListener, Cro
     private final Map<String, String> map = new ConcurrentHashMap<>();
     private final Map<Integer, Set<String>> cacheKeys = new ConcurrentHashMap<>();
     private final Set<String> kup = Set.of("key", "uri", "props");
-    private final String[] actions = { "ops", "toolbar" };
+    private final String[] actions = {"ops", "toolbar"};
 
     @Override
     public JSONObject get(String key, boolean all) {
@@ -77,10 +65,10 @@ public class MetaHelperImpl implements MetaHelper, ContextRefreshedListener, Cro
                 return new JSONObject();
 
             String uri = meta.getString("uri");
-            String[] prefix = new String[] { meta.getString("key") };
-            String[] prefixOp = new String[] { prefix[0], ConsoleModel.NAME + ".op" };
-            String[] ln = new String[] { "label", "name" };
-            String[] lst = new String[] { "label", "service", "type" };
+            String[] prefix = new String[]{meta.getString("key")};
+            String[] prefixOp = new String[]{prefix[0], ConsoleModel.NAME + ".op"};
+            String[] ln = new String[]{"label", "name"};
+            String[] lst = new String[]{"label", "service", "type"};
             for (String mk : meta.keySet()) {
                 if (kup.contains(mk))
                     continue;
@@ -144,9 +132,15 @@ public class MetaHelperImpl implements MetaHelper, ContextRefreshedListener, Cro
                 array.addAll(Arrays.asList(converter.toArray(getMessage(prefix[0], object.getString("labels")), ",")));
                 object.put("labels", array);
             }
-        } else if (object.containsKey("values")) {
-            if (object.get("values") instanceof String)
-                object.put("values", json.toObject(getMessage(prefix[0], object.getString("values"))));
+        } else if (object.containsKey("values") && (object.get("values") instanceof String values)) {
+            String string = getMessage(prefix[0], values);
+            char ch = string.charAt(0);
+            if (ch == '{')
+                object.put("values", json.toObject(string));
+            else if (ch == '[')
+                object.put("values", json.toArray(string));
+            else
+                object.put("values", string);
         }
         if (object.containsKey("message"))
             object.put("message", getMessage(prefix[0], object.getString("message")));
@@ -251,7 +245,7 @@ public class MetaHelperImpl implements MetaHelper, ContextRefreshedListener, Cro
         BeanFactory.getBeans(MetaDeclare.class).forEach(declare -> declares.put(declare.getUri(), declare));
         modelTables.getModelClasses().forEach(modelClass -> {
             try (InputStream inputStream = modelClass.getResourceAsStream("meta.json");
-                    ByteArrayOutputStream outputStream = new ByteArrayOutputStream()) {
+                 ByteArrayOutputStream outputStream = new ByteArrayOutputStream()) {
                 if (inputStream == null)
                     return;
 
