@@ -45,7 +45,7 @@
     "agreement": {
         "props": [
             {
-                "name": "setting.agreement.user.sign-up",
+                "name": "setting.agreement.privacy",
                 "type": "file",
                 "upload": "clivia.keyvalue.file"
             }
