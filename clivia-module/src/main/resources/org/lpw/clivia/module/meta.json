@@ -13,12 +13,7 @@
         },
         {
             "name": "execute",
-            "values": [
-                "query",
-                "save",
-                "delete",
-                "user"
-            ],
+            "values": "executes",
             "multiple": true
         },
         {
