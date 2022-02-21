@@ -59,7 +59,6 @@ class Grid extends React.Component {
                             }
                             if (value.length > 0) value = value.substring(1);
                         } else {
-                            console.log(prop.values);
                             if (prop.values instanceof Array) {
                                 for (let v of prop.values) {
                                     if (v.value === value) {

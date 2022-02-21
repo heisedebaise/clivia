@@ -31,14 +31,7 @@
                 {
                     "name": "type",
                     "label": ".column.type",
-                    "values": [
-                        "id",
-                        "string",
-                        "int",
-                        "text",
-                        "date",
-                        "datetime"
-                    ]
+                    "values": ".column.types"
                 },
                 {
                     "name": "key",

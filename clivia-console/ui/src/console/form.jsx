@@ -411,8 +411,9 @@ class Base extends React.Component {
         if (prop.values) {
             let options = [];
             if (prop.values instanceof Array) {
-                for (let value of prop.values)
+                for (let value of prop.values) {
                     options.push(value);
+                }
             } else if (prop.values instanceof Object) {
                 let keys = Object.keys(prop.values);
                 for (let index in keys) {
