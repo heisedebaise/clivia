@@ -2,7 +2,6 @@ package org.lpw.clivia.user;
 
 /**
  * 用户监听器。
- *
  */
 public interface UserListener {
     /**
@@ -13,10 +12,9 @@ public interface UserListener {
     void userSignUp(UserModel user);
 
     /**
-     * 用户被删除。
+     * 用户注销。
      *
-     * @param user       用户。
-     * @param completely 是否彻底删除。
+     * @param user 用户。
      */
-    void userDeleted(UserModel user, boolean completely);
+    void userDestroy(UserModel user);
 }

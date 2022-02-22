@@ -4,7 +4,7 @@ import { SyncOutlined, VerticalAlignTopOutlined, ArrowUpOutlined, ArrowDownOutli
 import moment from 'moment';
 import { service } from '../http';
 import meta from './meta';
-import { toMoney, fromMoney, toPercent, fromPercent, toInt } from './numeric';
+import { toDecimal, fromDecimal, toPercent, fromPercent, toInt } from './numeric';
 import { toArray } from '../json';
 import Image from './image';
 import File from './file';
@@ -107,7 +107,9 @@ class Base extends React.Component {
             if (prop.labels)
                 values[prop.name] = '' + toInt(value, 0);
             else if (prop.type === 'money')
-                values[prop.name] = toMoney(value, prop.empty);
+                values[prop.name] = toDecimal(value, 2, prop.empty);
+            else if (prop.type === 'decimal')
+                values[prop.name] = toDecimal(value, prop.size, prop.empty);
             else if (prop.type === 'percent')
                 values[prop.name] = toPercent(value);
             else if (prop.type === 'switch')
@@ -161,7 +163,9 @@ class Base extends React.Component {
             else if (prop.type === 'datetime')
                 values[prop.name] = value.format("YYYY-MM-DD HH:mm:ss");
             else if (prop.type === 'money')
-                values[prop.name] = fromMoney(value);
+                values[prop.name] = fromDecimal(value, 2);
+            else if (prop.type === 'decimal')
+                values[prop.name] = fromDecimal(value, prop.size);
             else if (prop.type === 'percent')
                 values[prop.name] = fromPercent(value);
             else if (prop.multiple)
@@ -349,7 +353,10 @@ class Base extends React.Component {
     readonly = prop => {
         let value = this.state[prop.name];
         if (prop.type === 'read-only:money')
-            return toMoney(value, prop.empty);
+            return toDecimal(value, 2, prop.empty);
+
+        if (prop.type === 'read-only:decimal')
+            return toDecimal(value, prop.size, prop.empty);
 
         if (prop.type === 'read-only:percent')
             return toPercent(value);

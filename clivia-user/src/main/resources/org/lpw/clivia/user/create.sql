@@ -5,6 +5,7 @@ CREATE TABLE t_user
   c_password CHAR(32) DEFAULT NULL COMMENT '密码',
   c_gesture CHAR(32) DEFAULT NULL COMMENT '手势密码',
   c_secret CHAR(32) DEFAULT NULL COMMENT '安全密码',
+  c_destroy CHAR(32) DEFAULT NULL COMMENT '注销密码',
   c_idcard VARCHAR(255) DEFAULT NULL COMMENT '身份证号',
   c_name VARCHAR(255) DEFAULT NULL COMMENT '姓名',
   c_nick VARCHAR(255) DEFAULT NULL COMMENT '昵称',

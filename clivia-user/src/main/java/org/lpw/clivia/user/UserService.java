@@ -181,6 +181,23 @@ public interface UserService {
     boolean secret(String oldPassword, String newPassword);
 
     /**
+     * 修改注销密码。
+     *
+     * @param oldDestroy 旧注销密码。
+     * @param newDestroy 新注销密码。
+     * @return 如果修改成功则返回true；否则返回false。
+     */
+    boolean destroy(String oldDestroy, String newDestroy);
+
+    /**
+     * 关闭手势密码。
+     *
+     * @param destroy 注销密码。
+     * @return 关闭成功则返回true；否则返回false。
+     */
+    boolean destroyOff(String destroy);
+
+    /**
      * 加密密码。
      *
      * @param password 密码明文。

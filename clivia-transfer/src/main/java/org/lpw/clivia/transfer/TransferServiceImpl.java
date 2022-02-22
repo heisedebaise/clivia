@@ -1,18 +1,6 @@
 package org.lpw.clivia.transfer;
 
-import java.sql.Date;
-import java.sql.Timestamp;
-import java.util.Calendar;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
-
-import javax.inject.Inject;
-
 import com.alibaba.fastjson.JSONObject;
-
 import org.lpw.clivia.lock.LockHelper;
 import org.lpw.clivia.page.Pagination;
 import org.lpw.clivia.user.UserListener;
@@ -23,12 +11,13 @@ import org.lpw.photon.bean.BeanFactory;
 import org.lpw.photon.bean.ContextRefreshedListener;
 import org.lpw.photon.dao.model.ModelHelper;
 import org.lpw.photon.scheduler.SecondsJob;
-import org.lpw.photon.util.DateTime;
-import org.lpw.photon.util.Generator;
-import org.lpw.photon.util.Json;
-import org.lpw.photon.util.TimeUnit;
-import org.lpw.photon.util.Validator;
+import org.lpw.photon.util.*;
 import org.springframework.stereotype.Service;
+
+import javax.inject.Inject;
+import java.sql.Date;
+import java.sql.Timestamp;
+import java.util.*;
 
 @Service(TransferModel.NAME + ".service")
 public class TransferServiceImpl implements TransferService, UserListener, ContextRefreshedListener, SecondsJob {
@@ -174,9 +163,8 @@ public class TransferServiceImpl implements TransferService, UserListener, Conte
     }
 
     @Override
-    public void userDeleted(UserModel user, boolean completely) {
-        if (completely)
-            transferDao.delete(user.getId());
+    public void userDestroy(UserModel user) {
+        transferDao.delete(user.getId());
     }
 
     @Override

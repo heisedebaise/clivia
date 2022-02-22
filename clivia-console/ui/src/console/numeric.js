@@ -1,23 +1,3 @@
-const toMoney = (value, empty) => {
-    if (!value) return empty || '';
-
-    try {
-        return (parseInt(value) / 100).toFixed(2);
-    } catch (e) {
-        return '0.00';
-    }
-}
-
-const fromMoney = value => {
-    if (!value) return 0;
-
-    try {
-        return Math.round(parseFloat(value) * 100) || 0;
-    } catch (e) {
-        return 0;
-    }
-}
-
 const toPercent = value => {
     if (!value) return '0.00 %';
 
@@ -43,6 +23,24 @@ const fromPercent = value => {
     }
 }
 
+const toDecimal = (value, size, empty) => {
+    try {
+        return (parseInt(value) / Math.pow(10, size)).toFixed(size);
+    } catch (e) {
+        return empty || (0).toFixed(size);
+    }
+}
+
+const fromDecimal = (value, size) => {
+    if (!value) return 0;
+
+    try {
+        return Math.round(parseFloat(value) * Math.pow(10, size)) || 0;
+    } catch (e) {
+        return 0;
+    }
+}
+
 const toInt = (value, defaultValue) => {
     if (!value) return defaultValue;
 
@@ -54,8 +52,8 @@ const toInt = (value, defaultValue) => {
 }
 
 export {
-    toMoney,
-    fromMoney,
+    toDecimal,
+    fromDecimal,
     toPercent,
     fromPercent,
     toInt

@@ -288,6 +288,32 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public boolean destroy(String oldDestroy, String newDestroy) {
+        UserModel user = fromSession();
+        if (!validator.isEmpty(user.getDestroy()) && !user.getDestroy().equals(password(oldDestroy)))
+            return false;
+
+        user.setDestroy(password(newDestroy));
+        save(user);
+        session.set(SESSION, user);
+
+        return true;
+    }
+
+    @Override
+    public boolean destroyOff(String destroy) {
+        UserModel user = fromSession();
+        if (!validator.isEmpty(user.getDestroy()) && !user.getDestroy().equals(password(destroy)))
+            return false;
+
+        user.setDestroy("");
+        save(user);
+        session.set(SESSION, user);
+
+        return true;
+    }
+
+    @Override
     public String password(String password) {
         return digest.md5(UserModel.NAME + digest.sha1(password + UserModel.NAME));
     }
@@ -409,6 +435,7 @@ public class UserServiceImpl implements UserService {
             JSONObject object = modelHelper.toJson(model);
             object.put("gesture", !validator.isEmpty(model.getGesture()));
             object.put("secret", !validator.isEmpty(model.getSecret()));
+            object.put("destroy", !validator.isEmpty(model.getDestroy()));
             object.put("auth", authService.query(model.getId()));
 
             return object;
@@ -589,27 +616,34 @@ public class UserServiceImpl implements UserService {
         user.setState(state);
         userDao.save(user);
         authService.create(user.getId(), uid, Types.Self, mobile, email, nick, avatar);
-        UserModel model = user;
-        listeners.ifPresent(set -> set.forEach(listener -> listener.userSignUp(model)));
+        listeners.ifPresent(set -> set.forEach(listener -> listener.userSignUp(user)));
 
         return user;
     }
 
     @Override
     public void delete(String id) {
-        UserModel user = findById(id);
+        destroy(findById(id));
+    }
+
+    private boolean destroy(UserModel user, String password) {
+        if (validator.isEmpty(user.getDestroy()) || !user.getDestroy().equals(password(password)))
+            return false;
+
+        destroy(user);
+
+        return true;
+    }
+
+    private void destroy(UserModel user) {
         if (user.getGrade() > 98)
             return;
 
-        boolean completely = keyvalueService.valueAsInt("setting.global.user.delete", 0) == 1;
-        if (completely) {
-            userDao.delete(id);
-            authService.delete(id);
-        } else
-            userDao.state(id, 2);
-        onlineService.signOutUser(id);
+        userDao.delete(user.getId());
+        authService.delete(user.getId());
+        onlineService.signOutUser(user.getId());
         clearCache(user);
-        listeners.ifPresent(set -> set.forEach(listener -> listener.userDeleted(user, completely)));
+        listeners.ifPresent(set -> set.forEach(listener -> listener.userDestroy(user)));
     }
 
     @Override

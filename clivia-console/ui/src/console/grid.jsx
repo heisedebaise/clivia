@@ -3,7 +3,7 @@ import { Form, Row, Col, Radio, Select, DatePicker, Input, Button, Table, Divide
 import { MinusOutlined, PaperClipOutlined, DashOutlined } from '@ant-design/icons';
 import { service, url } from '../http';
 import meta from './meta';
-import { toMoney, toPercent } from './numeric';
+import { toDecimal, toPercent } from './numeric';
 import { toArray } from '../json';
 import Category from './category';
 import User from './user';
@@ -74,7 +74,9 @@ class Grid extends React.Component {
                     return this.format(prop, model, value);
                 };
             } else if (prop.type === 'money' || prop.type === 'read-only:money')
-                column.render = model => this.format(prop, model, toMoney(this.value(model, prop.name), prop.empty));
+                column.render = model => this.format(prop, model, toDecimal(this.value(model, prop.name), 2, prop.empty));
+            else if (prop.type === 'decimal' || prop.type === 'read-only:decimal')
+                column.render = model => this.format(prop, model, toDecimal(this.value(model, prop.name), prop.size, prop.empty));
             else if (prop.type === 'percent' || prop.type === 'read-only:percent')
                 column.render = model => this.format(prop, model, toPercent(this.value(model, prop.name)));
             else if (prop.type === 'image' || prop.type === 'read-only:image') {
@@ -154,7 +156,9 @@ class Grid extends React.Component {
                         else if (line.values && !(line.values instanceof Array))
                             value = line.values[value];
                         else if (line.type === 'money' || line.type === 'read-only:money')
-                            value = toMoney(value);
+                            value = toDecimal(value, 2, prop.empty);
+                        else if (line.type === 'decimal' || line.type === 'read-only:decimal')
+                            value = toDecimal(value, prop.size, prop.empty);
                         else if (line.type === 'percent' || line.type === 'read-only:percent')
                             value = toPercent(value);
                         lines.push(<div key={'line:' + model.id + ':' + line.name}>{line.label} : {this.format(line, model, value)}</div>);
