@@ -24,6 +24,9 @@ const fromPercent = value => {
 }
 
 const toDecimal = (value, size, empty) => {
+    if (!value)
+        return empty || (0).toFixed(size);
+
     try {
         return (parseInt(value) / Math.pow(10, size)).toFixed(size);
     } catch (e) {
