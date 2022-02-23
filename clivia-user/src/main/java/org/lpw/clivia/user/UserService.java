@@ -33,10 +33,6 @@ public interface UserService {
      */
     String VALIDATOR_PASSWORD = UserModel.NAME + ".validator.password";
     /**
-     * 安全密码验证器Bean名称。
-     */
-    String VALIDATOR_SECRET = UserModel.NAME + ".validator.secret";
-    /**
      * 用户信息是否存在验证器Bean名称。
      */
     String VALIDATOR_EXISTS = UserModel.NAME + ".validator.exists";
@@ -153,49 +149,6 @@ public interface UserService {
      * @param password 新密码。
      */
     void resetPassword(String mobile, String password);
-
-    /**
-     * 修改手势密码。
-     *
-     * @param oldGesture 旧手势密码。
-     * @param newGesture 新手势密码。
-     * @return 如果修改成功则返回true；否则返回false。
-     */
-    boolean gesture(String oldGesture, String newGesture);
-
-    /**
-     * 关闭手势密码。
-     *
-     * @param gesture 手势密码。
-     * @return 关闭成功则返回true；否则返回false。
-     */
-    boolean gestureOff(String gesture);
-
-    /**
-     * 修改安全密码。
-     *
-     * @param oldPassword 旧密码。
-     * @param newPassword 新密码。
-     * @return 如果修改成功则返回true；否则返回false。
-     */
-    boolean secret(String oldPassword, String newPassword);
-
-    /**
-     * 修改注销密码。
-     *
-     * @param oldDestroy 旧注销密码。
-     * @param newDestroy 新注销密码。
-     * @return 如果修改成功则返回true；否则返回false。
-     */
-    boolean destroy(String oldDestroy, String newDestroy);
-
-    /**
-     * 关闭手势密码。
-     *
-     * @param destroy 注销密码。
-     * @return 关闭成功则返回true；否则返回false。
-     */
-    boolean destroyOff(String destroy);
 
     /**
      * 加密密码。

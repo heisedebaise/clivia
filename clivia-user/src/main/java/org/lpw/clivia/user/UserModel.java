@@ -20,9 +20,6 @@ public class UserModel extends ModelSupport {
     static final String NAME = "clivia.user";
 
     private String password; // 密码
-    private String gesture; // 手势密码
-    private String secret; // 安全密码
-    private String destroy; // 注销密码
     private String idcard; // 身份证号
     private String name; // 姓名
     private String nick; // 昵称
@@ -48,33 +45,6 @@ public class UserModel extends ModelSupport {
 
     public void setPassword(String password) {
         this.password = password;
-    }
-
-    @Column(name = "c_gesture")
-    public String getGesture() {
-        return gesture;
-    }
-
-    public void setGesture(String gesture) {
-        this.gesture = gesture;
-    }
-
-    @Column(name = "c_secret")
-    public String getSecret() {
-        return secret;
-    }
-
-    public void setSecret(String secret) {
-        this.secret = secret;
-    }
-
-    @Column(name = "c_destroy")
-    public String getDestroy() {
-        return destroy;
-    }
-
-    public void setDestroy(String destroy) {
-        this.destroy = destroy;
     }
 
     @Jsonable

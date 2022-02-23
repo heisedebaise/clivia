@@ -10,6 +10,7 @@ import org.lpw.clivia.user.crosier.CrosierService;
 import org.lpw.clivia.user.inviter.InviterService;
 import org.lpw.clivia.user.online.OnlineModel;
 import org.lpw.clivia.user.online.OnlineService;
+import org.lpw.clivia.user.password.PasswordService;
 import org.lpw.clivia.user.type.Types;
 import org.lpw.photon.cache.Cache;
 import org.lpw.photon.crypto.Digest;
@@ -62,6 +63,8 @@ public class UserServiceImpl implements UserService {
     private OnlineService onlineService;
     @Inject
     private InviterService inviterService;
+    @Inject
+    private PasswordService passwordService;
     @Inject
     private Optional<Set<UserListener>> listeners;
     @Inject
@@ -163,7 +166,10 @@ public class UserServiceImpl implements UserService {
     @Override
     public boolean signInGesture(String id, String gesture) {
         UserModel user = userDao.findById(id);
-        if (user == null || user.getState() != 1 || !password(gesture).equals(user.getGesture()))
+        if (user == null)
+            return false;
+
+        if (!passwordService.auth(id, "gesture", gesture) || user.getState() != 1)
             return false;
 
         signIn(user, id);
@@ -246,71 +252,6 @@ public class UserServiceImpl implements UserService {
         UserModel user = userDao.findById(authService.findByUid(mobile).getUser());
         user.setPassword(password(password));
         save(user);
-    }
-
-    @Override
-    public boolean gesture(String oldGesture, String newGesture) {
-        UserModel user = fromSession();
-        if (!validator.isEmpty(user.getGesture()) && !user.getGesture().equals(password(oldGesture)))
-            return false;
-
-        user.setGesture(password(newGesture));
-        save(user);
-        session.set(SESSION, user);
-
-        return true;
-    }
-
-    @Override
-    public boolean gestureOff(String gesture) {
-        UserModel user = fromSession();
-        if (!validator.isEmpty(user.getGesture()) && !user.getGesture().equals(password(gesture)))
-            return false;
-
-        user.setGesture("");
-        save(user);
-        session.set(SESSION, user);
-
-        return true;
-    }
-
-    @Override
-    public boolean secret(String oldPassword, String newPassword) {
-        UserModel user = fromSession();
-        if (!validator.isEmpty(user.getSecret()) && !user.getSecret().equals(password(oldPassword)))
-            return false;
-
-        user.setSecret(password(newPassword));
-        save(user);
-        session.set(SESSION, user);
-
-        return true;
-    }
-
-    @Override
-    public boolean destroy(String oldDestroy, String newDestroy) {
-        UserModel user = fromSession();
-        if (!validator.isEmpty(user.getDestroy()) && !user.getDestroy().equals(password(oldDestroy)))
-            return false;
-
-        user.setDestroy(password(newDestroy));
-        save(user);
-        session.set(SESSION, user);
-
-        return true;
-    }
-
-    @Override
-    public boolean destroyOff(String destroy) {
-        UserModel user = fromSession();
-        if (!validator.isEmpty(user.getDestroy()) && !user.getDestroy().equals(password(destroy)))
-            return false;
-
-        user.setDestroy("");
-        save(user);
-        session.set(SESSION, user);
-
-        return true;
     }
 
     @Override
@@ -433,9 +374,6 @@ public class UserServiceImpl implements UserService {
                 return new JSONObject();
 
             JSONObject object = modelHelper.toJson(model);
-            object.put("gesture", !validator.isEmpty(model.getGesture()));
-            object.put("secret", !validator.isEmpty(model.getSecret()));
-            object.put("destroy", !validator.isEmpty(model.getDestroy()));
             object.put("auth", authService.query(model.getId()));
 
             return object;
@@ -624,15 +562,6 @@ public class UserServiceImpl implements UserService {
     @Override
     public void delete(String id) {
         destroy(findById(id));
-    }
-
-    private boolean destroy(UserModel user, String password) {
-        if (validator.isEmpty(user.getDestroy()) || !user.getDestroy().equals(password(password)))
-            return false;
-
-        destroy(user);
-
-        return true;
     }
 
     private void destroy(UserModel user) {
