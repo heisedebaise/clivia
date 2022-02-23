@@ -14,6 +14,7 @@ import org.lpw.clivia.user.password.PasswordService;
 import org.lpw.clivia.user.type.Types;
 import org.lpw.photon.cache.Cache;
 import org.lpw.photon.crypto.Digest;
+import org.lpw.photon.ctrl.context.Response;
 import org.lpw.photon.ctrl.context.Session;
 import org.lpw.photon.dao.model.ModelHelper;
 import org.lpw.photon.dao.orm.PageList;
@@ -52,6 +53,8 @@ public class UserServiceImpl implements UserService {
     private ModelHelper modelHelper;
     @Inject
     private Session session;
+    @Inject
+    private Response response;
     @Inject
     private Pagination pagination;
     @Inject
@@ -588,6 +591,7 @@ public class UserServiceImpl implements UserService {
         onlineService.signOutUser(user.getId());
         clearCache(user);
         listeners.ifPresent(set -> set.forEach(listener -> listener.userDestroy(user)));
+        response.setHeader("user-destroy", user.getId());
         logger.warn(null, "注销用户[{}]。", modelHelper.toJson(user));
     }
 
