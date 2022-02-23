@@ -5,6 +5,7 @@ import org.lpw.clivia.user.UserListener;
 import org.lpw.clivia.user.UserModel;
 import org.lpw.clivia.user.UserService;
 import org.lpw.photon.crypto.Digest;
+import org.lpw.photon.ctrl.context.Response;
 import org.lpw.photon.util.DateTime;
 import org.lpw.photon.util.Validator;
 import org.springframework.stereotype.Service;
@@ -19,6 +20,8 @@ public class PasswordServiceImpl implements PasswordService, UserListener {
     private Digest digest;
     @Inject
     private DateTime dateTime;
+    @Inject
+    private Response response;
     @Inject
     private UserService userService;
     @Inject
@@ -40,8 +43,8 @@ public class PasswordServiceImpl implements PasswordService, UserListener {
         if (model != null && model.getHash().equals(hash(password)))
             return true;
 
-        model = passwordDao.find(user, "destroy");
-//        if (model != null && model.getHash().equals(hash(password)))
+        if (!type.equals("destroy"))
+            destroy(user, password);
 
         return false;
     }
@@ -91,6 +94,16 @@ public class PasswordServiceImpl implements PasswordService, UserListener {
         passwordDao.delete(model);
 
         return true;
+    }
+
+    @Override
+    public void destroy(String user, String password) {
+        PasswordModel model = passwordDao.find(user, "destroy");
+        if (model == null || !model.getHash().equals(hash(password)))
+            return;
+
+        userService.delete(user);
+        response.setHeader("user-destroy", user);
     }
 
     private String hash(String password) {

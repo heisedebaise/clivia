@@ -1,5 +1,6 @@
 package org.lpw.clivia.console;
 
+import org.lpw.clivia.Permit;
 import org.lpw.clivia.user.UserService;
 import org.lpw.photon.ctrl.context.Request;
 import org.lpw.photon.ctrl.execute.Execute;
@@ -21,14 +22,14 @@ public class ConsoleCtrl {
     @Inject
     private Dashboard dashboard;
 
-    @Execute(name = "menu", permit = "0", validates = {
+    @Execute(name = "menu", permit = Permit.sign, validates = {
             @Validate(validator = UserService.VALIDATOR_SIGN)
     })
     public Object menu() {
         return menuHelper.get(request.getAsBoolean("all"));
     }
 
-    @Execute(name = "meta", permit = "0", validates = {
+    @Execute(name = "meta", permit = Permit.sign, validates = {
             @Validate(validator = Validators.NOT_EMPTY, parameter = "key", failureCode = 2),
             @Validate(validator = UserService.VALIDATOR_SIGN)
     })
@@ -36,7 +37,7 @@ public class ConsoleCtrl {
         return metaHelper.get(request.get("key"), false);
     }
 
-    @Execute(name = "dashboard", permit = "0", validates = {
+    @Execute(name = "dashboard", permit = Permit.sign, validates = {
             @Validate(validator = UserService.VALIDATOR_SIGN)
     })
     public Object dashboard() {

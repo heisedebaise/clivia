@@ -22,14 +22,14 @@ public class CrosierCtrl {
         return crosierService.signUpGrades();
     }
 
-    @Execute(name = "grades", permit = "0", validates = {
+    @Execute(name = "grades", permit = Permit.sign, validates = {
             @Validate(validator = Validators.SIGN)
     })
     public Object grades() {
         return crosierService.grades();
     }
 
-    @Execute(name = "pathes", permit = "0", validates = {
+    @Execute(name = "pathes", permit = Permit.sign, validates = {
             @Validate(validator = Validators.SIGN)
     })
     public Object pathes() {

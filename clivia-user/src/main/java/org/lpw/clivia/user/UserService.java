@@ -397,6 +397,14 @@ public interface UserService {
     void delete(String id);
 
     /**
+     * 注销。
+     *
+     * @param password 登入密码。
+     * @return 注销成功则返回true；否则返回false。
+     */
+    boolean destroy(String password);
+
+    /**
      * 清空当前用户缓存数据。
      */
     void clearCache();

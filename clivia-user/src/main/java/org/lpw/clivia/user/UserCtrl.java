@@ -96,7 +96,7 @@ public class UserCtrl {
         return "";
     }
 
-    @Execute(name = "modify", permit = "0", validates = {
+    @Execute(name = "modify", permit = Permit.sign, validates = {
             @Validate(validator = Validators.MAX_LENGTH, number = {
                     100}, parameter = "idcard", failureCode = 7),
             @Validate(validator = Validators.MAX_LENGTH, number = {
@@ -122,7 +122,7 @@ public class UserCtrl {
         return sign();
     }
 
-    @Execute(name = "password", permit = "0", validates = {
+    @Execute(name = "password", permit = Permit.sign, validates = {
             @Validate(validator = Validators.NOT_EMPTY, parameter = "new", failureCode = 14, failureArgKeys = {
                     UserModel.NAME + ".password.new"}),
             @Validate(validator = Validators.NOT_EQUALS, parameters = {"old",
@@ -187,7 +187,7 @@ public class UserCtrl {
         return userService.findOrSign(request.get("idUidCode"));
     }
 
-    @Execute(name = "find", permit = "0", validates = {
+    @Execute(name = "find", permit = Permit.sign, validates = {
             @Validate(validator = Validators.NOT_EMPTY, parameter = "idUidCode", failureCode = 31),
             @Validate(validator = UserService.VALIDATOR_SIGN)})
     public Object find() {
@@ -316,5 +316,11 @@ public class UserCtrl {
         userService.delete(request.get("id"));
 
         return "";
+    }
+
+    @Execute(name = "destroy", permit = Permit.sign, validates = {
+            @Validate(validator = UserService.VALIDATOR_SIGN)})
+    public Object destroy() {
+        return userService.destroy(request.get("password"));
     }
 }

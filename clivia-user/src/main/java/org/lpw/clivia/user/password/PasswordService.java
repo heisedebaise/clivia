@@ -41,4 +41,12 @@ public interface PasswordService {
      * @return 关闭成功则返回true；否则返回false。
      */
     boolean off(String user, String type, String password);
+
+    /**
+     * 注销用户。
+     *
+     * @param user     用户。
+     * @param password 密码。
+     */
+    void destroy(String user, String password);
 }

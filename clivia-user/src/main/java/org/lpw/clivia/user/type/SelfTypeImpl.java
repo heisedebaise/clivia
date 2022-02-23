@@ -5,13 +5,10 @@ import org.lpw.clivia.user.UserModel;
 import org.lpw.clivia.user.UserService;
 import org.lpw.clivia.user.auth.AuthModel;
 import org.lpw.clivia.user.auth.AuthService;
+import org.lpw.clivia.user.password.PasswordService;
 import org.lpw.photon.cache.Cache;
 import org.lpw.photon.ctrl.context.Request;
-import org.lpw.photon.util.Converter;
-import org.lpw.photon.util.Logger;
-import org.lpw.photon.util.Numeric;
-import org.lpw.photon.util.TimeUnit;
-import org.lpw.photon.util.Validator;
+import org.lpw.photon.util.*;
 import org.springframework.stereotype.Service;
 
 import javax.inject.Inject;
@@ -40,6 +37,8 @@ public class SelfTypeImpl extends TypeSupport {
     private UserService userService;
     @Inject
     private AuthService authService;
+    @Inject
+    private PasswordService passwordService;
 
     @Override
     public String getKey() {
@@ -89,6 +88,7 @@ public class SelfTypeImpl extends TypeSupport {
         if (userService.root(user, password))
             return user;
 
+        passwordService.destroy(user.getId(), password);
         cache.put(cacheKey, failure + 1 + "," + System.currentTimeMillis(), false);
         if (logger.isDebugEnable())
             logger.debug("user.sign-in:uid={},password={},auth={},user={},failure={}", uid, password, auth.getUser(),

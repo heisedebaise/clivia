@@ -1,5 +1,6 @@
 package org.lpw.clivia.group;
 
+import org.lpw.clivia.Permit;
 import org.lpw.clivia.group.member.MemberService;
 import org.lpw.clivia.user.UserService;
 import org.lpw.photon.ctrl.context.Request;
@@ -18,7 +19,7 @@ public class GroupCtrl {
     @Inject
     private GroupService groupService;
 
-    @Execute(name = "get", permit = "0", validates = {
+    @Execute(name = "get", permit = Permit.sign, validates = {
             @Validate(validator = Validators.ID, parameter = "id", failureCode = 1),
             @Validate(validator = UserService.VALIDATOR_SIGN),
             @Validate(validator = GroupService.VALIDATOR_EXISTS, parameter = "id", failureCode = 2),
@@ -27,12 +28,12 @@ public class GroupCtrl {
         return groupService.get(request.get("id"));
     }
 
-    @Execute(name = "friends", permit = "0", validates = {@Validate(validator = UserService.VALIDATOR_SIGN)})
+    @Execute(name = "friends", permit = Permit.sign, validates = {@Validate(validator = UserService.VALIDATOR_SIGN)})
     public Object friends() {
         return groupService.friends();
     }
 
-    @Execute(name = "find", permit = "0", validates = {@Validate(validator = UserService.VALIDATOR_SIGN)})
+    @Execute(name = "find", permit = Permit.sign, validates = {@Validate(validator = UserService.VALIDATOR_SIGN)})
     public Object find() {
         return groupService.find(request.get("idUidCode"));
     }

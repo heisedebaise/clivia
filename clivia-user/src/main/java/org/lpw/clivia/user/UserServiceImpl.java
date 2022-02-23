@@ -19,6 +19,7 @@ import org.lpw.photon.dao.model.ModelHelper;
 import org.lpw.photon.dao.orm.PageList;
 import org.lpw.photon.util.DateTime;
 import org.lpw.photon.util.Generator;
+import org.lpw.photon.util.Logger;
 import org.lpw.photon.util.Validator;
 import org.springframework.stereotype.Service;
 
@@ -45,6 +46,8 @@ public class UserServiceImpl implements UserService {
     private Generator generator;
     @Inject
     private DateTime dateTime;
+    @Inject
+    private Logger logger;
     @Inject
     private ModelHelper modelHelper;
     @Inject
@@ -561,7 +564,19 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void delete(String id) {
-        destroy(findById(id));
+        destroy(userDao.findById(id));
+    }
+
+    @Override
+    public boolean destroy(String password) {
+        UserModel user = fromSession();
+        if (user.getPassword().equals(password(password))) {
+            destroy(user);
+
+            return true;
+        }
+
+        return false;
     }
 
     private void destroy(UserModel user) {
@@ -573,6 +588,7 @@ public class UserServiceImpl implements UserService {
         onlineService.signOutUser(user.getId());
         clearCache(user);
         listeners.ifPresent(set -> set.forEach(listener -> listener.userDestroy(user)));
+        logger.warn(null, "注销用户[{}]。", modelHelper.toJson(user));
     }
 
     @Override
