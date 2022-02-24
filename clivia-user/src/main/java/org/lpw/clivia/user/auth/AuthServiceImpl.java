@@ -86,6 +86,7 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public void delete(String user) {
+        authDao.query(user).getList().forEach(auth -> cache.remove(CACHE_UID + auth.getUid()));
         authDao.delete(user);
     }
 }
