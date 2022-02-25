@@ -1,20 +1,20 @@
 package org.lpw.clivia.group.friend;
 
-import java.util.Calendar;
-
-import javax.inject.Inject;
-
 import com.alibaba.fastjson.JSONObject;
-
 import org.lpw.clivia.group.GroupService;
 import org.lpw.clivia.page.Pagination;
+import org.lpw.clivia.user.UserListener;
+import org.lpw.clivia.user.UserModel;
 import org.lpw.clivia.user.UserService;
 import org.lpw.photon.scheduler.DateJob;
 import org.lpw.photon.util.DateTime;
 import org.springframework.stereotype.Service;
 
+import javax.inject.Inject;
+import java.util.Calendar;
+
 @Service(FriendModel.NAME + ".service")
-public class FriendServiceImpl implements FriendService, DateJob {
+public class FriendServiceImpl implements FriendService, UserListener, DateJob {
     @Inject
     private DateTime dateTime;
     @Inject
@@ -49,17 +49,10 @@ public class FriendServiceImpl implements FriendService, DateJob {
     }
 
     @Override
-    public void executeDateJob() {
-        Calendar calendar = Calendar.getInstance();
-        calendar.add(Calendar.DAY_OF_MONTH, -7);
-        friendDao.state(0, 3, dateTime.getStart(calendar.getTime()));
-    }
-
-    @Override
     public void agree(String id) {
         FriendModel friend = state(id, 1);
         if (friend != null)
-            groupService.friend(new String[] { friend.getUser(), friend.getProposer() });
+            groupService.friend(new String[]{friend.getUser(), friend.getProposer()});
     }
 
     @Override
@@ -76,5 +69,21 @@ public class FriendServiceImpl implements FriendService, DateJob {
         friendDao.save(friend);
 
         return friend;
+    }
+
+    @Override
+    public void userSignUp(UserModel user) {
+    }
+
+    @Override
+    public void userDelete(UserModel user) {
+        friendDao.delete(user.getId());
+    }
+
+    @Override
+    public void executeDateJob() {
+        Calendar calendar = Calendar.getInstance();
+        calendar.add(Calendar.DAY_OF_MONTH, -7);
+        friendDao.state(0, 3, dateTime.getStart(calendar.getTime()));
     }
 }

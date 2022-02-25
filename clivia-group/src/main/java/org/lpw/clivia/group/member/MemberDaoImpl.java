@@ -14,17 +14,15 @@ class MemberDaoImpl implements MemberDao {
 
     @Override
     public PageList<MemberModel> query(String group) {
-        return liteOrm.query(new LiteQuery(MemberModel.class).where("c_group=?"), new Object[] { group });
+        return liteOrm.query(new LiteQuery(MemberModel.class).where("c_group=?"), new Object[]{group});
     }
 
     @Override
     public PageList<MemberModel> query(String user, int type) {
         if (type == -1)
-            return liteOrm.query(new LiteQuery(MemberModel.class).where("c_user=? and c_state in(0,1)"),
-                    new Object[] { user });
+            return liteOrm.query(new LiteQuery(MemberModel.class).where("c_user=? and c_state in(0,1)"), new Object[]{user});
 
-        return liteOrm.query(new LiteQuery(MemberModel.class).where("c_user=? and c_type=? and c_state in(0,1)"),
-                new Object[] { user, type });
+        return liteOrm.query(new LiteQuery(MemberModel.class).where("c_user=? and c_type=? and c_state in(0,1)"), new Object[]{user, type});
     }
 
     @Override
@@ -35,11 +33,21 @@ class MemberDaoImpl implements MemberDao {
     @Override
     public MemberModel find(String group, String user) {
         return liteOrm.findOne(new LiteQuery(MemberModel.class).where("c_user=? and c_group=?"),
-                new Object[] { user, group });
+                new Object[]{user, group});
     }
 
     @Override
     public void save(MemberModel member) {
         liteOrm.save(member);
+    }
+
+    @Override
+    public void delete(String group) {
+        liteOrm.delete(new LiteQuery(MemberModel.class).where("c_group=?"), new Object[]{group});
+    }
+
+    @Override
+    public void delete(String group, String user) {
+        liteOrm.delete(new LiteQuery(MemberModel.class).where("c_user=? and c_group=?"), new Object[]{user, group});
     }
 }

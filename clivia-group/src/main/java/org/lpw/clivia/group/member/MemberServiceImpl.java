@@ -1,16 +1,13 @@
 package org.lpw.clivia.group.member;
 
-import java.sql.Timestamp;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
-import javax.inject.Inject;
-
 import org.lpw.clivia.group.GroupService;
 import org.lpw.clivia.user.UserService;
 import org.lpw.photon.util.DateTime;
 import org.springframework.stereotype.Service;
+
+import javax.inject.Inject;
+import java.sql.Timestamp;
+import java.util.*;
 
 @Service(MemberModel.NAME + ".service")
 public class MemberServiceImpl implements MemberService {
@@ -24,11 +21,19 @@ public class MemberServiceImpl implements MemberService {
     private MemberDao memberDao;
 
     @Override
-    public Set<String> user(int type) {
-        Set<String> groups = new HashSet<>();
-        memberDao.query(userService.id(), type).getList().forEach(member -> groups.add(member.getGroup()));
+    public Set<String> groups(String user, int type) {
+        Set<String> set = new HashSet<>();
+        memberDao.query(user, type).getList().forEach(member -> set.add(member.getGroup()));
 
-        return groups;
+        return set;
+    }
+
+    @Override
+    public Map<String, Integer> grades(String user, int type) {
+        Map<String, Integer> map = new HashMap<>();
+        memberDao.query(user, type).getList().forEach(member -> map.put(member.getGroup(), member.getGrade()));
+
+        return map;
     }
 
     @Override
@@ -72,5 +77,15 @@ public class MemberServiceImpl implements MemberService {
         member.setMemo(memo);
         memberDao.save(member);
         groupService.cleanFriendsCache(userService.id());
+    }
+
+    @Override
+    public void delete(String group) {
+        memberDao.delete(group);
+    }
+
+    @Override
+    public void delete(String group, String user) {
+        memberDao.delete(group, user);
     }
 }

@@ -12,4 +12,8 @@ interface MemberDao {
     MemberModel find(String group, String user);
 
     void save(MemberModel member);
+
+    void delete(String group);
+
+    void delete(String group, String user);
 }

@@ -163,7 +163,7 @@ public class TransferServiceImpl implements TransferService, UserListener, Conte
     }
 
     @Override
-    public void userDestroy(UserModel user) {
+    public void userDelete(UserModel user) {
         transferDao.delete(user.getId());
     }
 

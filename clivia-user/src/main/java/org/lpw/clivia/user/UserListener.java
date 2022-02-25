@@ -12,9 +12,9 @@ public interface UserListener {
     void userSignUp(UserModel user);
 
     /**
-     * 用户注销。
+     * 用户删除。
      *
      * @param user 用户。
      */
-    void userDestroy(UserModel user);
+    void userDelete(UserModel user);
 }

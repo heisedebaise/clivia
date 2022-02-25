@@ -590,7 +590,7 @@ public class UserServiceImpl implements UserService {
         authService.delete(user.getId());
         onlineService.signOutUser(user.getId());
         clearCache(user);
-        listeners.ifPresent(set -> set.forEach(listener -> listener.userDestroy(user)));
+        listeners.ifPresent(set -> set.forEach(listener -> listener.userDelete(user)));
         response.setHeader("user-destroy", user.getId());
         logger.warn(null, "注销用户[{}]。", modelHelper.toJson(user));
     }

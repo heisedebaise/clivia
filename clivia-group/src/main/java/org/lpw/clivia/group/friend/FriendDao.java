@@ -1,8 +1,8 @@
 package org.lpw.clivia.group.friend;
 
-import java.sql.Timestamp;
-
 import org.lpw.photon.dao.orm.PageList;
+
+import java.sql.Timestamp;
 
 interface FriendDao {
     PageList<FriendModel> query(String user, int pageSize, int pageNum);
@@ -14,4 +14,6 @@ interface FriendDao {
     void save(FriendModel friend);
 
     void state(int oldState, int newState, Timestamp time);
+
+    void delete(String user);
 }

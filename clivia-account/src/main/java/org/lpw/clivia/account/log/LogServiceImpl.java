@@ -148,7 +148,7 @@ public class LogServiceImpl implements LogService, UserListener, SecondsJob {
     }
 
     @Override
-    public void userDestroy(UserModel user) {
+    public void userDelete(UserModel user) {
         logDao.delete(user.getId());
     }
 

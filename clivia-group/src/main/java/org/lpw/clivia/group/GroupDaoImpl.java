@@ -1,14 +1,12 @@
 package org.lpw.clivia.group;
 
-import java.util.Set;
-
-import javax.inject.Inject;
-
 import org.lpw.clivia.dao.DaoHelper;
 import org.lpw.photon.dao.orm.PageList;
 import org.lpw.photon.dao.orm.lite.LiteOrm;
-import org.lpw.photon.dao.orm.lite.LiteQuery;
 import org.springframework.stereotype.Repository;
+
+import javax.inject.Inject;
+import java.util.Set;
 
 @Repository(GroupModel.NAME + ".dao")
 class GroupDaoImpl implements GroupDao {
@@ -16,11 +14,6 @@ class GroupDaoImpl implements GroupDao {
     private LiteOrm liteOrm;
     @Inject
     private DaoHelper daoHelper;
-
-    @Override
-    public PageList<GroupModel> query() {
-        return liteOrm.query(new LiteQuery(GroupModel.class), null);
-    }
 
     @Override
     public PageList<GroupModel> query(Set<String> ids) {
@@ -35,5 +28,10 @@ class GroupDaoImpl implements GroupDao {
     @Override
     public void save(GroupModel group) {
         liteOrm.save(group);
+    }
+
+    @Override
+    public void delete(GroupModel group) {
+        liteOrm.delete(group);
     }
 }
