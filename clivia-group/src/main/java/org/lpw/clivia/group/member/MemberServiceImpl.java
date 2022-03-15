@@ -1,6 +1,5 @@
 package org.lpw.clivia.group.member;
 
-import org.lpw.clivia.group.GroupService;
 import org.lpw.clivia.user.UserService;
 import org.lpw.photon.util.DateTime;
 import org.springframework.stereotype.Service;
@@ -15,8 +14,6 @@ public class MemberServiceImpl implements MemberService {
     private DateTime dateTime;
     @Inject
     private UserService userService;
-    @Inject
-    private GroupService groupService;
     @Inject
     private MemberDao memberDao;
 
@@ -76,7 +73,6 @@ public class MemberServiceImpl implements MemberService {
         MemberModel member = memberDao.findById(id);
         member.setMemo(memo);
         memberDao.save(member);
-        groupService.cleanFriendsCache(userService.id());
     }
 
     @Override

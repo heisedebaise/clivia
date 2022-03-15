@@ -8,7 +8,6 @@ import org.lpw.clivia.keyvalue.KeyvalueService;
 import org.lpw.clivia.user.UserListener;
 import org.lpw.clivia.user.UserModel;
 import org.lpw.clivia.user.UserService;
-import org.lpw.photon.cache.Cache;
 import org.lpw.photon.dao.model.ModelHelper;
 import org.lpw.photon.util.DateTime;
 import org.lpw.photon.util.Json;
@@ -23,8 +22,6 @@ import java.util.*;
 public class GroupServiceImpl implements GroupService, UserListener {
     @Inject
     private DateTime dateTime;
-    @Inject
-    private Cache cache;
     @Inject
     private Validator validator;
     @Inject
@@ -47,48 +44,42 @@ public class GroupServiceImpl implements GroupService, UserListener {
     @Override
     public JSONObject get(String id) {
         String user = userService.id();
-        return cache.computeIfAbsent(groupCacheKey(id, user), key -> {
-            GroupModel group = groupDao.findById(id);
-            JSONObject object = modelHelper.toJson(group);
-            JSONArray members = new JSONArray();
-            memberService.list(id).forEach(member -> {
-                JSONObject m = member(member);
-                if (m == null)
-                    return;
+        GroupModel group = groupDao.findById(id);
+        JSONObject object = modelHelper.toJson(group);
+        JSONArray members = new JSONArray();
+        memberService.list(id).forEach(member -> {
+            JSONObject m = member(member);
+            if (m == null)
+                return;
 
-                if (group.getType() == 0) {
-                    if (members.isEmpty() || !m.getString("user").equals(user)) {
-                        object.put("avatar", m.getString("avatar"));
-                        object.put("name", m.getString("nick"));
-                    }
+            if (group.getType() == 0) {
+                if (members.isEmpty() || !m.getString("user").equals(user)) {
+                    object.put("avatar", m.getString("avatar"));
+                    object.put("name", m.getString("nick"));
                 }
-                members.add(m);
-            });
+            }
+            members.add(m);
+        });
+        object.put("members", members);
 
-            object.put("members", members);
-
-            return object;
-        }, false);
+        return object;
     }
 
     @Override
     public JSONObject friends() {
         String user = userService.id();
-        return cache.computeIfAbsent(friendsCacheKey(user), key -> {
-            Map<String, JSONArray> map = new HashMap<>();
-            for (GroupModel group : groupDao.query(memberService.groups(user, 0)).getList()) {
-                JSONObject friend = friend(user, group);
-                if (friend == null)
-                    continue;
+        Map<String, JSONArray> map = new HashMap<>();
+        for (GroupModel group : groupDao.query(memberService.groups(user, 0)).getList()) {
+            JSONObject friend = friend(user, group);
+            if (friend == null)
+                continue;
 
-                map.computeIfAbsent(label(friend.getString("nick")), k -> new JSONArray()).add(friend);
-            }
+            map.computeIfAbsent(label(friend.getString("nick")), k -> new JSONArray()).add(friend);
+        }
+        JSONObject object = new JSONObject();
+        object.putAll(map);
 
-            JSONObject object = new JSONObject();
-            object.putAll(map);
-
-            return object;
-        }, false);
+        return object;
     }
 
     private JSONObject friend(String user, GroupModel group) {
@@ -202,26 +193,12 @@ public class GroupServiceImpl implements GroupService, UserListener {
         String u2 = iterator.hasNext() ? iterator.next() : u1;
         keyvalueService.save(friendsKey(u1, u2), group.getId());
         keyvalueService.save(friendsKey(u2, u1), group.getId());
-        set.forEach(this::cleanFriendsCache);
 
         return group;
     }
 
     private String friendsKey(String user, String friend) {
         return GroupModel.NAME + ":friends:" + user + ":" + friend;
-    }
-
-    private String groupCacheKey(String id, String user) {
-        return GroupModel.NAME + ":" + id + ":" + user;
-    }
-
-    @Override
-    public void cleanFriendsCache(String user) {
-        cache.remove(friendsCacheKey(user));
-    }
-
-    private String friendsCacheKey(String user) {
-        return GroupModel.NAME + ":friends:" + user;
     }
 
     @Override
