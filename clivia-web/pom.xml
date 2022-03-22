@@ -29,7 +29,7 @@
         </dependency>
         <dependency>
             <groupId>org.lpw.clivia</groupId>
-            <artifactId>clivia-dict</artifactId>
+            <artifactId>clivia-upgrader</artifactId>
             <version>1.0</version>
         </dependency>
         <dependency>

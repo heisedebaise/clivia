@@ -5,6 +5,7 @@ import org.lpw.clivia.user.UserService;
 import org.lpw.photon.ctrl.context.Session;
 import org.lpw.photon.scheduler.HourJob;
 import org.lpw.photon.util.DateTime;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import javax.inject.Inject;
@@ -25,6 +26,8 @@ public class InviterServiceImpl implements InviterService, HourJob {
     private Optional<Set<InviterListener>> listeners;
     @Inject
     private InviterDao inviterDao;
+    @Value("${" + InviterModel.NAME + ".expiry:7}")
+    private int expiry;
 
     @Override
     public void set(String code) {
@@ -75,7 +78,7 @@ public class InviterServiceImpl implements InviterService, HourJob {
     @Override
     public void executeHourJob() {
         Calendar calendar = Calendar.getInstance();
-        calendar.add(Calendar.DAY_OF_MONTH, -1);
+        calendar.add(Calendar.DAY_OF_MONTH, -expiry);
         inviterDao.clean(new Timestamp(calendar.getTimeInMillis()));
     }
 }
