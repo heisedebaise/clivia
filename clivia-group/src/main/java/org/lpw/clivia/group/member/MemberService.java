@@ -16,6 +16,8 @@ public interface MemberService {
 
     MemberModel find(String group, String user);
 
+    String users(String group);
+
     String groups();
 
     void create(String group, Set<String> users, String owner);
