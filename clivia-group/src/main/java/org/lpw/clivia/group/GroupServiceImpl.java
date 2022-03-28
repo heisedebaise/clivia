@@ -37,22 +37,35 @@ public class GroupServiceImpl implements GroupService, UserListener {
     @Inject
     private MemberService memberService;
     @Inject
-    Optional<Set<GroupListener>> listeners;
+    private Optional<Set<GroupListener>> listeners;
     @Inject
     private GroupDao groupDao;
 
     @Override
     public JSONObject get(String id) {
-        String user = userService.id();
         GroupModel group = groupDao.findById(id);
         JSONObject object = modelHelper.toJson(group);
+        members(object, id, group, userService.id());
+
+        return object;
+    }
+
+    @Override
+    public JSONObject members(String id) {
+        JSONObject object = new JSONObject();
+        members(object, id, null, "");
+
+        return object;
+    }
+
+    private void members(JSONObject object, String id, GroupModel group, String user) {
         JSONArray members = new JSONArray();
         memberService.list(id).forEach(member -> {
             JSONObject m = member(member);
             if (m == null)
                 return;
 
-            if (group.getType() == 0) {
+            if (group != null && group.getType() == 0) {
                 if (members.isEmpty() || !m.getString("user").equals(user)) {
                     object.put("avatar", m.getString("avatar"));
                     object.put("name", m.getString("nick"));
@@ -61,8 +74,6 @@ public class GroupServiceImpl implements GroupService, UserListener {
             members.add(m);
         });
         object.put("members", members);
-
-        return object;
     }
 
     @Override

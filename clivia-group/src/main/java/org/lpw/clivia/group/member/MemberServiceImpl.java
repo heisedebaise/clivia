@@ -44,14 +44,6 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
-    public String users(String group) {
-        StringBuilder sb = new StringBuilder();
-        memberDao.query(group).getList().forEach(member -> sb.append(',').append(member.getUser()));
-
-        return sb.length() == 0 ? "" : sb.substring(1);
-    }
-
-    @Override
     public String groups() {
         StringBuilder sb = new StringBuilder();
         memberDao.query(userService.id(), -1).getList().forEach(member -> sb.append(',').append(member.getGroup()));

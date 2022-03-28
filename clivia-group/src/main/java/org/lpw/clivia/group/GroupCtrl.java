@@ -28,6 +28,11 @@ public class GroupCtrl {
         return groupService.get(request.get("id"));
     }
 
+    @Execute(name = "members", validates = {@Validate(validator = Validators.SIGN)})
+    public Object members() {
+        return groupService.members(request.get("id"));
+    }
+
     @Execute(name = "friends", permit = Permit.sign, validates = {@Validate(validator = UserService.VALIDATOR_SIGN)})
     public Object friends() {
         return groupService.friends();

@@ -7,6 +7,8 @@ public interface GroupService {
 
     JSONObject get(String id);
 
+    JSONObject members(String id);
+
     JSONObject friends();
 
     JSONObject find(String idUidCode);

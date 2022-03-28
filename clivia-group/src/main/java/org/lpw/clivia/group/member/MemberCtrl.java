@@ -34,9 +34,4 @@ public class MemberCtrl {
 
         return "";
     }
-
-    @Execute(name = "users", validates = {@Validate(validator = Validators.SIGN)})
-    public Object users() {
-        return memberService.users(request.get("users"));
-    }
 }
