@@ -33,6 +33,14 @@ public class FriendServiceImpl implements FriendService, UserListener, DateJob {
     }
 
     @Override
+    public FriendModel find(String user1, String user2) {
+        FriendModel friend = friendDao.find(user1, user2);
+        if (friend != null) return friend;
+
+        return friendDao.find(user2, user1);
+    }
+
+    @Override
     public void add(String user, String memo) {
         String proposer = userService.id();
         FriendModel friend = friendDao.find(user, proposer);
