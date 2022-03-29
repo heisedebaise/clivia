@@ -18,9 +18,9 @@ public class MemberCtrl {
     @Inject
     private MemberService memberService;
 
-    @Execute(name = "groups", permit = Permit.sign, validates = {@Validate(validator = UserService.VALIDATOR_SIGN)})
+    @Execute(name = "groups", validates = {@Validate(validator = Validators.SIGN)})
     public Object groups() {
-        return memberService.groups();
+        return memberService.groups(request.get("user"));
     }
 
     @Execute(name = "memo", permit = Permit.sign, validates = {
