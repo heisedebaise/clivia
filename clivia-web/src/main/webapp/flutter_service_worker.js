@@ -12,12 +12,12 @@ const RESOURCES = {
 "assets/FontManifest.json": "dc3d03800ccca4601324923c0b1d6d57",
 "assets/NOTICES": "db0be55a2204802ab0516f68dbf27f3a",
 "manifest.json": "222c7323b6aadea18f0005e6f3b19d40",
-"index.html": "1f11d82fbda7be104879c0bca0ec692c",
-"/": "1f11d82fbda7be104879c0bca0ec692c",
-"icons/Icon-maskable-512.png": "d98449f68f0994276223d8f9bc951e6f",
-"icons/Icon-maskable-192.png": "187a128da7b128f23b6a43c5c370ba4c",
+"index.html": "a3750285fac84b3fee7edcbfa34f9a7b",
+"/": "a3750285fac84b3fee7edcbfa34f9a7b",
 "icons/Icon-192.png": "187a128da7b128f23b6a43c5c370ba4c",
 "icons/Icon-512.png": "23086aac2f1386a5be7d98000e1cae3c",
+"icons/Icon-maskable-192.png": "187a128da7b128f23b6a43c5c370ba4c",
+"icons/Icon-maskable-512.png": "d98449f68f0994276223d8f9bc951e6f",
 "favicon.png": "a369953df3c473f297bbdc3085bc3481"
 };
 
