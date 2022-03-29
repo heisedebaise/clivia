@@ -34,4 +34,9 @@ class GroupDaoImpl implements GroupDao {
     public void delete(GroupModel group) {
         liteOrm.delete(group);
     }
+
+    @Override
+    public void close() {
+        liteOrm.close();
+    }
 }
