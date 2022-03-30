@@ -12,6 +12,8 @@ import org.springframework.stereotype.Service;
 
 import javax.inject.Inject;
 import java.util.Calendar;
+import java.util.Optional;
+import java.util.Set;
 
 @Service(FriendModel.NAME + ".service")
 public class FriendServiceImpl implements FriendService, UserListener, DateJob {
@@ -23,6 +25,8 @@ public class FriendServiceImpl implements FriendService, UserListener, DateJob {
     private UserService userService;
     @Inject
     private GroupService groupService;
+    @Inject
+    private Optional<Set<FriendListener>> listeners;
     @Inject
     private FriendDao friendDao;
 
@@ -54,18 +58,25 @@ public class FriendServiceImpl implements FriendService, UserListener, DateJob {
         friend.setMemo(memo);
         friend.setTime(dateTime.now());
         friendDao.save(friend);
+        FriendModel model = friend;
+        listeners.ifPresent(set -> set.forEach(listener -> listener.friendPropose(model)));
     }
 
     @Override
     public void agree(String id) {
         FriendModel friend = state(id, 1);
-        if (friend != null)
-            groupService.friend(new String[]{friend.getUser(), friend.getProposer()});
+        if (friend == null)
+            return;
+
+        groupService.friend(new String[]{friend.getUser(), friend.getProposer()});
+        listeners.ifPresent(set -> set.forEach(listener -> listener.friendPass(friend)));
     }
 
     @Override
     public void reject(String id) {
-        state(id, 2);
+        FriendModel friend = state(id, 2);
+        if (friend != null)
+            listeners.ifPresent(set -> set.forEach(listener -> listener.friendReject(friend)));
     }
 
     private FriendModel state(String id, int state) {
