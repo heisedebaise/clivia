@@ -14,4 +14,6 @@ public interface GroupService {
     JSONObject find(String idUidCode);
 
     GroupModel friend(String[] users);
+
+    String self(String user);
 }
