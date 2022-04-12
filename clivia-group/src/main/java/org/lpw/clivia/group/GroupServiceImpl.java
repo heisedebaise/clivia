@@ -210,6 +210,15 @@ public class GroupServiceImpl implements GroupService, UserListener {
         return group;
     }
 
+    @Override
+    public String self(String user) {
+        String id = keyvalueService.value(friendsKey(user, user));
+        if (validator.isId(id))
+            return id;
+
+        return friend(new String[]{user}).getId();
+    }
+
     private String friendsKey(String user, String friend) {
         return GroupModel.NAME + ":friends:" + user + ":" + friend;
     }
