@@ -5,8 +5,10 @@ import org.lpw.clivia.group.member.MemberService;
 import org.lpw.clivia.user.UserService;
 import org.lpw.photon.ctrl.context.Request;
 import org.lpw.photon.ctrl.execute.Execute;
+import org.lpw.photon.ctrl.template.Templates;
 import org.lpw.photon.ctrl.validate.Validate;
 import org.lpw.photon.ctrl.validate.Validators;
+import org.lpw.photon.util.Message;
 import org.springframework.stereotype.Controller;
 
 import javax.inject.Inject;
@@ -15,7 +17,11 @@ import javax.inject.Inject;
 @Execute(name = "/group/", key = GroupModel.NAME, code = "159")
 public class GroupCtrl {
     @Inject
+    private Message message;
+    @Inject
     private Request request;
+    @Inject
+    private Templates templates;
     @Inject
     private GroupService groupService;
 
@@ -41,5 +47,18 @@ public class GroupCtrl {
     @Execute(name = "find", permit = Permit.sign, validates = {@Validate(validator = UserService.VALIDATOR_SIGN)})
     public Object find() {
         return groupService.find(request.get("idUidCode"));
+    }
+
+    @Execute(name = "start", permit = Permit.sign, validates = {
+            @Validate(validator = Validators.NOT_EMPTY, parameter = "name", failureCode = 3),
+            @Validate(validator = Validators.MAX_LENGTH, number = {100}, parameter = "name", failureCode = 4),
+            @Validate(validator = Validators.NOT_EMPTY, parameter = "avatar", failureCode = 5),
+            @Validate(validator = Validators.MAX_LENGTH, number = {100}, parameter = "avatar", failureCode = 6),
+            @Validate(validator = UserService.VALIDATOR_SIGN)
+    })
+    public Object start() {
+        int n = groupService.start(request.get("name"), request.get("avatar"), request.get("prologue"), request.getAsArray("users"));
+
+        return n == 0 ? "" : templates.get().failure(159006 + n, message.get(GroupModel.NAME + ".start." + n), null, null);
     }
 }

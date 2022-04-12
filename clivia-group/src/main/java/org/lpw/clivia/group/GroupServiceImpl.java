@@ -219,6 +219,27 @@ public class GroupServiceImpl implements GroupService, UserListener {
         return friend(new String[]{user}).getId();
     }
 
+    @Override
+    public int start(String name, String avatar, String prologue, String[] users) {
+        Set<String> set = new HashSet<>(Arrays.asList(users));
+        if (set.size() < 3) return 1;
+
+        String owner = userService.id();
+        if (!set.contains(owner)) return 2;
+
+        GroupModel group = new GroupModel();
+        group.setType(1);
+        group.setName(name);
+        group.setAvatar(avatar);
+        group.setCount(set.size());
+        group.setTime(dateTime.now());
+        groupDao.save(group);
+        memberService.create(group.getId(), set, owner);
+        listeners.ifPresent(gls -> gls.forEach(listener -> listener.groupCreate(group)));
+
+        return 0;
+    }
+
     private String friendsKey(String user, String friend) {
         return GroupModel.NAME + ":friends:" + user + ":" + friend;
     }

@@ -16,4 +16,6 @@ public interface GroupService {
     GroupModel friend(String[] users);
 
     String self(String user);
+
+    int start(String name, String avatar, String prologue, String[] users);
 }
