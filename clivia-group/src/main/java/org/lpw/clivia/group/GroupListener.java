@@ -7,9 +7,10 @@ public interface GroupListener {
     /**
      * 创建群组。
      *
-     * @param group 群组。
+     * @param group    群组。
+     * @param prologue 开场白。
      */
-    void groupCreate(GroupModel group);
+    void groupCreate(GroupModel group, String prologue);
 
     /**
      * 删除群组。
