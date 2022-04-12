@@ -235,6 +235,7 @@ public class GroupServiceImpl implements GroupService, UserListener {
         group.setTime(dateTime.now());
         groupDao.save(group);
         memberService.create(group.getId(), set, owner);
+        groupDao.close();
         listeners.ifPresent(gls -> gls.forEach(listener -> listener.groupCreate(group, prologue)));
 
         return 0;
