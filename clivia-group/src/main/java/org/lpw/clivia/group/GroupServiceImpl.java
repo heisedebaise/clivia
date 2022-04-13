@@ -197,7 +197,7 @@ public class GroupServiceImpl implements GroupService, UserListener {
         group.setCount(users.length);
         group.setTime(dateTime.now());
         groupDao.save(group);
-        memberService.create(group.getId(), set, null);
+        memberService.create(group.getId(), set, 0, null);
 
         Iterator<String> iterator = set.iterator();
         String u1 = iterator.next();
@@ -234,7 +234,7 @@ public class GroupServiceImpl implements GroupService, UserListener {
         group.setCount(set.size());
         group.setTime(dateTime.now());
         groupDao.save(group);
-        memberService.create(group.getId(), set, owner);
+        memberService.create(group.getId(), set, 1, owner);
         groupDao.close();
         listeners.ifPresent(gls -> gls.forEach(listener -> listener.groupCreate(group, prologue)));
 

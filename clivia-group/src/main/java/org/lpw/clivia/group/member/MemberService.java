@@ -18,7 +18,7 @@ public interface MemberService {
 
     String groups(String user);
 
-    void create(String group, Set<String> users, String owner);
+    void create(String group, Set<String> users, int type, String owner);
 
     void memo(String id, String memo);
 

@@ -52,7 +52,7 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
-    public void create(String group, Set<String> users, String owner) {
+    public void create(String group, Set<String> users, int type, String owner) {
         Timestamp now = dateTime.now();
         for (String user : users) {
             if (memberDao.find(group, user) != null)
@@ -61,6 +61,7 @@ public class MemberServiceImpl implements MemberService {
             MemberModel member = new MemberModel();
             member.setGroup(group);
             member.setUser(user);
+            member.setType(type);
             if (user.equals(owner))
                 member.setGrade(2);
             member.setTime(now);
