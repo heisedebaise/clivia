@@ -50,14 +50,13 @@ public class GroupCtrl {
     }
 
     @Execute(name = "start", permit = Permit.sign, validates = {
-            @Validate(validator = Validators.NOT_EMPTY, parameter = "name", failureCode = 3),
-            @Validate(validator = Validators.MAX_LENGTH, number = {100}, parameter = "name", failureCode = 4),
-            @Validate(validator = Validators.MAX_LENGTH, number = {100}, parameter = "avatar", failureCode = 6),
+            @Validate(validator = Validators.MAX_LENGTH, number = {100}, parameter = "name", failureCode = 3),
+            @Validate(validator = Validators.MAX_LENGTH, number = {100}, parameter = "avatar", failureCode = 4),
             @Validate(validator = UserService.VALIDATOR_SIGN)
     })
     public Object start() {
         int n = groupService.start(request.get("name"), request.get("avatar"), request.get("prologue"), request.getAsArray("users"));
 
-        return n == 0 ? "" : templates.get().failure(159006 + n, message.get(GroupModel.NAME + ".start." + n), null, null);
+        return n == 0 ? "" : templates.get().failure(159004 + n, message.get(GroupModel.NAME + ".start." + n), null, null);
     }
 }

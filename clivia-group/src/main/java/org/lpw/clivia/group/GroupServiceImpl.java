@@ -228,6 +228,16 @@ public class GroupServiceImpl implements GroupService, UserListener {
         String owner = userService.id();
         if (!set.contains(owner)) return 2;
 
+        if (validator.isEmpty(name)) {
+            StringBuilder sb = new StringBuilder();
+            for (String id : users) {
+                UserModel user = userService.findById(id);
+                if (user != null && !validator.isEmpty(user.getNick()))
+                    sb.append(',').append(user.getNick());
+            }
+            name = sb.length() == 0 ? "" : sb.substring(1);
+        }
+
         GroupModel group = new GroupModel();
         group.setType(1);
         group.setName(name);
