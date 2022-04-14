@@ -205,7 +205,8 @@ public class GroupServiceImpl implements GroupService, UserListener {
         keyvalueService.save(friendsKey(u1, u2), group.getId());
         keyvalueService.save(friendsKey(u2, u1), group.getId());
         groupDao.close();
-        listeners.ifPresent(s -> s.forEach(listener -> listener.groupCreate(group, null)));
+        if (set.size() == 2)
+            listeners.ifPresent(s -> s.forEach(listener -> listener.groupCreate(group, null)));
 
         return group;
     }
