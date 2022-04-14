@@ -52,7 +52,6 @@ public class GroupCtrl {
     @Execute(name = "start", permit = Permit.sign, validates = {
             @Validate(validator = Validators.NOT_EMPTY, parameter = "name", failureCode = 3),
             @Validate(validator = Validators.MAX_LENGTH, number = {100}, parameter = "name", failureCode = 4),
-            @Validate(validator = Validators.NOT_EMPTY, parameter = "avatar", failureCode = 5),
             @Validate(validator = Validators.MAX_LENGTH, number = {100}, parameter = "avatar", failureCode = 6),
             @Validate(validator = UserService.VALIDATOR_SIGN)
     })
