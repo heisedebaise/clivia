@@ -289,8 +289,15 @@ public class GroupServiceImpl implements GroupService, UserListener {
             groupDao.delete(group);
             List<MemberModel> members = memberService.list(group.getId());
             memberService.delete(group.getId());
-            if (group.getType() == 0 && members.size() == 2)
-                friendService.delete(members.get(0).getUser(), members.get(1).getUser());
+            if (group.getType() == 0 && !members.isEmpty()) {
+                String user1 = members.get(0).getUser();
+                String user2 = members.size() > 1 ? members.get(1).getUser() : user;
+                keyvalueService.delete(friendsKey(user1, user2));
+                if (!user1.equals(user2)) {
+                    keyvalueService.delete(friendsKey(user2, user1));
+                    friendService.delete(user1, user2);
+                }
+            }
             listeners.ifPresent(set -> set.forEach(listener -> listener.groupDelete(group, members)));
         } else {
             memberService.delete(group.getId(), user);
