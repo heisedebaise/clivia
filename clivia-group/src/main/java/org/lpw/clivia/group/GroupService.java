@@ -18,4 +18,6 @@ public interface GroupService {
     String self(String user);
 
     int start(String name, String avatar, String prologue, String[] users);
+
+    void delete(String id);
 }

@@ -59,4 +59,11 @@ public class GroupCtrl {
 
         return n == 0 ? "" : templates.get().failure(159004 + n, message.get(GroupModel.NAME + ".start." + n), null, null);
     }
+
+    @Execute(name = "delete", permit = Permit.sign, validates = {@Validate(validator = UserService.VALIDATOR_SIGN)})
+    public Object delete() {
+        groupService.delete(request.get("id"));
+
+        return "";
+    }
 }

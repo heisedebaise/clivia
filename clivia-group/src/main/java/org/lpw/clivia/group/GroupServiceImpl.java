@@ -252,6 +252,19 @@ public class GroupServiceImpl implements GroupService, UserListener {
         return 0;
     }
 
+    @Override
+    public void delete(String id) {
+        GroupModel group = groupDao.findById(id);
+        if (group == null)
+            return;
+
+        MemberModel member = memberService.find(id, userService.id());
+        if (member == null)
+            return;
+
+        delete(group, member.getUser(), member.getGrade());
+    }
+
     private String friendsKey(String user, String friend) {
         return GroupModel.NAME + ":friends:" + user + ":" + friend;
     }
@@ -263,23 +276,20 @@ public class GroupServiceImpl implements GroupService, UserListener {
 
     @Override
     public void userDelete(UserModel user) {
-        StringBuilder groups = new StringBuilder();
-        StringBuilder users = new StringBuilder();
         memberService.grades(user.getId(), -1).forEach((id, grade) -> {
             GroupModel group = groupDao.findById(id);
-            if (group.getType() == 0 || grade == 2) {
-                memberService.delete(id);
-                groupDao.delete(group);
-                groups.append(id);
-            } else {
-                memberService.delete(id, user.getId());
-                users.append(id);
-            }
+            if (group != null)
+                delete(group, user.getId(), grade);
         });
+    }
 
-        if (listeners.isEmpty() || listeners.get().isEmpty() || (groups.length() == 0 && users.length() == 0))
-            return;
-
-        listeners.get().forEach(listener -> listener.groupDelete(groups.toString(), users.toString(), user.getId()));
+    private void delete(GroupModel group, String user, int grade) {
+        if (group.getType() == 0 || grade == 2) {
+            groupDao.delete(group);
+            listeners.ifPresent(set -> set.forEach(listener -> listener.groupDelete(group)));
+        } else {
+            memberService.delete(group.getId(), user);
+            listeners.ifPresent(set -> set.forEach(listener -> listener.groupUpdate(group)));
+        }
     }
 }
