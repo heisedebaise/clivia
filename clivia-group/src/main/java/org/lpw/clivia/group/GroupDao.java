@@ -12,6 +12,4 @@ interface GroupDao {
     void save(GroupModel group);
 
     void delete(GroupModel group);
-
-    void close();
 }

@@ -1,5 +1,9 @@
 package org.lpw.clivia.group;
 
+import org.lpw.clivia.group.member.MemberModel;
+
+import java.util.List;
+
 /**
  * 群组监听器。
  */
@@ -22,7 +26,8 @@ public interface GroupListener {
     /**
      * 删除群组。
      *
-     * @param group 群组。
+     * @param group   群组。
+     * @param members 群成员集。
      */
-    void groupDelete(GroupModel group);
+    void groupDelete(GroupModel group, List<MemberModel> members);
 }

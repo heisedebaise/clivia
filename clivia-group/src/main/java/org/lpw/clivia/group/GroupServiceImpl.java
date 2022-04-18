@@ -204,7 +204,6 @@ public class GroupServiceImpl implements GroupService, UserListener {
         String u2 = iterator.hasNext() ? iterator.next() : u1;
         keyvalueService.save(friendsKey(u1, u2), group.getId());
         keyvalueService.save(friendsKey(u2, u1), group.getId());
-        groupDao.close();
         if (set.size() == 2)
             listeners.ifPresent(s -> s.forEach(listener -> listener.groupCreate(group, null)));
 
@@ -246,7 +245,6 @@ public class GroupServiceImpl implements GroupService, UserListener {
         group.setTime(dateTime.now());
         groupDao.save(group);
         memberService.create(group.getId(), set, 1, owner);
-        groupDao.close();
         listeners.ifPresent(gls -> gls.forEach(listener -> listener.groupCreate(group, prologue)));
 
         return 0;
@@ -286,7 +284,9 @@ public class GroupServiceImpl implements GroupService, UserListener {
     private void delete(GroupModel group, String user, int grade) {
         if (group.getType() == 0 || grade == 2) {
             groupDao.delete(group);
-            listeners.ifPresent(set -> set.forEach(listener -> listener.groupDelete(group)));
+            List<MemberModel> members = memberService.list(group.getId());
+            memberService.delete(group.getId());
+            listeners.ifPresent(set -> set.forEach(listener -> listener.groupDelete(group, members)));
         } else {
             memberService.delete(group.getId(), user);
             listeners.ifPresent(set -> set.forEach(listener -> listener.groupUpdate(group)));
