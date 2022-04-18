@@ -46,6 +46,11 @@ class FriendDaoImpl implements FriendDao {
     }
 
     @Override
+    public void delete(FriendModel friend) {
+        liteOrm.delete(friend);
+    }
+
+    @Override
     public void delete(String user) {
         liteOrm.delete(new LiteQuery(FriendModel.class).where("c_user=? or c_proposer=?"), new Object[]{user, user});
     }

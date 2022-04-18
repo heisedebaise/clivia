@@ -12,4 +12,6 @@ public interface FriendService {
     void agree(String id);
 
     void reject(String id);
+
+    void delete(String user1, String user2);
 }

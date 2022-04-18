@@ -91,6 +91,13 @@ public class FriendServiceImpl implements FriendService, UserListener, DateJob {
     }
 
     @Override
+    public void delete(String user1, String user2) {
+        FriendModel friend = find(user1, user2);
+        if (friend != null)
+            friendDao.delete(friend);
+    }
+
+    @Override
     public void userSignUp(UserModel user) {
     }
 

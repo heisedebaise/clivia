@@ -15,5 +15,7 @@ interface FriendDao {
 
     void state(int oldState, int newState, Timestamp time);
 
+    void delete(FriendModel friend);
+
     void delete(String user);
 }

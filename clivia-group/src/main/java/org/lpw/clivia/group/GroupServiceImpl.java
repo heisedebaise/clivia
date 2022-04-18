@@ -2,6 +2,7 @@ package org.lpw.clivia.group;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import org.lpw.clivia.group.friend.FriendService;
 import org.lpw.clivia.group.member.MemberModel;
 import org.lpw.clivia.group.member.MemberService;
 import org.lpw.clivia.keyvalue.KeyvalueService;
@@ -34,6 +35,8 @@ public class GroupServiceImpl implements GroupService, UserListener {
     private KeyvalueService keyvalueService;
     @Inject
     private UserService userService;
+    @Inject
+    private FriendService friendService;
     @Inject
     private MemberService memberService;
     @Inject
@@ -286,6 +289,8 @@ public class GroupServiceImpl implements GroupService, UserListener {
             groupDao.delete(group);
             List<MemberModel> members = memberService.list(group.getId());
             memberService.delete(group.getId());
+            if (group.getType() == 0 && members.size() == 2)
+                friendService.delete(members.get(0).getUser(), members.get(1).getUser());
             listeners.ifPresent(set -> set.forEach(listener -> listener.groupDelete(group, members)));
         } else {
             memberService.delete(group.getId(), user);
