@@ -64,6 +64,13 @@ public class GroupServiceImpl implements GroupService, UserListener {
     private void members(JSONObject object, String id, GroupModel group, String user) {
         JSONArray members = new JSONArray();
         memberService.list(id).forEach(member -> {
+            if (group != null && group.getType() == 1 && member.getUser().equals(user)) {
+                if (member.getGrade() == 2)
+                    object.put("owner", true);
+                else if (member.getGrade() == 1)
+                    object.put("master", true);
+            }
+
             JSONObject m = member(member);
             if (m == null)
                 return;
