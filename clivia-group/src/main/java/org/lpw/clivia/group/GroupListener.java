@@ -24,6 +24,14 @@ public interface GroupListener {
     void groupUpdate(GroupModel group);
 
     /**
+     * 退出群。
+     *
+     * @param group 群组。
+     * @param user  退出用户。
+     */
+    void groupExit(GroupModel group, String user);
+
+    /**
      * 删除群组。
      *
      * @param group   群组。
