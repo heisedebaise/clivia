@@ -112,6 +112,14 @@ public class PasswordServiceImpl implements PasswordService, UserListener {
     }
 
     @Override
+    public void userSignIn(UserModel user) {
+    }
+
+    @Override
+    public void userSignOut(UserModel user) {
+    }
+
+    @Override
     public void userDelete(UserModel user) {
         passwordDao.delete(user.getId());
     }

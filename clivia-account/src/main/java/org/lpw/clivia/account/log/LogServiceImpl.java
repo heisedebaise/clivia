@@ -83,7 +83,7 @@ public class LogServiceImpl implements LogService, UserListener, SecondsJob {
         log.setStart(dateTime.now());
         if (!validator.isEmpty(map)) {
             JSONObject json = new JSONObject();
-            map.forEach(json::put);
+            json.putAll(map);
             log.setJson(json.toJSONString());
         }
         logDao.save(log);
@@ -145,6 +145,14 @@ public class LogServiceImpl implements LogService, UserListener, SecondsJob {
 
     @Override
     public void userSignUp(UserModel user) {
+    }
+
+    @Override
+    public void userSignIn(UserModel user) {
+    }
+
+    @Override
+    public void userSignOut(UserModel user) {
     }
 
     @Override

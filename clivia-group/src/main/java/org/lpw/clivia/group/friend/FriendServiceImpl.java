@@ -102,6 +102,14 @@ public class FriendServiceImpl implements FriendService, UserListener, DateJob {
     }
 
     @Override
+    public void userSignIn(UserModel user) {
+    }
+
+    @Override
+    public void userSignOut(UserModel user) {
+    }
+
+    @Override
     public void userDelete(UserModel user) {
         friendDao.delete(user.getId());
     }

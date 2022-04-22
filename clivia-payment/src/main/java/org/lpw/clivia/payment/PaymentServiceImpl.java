@@ -195,6 +195,14 @@ public class PaymentServiceImpl implements PaymentService, UserListener {
     }
 
     @Override
+    public void userSignIn(UserModel user) {
+    }
+
+    @Override
+    public void userSignOut(UserModel user) {
+    }
+
+    @Override
     public void userDelete(UserModel user) {
         paymentDao.delete(user.getId());
     }
