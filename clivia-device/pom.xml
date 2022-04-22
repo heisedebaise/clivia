@@ -8,9 +8,9 @@
         <artifactId>clivia</artifactId>
         <version>1.0</version>
     </parent>
-    <artifactId>clivia-devivce</artifactId>
+    <artifactId>clivia-device</artifactId>
     <version>1.0</version>
-    <name>clivia-devivce</name>
+    <name>clivia-device</name>
     <url>http://maven.apache.org</url>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
