@@ -12,6 +12,20 @@ public interface UserListener {
     void userSignUp(UserModel user);
 
     /**
+     * 用户登入。
+     *
+     * @param user 用户。
+     */
+    void userSignIn(UserModel user);
+
+    /**
+     * 用户等出。
+     *
+     * @param user 用户。
+     */
+    void userSignOut(UserModel user);
+
+    /**
      * 用户删除。
      *
      * @param user 用户。

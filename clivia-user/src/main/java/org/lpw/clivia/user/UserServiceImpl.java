@@ -187,6 +187,7 @@ public class UserServiceImpl implements UserService {
         onlineService.signIn(user);
         session.set(SESSION, user);
         session.set(SESSION_UID, uid);
+        listeners.ifPresent(set -> set.forEach(listener -> listener.userSignIn(user)));
     }
 
     @Override
@@ -222,6 +223,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void signOut() {
+        listeners.ifPresent(set -> set.forEach(listener -> listener.userSignOut(fromSession())));
         onlineService.signOut();
         session.remove(SESSION);
         session.remove(SESSION_AUTH3);
@@ -230,6 +232,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void signOut(String sid) {
+        listeners.ifPresent(set -> set.forEach(listener -> listener.userSignOut(fromSession())));
         session.remove(sid, SESSION);
         session.remove(sid, SESSION_AUTH3);
         session.remove(sid, SESSION_UID);

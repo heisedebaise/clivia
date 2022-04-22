@@ -32,6 +32,7 @@
         <module>clivia-customerservice</module>
         <module>clivia-group</module>
         <module>clivia-chat</module>
+        <module>clivia-devivce</module>
         <module>clivia-console</module>
         <module>clivia-api</module>
         <module>clivia-web</module>
