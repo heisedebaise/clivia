@@ -1,8 +1,5 @@
 {
-    "url": "",
-    "key": "",
-    "secret": "",
-    "from": "",
-    "templateId": "",
-    "signature": ""
+    "accessKeyId": "",
+    "accessSecret": "",
+    "appKey": ""
 }
