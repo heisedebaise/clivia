@@ -1,5 +1,6 @@
-package org.lpw.clivia.huaweisms;
+package org.lpw.clivia.sms.huaweiyun;
 
+import java.util.Collections;
 import java.util.Map;
 
 import javax.inject.Inject;
@@ -19,7 +20,7 @@ import org.lpw.photon.util.Logger;
 import org.lpw.photon.util.Validator;
 import org.springframework.stereotype.Service;
 
-@Service("clivia.huaweisms.pusher")
+@Service("clivia.sms.huaweiyun.pusher")
 public class SmsPusherImpl implements SmsPusher {
     @Inject
     private Json json;
@@ -47,7 +48,7 @@ public class SmsPusherImpl implements SmsPusher {
 
     @Override
     public String name() {
-        return "clivia.huaweisms.name";
+        return "clivia.sms.huaweiyun.name";
     }
 
     @Override
@@ -91,8 +92,7 @@ public class SmsPusherImpl implements SmsPusher {
             return "";
 
         JSONArray array = new JSONArray();
-        for (String str : converter.toArray(content, ","))
-            array.add(str);
+        Collections.addAll(array, converter.toArray(content, ","));
 
         return array.toJSONString();
     }

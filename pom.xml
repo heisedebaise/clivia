@@ -16,7 +16,6 @@
         <module>clivia-ad</module>
         <module>clivia-upgrader</module>
         <module>clivia-sms</module>
-        <module>clivia-huaweisms</module>
         <module>clivia-increment</module>
         <module>clivia-module</module>
         <module>clivia-dict</module>
