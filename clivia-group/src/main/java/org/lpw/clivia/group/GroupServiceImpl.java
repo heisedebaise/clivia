@@ -195,13 +195,25 @@ public class GroupServiceImpl implements GroupService, UserListener {
     }
 
     @Override
-    public String name(String id) {
-        GroupModel group=groupDao.findById(id);
-        if(group==null)
+    public String name(String id, String user) {
+        GroupModel group = groupDao.findById(id);
+        if (group == null)
             return "";
 
-        if(group.getType()==1)
+        if (group.getType() == 1)
             return group.getName();
+
+        for (MemberModel member : memberService.list(id)) {
+            if (member.getUser().equals(user)) {
+                if (validator.isEmpty(member.getMemo())) {
+                    UserModel um = userService.findById(user);
+
+                    return um == null ? "" : um.getNick();
+                }
+
+                return member.getMemo();
+            }
+        }
 
         return "";
     }

@@ -13,7 +13,7 @@ public interface GroupService {
 
     JSONObject find(String idUidCode);
 
-    String name(String id);
+    String name(String id, String user);
 
     GroupModel friend(String[] users);
 
