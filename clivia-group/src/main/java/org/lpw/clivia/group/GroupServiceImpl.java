@@ -195,6 +195,18 @@ public class GroupServiceImpl implements GroupService, UserListener {
     }
 
     @Override
+    public String name(String id) {
+        GroupModel group=groupDao.findById(id);
+        if(group==null)
+            return "";
+
+        if(group.getType()==1)
+            return group.getName();
+
+        return "";
+    }
+
+    @Override
     public GroupModel friend(String[] users) {
         Set<String> set = new HashSet<>();
         for (String user : users)

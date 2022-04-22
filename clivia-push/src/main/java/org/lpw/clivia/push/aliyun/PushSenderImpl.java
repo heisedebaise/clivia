@@ -44,8 +44,8 @@ public class PushSenderImpl implements PushSender {
         request.setDeviceType("ALL");
         request.setTarget("DEVICE");
         request.setTargetValue(args.getString("device"));
-        request.setBody(args.getString("title"));
-        request.setTitle(args.getString("body"));
+        request.setTitle(args.getString("title"));
+        request.setBody(args.getString("body"));
 
         try {
             return new Gson().toJson(new DefaultAcsClient(DefaultProfile.getProfile("cn-hangzhou",
