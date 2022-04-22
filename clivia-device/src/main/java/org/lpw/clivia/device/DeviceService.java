@@ -7,5 +7,5 @@ public interface DeviceService {
 
     DeviceModel find(String sid);
 
-    void save(String type, String identifier);
+    void save(String type, String identifier, String lang);
 }

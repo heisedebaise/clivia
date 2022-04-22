@@ -28,10 +28,11 @@ public class DeviceCtrl {
             @Validate(validator = Validators.MAX_LENGTH, number = {100}, parameter = "type", failureCode = 4),
             @Validate(validator = Validators.NOT_EMPTY, parameter = "identifier", failureCode = 5),
             @Validate(validator = Validators.MAX_LENGTH, number = {100}, parameter = "identifier", failureCode = 6),
+            @Validate(validator = Validators.MAX_LENGTH, number = {100}, parameter = "lang", failureCode = 7),
             @Validate(validator = Validators.SIGN)
     })
     public Object save() {
-        deviceService.save(request.get("type"), request.get("identifier"));
+        deviceService.save(request.get("type"), request.get("identifier"), request.get("lang"));
 
         return "";
     }

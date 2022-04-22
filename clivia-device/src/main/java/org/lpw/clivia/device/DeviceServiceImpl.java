@@ -42,7 +42,7 @@ public class DeviceServiceImpl implements DeviceService, UserListener {
     }
 
     @Override
-    public void save(String type, String identifier) {
+    public void save(String type, String identifier, String lang) {
         String sid = session.getId();
         DeviceModel device = deviceDao.find(sid);
         if (device == null) {
@@ -52,6 +52,7 @@ public class DeviceServiceImpl implements DeviceService, UserListener {
         device.setUser(userService.id());
         device.setType(type);
         device.setIdentifier(identifier);
+        device.setLang(lang);
         device.setTime(dateTime.now());
         deviceDao.save(device);
         cleanCache(sid);
