@@ -201,14 +201,14 @@ public class GroupServiceImpl implements GroupService, UserListener {
             return "";
 
         if (group.getType() == 1)
-            return group.getName();
+            return group.getName() == null ? "" : group.getName();
 
         for (MemberModel member : memberService.list(id)) {
             if (member.getUser().equals(user)) {
                 if (validator.isEmpty(member.getMemo())) {
                     UserModel um = userService.findById(user);
 
-                    return um == null ? "" : um.getNick();
+                    return um == null || um.getNick() == null ? "" : um.getNick();
                 }
 
                 return member.getMemo();
