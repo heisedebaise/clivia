@@ -1,6 +1,6 @@
 package org.lpw.clivia.user.type;
 
-import org.lpw.clivia.sms.SmsService;
+import org.lpw.clivia.push.PushService;
 import org.lpw.clivia.user.UserModel;
 import org.lpw.clivia.user.UserService;
 import org.lpw.clivia.user.auth.AuthModel;
@@ -13,7 +13,7 @@ import java.util.Set;
 @Service("clivia.user.type.sms")
 public class SmsTypeImpl extends TypeSupport {
     @Inject
-    private SmsService smsService;
+    private PushService pushService;
     @Inject
     private UserService userService;
     @Inject
@@ -26,7 +26,7 @@ public class SmsTypeImpl extends TypeSupport {
 
     @Override
     public UserModel auth(String uid, String password, String grade) {
-        if (!smsService.captcha(password))
+        if (!pushService.captcha(password))
             return null;
 
         AuthModel auth = authService.findByUid(uid);

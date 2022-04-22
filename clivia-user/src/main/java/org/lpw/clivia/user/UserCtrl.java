@@ -1,7 +1,7 @@
 package org.lpw.clivia.user;
 
 import org.lpw.clivia.Permit;
-import org.lpw.clivia.sms.SmsService;
+import org.lpw.clivia.push.PushService;
 import org.lpw.clivia.user.auth.AuthService;
 import org.lpw.clivia.user.inviter.InviterService;
 import org.lpw.photon.ctrl.context.Request;
@@ -24,7 +24,7 @@ public class UserCtrl {
     @Inject
     private Templates templates;
     @Inject
-    private SmsService smsService;
+    private PushService pushService;
     @Inject
     private UserService userService;
     @Inject
@@ -40,7 +40,7 @@ public class UserCtrl {
     @Execute(name = "sign-up-sms", permit = Permit.always, validates = {
             @Validate(validator = Validators.MOBILE, parameter = "mobile", failureCode = 10)})
     public Object signUpSms() {
-        return smsService.captcha(UserService.SMS_SIGN_UP, request.get("mobile"));
+        return pushService.captcha(UserService.SMS_SIGN_UP, request.get("mobile"));
     }
 
     @Execute(name = "sign-up", permit = Permit.always, validates = {
@@ -64,7 +64,7 @@ public class UserCtrl {
     @Execute(name = "sign-in-sms", permit = Permit.always, validates = {
             @Validate(validator = Validators.MOBILE, parameter = "mobile", failureCode = 10)})
     public Object signInSms() {
-        return smsService.captcha(UserService.SMS_SIGN_IN, request.get("mobile"));
+        return pushService.captcha(UserService.SMS_SIGN_IN, request.get("mobile"));
     }
 
     @Execute(name = "sign-in", permit = Permit.always, validates = {
@@ -142,14 +142,14 @@ public class UserCtrl {
     @Execute(name = "reset-password-sms", permit = Permit.always, validates = {
             @Validate(validator = Validators.MOBILE, parameter = "mobile", failureCode = 10)})
     public Object resetPasswordSms() {
-        return smsService.captcha(UserService.SMS_RESET_PASSWORD, request.get("mobile"));
+        return pushService.captcha(UserService.SMS_RESET_PASSWORD, request.get("mobile"));
     }
 
     @Execute(name = "sms-reset-password", permit = Permit.always, validates = {
             @Validate(validator = Validators.NOT_EMPTY, parameter = "password", failureCode = 14, failureArgKeys = {
                     UserModel.NAME + ".password.new"}),
             @Validate(validator = Validators.MOBILE, parameter = "mobile", failureCode = 10),
-            @Validate(validator = SmsService.VALIDATOR_CAPTCHA, parameter = "sms", failureCode = 35),
+            @Validate(validator = PushService.VALIDATOR_CAPTCHA, parameter = "sms", failureCode = 35),
             @Validate(validator = AuthService.VALIDATOR_UID_EXISTS, parameter = "mobile", failureCode = 28, failureKey = UserModel.NAME
                     + ".mobile.not-exists")})
     public Object smsResetPassword() {

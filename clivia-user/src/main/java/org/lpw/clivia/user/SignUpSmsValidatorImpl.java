@@ -1,7 +1,7 @@
 package org.lpw.clivia.user;
 
 import org.lpw.clivia.keyvalue.KeyvalueService;
-import org.lpw.clivia.sms.CaptchaValidatorSupport;
+import org.lpw.clivia.push.CaptchaValidatorSupport;
 import org.springframework.stereotype.Controller;
 
 import javax.inject.Inject;
