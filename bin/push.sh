@@ -1,8 +1,7 @@
 #!/bin/bash
 
-source bin/gitadd.sh
+sh bin/gitadd.sh
 git commit -m dev
 
 git push
-git push yjy
 git push github

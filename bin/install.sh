@@ -1,3 +1,3 @@
 #!/bin/bash
 
-mvn clean install
+podman exec -it maven mvn -f /work/clivia/pom.xml clean install
