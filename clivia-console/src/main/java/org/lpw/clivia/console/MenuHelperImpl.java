@@ -75,7 +75,7 @@ public class MenuHelperImpl implements MenuHelper, ContextRefreshedListener, Cro
     }
 
     private JSONArray get() {
-        JSONArray array = json.toArray(map.get("").toJSONString());
+        JSONArray array = json.toArray(map.get("").toString());
         for (int i = array.size() - 1; i > -1; i--) {
             JSONObject object = array.getJSONObject(i);
             if (!object.containsKey("category"))

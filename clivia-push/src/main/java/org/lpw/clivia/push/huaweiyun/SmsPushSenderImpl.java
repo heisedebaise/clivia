@@ -8,6 +8,7 @@ import org.lpw.photon.util.*;
 import org.springframework.stereotype.Service;
 
 import javax.inject.Inject;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Map;
 
@@ -87,8 +88,8 @@ public class SmsPushSenderImpl implements PushSender {
             return "";
 
         JSONArray array = new JSONArray();
-        Collections.addAll(array, converter.toArray(content, ","));
+        array.addAll(Arrays.asList(converter.toArray(content, ",")));
 
-        return array.toJSONString();
+        return array.toString();
     }
 }

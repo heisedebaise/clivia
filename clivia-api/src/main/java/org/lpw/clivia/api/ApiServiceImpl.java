@@ -60,7 +60,7 @@ public class ApiServiceImpl implements ApiService {
         List<JSONObject> list = new ArrayList<>();
         modelTables.getModelClasses().forEach(modelClass -> {
             try (InputStream inputStream = modelClass.getResourceAsStream("api.json");
-                    ByteArrayOutputStream outputStream = new ByteArrayOutputStream()) {
+                 ByteArrayOutputStream outputStream = new ByteArrayOutputStream()) {
                 if (inputStream == null)
                     return;
 
@@ -267,8 +267,6 @@ public class ApiServiceImpl implements ApiService {
             key = prefix + "." + key;
         else if (index == 0)
             key = prefix + key;
-        if (key.equals(""))
-            return "";
 
         String message = this.message.get(key);
         if (message.equals(key))
@@ -279,6 +277,6 @@ public class ApiServiceImpl implements ApiService {
 
     private void format(JSONObject object, String name) {
         JSON json = object.getObject(name, JSON.class);
-        object.put(name, json.toString(SerializerFeature.PrettyFormat).replaceAll("\t", "    "));
+        object.put(name, json.toString().replaceAll("\t", "    "));
     }
 }

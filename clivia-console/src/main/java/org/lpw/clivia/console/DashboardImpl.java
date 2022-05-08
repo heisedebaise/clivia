@@ -95,6 +95,6 @@ public class DashboardImpl implements Dashboard, CrosierValid {
         JSONArray cards = new JSONArray();
         for (int i = 0, size = dashboard.size(); i < size; i++)
             cards.addAll(dashboard.getJSONObject(i).getJSONArray("cards"));
-        this.cards = cards.toJSONString();
+        this.cards = cards.toString();
     }
 }
