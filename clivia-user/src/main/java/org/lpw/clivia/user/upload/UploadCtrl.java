@@ -1,5 +1,6 @@
 package org.lpw.clivia.user.upload;
 
+import org.lpw.clivia.Permit;
 import org.lpw.clivia.user.UserService;
 import org.lpw.photon.ctrl.context.Request;
 import org.lpw.photon.ctrl.execute.Execute;
@@ -24,14 +25,14 @@ public class UploadCtrl {
         return uploadService.query();
     }
 
-    @Execute(name = "user", validates = {
+    @Execute(name = "user", permit = Permit.sign, validates = {
             @Validate(validator = UserService.VALIDATOR_SIGN)
     })
     public Object user() {
         return uploadService.user();
     }
 
-    @Execute(name = "save", validates = {
+    @Execute(name = "save", permit = Permit.sign, validates = {
             @Validate(validator = Validators.ID, parameter = "id", failureCode = 111),
             @Validate(validator = Validators.NOT_EMPTY, parameter = "filename", failureCode = 113),
             @Validate(validator = Validators.MAX_LENGTH, number = {100}, parameter = "filename", failureCode = 114),
@@ -43,7 +44,7 @@ public class UploadCtrl {
         return "";
     }
 
-    @Execute(name = "delete", validates = {
+    @Execute(name = "delete", permit = Permit.sign, validates = {
             @Validate(validator = Validators.ID, parameter = "id", failureCode = 111),
             @Validate(validator = UserService.VALIDATOR_SIGN)
     })
