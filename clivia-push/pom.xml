@@ -5,10 +5,10 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>org.lpw.clivia</groupId>
-    <artifactId>clivia-sms</artifactId>
+    <artifactId>clivia-push</artifactId>
     <version>1.0</version>
 
-    <name>clivia-sms</name>
+    <name>clivia-push</name>
     <url>https://github.com/heisedebaise/clivia</url>
 
     <dependencies>
