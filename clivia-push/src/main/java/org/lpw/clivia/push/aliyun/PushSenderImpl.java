@@ -33,7 +33,7 @@ public class PushSenderImpl implements PushSender {
     public Object push(JSONObject config, JSONObject args) {
         if (!config.containsKey("accessKeyId") || !config.containsKey("accessSecret") || !config.containsKey("appKey")
                 || !args.containsKey("device") || !args.containsKey("title") || !args.containsKey("body")) {
-            logger.warn(null, "华为云短信推送配置[{}]参数[{}]错误！", config, args);
+            logger.warn(null, "阿里云推送配置[{}]参数[{}]错误！", config, args);
 
             return null;
         }
