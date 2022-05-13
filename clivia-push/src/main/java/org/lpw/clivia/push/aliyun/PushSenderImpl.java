@@ -48,12 +48,8 @@ public class PushSenderImpl implements PushSender {
         request.setBody(args.getString("body"));
 
         try {
-            String string = new Gson().toJson(new DefaultAcsClient(DefaultProfile.getProfile("cn-hangzhou",
+            return new Gson().toJson(new DefaultAcsClient(DefaultProfile.getProfile("cn-hangzhou",
                     config.getString("accessKeyId"), config.getString("accessSecret"))).getAcsResponse(request));
-            if (logger.isInfoEnable())
-                logger.info("推送[{}:{}]到阿里云[{}]。", config, args, string);
-
-            return string;
         } catch (Throwable throwable) {
             logger.warn(throwable, "阿里云推送[{}:{}]异常！", config, args);
 

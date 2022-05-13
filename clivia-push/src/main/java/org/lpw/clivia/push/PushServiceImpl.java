@@ -120,9 +120,10 @@ public class PushServiceImpl implements PushService, ContextRefreshedListener {
             return templates.get().failure(108902, message.get(PushModel.NAME + ".no-sender"), null, null);
         }
 
-        Object object = sender.push(json.toObject(push.getConfig()), args);
+        JSONObject config = json.toObject(push.getConfig());
+        Object object = sender.push(config, args);
         if (logger.isInfoEnable())
-            logger.info("推送[{}:{}:{}:{}:{}]。", scene, push.getSender(), push.getConfig(), args, object);
+            logger.info("推送[{}:{}:{}:{}:{}]。", scene, push.getSender(), config, args, object);
         if (object == null)
             return templates.get().failure(108903, message.get(PushModel.NAME + ".push.fail"), null, null);
 
