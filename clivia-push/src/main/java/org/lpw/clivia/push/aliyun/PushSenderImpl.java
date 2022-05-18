@@ -44,6 +44,7 @@ public class PushSenderImpl implements PushSender {
         request.setDeviceType("ALL");
         request.setTarget("DEVICE");
         request.setTargetValue(args.getString("device"));
+        request.setAndroidNotificationChannel(config.getString("channel"));
         request.setTitle(args.getString("title"));
         request.setBody(args.getString("body"));
 
