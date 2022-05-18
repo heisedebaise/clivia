@@ -18,7 +18,7 @@
         </dependency>
         <dependency>
             <groupId>org.lpw.clivia</groupId>
-            <artifactId>clivia-sms</artifactId>
+            <artifactId>clivia-push</artifactId>
             <version>1.0</version>
         </dependency>
         <dependency>
