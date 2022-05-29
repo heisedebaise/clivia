@@ -187,7 +187,7 @@ public class UserCtrl {
         return userService.findOrSign(request.get("idUidCode"));
     }
 
-    @Execute(name = "find", validates = {
+    @Execute(name = "find", permit = Permit.always, validates = {
             @Validate(validator = Validators.NOT_EMPTY, parameter = "idUidCode", failureCode = 31)})
     public Object find() {
         return userService.find(request.get("idUidCode"));
