@@ -13,15 +13,27 @@
             "labels": "forceds"
         },
         {
-            "name": "client",
-            "labels": "clients"
-        },
-        {
             "name": "explain",
             "type": "text-area"
         },
         {
-            "name": "url"
+            "name": "android"
+        },
+        {
+            "name": "ios"
+        },
+        {
+            "name": "windows"
+        },
+        {
+            "name": "macos"
+        },
+        {
+            "name": "linux"
+        },
+        {
+            "name": "file",
+            "type": "file"
         }
     ],
     "query": {

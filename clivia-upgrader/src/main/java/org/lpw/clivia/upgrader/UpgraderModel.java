@@ -20,9 +20,13 @@ public class UpgraderModel extends ModelSupport {
     private int version; // 版本号
     private String name; // 版本名
     private int forced; // 强制升级：0-否；1-是
-    private int client; // 客户端：0-Android；1-iOS；2-Windows；3-Mac；4-Linux
     private String explain; // 说明
-    private String url; // 升级地址
+    private String android; // Android升级URL
+    private String ios; // iOS升级URL
+    private String windows; // Windows升级URL
+    private String macos; // MacOS升级URL
+    private String linux; // Linux升级URL
+    private String file; // 升级包
 
     @Jsonable
     @Column(name = "c_version")
@@ -55,16 +59,6 @@ public class UpgraderModel extends ModelSupport {
     }
 
     @Jsonable
-    @Column(name = "c_client")
-    public int getClient() {
-        return client;
-    }
-
-    public void setClient(int client) {
-        this.client = client;
-    }
-
-    @Jsonable
     @Column(name = "c_explain")
     public String getExplain() {
         return explain;
@@ -75,12 +69,62 @@ public class UpgraderModel extends ModelSupport {
     }
 
     @Jsonable
-    @Column(name = "c_url")
-    public String getUrl() {
-        return url;
+    @Column(name = "c_android")
+    public String getAndroid() {
+        return android;
     }
 
-    public void setUrl(String url) {
-        this.url = url;
+    public void setAndroid(String android) {
+        this.android = android;
+    }
+
+    @Jsonable
+    @Column(name = "c_ios")
+    public String getIos() {
+        return ios;
+    }
+
+    public void setIos(String ios) {
+        this.ios = ios;
+    }
+
+    @Jsonable
+    @Column(name = "c_windows")
+    public String getWindows() {
+        return windows;
+    }
+
+    public void setWindows(String windows) {
+        this.windows = windows;
+    }
+
+    @Jsonable
+    @Column(name = "c_macos")
+    public String getMacos() {
+        return macos;
+    }
+
+    public void setMacos(String macos) {
+        this.macos = macos;
+    }
+
+    @Jsonable
+    @Column(name = "c_linux")
+    public String getLinux() {
+        return linux;
+    }
+
+    public void setLinux(String linux) {
+        this.linux = linux;
+    }
+
+    @Jsonable
+    @Column(name = "c_file")
+    public String getFile() {
+        return file;
+    }
+
+    public void setFile(String file) {
+        this.file = file;
     }
 }

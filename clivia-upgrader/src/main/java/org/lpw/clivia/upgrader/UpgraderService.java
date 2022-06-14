@@ -5,7 +5,7 @@ import com.alibaba.fastjson.JSONObject;
 public interface UpgraderService {
     JSONObject query();
 
-    JSONObject latest(int client);
+    JSONObject latest(String client);
 
     void save(UpgraderModel upgrader);
 
