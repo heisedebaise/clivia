@@ -87,7 +87,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public boolean isFull() {
-        return full > 0 && userDao.count() < full;
+        return full > 0 && userDao.count() >= full;
     }
 
     @Override
