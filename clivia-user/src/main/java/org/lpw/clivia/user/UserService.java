@@ -62,6 +62,20 @@ public interface UserService {
     boolean isCode(String code);
 
     /**
+     * 是否已达到最大用户数。
+     *
+     * @return 如果已达到则返回true；否则返回false。
+     */
+    boolean isFull();
+
+    /**
+     * 设置最大用户数。
+     *
+     * @param full 最大用户数，小于等于0表示不限制。
+     */
+    void setFull(int full);
+
+    /**
      * 注册。
      *
      * @param uid      UID值。

@@ -22,6 +22,7 @@ import org.lpw.photon.util.DateTime;
 import org.lpw.photon.util.Generator;
 import org.lpw.photon.util.Logger;
 import org.lpw.photon.util.Validator;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import javax.inject.Inject;
@@ -75,11 +76,23 @@ public class UserServiceImpl implements UserService {
     private Optional<Set<UserListener>> listeners;
     @Inject
     private UserDao userDao;
+    @Value("${" + UserModel.NAME + ".full:0}")
+    private int full;
     private final int codeLength = 8;
 
     @Override
     public boolean isCode(String code) {
         return !validator.isEmpty(code) && code.length() == codeLength;
+    }
+
+    @Override
+    public boolean isFull() {
+        return full > 0 && userDao.count() < full;
+    }
+
+    @Override
+    public void setFull(int full) {
+        this.full = full;
     }
 
     @Override

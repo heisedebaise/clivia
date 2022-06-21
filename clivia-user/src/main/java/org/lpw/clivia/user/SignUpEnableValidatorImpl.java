@@ -11,10 +11,12 @@ import javax.inject.Inject;
 public class SignUpEnableValidatorImpl extends ValidatorSupport {
     @Inject
     private KeyvalueService keyvalueService;
+    @Inject
+    private UserService userService;
 
     @Override
     public boolean validate(ValidateWrapper validate, String parameter) {
-        return keyvalueService.valueAsInt("setting.global.sign-up.enable", 0) == 1;
+        return keyvalueService.valueAsInt("setting.global.sign-up.enable", 0) == 1 && !userService.isFull();
     }
 
     @Override
