@@ -2,6 +2,7 @@ package org.lpw.clivia.user.auth;
 
 import com.alibaba.fastjson.JSONArray;
 
+import java.util.List;
 import java.util.Set;
 
 public interface AuthService {
@@ -25,6 +26,14 @@ public interface AuthService {
     JSONArray query(String user);
 
     /**
+     * 检索用户的认证信息集。
+     *
+     * @param user 用户ID。
+     * @return 认证信息集，如果不存在则返回空集。
+     */
+    List<AuthModel> list(String user);
+
+    /**
      * 获取用户ID集。
      *
      * @param uid uid。
@@ -35,12 +44,12 @@ public interface AuthService {
     /**
      * 创建新认证。
      *
-     * @param userId   用户ID。
-     * @param uid      UID值。
-     * @param type     认证类型。
-     * @param mobile   第三方账号手机号。
-     * @param email    第三方头像Email。
-     * @param nick     第三方账号昵称。
+     * @param userId 用户ID。
+     * @param uid    UID值。
+     * @param type   认证类型。
+     * @param mobile 第三方账号手机号。
+     * @param email  第三方头像Email。
+     * @param nick   第三方账号昵称。
      * @param avatar 第三方头像URL。
      * @return 认证信息。
      */

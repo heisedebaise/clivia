@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import javax.inject.Inject;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Service(AuthModel.NAME + ".service")
@@ -32,6 +33,11 @@ public class AuthServiceImpl implements AuthService {
     @Override
     public JSONArray query(String user) {
         return modelHelper.toJson(authDao.query(user).getList());
+    }
+
+    @Override
+    public List<AuthModel> list(String user) {
+        return authDao.query(user).getList();
     }
 
     @Override
