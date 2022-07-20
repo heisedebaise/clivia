@@ -88,6 +88,18 @@ public class KeyvalueServiceImpl implements KeyvalueService {
     }
 
     @Override
+    public String[] valueAsArray(String key, String separator) {
+        String value = value(key);
+        if (validator.isEmpty(value))
+            return new String[0];
+
+        if (!value.contains(separator))
+            return new String[]{value};
+
+        return value.split(separator);
+    }
+
+    @Override
     public boolean exists(String key, String value) {
         String v = value(key);
 

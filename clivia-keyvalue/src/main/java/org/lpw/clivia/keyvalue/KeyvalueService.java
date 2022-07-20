@@ -21,6 +21,8 @@ public interface KeyvalueService {
 
     int[] valueAsInts(String key, String separator);
 
+    String[] valueAsArray(String key, String separator);
+
     boolean exists(String key, String value);
 
     void save(String key, String value);
