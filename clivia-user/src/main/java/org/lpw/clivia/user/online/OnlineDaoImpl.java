@@ -53,11 +53,6 @@ class OnlineDaoImpl implements OnlineDao {
     }
 
     @Override
-    public int count(String sid) {
-        return liteOrm.count(new LiteQuery(OnlineModel.class).where("c_sid=?"), new Object[]{sid});
-    }
-
-    @Override
     public SqlTable user(Timestamp[] lastVisit) {
         return sql.query("select c_user from m_user_online where c_last_visit between ? and ? and c_grade<?", new Object[]{lastVisit[0], lastVisit[1], 99});
     }

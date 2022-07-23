@@ -36,13 +36,6 @@ public interface OnlineService {
     void visit();
 
     /**
-     * 判断当前用户是否已登入。
-     *
-     * @return 如果已登入则返回true；否则返回false。
-     */
-    boolean isSign();
-
-    /**
      * 登出。
      */
     void signOut();

@@ -75,11 +75,6 @@ public class OnlineServiceImpl implements OnlineService, MinuteJob {
     }
 
     @Override
-    public boolean isSign() {
-        return onlineDao.count(session.getId()) > 0;
-    }
-
-    @Override
     public void signOut() {
         signOut(onlineDao.findBySid(session.getId()));
     }

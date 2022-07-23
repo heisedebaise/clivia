@@ -205,9 +205,6 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public JSONObject sign() {
-        if (!onlineService.isSign())
-            return new JSONObject();
-
         UserModel user = fromSession();
         if (user == null)
             return new JSONObject();
@@ -283,12 +280,13 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserModel fromSession() {
+        OnlineModel online = onlineService.findBySid(session.getId());
+        if (online == null)
+            return null;
+
         UserModel user = session.get(SESSION);
-        if (user == null) {
-            OnlineModel online = onlineService.findBySid(session.getId());
-            if (online != null)
-                session.set(SESSION, user = findById(online.getUser()));
-        }
+        if (user == null)
+            session.set(SESSION, user = findById(online.getUser()));
 
         return user;
     }
