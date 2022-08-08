@@ -50,6 +50,13 @@ public interface OnlineService {
     /**
      * 强制登出。
      *
+     * @param sid Session ID。
+     */
+    void signOutSid(String sid);
+
+    /**
+     * 强制登出。
+     *
      * @param user 用户ID值。
      */
     void signOutUser(String user);

@@ -85,6 +85,11 @@ public class OnlineServiceImpl implements OnlineService, MinuteJob {
     }
 
     @Override
+    public void signOutSid(String sid) {
+        signOut(onlineDao.findBySid(sid));
+    }
+
+    @Override
     public void signOutUser(String user) {
         onlineDao.query(user).getList().forEach(this::signOut);
     }
