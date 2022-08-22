@@ -326,12 +326,13 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public JSONObject findByCode(String code) {
-        return cache.computeIfAbsent(CACHE_JSON + code, key -> {
-            UserModel user = userDao.findByCode(code);
+    public UserModel findByCode(String code) {
+        String cacheKey = CACHE_MODEL + code;
+        UserModel user = cache.get(cacheKey);
+        if (user == null)
+            cache.put(cacheKey, user = userDao.findByCode(code), false);
 
-            return user == null ? new JSONObject() : getJson(user.getId(), user);
-        }, false);
+        return user;
     }
 
     @Override
@@ -623,6 +624,7 @@ public class UserServiceImpl implements UserService {
 
     private void clearCache(UserModel user) {
         cache.remove(CACHE_MODEL + user.getId());
+        cache.remove(CACHE_MODEL + user.getCode());
         cache.remove(CACHE_JSON + user.getId());
         cache.remove(CACHE_JSON + user.getCode());
     }

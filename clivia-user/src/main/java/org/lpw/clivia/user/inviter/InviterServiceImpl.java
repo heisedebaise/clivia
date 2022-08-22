@@ -1,6 +1,6 @@
 package org.lpw.clivia.user.inviter;
 
-import com.alibaba.fastjson.JSONObject;
+import org.lpw.clivia.user.UserModel;
 import org.lpw.clivia.user.UserService;
 import org.lpw.photon.ctrl.context.Session;
 import org.lpw.photon.scheduler.HourJob;
@@ -56,11 +56,11 @@ public class InviterServiceImpl implements InviterService, HourJob {
     }
 
     private void notice(String code) {
-        JSONObject object = userService.findByCode(code);
-        if (object.isEmpty())
+        UserModel user = userService.findByCode(code);
+        if (user == null)
             return;
 
-        String id = object.getString("id");
+        String id = user.getId();
         listeners.ifPresent(set -> set.forEach(listener -> listener.invite(id)));
     }
 

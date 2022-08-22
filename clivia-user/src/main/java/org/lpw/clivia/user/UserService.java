@@ -214,9 +214,9 @@ public interface UserService {
      * 根据编码获得用户信息。
      *
      * @param code 唯一编码。
-     * @return 用户信息；如果不存在则返回空JSON。
+     * @return 用户信息；如果不存在则返回null。
      */
-    JSONObject findByCode(String code);
+    UserModel findByCode(String code);
 
     /**
      * 获取用户数据。
