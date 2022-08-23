@@ -2,14 +2,21 @@ package org.lpw.clivia.push.huaweiyun;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import org.lpw.clivia.push.PushModel;
 import org.lpw.clivia.push.PushSender;
 import org.lpw.photon.crypto.Digest;
-import org.lpw.photon.util.*;
+import org.lpw.photon.util.Codec;
+import org.lpw.photon.util.Converter;
+import org.lpw.photon.util.DateTime;
+import org.lpw.photon.util.Generator;
+import org.lpw.photon.util.Http;
+import org.lpw.photon.util.Json;
+import org.lpw.photon.util.Logger;
+import org.lpw.photon.util.Validator;
 import org.springframework.stereotype.Service;
 
 import javax.inject.Inject;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.Map;
 
 @Service("clivia.push.huaweiyun.sender.sms")
@@ -44,7 +51,7 @@ public class SmsPushSenderImpl implements PushSender {
     }
 
     @Override
-    public Object push(JSONObject config, JSONObject args) {
+    public Object push(PushModel push, JSONObject config, JSONObject args) {
         String mobile = args.getString("mobile");
         String content = args.getString("content");
         if (!validator.isMobile(mobile) || config == null || !config.containsKey("url") || !config.containsKey("key")

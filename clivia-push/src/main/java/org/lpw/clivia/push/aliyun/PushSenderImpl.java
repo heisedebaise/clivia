@@ -5,6 +5,7 @@ import com.aliyuncs.DefaultAcsClient;
 import com.aliyuncs.profile.DefaultProfile;
 import com.aliyuncs.push.model.v20160801.PushRequest;
 import com.google.gson.Gson;
+import org.lpw.clivia.push.PushModel;
 import org.lpw.clivia.push.PushSender;
 import org.lpw.photon.util.Logger;
 import org.lpw.photon.util.Numeric;
@@ -30,7 +31,7 @@ public class PushSenderImpl implements PushSender {
     }
 
     @Override
-    public Object push(JSONObject config, JSONObject args) {
+    public Object push(PushModel push, JSONObject config, JSONObject args) {
         if (!config.containsKey("accessKeyId") || !config.containsKey("accessSecret") || !config.containsKey("appKey")
                 || !args.containsKey("device") || !args.containsKey("title") || !args.containsKey("body")) {
             logger.warn(null, "阿里云推送配置[{}]参数[{}]错误！", config, args);

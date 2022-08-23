@@ -20,9 +20,10 @@ public interface PushSender {
     /**
      * 推送。
      *
+     * @param push   设置。
      * @param config 配置。
      * @param args   参数集。
      * @return 推送结果，null-失败；空JSON-成功；非空JSON-包含错误码和错误信息。
      */
-    Object push(JSONObject config, JSONObject args);
+    Object push(PushModel push, JSONObject config, JSONObject args);
 }

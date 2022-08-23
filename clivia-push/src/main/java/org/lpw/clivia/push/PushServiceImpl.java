@@ -10,7 +10,14 @@ import org.lpw.photon.cache.Cache;
 import org.lpw.photon.ctrl.context.Header;
 import org.lpw.photon.ctrl.context.Session;
 import org.lpw.photon.ctrl.template.Templates;
-import org.lpw.photon.util.*;
+import org.lpw.photon.util.DateTime;
+import org.lpw.photon.util.Generator;
+import org.lpw.photon.util.Json;
+import org.lpw.photon.util.Logger;
+import org.lpw.photon.util.Message;
+import org.lpw.photon.util.Numeric;
+import org.lpw.photon.util.TimeUnit;
+import org.lpw.photon.util.Validator;
 import org.springframework.stereotype.Service;
 
 import javax.inject.Inject;
@@ -121,7 +128,7 @@ public class PushServiceImpl implements PushService, ContextRefreshedListener {
         }
 
         JSONObject config = json.toObject(push.getConfig());
-        Object object = sender.push(config, args);
+        Object object = sender.push(push, config, args);
         if (logger.isInfoEnable())
             logger.info("推送[{}:{}:{}:{}:{}]。", scene, push.getSender(), config, args, object);
         if (object == null)
