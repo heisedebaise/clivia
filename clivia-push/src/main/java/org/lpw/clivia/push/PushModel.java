@@ -22,6 +22,7 @@ public class PushModel extends ModelSupport {
     private String sender; // 推送器
     private String name; // 名称
     private String config; // 配置
+    private String cert; // 证书
     private int state; // 状态：0-停用；1-可用
     private Timestamp time; // 时间
 
@@ -63,6 +64,16 @@ public class PushModel extends ModelSupport {
 
     public void setConfig(String config) {
         this.config = config;
+    }
+
+    @Jsonable
+    @Column(name = "c_cert")
+    public String getCert() {
+        return cert;
+    }
+
+    public void setCert(String cert) {
+        this.cert = cert;
     }
 
     @Jsonable

@@ -60,6 +60,10 @@
             {
                 "label": "更新",
                 "service": "/upgrader/query"
+            },
+            {
+                "label": "推送",
+                "service": "/push/query"
             }
         ]
     },

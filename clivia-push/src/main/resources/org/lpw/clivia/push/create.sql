@@ -6,6 +6,7 @@ CREATE TABLE t_push
   c_sender VARCHAR(255) DEFAULT NULL COMMENT '推送器',
   c_name VARCHAR(255) DEFAULT NULL COMMENT '名称',
   c_config TEXT DEFAULT NULL COMMENT '配置',
+  c_cert TEXT DEFAULT NULL COMMENT '证书',
   c_state INT DEFAULT 0 COMMENT '状态：0-停用；1-可用',
   c_time DATETIME DEFAULT NULL COMMENT '时间',
 
