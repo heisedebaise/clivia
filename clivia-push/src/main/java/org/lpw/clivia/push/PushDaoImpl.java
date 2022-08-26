@@ -39,6 +39,11 @@ class PushDaoImpl implements PushDao {
     }
 
     @Override
+    public void insert(PushModel push) {
+        liteOrm.insert(push);
+    }
+
+    @Override
     public void save(PushModel push) {
         liteOrm.save(push);
     }

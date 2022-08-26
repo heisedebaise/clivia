@@ -3,29 +3,35 @@ package org.lpw.clivia.push;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import org.lpw.clivia.keyvalue.KeyvalueService;
+import org.lpw.clivia.lock.LockHelper;
 import org.lpw.clivia.page.Pagination;
 import org.lpw.photon.bean.BeanFactory;
 import org.lpw.photon.bean.ContextRefreshedListener;
 import org.lpw.photon.cache.Cache;
+import org.lpw.photon.crypto.Sign;
 import org.lpw.photon.ctrl.context.Header;
 import org.lpw.photon.ctrl.context.Session;
 import org.lpw.photon.ctrl.template.Templates;
+import org.lpw.photon.scheduler.MinuteJob;
 import org.lpw.photon.util.DateTime;
 import org.lpw.photon.util.Generator;
+import org.lpw.photon.util.Http;
 import org.lpw.photon.util.Json;
 import org.lpw.photon.util.Logger;
 import org.lpw.photon.util.Message;
 import org.lpw.photon.util.Numeric;
 import org.lpw.photon.util.TimeUnit;
 import org.lpw.photon.util.Validator;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import javax.inject.Inject;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
 
 @Service(PushModel.NAME + ".service")
-public class PushServiceImpl implements PushService, ContextRefreshedListener {
+public class PushServiceImpl implements PushService, ContextRefreshedListener, MinuteJob {
     @Inject
     private Validator validator;
     @Inject
@@ -39,6 +45,10 @@ public class PushServiceImpl implements PushService, ContextRefreshedListener {
     @Inject
     private Json json;
     @Inject
+    private Sign sign;
+    @Inject
+    private Http http;
+    @Inject
     private Logger logger;
     @Inject
     private Cache cache;
@@ -51,9 +61,15 @@ public class PushServiceImpl implements PushService, ContextRefreshedListener {
     @Inject
     private Session session;
     @Inject
+    private LockHelper lockHelper;
+    @Inject
     private KeyvalueService keyvalueService;
     @Inject
     private PushDao pushDao;
+    @Value("${" + PushModel.NAME + ".synch.url:}")
+    private String synchUrl;
+    @Value("${" + PushModel.NAME + ".synch.key:}")
+    private String synchKey;
     private final Map<String, PushSender> senders = new HashMap<>();
 
     @Override
@@ -178,5 +194,52 @@ public class PushServiceImpl implements PushService, ContextRefreshedListener {
     @Override
     public void onContextRefreshed() {
         BeanFactory.getBeans(PushSender.class).forEach(sender -> senders.put(sender.key(), sender));
+    }
+
+    @Override
+    public void executeMinuteJob() {
+        if (validator.isEmpty(synchUrl) || Calendar.getInstance().get(Calendar.MINUTE) % 5 > 0)
+            return;
+
+        Map<String, String> parameter = new HashMap<>();
+        sign.put(parameter, synchKey);
+        String string = http.get(synchUrl + "/push/query", null, parameter);
+        JSONObject object = json.toObject(string);
+        if (object == null || !object.containsKey("data")) {
+            logger.warn(null, "获取推送[{}:{}]同步数据[{}]失败！", synchUrl, parameter, string);
+
+            return;
+        }
+
+        JSONArray array = object.getJSONArray("data");
+        if (validator.isEmpty(array))
+            return;
+
+        String lockId = lockHelper.lock(PushModel.NAME + ".synch", 5000, 60);
+        if (lockId == null)
+            return;
+
+        for (int i = 0, size = array.size(); i < size; i++) {
+            JSONObject obj = array.getJSONObject(i);
+            String id = obj.getString("id");
+            PushModel push = pushDao.findById(id);
+            boolean isNull = push == null;
+            if (isNull) {
+                push = new PushModel();
+                push.setId(id);
+            }
+            push.setScene(obj.getString("scene"));
+            push.setSender(obj.getString("sender"));
+            push.setName(obj.getString("name"));
+            push.setConfig(obj.getString("config"));
+            push.setCert(obj.getString("cert"));
+            push.setState(obj.getIntValue("state"));
+            push.setTime(dateTime.toTime(obj.getString("time")));
+            if (isNull)
+                pushDao.insert(push);
+            else
+                pushDao.save(push);
+        }
+        lockHelper.unlock(lockId);
     }
 }

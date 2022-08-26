@@ -11,6 +11,8 @@ interface PushDao {
 
     PushModel find(String scene, int state);
 
+    void insert(PushModel push);
+
     void save(PushModel push);
 
     void state(String id, int state);
