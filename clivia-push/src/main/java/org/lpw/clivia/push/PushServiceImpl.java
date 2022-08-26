@@ -211,16 +211,16 @@ public class PushServiceImpl implements PushService, ContextRefreshedListener, M
             return;
         }
 
-        JSONArray array = object.getJSONArray("data");
-        if (validator.isEmpty(array))
+        JSONArray list = object.getJSONObject("data").getJSONArray("list");
+        if (validator.isEmpty(list))
             return;
 
         String lockId = lockHelper.lock(PushModel.NAME + ".synch", 5000, 60);
         if (lockId == null)
             return;
 
-        for (int i = 0, size = array.size(); i < size; i++) {
-            JSONObject obj = array.getJSONObject(i);
+        for (int i = 0, size = list.size(); i < size; i++) {
+            JSONObject obj = list.getJSONObject(i);
             String id = obj.getString("id");
             PushModel push = pushDao.findById(id);
             boolean isNull = push == null;
