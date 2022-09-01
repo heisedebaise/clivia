@@ -144,18 +144,6 @@ public class LogServiceImpl implements LogService, UserListener, SecondsJob {
     }
 
     @Override
-    public void userSignUp(UserModel user) {
-    }
-
-    @Override
-    public void userSignIn(UserModel user) {
-    }
-
-    @Override
-    public void userSignOut(UserModel user) {
-    }
-
-    @Override
     public void userDelete(UserModel user) {
         logDao.delete(user.getId());
     }

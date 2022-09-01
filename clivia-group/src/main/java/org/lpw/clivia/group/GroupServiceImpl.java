@@ -307,14 +307,6 @@ public class GroupServiceImpl implements GroupService, UserListener {
     }
 
     @Override
-    public void userSignIn(UserModel user) {
-    }
-
-    @Override
-    public void userSignOut(UserModel user) {
-    }
-
-    @Override
     public void userDelete(UserModel user) {
         memberService.grades(user.getId(), -1).forEach((id, grade) -> {
             GroupModel group = groupDao.findById(id);

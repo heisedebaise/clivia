@@ -59,14 +59,6 @@ public class DeviceServiceImpl implements DeviceService, UserListener {
     }
 
     @Override
-    public void userSignUp(UserModel user) {
-    }
-
-    @Override
-    public void userSignIn(UserModel user) {
-    }
-
-    @Override
     public void userSignOut(UserModel user) {
         deviceDao.delete(session.getId());
         cleanCache(session.getId());
