@@ -5,30 +5,42 @@ package org.lpw.clivia.user;
  */
 public interface UserListener {
     /**
+     * 同步用户。
+     *
+     * @param user 用户。
+     */
+    default void userSync(UserModel user) {
+    }
+
+    /**
      * 新用户注册。
      *
      * @param user 用户。
      */
-    void userSignUp(UserModel user);
+    default void userSignUp(UserModel user) {
+    }
 
     /**
      * 用户登入。
      *
      * @param user 用户。
      */
-    void userSignIn(UserModel user);
+    default void userSignIn(UserModel user) {
+    }
 
     /**
      * 用户等出。
      *
      * @param user 用户。
      */
-    void userSignOut(UserModel user);
+    default void userSignOut(UserModel user) {
+    }
 
     /**
      * 用户删除。
      *
      * @param user 用户。
      */
-    void userDelete(UserModel user);
+    default void userDelete(UserModel user) {
+    }
 }

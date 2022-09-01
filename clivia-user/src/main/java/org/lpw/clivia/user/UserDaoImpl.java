@@ -57,6 +57,11 @@ class UserDaoImpl implements UserDao {
     }
 
     @Override
+    public PageList<UserModel> query() {
+        return liteOrm.query(new LiteQuery(UserModel.class), null);
+    }
+
+    @Override
     public UserModel findById(String id) {
         return liteOrm.findById(UserModel.class, id);
     }

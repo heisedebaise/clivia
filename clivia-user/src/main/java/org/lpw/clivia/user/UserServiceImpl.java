@@ -12,6 +12,7 @@ import org.lpw.clivia.user.online.OnlineModel;
 import org.lpw.clivia.user.online.OnlineService;
 import org.lpw.clivia.user.password.PasswordService;
 import org.lpw.clivia.user.type.Types;
+import org.lpw.photon.bean.ContextRefreshedListener;
 import org.lpw.photon.cache.Cache;
 import org.lpw.photon.crypto.Digest;
 import org.lpw.photon.ctrl.context.Response;
@@ -31,7 +32,7 @@ import java.util.Optional;
 import java.util.Set;
 
 @Service(UserModel.NAME + ".service")
-public class UserServiceImpl implements UserService {
+public class UserServiceImpl implements UserService, ContextRefreshedListener {
     private static final String CACHE_MODEL = UserModel.NAME + ".service.model:";
     private static final String CACHE_JSON = UserModel.NAME + ".service.json:";
     private static final String SESSION = UserModel.NAME + ".service.session";
@@ -76,6 +77,8 @@ public class UserServiceImpl implements UserService {
     private Optional<Set<UserListener>> listeners;
     @Inject
     private UserDao userDao;
+    @Value("${" + UserModel.NAME + ".sync:false}")
+    private boolean sync;
     @Value("${" + UserModel.NAME + ".full:0}")
     private int full;
     private final int codeLength = 8;
@@ -627,5 +630,19 @@ public class UserServiceImpl implements UserService {
         cache.remove(CACHE_MODEL + user.getCode());
         cache.remove(CACHE_JSON + user.getId());
         cache.remove(CACHE_JSON + user.getCode());
+    }
+
+    @Override
+    public int getContextRefreshedSort() {
+        return 151;
+    }
+
+    @Override
+    public void onContextRefreshed() {
+        if (!sync || listeners.isEmpty())
+            return;
+
+        Set<UserListener> set = listeners.get();
+        userDao.query().getList().forEach(user -> set.forEach(listener -> listener.userSync(user)));
     }
 }
