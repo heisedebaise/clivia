@@ -644,5 +644,6 @@ public class UserServiceImpl implements UserService, ContextRefreshedListener {
 
         Set<UserListener> set = listeners.get();
         userDao.query().getList().forEach(user -> set.forEach(listener -> listener.userSync(user)));
+        userDao.close();
     }
 }

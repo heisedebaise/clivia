@@ -28,4 +28,6 @@ interface UserDao {
     void state(String id, int state);
 
     void delete(String id);
+
+    void close();
 }

@@ -121,4 +121,9 @@ class UserDaoImpl implements UserDao {
     public void delete(String id) {
         liteOrm.deleteById(UserModel.class, id);
     }
+
+    @Override
+    public void close() {
+        liteOrm.close();
+    }
 }
