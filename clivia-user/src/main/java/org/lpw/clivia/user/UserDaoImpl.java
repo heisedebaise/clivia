@@ -108,6 +108,11 @@ class UserDaoImpl implements UserDao {
     }
 
     @Override
+    public void insert(UserModel user) {
+        liteOrm.insert(user);
+    }
+
+    @Override
     public void save(UserModel user) {
         liteOrm.save(user);
     }

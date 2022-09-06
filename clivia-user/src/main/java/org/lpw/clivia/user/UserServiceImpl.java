@@ -584,6 +584,11 @@ public class UserServiceImpl implements UserService, ContextRefreshedListener {
     }
 
     @Override
+    public void insert(UserModel user) {
+        userDao.insert(user);
+    }
+
+    @Override
     public void delete(String id) {
         destroy(userDao.findById(id));
     }

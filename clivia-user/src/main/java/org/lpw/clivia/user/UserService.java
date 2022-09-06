@@ -404,6 +404,13 @@ public interface UserService {
                      String inviter, int grade, int state);
 
     /**
+     * 创建用户。
+     *
+     * @param user 用户。
+     */
+    void insert(UserModel user);
+
+    /**
      * 删除。
      *
      * @param id ID值。
