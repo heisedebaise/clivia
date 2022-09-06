@@ -22,7 +22,7 @@ public class LockHelperImpl implements LockHelper, Atomicable, SecondsJob {
     private Validator validator;
     @Inject
     private LockDao lockDao;
-    private ThreadLocal<Set<String>> ids = new ThreadLocal<>();
+    private final ThreadLocal<Set<String>> ids = new ThreadLocal<>();
 
     @Override
     public String lock(String key, long wait, int alive) {
@@ -34,7 +34,7 @@ public class LockHelperImpl implements LockHelper, Atomicable, SecondsJob {
         lock.setMd5(md5);
         lock.setKey(key);
         lock.setCreate(System.currentTimeMillis());
-        lock.setExpire(lock.getCreate() + (alive > 0 ? alive : 5) * 1000);
+        lock.setExpire(lock.getCreate() + 1000L * (alive > 0 ? alive : 5));
         lockDao.save(lock);
 
         if (ids.get() == null)
