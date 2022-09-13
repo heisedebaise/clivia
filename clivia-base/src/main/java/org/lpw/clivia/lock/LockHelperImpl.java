@@ -81,6 +81,7 @@ public class LockHelperImpl implements LockHelper, Atomicable, SecondsJob {
         lock.setId(generator.uuid());
         List<LockModel> list = map.computeIfAbsent(md5, key -> Collections.synchronizedList(new ArrayList<>()));
         list.add(lock);
+        idmd5s.put(lock.getId(), md5);
         for (long i = 0L; i < wait; i++) {
             LockModel model = list.get(0);
             if (model == null)
@@ -105,11 +106,11 @@ public class LockHelperImpl implements LockHelper, Atomicable, SecondsJob {
             unlockDb(id);
         else
             unlockMap(id);
+        ids.get().remove(id);
     }
 
     private void unlockDb(String id) {
         lockDao.delete(id);
-        ids.get().remove(id);
     }
 
     private void unlockMap(String id) {
