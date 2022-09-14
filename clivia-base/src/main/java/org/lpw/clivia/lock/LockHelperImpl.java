@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Function;
 
 @Service(LockModel.NAME + ".helper")
 public class LockHelperImpl implements LockHelper, Atomicable, SecondsJob {
@@ -36,6 +37,18 @@ public class LockHelperImpl implements LockHelper, Atomicable, SecondsJob {
     private final ThreadLocal<Set<String>> ids = new ThreadLocal<>();
     private final Map<String, List<LockModel>> map = new ConcurrentHashMap<>();
     private final Map<String, String> idmd5s = new ConcurrentHashMap<>();
+
+    @Override
+    public <T> T lock(String key, long wait, int alive, Function<String, T> function) {
+        String id = lock(key, wait, alive);
+        if (id == null)
+            return null;
+
+        T t = function.apply(id);
+        unlock(id);
+
+        return t;
+    }
 
     @Override
     public String lock(String key, long wait, int alive) {
@@ -145,6 +158,17 @@ public class LockHelperImpl implements LockHelper, Atomicable, SecondsJob {
 
     @Override
     public void executeSecondsJob() {
-        lockDao.delete(System.currentTimeMillis());
+        long time = System.currentTimeMillis();
+        if (type == 1) {
+            lockDao.delete(time);
+        } else {
+            map.forEach((md5, list) -> {
+                for (int i = list.size() - 1; i > -1; i--) {
+                    if (list.get(i).getExpire() < time) {
+                        list.remove(i);
+                    }
+                }
+            });
+        }
     }
 }
