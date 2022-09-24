@@ -15,11 +15,6 @@
                 "name": "setting.global.sms.captcha"
             },
             {
-                "name": "setting.global.slider-captcha",
-                "type": "image",
-                "upload": "clivia.keyvalue.image"
-            },
-            {
                 "name": "setting.global.sign-up.enable",
                 "type": "switch",
                 "permit": true
@@ -53,6 +48,31 @@
                 "name": "setting.agreement.privacy",
                 "type": "file",
                 "upload": "clivia.keyvalue.file"
+            }
+        ],
+        "toolbar": [
+            {
+                "label": "save",
+                "service": "/keyvalue/saves"
+            }
+        ]
+    },
+    "slider-captcha": {
+        "props": [
+            {
+                "name": "setting.slider-captcha",
+                "type": "image",
+                "upload": "clivia.keyvalue.image"
+            },
+            {
+                "name": "setting.slider-captcha.sign-up",
+                "type": "switch",
+                "permit": true
+            },
+            {
+                "name": "setting.slider-captcha.sign-in",
+                "type": "switch",
+                "permit": true
             }
         ],
         "toolbar": [

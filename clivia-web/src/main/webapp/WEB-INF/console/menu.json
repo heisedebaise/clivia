@@ -54,6 +54,10 @@
                 "service": "/sms/query"
             },
             {
+                "label": "滑动认证",
+                "service": "/setting/slider-captcha"
+            },
+            {
                 "label": "协议",
                 "service": "/setting/agreement"
             },
