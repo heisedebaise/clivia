@@ -60,7 +60,7 @@
     "slider-captcha": {
         "props": [
             {
-                "name": "setting.slider-captcha",
+                "name": "setting.slider-captcha.image",
                 "type": "image",
                 "upload": "clivia.keyvalue.image"
             },
