@@ -42,7 +42,7 @@ public abstract class UserTypeSupport extends TypeSupport {
         }
 
         if (user == null)
-            return userService.signUp(uid, password, getKey(), null, grade);
+            return userService.signUp(uid, password, getKey(), null, grade, getInvitecode());
 
         for (String u : set)
             if (authService.findByUid(u) == null)

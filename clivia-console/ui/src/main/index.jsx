@@ -23,8 +23,14 @@ class Main extends React.Component {
 
       document.title = data['setting.global.console.title'] || 'Clivia Console';
       this.setState({
-        logo: data['setting.global.console.logo'],
-        signUpEnable: data['setting.global.sign-up.enable'] === '1'
+        logo: data['setting.global.console.logo']
+      });
+    });
+    service('/keyvalue/object', { key: 'setting.user.' }).then(data => {
+      if (data === null) return;
+
+      this.setState({
+        signUpEnable: data['setting.user.sign-up.enable'] === '1'
       });
     });
     service('/user/sign').then(data => this.setState({ user: data }));

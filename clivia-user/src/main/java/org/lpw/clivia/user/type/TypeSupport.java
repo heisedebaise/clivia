@@ -1,6 +1,7 @@
 package org.lpw.clivia.user.type;
 
 import com.alibaba.fastjson.JSONObject;
+import org.lpw.photon.ctrl.context.Request;
 import org.lpw.photon.util.Json;
 
 import javax.inject.Inject;
@@ -8,6 +9,8 @@ import javax.inject.Inject;
 public abstract class TypeSupport implements Type {
     @Inject
     protected Json json;
+    @Inject
+    protected Request request;
 
     @Override
     public String getMobile(String uid, String password) {
@@ -43,5 +46,9 @@ public abstract class TypeSupport implements Type {
     @Override
     public JSONObject getAuth(String uid, String password) {
         return null;
+    }
+
+    protected String getInvitecode() {
+        return request.get("invitecode");
     }
 }

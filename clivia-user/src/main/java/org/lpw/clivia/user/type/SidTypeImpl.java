@@ -1,9 +1,5 @@
 package org.lpw.clivia.user.type;
 
-import java.util.Set;
-
-import javax.inject.Inject;
-
 import org.lpw.clivia.increment.IncrementService;
 import org.lpw.clivia.keyvalue.KeyvalueService;
 import org.lpw.clivia.user.UserModel;
@@ -14,6 +10,9 @@ import org.lpw.photon.ctrl.context.Session;
 import org.lpw.photon.util.Message;
 import org.lpw.photon.util.Numeric;
 import org.springframework.stereotype.Service;
+
+import javax.inject.Inject;
+import java.util.Set;
 
 @Service("clivia.user.type.sid")
 public class SidTypeImpl extends TypeSupport {
@@ -43,13 +42,13 @@ public class SidTypeImpl extends TypeSupport {
         if (user != null)
             return userService.findById(user.getId());
 
-        if (keyvalueService.valueAsInt("setting.global.sign-up.sid", 0) != 1)
+        if (keyvalueService.valueAsInt("setting.user.sign-up.sid", 0) != 1)
             return null;
 
         uid = session.getId();
         AuthModel auth = authService.findByUid(uid);
 
-        return auth == null ? userService.signUp(uid, password, getKey(), null, grade)
+        return auth == null ? userService.signUp(uid, password, getKey(), null, grade, getInvitecode())
                 : userService.findById(auth.getUser());
     }
 

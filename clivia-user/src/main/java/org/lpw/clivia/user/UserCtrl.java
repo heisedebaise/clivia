@@ -3,6 +3,7 @@ package org.lpw.clivia.user;
 import org.lpw.clivia.Permit;
 import org.lpw.clivia.push.PushService;
 import org.lpw.clivia.user.auth.AuthService;
+import org.lpw.clivia.user.invitecode.InvitecodeService;
 import org.lpw.clivia.user.inviter.InviterService;
 import org.lpw.photon.ctrl.context.Request;
 import org.lpw.photon.ctrl.execute.Execute;
@@ -51,12 +52,13 @@ public class UserCtrl {
             @Validate(validator = UserService.VALIDATOR_PASSWORD, parameters = {"password",
                     "type"}, failureCode = 3),
             @Validate(validator = UserService.VALIDATOR_SIGN_UP_ENABLE, failureCode = 99),
+            @Validate(validator = InvitecodeService.VALIDATOR_VALID, parameter = "invitecode", failureCode = 29),
             @Validate(validator = UserService.VALIDATOR_SIGN_UP_SMS, parameter = "sms", failureCode = 98),
             @Validate(validator = AuthService.VALIDATOR_UID_NOT_EXISTS, parameters = {"uid", "password",
                     "type"}, failureCode = 4)})
     public Object signUp() {
         userService.signUp(request.get("uid"), request.get("password"), request.get("type"),
-                request.get("inviter"), request.get("grade"));
+                request.get("inviter"), request.get("grade"), request.get("invitecode"));
 
         return sign();
     }

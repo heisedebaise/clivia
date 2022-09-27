@@ -13,24 +13,34 @@
             },
             {
                 "name": "setting.global.sms.captcha"
-            },
+            }
+        ],
+        "toolbar": [
             {
-                "name": "setting.global.sign-up.enable",
+                "label": "save",
+                "service": "/keyvalue/saves"
+            }
+        ]
+    },
+    "user": {
+        "props": [
+            {
+                "name": "setting.user.sign-up.enable",
                 "type": "switch",
                 "permit": true
             },
             {
-                "name": "setting.global.sign-up.sms",
+                "name": "setting.user.sign-up.sms",
                 "type": "switch",
                 "permit": true
             },
             {
-                "name": "setting.global.sign-up.sid",
+                "name": "setting.user.sign-up.sid",
                 "type": "switch",
                 "permit": true
             },
             {
-                "name": "setting.global.user.delete",
+                "name": "setting.user.sign-up.invite-code",
                 "type": "switch",
                 "permit": true
             }

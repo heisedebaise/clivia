@@ -16,7 +16,7 @@ public class SignUpEnableValidatorImpl extends ValidatorSupport {
 
     @Override
     public boolean validate(ValidateWrapper validate, String parameter) {
-        return keyvalueService.valueAsInt("setting.global.sign-up.enable", 0) == 1 && !userService.isFull();
+        return keyvalueService.valueAsInt("setting.user.sign-up.enable", 0) == 1 && !userService.isFull();
     }
 
     @Override

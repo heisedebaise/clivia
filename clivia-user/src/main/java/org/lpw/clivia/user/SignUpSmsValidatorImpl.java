@@ -13,6 +13,6 @@ public class SignUpSmsValidatorImpl extends CaptchaValidatorSupport {
 
     @Override
     protected boolean ignore(String parameter) {
-        return keyvalueService.valueAsInt("setting.global.sign-up.sms", 0) == 0;
+        return keyvalueService.valueAsInt("setting.user.sign-up.sms", 0) == 0;
     }
 }

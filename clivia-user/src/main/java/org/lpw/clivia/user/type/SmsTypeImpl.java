@@ -31,7 +31,7 @@ public class SmsTypeImpl extends TypeSupport {
 
         AuthModel auth = authService.findByUid(uid);
 
-        return auth == null ? userService.signUp(uid, password, getKey(), null, grade) : userService.findById(auth.getUser());
+        return auth == null ? userService.signUp(uid, password, getKey(), null, grade, getInvitecode()) : userService.findById(auth.getUser());
     }
 
     @Override

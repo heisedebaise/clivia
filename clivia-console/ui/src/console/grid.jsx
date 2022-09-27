@@ -351,7 +351,9 @@ class Grid extends React.Component {
 
         if (op.type === 'download') {
             let href = this.props.body.uri(this.props.uri, op.service || op.type);
-            if (model && model.id) href += '?id=' + model.id;
+            if (model && model.id) {
+                href += '?id=' + model.id;
+            }
             else {
                 let values = this.searches();
                 for (let key in values) {
