@@ -190,6 +190,20 @@ public class UserServiceImpl implements UserService, ContextRefreshedListener {
     }
 
     @Override
+    public boolean signInPassword(String id, String password) {
+        UserModel user = userDao.findById(id);
+        if (user == null)
+            return false;
+
+        if (!user.getPassword().equals(password(password)))
+            return false;
+
+        signIn(user, id);
+
+        return true;
+    }
+
+    @Override
     public boolean signInGesture(String id, String gesture) {
         UserModel user = userDao.findById(id);
         if (user == null)

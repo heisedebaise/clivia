@@ -79,6 +79,13 @@ public class UserCtrl {
         return sign();
     }
 
+    @Execute(name = "sign-in-password", permit = Permit.always)
+    public Object signInPassword() {
+        return userService.signInPassword(request.get("id"), request.get("password")) ? ""
+                : templates.get().failure(151006, message.get(UserModel.NAME + ".password.failure"),
+                null, null);
+    }
+
     @Execute(name = "sign-in-gesture", permit = Permit.always)
     public Object signInGesture() {
         return userService.signInGesture(request.get("id"), request.get("gesture")) ? ""

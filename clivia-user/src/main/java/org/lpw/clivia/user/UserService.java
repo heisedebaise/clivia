@@ -100,6 +100,15 @@ public interface UserService {
     boolean signIn(String uid, String password, String type, String grade);
 
     /**
+     * 密码登入验证。
+     *
+     * @param id       ID值。
+     * @param password 密码。
+     * @return 认证成功则返回true；否则返回false。
+     */
+    boolean signInPassword(String id, String password);
+
+    /**
      * 手势登入验证。
      *
      * @param id      ID值。
