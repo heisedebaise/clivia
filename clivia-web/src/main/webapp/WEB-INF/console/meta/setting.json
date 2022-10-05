@@ -72,7 +72,8 @@
             {
                 "name": "setting.slider-captcha.image",
                 "type": "image",
-                "upload": "clivia.keyvalue.image"
+                "upload": "clivia.keyvalue.image",
+                "size": 16
             },
             {
                 "name": "setting.slider-captcha.sign-up",
