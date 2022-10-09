@@ -135,6 +135,8 @@ public class WeixinServiceImpl implements WeixinService, ContextRefreshedListene
     private int qrCodeSize;
     @Value("${" + WeixinModel.NAME + ".qr-code.logo:}")
     private String qrCodeLogo;
+    @Value("${" + WeixinModel.NAME + ".wxacode-unlimit.env-version:}")
+    private String envVersion;
 
     @Override
     public JSONArray query() {
@@ -704,6 +706,8 @@ public class WeixinServiceImpl implements WeixinService, ContextRefreshedListene
         JSONObject object = new JSONObject();
         object.put("scene", scene);
         object.put("page", page);
+        if (!validator.isEmpty(envVersion))
+            object.put("env_version", envVersion);
         object.put("width", width);
         object.put("auto_color", autoColor);
         object.put("line_color", lineColor);
