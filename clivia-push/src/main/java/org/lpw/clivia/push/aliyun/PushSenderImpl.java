@@ -48,6 +48,8 @@ public class PushSenderImpl implements PushSender {
         request.setAndroidNotificationChannel(config.getString("channel"));
         request.setTitle(args.getString("title"));
         request.setBody(args.getString("body"));
+        if (args.containsKey("iOSMusic"))
+            request.setIOSMusic(args.getString("iOSMusic"));
 
         try {
             return new Gson().toJson(new DefaultAcsClient(DefaultProfile.getProfile("cn-hangzhou",
