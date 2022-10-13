@@ -1,5 +1,5 @@
 import React from 'react';
-import { Form, Radio, Checkbox, Select, DatePicker, Switch, AutoComplete, Input, Button, message } from 'antd';
+import { Form, Radio, Checkbox, Select, DatePicker, Switch, AutoComplete, Transfer, Input, Button, message } from 'antd';
 import { SyncOutlined, VerticalAlignTopOutlined, ArrowUpOutlined, ArrowDownOutlined, VerticalAlignBottomOutlined, DeleteOutlined, PlusOutlined } from '@ant-design/icons';
 import moment from 'moment';
 import { service } from '../http';
@@ -43,6 +43,7 @@ class Base extends React.Component {
         this.format(this.state);
         this.values = {};
         this.binds = {};
+        this.transfers = {};
         this.itemIndex = 0;
     }
 
@@ -77,6 +78,14 @@ class Base extends React.Component {
 
                     data[prop.agreement] = array[0];
                     this.setState(data);
+                });
+            }
+            if (prop.type === 'transfer' && prop.service) {
+                service(prop.service).then(data => {
+                    if (data === null) return;
+
+                    this.transfers[prop.name] = data.list || data;
+                    this.setState({});
                 });
             }
 
@@ -124,6 +133,8 @@ class Base extends React.Component {
                     values[prop.name] = moment(value, 'YYYY-MM-DD');
                 else if (prop.type === 'datetime')
                     values[prop.name] = moment(value, 'YYYY-MM-DD HH:mm:ss');
+                else if (prop.type === 'transfer')
+                    values[prop.name] = value.split(',');
             }
             if (prop.multiple)
                 values[prop.name] = values[prop.name] ? values[prop.name].split(',') : [];
@@ -168,7 +179,7 @@ class Base extends React.Component {
                 values[prop.name] = fromDecimal(value, prop.size);
             else if (prop.type === 'percent')
                 values[prop.name] = fromPercent(value);
-            else if (prop.multiple)
+            else if (prop.multiple || prop.type === 'transfer')
                 values[prop.name] = values[prop.name].join(',');
         }
         if (this.props.data)
@@ -210,6 +221,9 @@ class Base extends React.Component {
     }
 
     item = (items, prop, key) => {
+        if (prop.when && !eval(prop.when))
+            return;
+
         if (prop.type === 'array' || prop.type === 'read-only:array') {
             let is = [];
             let array = toArray(this.state[prop.name]);
@@ -448,7 +462,15 @@ class Base extends React.Component {
 
         if (prop.type === 'password') return <Input.Password />;
 
-        if (prop.type === 'auto-complete') return <AutoComplete options={this.state['auto-complete:' + prop.name]} />
+        if (prop.type === 'auto-complete') return <AutoComplete options={this.state['auto-complete:' + prop.name]} />;
+
+        if (prop.type === 'transfer') {
+            return <Transfer dataSource={this.transfers[prop.name]} showSearch={true} oneWay={true} render={item => item.title} targetKeys={this.state[prop.name]} onChange={keys => {
+                let state = {};
+                state[prop.name] = keys;
+                this.setState(state);
+            }} titles={['可选', '选中']} listStyle={{ direction: 'right', width: 8192 }} />;
+        }
 
         return <Input />
     }
