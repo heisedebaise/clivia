@@ -505,6 +505,20 @@ public class WeixinServiceImpl implements WeixinService, ContextRefreshedListene
     }
 
     @Override
+    public JSONObject getPhoneNumber(String key, String code) {
+        WeixinModel weixin = weixinDao.findByKey(key);
+        if (weixin == null)
+            return null;
+
+        JSONObject object = byAccessToken(weixin, accessToken -> http.post(
+                "https://api.weixin.qq.com/wxa/business/getuserphonenumber?access_token=" + accessToken, null, "{\"code\": \"" + code + "\"}"));
+        if (!json.containsKey(object, "phone_info"))
+            return null;
+
+        return object.getJSONObject("phone_info");
+    }
+
+    @Override
     public void prepayQrCode(String key, String user, String subject, int amount, String billNo, String notice, int size,
                              String logo, OutputStream outputStream) {
         Map<String, String> map = prepay(key, user, null, subject, amount, billNo, notice, "NATIVE");

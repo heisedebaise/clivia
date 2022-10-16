@@ -141,6 +141,15 @@ public interface WeixinService {
     JSONObject auth(String key, String code, String iv, String message, String iv2, String message2);
 
     /**
+     * 获取绑定手机号。
+     *
+     * @param key  配置key。
+     * @param code 微信认证code。
+     * @return 如果认证通过则返回手机号信息，否则返回null。
+     */
+    JSONObject getPhoneNumber(String key, String code);
+
+    /**
      * 生成支付二维码。
      *
      * @param key          引用key。
