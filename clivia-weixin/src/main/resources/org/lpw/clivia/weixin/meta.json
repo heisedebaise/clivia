@@ -149,7 +149,8 @@
         ],
         "toolbar": [
             {
-                "type": "single-save",
+                "type": "save",
+                "service": "single-save",
                 "reload": true
             }
         ]
