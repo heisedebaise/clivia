@@ -1,11 +1,6 @@
 package org.lpw.clivia.weixin;
 
-import java.util.Map;
-
-import javax.inject.Inject;
-
 import com.alibaba.fastjson.JSONObject;
-
 import org.lpw.clivia.Permit;
 import org.lpw.clivia.user.UserService;
 import org.lpw.photon.ctrl.context.Request;
@@ -18,6 +13,9 @@ import org.lpw.photon.util.Message;
 import org.lpw.photon.util.Validator;
 import org.lpw.photon.util.Xml;
 import org.springframework.stereotype.Controller;
+
+import javax.inject.Inject;
+import java.util.Map;
 
 @Controller(WeixinModel.NAME + ".ctrl")
 @Execute(name = "/weixin/", key = WeixinModel.NAME, code = "155")
@@ -63,6 +61,32 @@ public class WeixinCtrl {
     })
     public Object save() {
         return weixinService.save(request.setToModel(WeixinModel.class));
+    }
+
+    @Execute(name = "single", validates = {
+            @Validate(validator = Validators.SIGN)
+    })
+    public Object single() {
+        return weixinService.single();
+    }
+
+    @Execute(name = "single-save", validates = {
+            @Validate(validator = Validators.NOT_EMPTY, parameter = "appId", failureCode = 5),
+            @Validate(validator = Validators.MAX_LENGTH, number = {100}, parameter = "appId", failureCode = 6),
+            @Validate(validator = Validators.NOT_EMPTY, parameter = "secret", failureCode = 7),
+            @Validate(validator = Validators.MAX_LENGTH, number = {100}, parameter = "secret", failureCode = 8),
+            @Validate(validator = Validators.MAX_LENGTH, number = {100}, parameter = "token", failureCode = 9),
+            @Validate(validator = Validators.MAX_LENGTH, number = {100}, parameter = "mchId", failureCode = 10),
+            @Validate(validator = Validators.MAX_LENGTH, number = {100}, parameter = "mchPartnerId", failureCode = 10),
+            @Validate(validator = Validators.MAX_LENGTH, number = {100}, parameter = "mchKey", failureCode = 11),
+            @Validate(validator = Validators.MAX_LENGTH, number = {100}, parameter = "mchSerialNo", failureCode = 10),
+            @Validate(validator = Validators.MAX_LENGTH, number = {100}, parameter = "mchKeyV3", failureCode = 11),
+            @Validate(validator = Validators.SIGN)
+    })
+    public Object singleSave() {
+        weixinService.singleSave(request.setToModel(WeixinModel.class));
+
+        return "";
     }
 
     @Execute(name = "refresh-access-token", validates = {

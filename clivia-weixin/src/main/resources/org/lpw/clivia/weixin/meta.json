@@ -106,5 +106,52 @@
                 "success": "query"
             }
         ]
+    },
+    "single": {
+        "type": "form",
+        "props": [
+            {
+                "name": "appId"
+            },
+            {
+                "name": "secret"
+            },
+            {
+                "name": "token"
+            },
+            {
+                "name": "mchId"
+            },
+            {
+                "name": "mchPartnerId"
+            },
+            {
+                "name": "mchKey"
+            },
+            {
+                "name": "mchSerialNo"
+            },
+            {
+                "name": "mchPrivateKey"
+            },
+            {
+                "name": "mchKeyV3"
+            },
+            {
+                "name": "accessToken"
+            },
+            {
+                "name": "jsapiTicket"
+            },
+            {
+                "name": "time"
+            }
+        ],
+        "toolbar": [
+            {
+                "type": "single-save",
+                "reload": true
+            }
+        ]
     }
 }

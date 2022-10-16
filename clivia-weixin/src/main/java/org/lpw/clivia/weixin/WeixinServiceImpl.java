@@ -177,6 +177,20 @@ public class WeixinServiceImpl implements WeixinService, ContextRefreshedListene
     }
 
     @Override
+    public JSONObject single() {
+        WeixinModel weixin = weixinDao.findByKey(SINGLE_KEY);
+
+        return weixin == null ? new JSONObject() : modelHelper.toJson(weixin);
+    }
+
+    @Override
+    public void singleSave(WeixinModel weixin) {
+        weixin.setKey(SINGLE_KEY);
+        weixin.setName(SINGLE_KEY);
+        save(weixin);
+    }
+
+    @Override
     public void refreshAccessToken(String key) {
         refreshAccessToken(findByKey(key));
     }

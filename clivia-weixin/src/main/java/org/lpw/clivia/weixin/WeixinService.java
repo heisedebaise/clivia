@@ -9,6 +9,10 @@ import java.util.function.Function;
 
 public interface WeixinService {
     /**
+     * 单个配置key。
+     */
+    String SINGLE_KEY = "weixin";
+    /**
      * 微信key是否存在验证器Bean名称。
      * 默认错误信息key=WeixinModel.NAME+.not-exists。
      */
@@ -50,6 +54,20 @@ public interface WeixinService {
      * @return 配置信息。
      */
     JSONObject save(WeixinModel weixin);
+
+    /**
+     * 获取单个配置。
+     *
+     * @return 单个配置，不存在则返回空JSON。
+     */
+    JSONObject single();
+
+    /**
+     * 保存单个配置。
+     *
+     * @param weixin 微信配置。
+     */
+    void singleSave(WeixinModel weixin);
 
     /**
      * 刷新AccessToken。
