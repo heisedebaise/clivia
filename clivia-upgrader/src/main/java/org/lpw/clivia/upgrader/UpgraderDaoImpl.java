@@ -28,6 +28,11 @@ class UpgraderDaoImpl implements UpgraderDao {
     }
 
     @Override
+    public void insert(UpgraderModel upgrader) {
+        liteOrm.insert(upgrader);
+    }
+
+    @Override
     public void save(UpgraderModel upgrader) {
         liteOrm.save(upgrader);
     }

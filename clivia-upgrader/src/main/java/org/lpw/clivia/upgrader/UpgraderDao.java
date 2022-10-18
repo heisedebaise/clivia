@@ -9,6 +9,8 @@ interface UpgraderDao {
 
     UpgraderModel latest();
 
+    void insert(UpgraderModel upgrader);
+
     void save(UpgraderModel upgrader);
 
     void delete(String id);

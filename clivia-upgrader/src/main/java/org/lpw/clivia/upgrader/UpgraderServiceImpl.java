@@ -4,7 +4,10 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import org.lpw.clivia.page.Pagination;
 import org.lpw.photon.dao.model.ModelHelper;
+import org.lpw.photon.scheduler.MinuteJob;
+import org.lpw.photon.util.Context;
 import org.lpw.photon.util.Http;
+import org.lpw.photon.util.Io;
 import org.lpw.photon.util.Json;
 import org.lpw.photon.util.Logger;
 import org.lpw.photon.util.Validator;
@@ -12,17 +15,22 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import javax.inject.Inject;
-import java.util.HashMap;
-import java.util.Map;
+import java.io.FileOutputStream;
+import java.io.OutputStream;
+import java.util.Calendar;
 
 @Service(UpgraderModel.NAME + ".service")
-public class UpgraderServiceImpl implements UpgraderService {
+public class UpgraderServiceImpl implements UpgraderService, MinuteJob {
     @Inject
     private Validator validator;
     @Inject
     private Http http;
     @Inject
     private Json json;
+    @Inject
+    private Context context;
+    @Inject
+    private Io io;
     @Inject
     private Logger logger;
     @Inject
@@ -31,8 +39,8 @@ public class UpgraderServiceImpl implements UpgraderService {
     private Pagination pagination;
     @Inject
     private UpgraderDao upgraderDao;
-    @Value("${" + UpgraderModel.NAME + ".latest:}")
-    private String latest;
+    @Value("${" + UpgraderModel.NAME + ".synch:}")
+    private String synch;
     private final String[] names = {"android", "ios", "windows", "macos", "linux", "url"};
 
     @Override
@@ -42,31 +50,6 @@ public class UpgraderServiceImpl implements UpgraderService {
 
     @Override
     public JSONObject latest(String client) {
-        if (!validator.isEmpty(latest)) {
-            Map<String, String> map = new HashMap<>();
-            if (!validator.isEmpty(client))
-                map.put("client", client);
-            String string = http.post(latest + "/upgrader/latest", null, map);
-            JSONObject object = json.toObject(string);
-            if (!json.has(object, "code", "0")) {
-                logger.warn(null, "获取远端最新版本[{}:{}]信息失败！", client, string);
-
-                return new JSONObject();
-            }
-
-            object = object.getJSONObject("data");
-            for (String name : names) {
-                if (!object.containsKey(name))
-                    continue;
-
-                String value = object.getString(name);
-                if (!value.contains("://"))
-                    object.put(name, latest + value);
-            }
-
-            return object;
-        }
-
         if (validator.isEmpty(client)) {
             UpgraderModel upgrader = upgraderDao.latest();
             if (upgrader == null)
@@ -127,5 +110,53 @@ public class UpgraderServiceImpl implements UpgraderService {
     @Override
     public void delete(String id) {
         upgraderDao.delete(id);
+    }
+
+    @Override
+    public void executeMinuteJob() {
+        if (validator.isEmpty(synch) || Calendar.getInstance().get(Calendar.MINUTE) % 5 > 0)
+            return;
+
+        String string = http.get(synch + "/upgrader/latest", null, "");
+        JSONObject object = json.toObject(string);
+        if (object == null || !object.containsKey("data")) {
+            logger.warn(null, "获取更新配置[{}]信息[{}]失败！", synch, string);
+
+            return;
+        }
+
+        UpgraderModel upgrader = modelHelper.fromJson(object.getJSONObject("data"), UpgraderModel.class);
+        if (upgrader == null) {
+            logger.warn(null, "解析更新配置[{}]信息[{}]失败！", synch, string);
+
+            return;
+        }
+
+        if (upgraderDao.findById(upgrader.getId()) == null)
+            upgraderDao.insert(upgrader);
+        else
+            upgraderDao.save(upgrader);
+
+        JSONArray array = json.toArray(upgrader.getFile());
+        if (validator.isEmpty(array))
+            return;
+
+        for (int i = 0, size = array.size(); i < size; i++) {
+            JSONObject file = array.getJSONObject(i);
+            if (!file.containsKey("uri"))
+                continue;
+
+            String uri = file.getString("uri");
+            String path = context.getAbsolutePath(uri);
+            if (io.exists(path))
+                continue;
+
+            io.mkdirs(path.substring(0, path.lastIndexOf('/')));
+            try (OutputStream outputStream = new FileOutputStream(path)) {
+                http.get(synch + uri, null, null, null, outputStream);
+            } catch (Throwable throwable) {
+                logger.warn(throwable, "下载更新文件[{}:{}]时发生异常！", synch, uri);
+            }
+        }
     }
 }
