@@ -49,6 +49,13 @@ public class FriendServiceImpl implements FriendService, UserListener, DateJob {
         String proposer = userService.id();
         FriendModel friend = friendDao.find(user, proposer);
         if (friend == null) {
+            friend = friendDao.find(proposer, user);
+            if (friend != null) {
+                agree(friend.getId());
+
+                return;
+            }
+
             friend = new FriendModel();
             friend.setUser(user);
             friend.setProposer(proposer);
