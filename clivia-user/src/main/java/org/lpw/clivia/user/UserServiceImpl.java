@@ -306,8 +306,7 @@ public class UserServiceImpl implements UserService, ContextRefreshedListener {
             return;
 
         user.setMobile(mobile);
-        userDao.save(user);
-        session.set(SESSION, user);
+        modify(user);
     }
 
     @Override
