@@ -300,6 +300,17 @@ public class UserServiceImpl implements UserService, ContextRefreshedListener {
     }
 
     @Override
+    public void mobile(String mobile) {
+        UserModel user = fromSession();
+        if (user == null)
+            return;
+
+        user.setMobile(mobile);
+        userDao.save(user);
+        session.set(SESSION, user);
+    }
+
+    @Override
     public UserModel fromSession() {
         OnlineModel online = onlineService.findBySid(session.getId());
         if (online == null)

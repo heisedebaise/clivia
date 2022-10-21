@@ -167,6 +167,12 @@ public interface UserService {
     boolean password(String oldPassword, String newPassword);
 
     /**
+     * 更新手机号。
+     * @param mobile 手机号。
+     */
+    void mobile(String mobile);
+
+    /**
      * 设置密码。
      *
      * @param mobile   手机号。

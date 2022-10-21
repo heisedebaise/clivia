@@ -6,6 +6,7 @@ import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.lpw.clivia.lock.LockHelper;
 import org.lpw.clivia.payment.PaymentService;
 import org.lpw.clivia.temporary.Temporary;
+import org.lpw.clivia.user.UserService;
 import org.lpw.clivia.weixin.info.InfoModel;
 import org.lpw.clivia.weixin.info.InfoService;
 import org.lpw.clivia.weixin.reply.ReplyService;
@@ -115,6 +116,8 @@ public class WeixinServiceImpl implements WeixinService, ContextRefreshedListene
     private Temporary temporary;
     @Inject
     private LockHelper lockHelper;
+    @Inject
+    private UserService userService;
     @Inject
     private PaymentService paymentService;
     @Inject
@@ -529,7 +532,10 @@ public class WeixinServiceImpl implements WeixinService, ContextRefreshedListene
         if (!json.containsKey(object, "phone_info"))
             return null;
 
-        return object.getJSONObject("phone_info");
+        JSONObject phone = object.getJSONObject("phone_info");
+        userService.mobile(phone.getString("phoneNumber"));
+
+        return phone;
     }
 
     @Override
