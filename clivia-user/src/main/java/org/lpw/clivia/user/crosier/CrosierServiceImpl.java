@@ -51,25 +51,14 @@ public class CrosierServiceImpl implements CrosierService, ContextRefreshedListe
     private Optional<Set<CrosierValid>> valids;
     @Inject
     private CrosierDao crosierDao;
-    private final int[] grades = {0};
+    private final int[] grades = {0, 90};
     private final Map<Integer, Map<String, Set<Map<String, String>>>> map = new ConcurrentHashMap<>();
     private final Set<String> always = Set.of("/photon/ctrl/status");
     private final Set<String> signs = Set.of("/photon/ctrl/upload", "/photon/ctrl-http/upload");
 
     @Override
     public JSONArray signUpGrades() {
-        JSONArray array = new JSONArray();
-        for (int grade : intGrades())
-            signUpGrades(array, numeric.toString(grade));
-
-        return array;
-    }
-
-    private void signUpGrades(JSONArray array, String value) {
-        JSONObject object = new JSONObject();
-        object.put("label", name(value));
-        object.put("value", value);
-        array.add(object);
+        return new JSONArray();
     }
 
     @Override
