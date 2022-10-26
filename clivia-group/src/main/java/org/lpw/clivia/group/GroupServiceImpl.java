@@ -17,7 +17,14 @@ import org.lpw.photon.util.Validator;
 import org.springframework.stereotype.Service;
 
 import javax.inject.Inject;
-import java.util.*;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
 
 @Service(GroupModel.NAME + ".service")
 public class GroupServiceImpl implements GroupService, UserListener {
@@ -227,15 +234,18 @@ public class GroupServiceImpl implements GroupService, UserListener {
         if (set.isEmpty())
             return null;
 
+        Iterator<String> iterator = set.iterator();
+        String u1 = iterator.next();
+        String u2 = iterator.hasNext() ? iterator.next() : u1;
+        if (!validator.isEmpty(keyvalueService.value(friendsKey(u1, u2))))
+            return null;
+
         GroupModel group = new GroupModel();
         group.setCount(users.length);
         group.setTime(dateTime.now());
         groupDao.save(group);
         memberService.create(group.getId(), set, 0, null);
 
-        Iterator<String> iterator = set.iterator();
-        String u1 = iterator.next();
-        String u2 = iterator.hasNext() ? iterator.next() : u1;
         keyvalueService.save(friendsKey(u1, u2), group.getId());
         keyvalueService.save(friendsKey(u2, u1), group.getId());
         if (set.size() == 2)
