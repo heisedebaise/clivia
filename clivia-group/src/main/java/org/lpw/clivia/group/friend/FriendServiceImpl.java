@@ -75,8 +75,8 @@ public class FriendServiceImpl implements FriendService, UserListener, DateJob {
         if (friend == null)
             return;
 
-        groupService.friend(new String[]{friend.getUser(), friend.getProposer()});
-        listeners.ifPresent(set -> set.forEach(listener -> listener.friendPass(friend)));
+        if (groupService.friend(new String[]{friend.getUser(), friend.getProposer()}) != null)
+            listeners.ifPresent(set -> set.forEach(listener -> listener.friendPass(friend)));
     }
 
     @Override
