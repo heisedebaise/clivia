@@ -428,7 +428,7 @@ public class WeixinServiceImpl implements WeixinService, ContextRefreshedListene
 
         return "https://open.weixin.qq.com/connect/oauth2/authorize?appid=" + weixin.getAppId() + "&redirect_uri="
                 + codec.encodeUrl(uri.contains("://") ? uri : ctrlHelper.url(uri), null)
-                + "&response_type=code&scope=" + scope + "#wechat_redirect";
+                + "&response_type=code&scope=" + scope + "&forcePopup=" + "snsapi_userinfo".equals(scope) + "#wechat_redirect";
     }
 
     @Override
@@ -456,7 +456,7 @@ public class WeixinServiceImpl implements WeixinService, ContextRefreshedListene
             map.put("openid", openId);
             map.put("lang", "zh_CN");
             JSONObject obj = json.toObject(http.get("https://api.weixin.qq.com/sns/userinfo", null, map));
-            if (obj != null)
+            if (obj != null && "snsapi_userinfo".equals(object.getString("scope")))
                 object.putAll(obj);
         }
         saveInfo(weixin, object, openId);

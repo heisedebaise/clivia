@@ -129,7 +129,7 @@ public class UserServiceImpl implements UserService, ContextRefreshedListener {
         String nick = types.getNick(type, uid, password);
         if (validator.isEmpty(user.getNick()))
             user.setNick(nick);
-        if (validator.isEmpty(user.getNick()))
+        if (validator.isEmpty(user.getNick()) && type.equals(Types.Self))
             user.setNick(uid);
         setInviter(user, inviter);
         user.setGrade(crosierService.signUpGrade(grade));

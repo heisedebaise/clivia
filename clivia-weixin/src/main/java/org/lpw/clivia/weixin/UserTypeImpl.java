@@ -1,7 +1,6 @@
 package org.lpw.clivia.weixin;
 
 import com.alibaba.fastjson.JSONObject;
-
 import org.springframework.stereotype.Service;
 
 @Service(WeixinModel.NAME + ".user-type")
