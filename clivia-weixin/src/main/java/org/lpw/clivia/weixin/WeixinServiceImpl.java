@@ -428,7 +428,7 @@ public class WeixinServiceImpl implements WeixinService, ContextRefreshedListene
 
         return "https://open.weixin.qq.com/connect/oauth2/authorize?appid=" + weixin.getAppId() + "&redirect_uri="
                 + codec.encodeUrl(uri.contains("://") ? uri : ctrlHelper.url(uri), null)
-                + "&response_type=code&scope=" + scope + "&forcePopup=" + "snsapi_userinfo".equals(scope) + "#wechat_redirect";
+                + "&response_type=code&scope=" + scope + "#wechat_redirect";
     }
 
     @Override
