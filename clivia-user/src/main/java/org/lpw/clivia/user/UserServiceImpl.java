@@ -127,7 +127,7 @@ public class UserServiceImpl implements UserService, ContextRefreshedListener {
         if (validator.isEmpty(user.getAvatar()))
             user.setAvatar(avatar);
         String nick = types.getNick(type, uid, password);
-        if (validator.isEmpty(user.getNick()))
+        if (!validator.isEmpty(nick))
             user.setNick(nick);
         if (validator.isEmpty(user.getNick()) && type.equals(Types.Self))
             user.setNick(uid);
