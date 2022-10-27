@@ -3,7 +3,7 @@ import { Upload, Button } from 'antd';
 import { PaperClipOutlined, UploadOutlined } from '@ant-design/icons';
 import UploadSupport from './upload';
 import { toArray } from '../json';
-import { url } from '../http';
+import { url, psid } from '../http';
 
 class File extends UploadSupport {
     state = {
@@ -27,6 +27,7 @@ class File extends UploadSupport {
 
         let props = {
             action: this.action,
+            headers: {},
             name: this.props.upload,
             multiple: true,
             progress: {
@@ -40,6 +41,7 @@ class File extends UploadSupport {
             fileList: this.list(),
             onChange: this.change
         };
+        psid(props.headers, false);
 
         return (
             <Upload {...props}>

@@ -15,8 +15,7 @@ class UploadSupport extends React.Component {
 
         if (file.status === 'done') {
             if (file.response.success) {
-                this.changed(file, true);
-                this.value();
+                this.changed(file, true, this.value);
 
                 return;
             }
@@ -28,14 +27,13 @@ class UploadSupport extends React.Component {
         }
 
         if (file.status === 'removed') {
-            this.changed(file, false);
-            this.value();
+            this.changed(file, false, this.value);
 
             return;
         }
     }
 
-    changed = (file, replace) => {
+    changed = (file, replace, callback) => {
         let list = [];
         let exists = false;
         for (let f of this.list()) {
@@ -51,7 +49,7 @@ class UploadSupport extends React.Component {
         }
         if (!exists)
             list.push(file);
-        this.setState({ list });
+        this.setState({ list }, callback);
     }
 
     value = () => {
