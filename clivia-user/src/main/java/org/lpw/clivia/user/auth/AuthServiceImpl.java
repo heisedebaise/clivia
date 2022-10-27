@@ -58,6 +58,21 @@ public class AuthServiceImpl implements AuthService {
         AuthModel auth = new AuthModel();
         auth.setUser(userId);
         auth.setUid(uid);
+        save(auth, type, mobile, email, nick, avatar);
+
+        return auth;
+    }
+
+    @Override
+    public void update(AuthModel auth, String type, String mobile, String email, String nick, String avatar) {
+        if (equals(auth.getType(), type) && equals(auth.getMobile(), mobile) && equals(auth.getEmail(), email)
+                && equals(auth.getNick(), nick) && equals(auth.getAvatar(), avatar))
+            return;
+
+        save(auth, type, mobile, email, nick, avatar);
+    }
+
+    private void save(AuthModel auth, String type, String mobile, String email, String nick, String avatar) {
         auth.setType(type);
         auth.setMobile(mobile);
         auth.setEmail(email);
@@ -65,8 +80,13 @@ public class AuthServiceImpl implements AuthService {
         auth.setAvatar(avatar);
         auth.setTime(dateTime.now());
         authDao.save(auth);
+    }
 
-        return auth;
+    private boolean equals(String get, String set) {
+        if (get == null)
+            return set == null;
+
+        return get.equals(set);
     }
 
     @Override

@@ -56,6 +56,18 @@ public interface AuthService {
     AuthModel create(String userId, String uid, String type, String mobile, String email, String nick, String avatar);
 
     /**
+     * 更新认证。
+     *
+     * @param auth   认证信息。
+     * @param type   认证类型。
+     * @param mobile 第三方账号手机号。
+     * @param email  第三方头像Email。
+     * @param nick   第三方账号昵称。
+     * @param avatar 第三方头像URL。
+     */
+    void update(AuthModel auth, String type, String mobile, String email, String nick, String avatar);
+
+    /**
      * 根据uid检索认证信息。
      *
      * @param uid UID值。
