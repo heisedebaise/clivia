@@ -29,6 +29,9 @@ class Grid extends React.Component {
             this.form = React.createRef();
             this.searchProps = meta.props(columns, props.meta.search);
             this.search = true;
+            for (let prop of this.searchProps)
+                if (prop.type === 'dselect')
+                    this.loadDselect(props, prop);
         } else if (props.meta.toolbar && props.meta.toolbar.length > 0) {
             this.toolbar = [];
             for (let toolbar of props.meta.toolbar) {
@@ -115,27 +118,28 @@ class Grid extends React.Component {
                     return this.format(prop, model, <Switch {...s} />);
                 }
             } else if (prop.type === 'dselect') {
-                service(props.body.uri(props.uri, prop.service), prop.parameter).then(data => {
-                    if (data === null) return;
+                // service(props.body.uri(props.uri, prop.service), prop.parameter).then(data => {
+                //     if (data === null) return;
 
-                    let options = {};
-                    let vname = prop.vname || 'id';
-                    let lname = prop.lname || 'name';
-                    for (let d of data.list || data) {
-                        let option = d;
-                        if (lname.indexOf('+') > -1)
-                            // eslint-disable-next-line
-                            eval('option.label=' + lname);
-                        else
-                            option.label = d[lname];
-                        options[d[vname]] = option.label;
-                    }
-                    let dselect = this.state.dselect;
-                    dselect[prop.name] = options;
-                    this.setState({
-                        dselect: dselect
-                    });
-                });
+                //     let options = {};
+                //     let vname = prop.vname || 'id';
+                //     let lname = prop.lname || 'name';
+                //     for (let d of data.list || data) {
+                //         let option = d;
+                //         if (lname.indexOf('+') > -1)
+                //             // eslint-disable-next-line
+                //             eval('option.label=' + lname);
+                //         else
+                //             option.label = d[lname];
+                //         options[d[vname]] = option.label;
+                //     }
+                //     let dselect = this.state.dselect;
+                //     dselect[prop.name] = options;
+                //     this.setState({
+                //         dselect: dselect
+                //     });
+                // });
+                this.loadDselect(props, prop);
                 column.render = model => this.format(prop, model, this.dselect(prop, model));
             } else if (prop.type === 'password')
                 column.render = model => this.format(prop, model, '***');
@@ -214,6 +218,30 @@ class Grid extends React.Component {
         }
 
         this.load(null);
+    }
+
+    loadDselect = (props, prop) => {
+        service(props.body.uri(props.uri, prop.service), prop.parameter).then(data => {
+            if (data === null) return;
+
+            let options = {};
+            let vname = prop.vname || 'id';
+            let lname = prop.lname || 'name';
+            for (let d of data.list || data) {
+                let option = d;
+                if (lname.indexOf('+') > -1)
+                    // eslint-disable-next-line
+                    eval('option.label=' + lname);
+                else
+                    option.label = d[lname];
+                options[d[vname]] = option.label;
+            }
+            let dselect = this.state.dselect;
+            dselect[prop.name] = options;
+            this.setState({
+                dselect: dselect
+            });
+        });
     }
 
     value = (model, name) => {
