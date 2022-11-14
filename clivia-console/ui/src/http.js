@@ -2,7 +2,7 @@ import {
     message
 } from 'antd';
 
-const root = 'https://beefory.com';
+const root = 'http://localhost:8080';
 
 const service = (uri, body) => post(uri, body).then(json => {
     if (json === null) return null;
