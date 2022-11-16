@@ -2,7 +2,6 @@ package org.lpw.clivia.user.auth;
 
 import com.alibaba.fastjson.JSONArray;
 import org.lpw.clivia.user.UserService;
-import org.lpw.photon.cache.Cache;
 import org.lpw.photon.dao.model.ModelHelper;
 import org.lpw.photon.util.DateTime;
 import org.lpw.photon.util.Validator;
@@ -15,10 +14,6 @@ import java.util.Set;
 
 @Service(AuthModel.NAME + ".service")
 public class AuthServiceImpl implements AuthService {
-    private static final String CACHE_UID = AuthModel.NAME + ".service.uid:";
-
-    @Inject
-    private Cache cache;
     @Inject
     private Validator validator;
     @Inject
@@ -91,7 +86,7 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public AuthModel findByUid(String uid) {
-        return validator.isEmpty(uid) ? null : cache.computeIfAbsent(CACHE_UID + uid, key -> authDao.findByUid(uid), false);
+        return validator.isEmpty(uid) ? null : authDao.findByUid(uid);
     }
 
     @Override
@@ -105,14 +100,12 @@ public class AuthServiceImpl implements AuthService {
     public void delete() {
         AuthModel auth = findByUid(userService.uidFromSession());
         authDao.delete(auth);
-        cache.remove(CACHE_UID + auth.getUid());
         userService.clearCache();
         userService.signOut();
     }
 
     @Override
     public void delete(String user) {
-        authDao.query(user).getList().forEach(auth -> cache.remove(CACHE_UID + auth.getUid()));
         authDao.delete(user);
     }
 }
