@@ -34,14 +34,23 @@ public abstract class UserTypeSupport extends TypeSupport {
         if (set == null)
             return null;
 
-        UserModel user = userService.signUp(uid, password, getKey(), null, grade, getInvitecode());
+        UserModel user = null;
+        Set<String> newer = new HashSet<>();
         for (String u : set) {
             AuthModel auth = authService.findByUid(u);
             if (auth == null)
-                authService.create(user.getId(), u, getKey(), getMobile(uid, password), getEmail(uid, password), getNick(uid, password), getAvatar(uid, password));
-            else
+                newer.add(u);
+            else {
+                user = userService.findById(auth.getUser());
                 authService.update(auth, getKey(), getMobile(uid, password), getEmail(uid, password), getNick(uid, password), getAvatar(uid, password));
+            }
         }
+
+        if (user == null)
+            user = userService.signUp(uid, password, getKey(), null, grade, getInvitecode());
+        if (user != null && !newer.isEmpty())
+            for (String u : newer)
+                authService.create(user.getId(), u, getKey(), getMobile(uid, password), getEmail(uid, password), getNick(uid, password), getAvatar(uid, password));
 
         return user;
     }

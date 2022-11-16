@@ -21,6 +21,8 @@ public class ConsoleCtrl {
     private MetaHelper metaHelper;
     @Inject
     private Dashboard dashboard;
+    @Inject
+    private ConsoleService consoleService;
 
     @Execute(name = "menu", permit = Permit.sign, validates = {
             @Validate(validator = UserService.VALIDATOR_SIGN)
@@ -42,5 +44,12 @@ public class ConsoleCtrl {
     })
     public Object dashboard() {
         return dashboard.get();
+    }
+
+    @Execute(name = "ringtone", permit = Permit.sign, validates = {
+            @Validate(validator = UserService.VALIDATOR_SIGN)
+    })
+    public Object ringtone() {
+        return consoleService.ringtone();
     }
 }

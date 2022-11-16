@@ -1,6 +1,6 @@
 import React from 'react';
-import { Layout } from 'antd';
-import { url } from '../http';
+import { Layout, message } from 'antd';
+import { service, url } from '../http';
 import Menu from './menu';
 import Sign from './sign';
 import body from './body';
@@ -11,9 +11,34 @@ class Console extends React.Component {
     super(props);
 
     this.state = {
-      body: <div />
+      body: <div />,
+      ringtones: [],
     };
     body.setIndex(this);
+    this.ringtones = [];
+    service('/console/ringtone').then(data => {
+      if (!data || data.length === 0)
+        return;
+
+      this.ringtones = data;
+      setInterval(this.ringtone, 1000);
+    });
+  }
+
+  ringtone = () => {
+    let time = Math.floor(new Date().getTime() / 1000);
+    for (let i = 0; i < this.ringtones.length; i++) {
+      let ringtone = this.ringtones[i];
+      if (ringtone.second > 1 && time % ringtone.second > 0)
+        continue;
+
+      service(ringtone.uri).then(data => {
+        if (data === '')
+          return;
+
+        message.info(data);
+      });
+    }
   }
 
   render = () => (

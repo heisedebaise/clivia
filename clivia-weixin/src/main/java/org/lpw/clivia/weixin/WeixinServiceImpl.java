@@ -459,9 +459,19 @@ public class WeixinServiceImpl implements WeixinService, ContextRefreshedListene
             if (obj != null)
                 object.putAll(obj);
         }
+
+        String nick = object.containsKey("nickname") ? object.getString("nickname") : null;
+        if (nick == null)
+            nick = object.containsKey("nickName") ? object.getString("nickName") : null;
+        if (nick == null || nick.contains("微信")) {
+            logger.info("未获取到有效的微信信息[{}:{}:{}]", key, code, object);
+
+            return new JSONObject();
+        }
+
         saveInfo(weixin, object, openId);
-        if (logger.isDebugEnable())
-            logger.debug("获得微信公众号用户认证信息[{}:{}:{}]。", key, code, object);
+        if (logger.isInfoEnable())
+            logger.info("获得微信公众号用户认证信息[{}:{}:{}]。", key, code, object);
 
         return object;
     }
