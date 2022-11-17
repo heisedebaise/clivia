@@ -11,11 +11,11 @@ class Console extends React.Component {
     super(props);
 
     this.state = {
-      body: <div />,
-      ringtones: [],
+      body: <div />
     };
     body.setIndex(this);
     this.ringtones = [];
+    this.ringtoneAudio = null;
     service('/console/ringtone').then(data => {
       if (!data || data.length === 0)
         return;
@@ -33,19 +33,35 @@ class Console extends React.Component {
         continue;
 
       service(ringtone.uri).then(data => {
-        if (data === '')
-          return;
-
-        message.info(data);
+        if (data.message)
+          message.info(data.message);
+        if (data.audio) {
+          if (this.ringtoneAudio) {
+            this.ringtoneAudio.src = data.audio;
+            this.ringtoneAudio.muted = '';
+            this.ringtoneAudio.play();
+          } else {
+            message.warn('提示铃声未被激活，请点击下鼠标');
+          }
+        }
       });
     }
   }
 
+  ringtoneAudioInit = () => {
+    if (this.ringtoneAudio)
+      return;
+
+    this.ringtoneAudio = document.getElementById('ringtone-audio');
+    this.ringtoneAudio.play();
+  }
+
   render = () => (
-    <Layout style={{ minHeight: '100vh' }}>
+    <Layout style={{ minHeight: '100vh' }} onClick={this.ringtoneAudioInit}>
       <Layout.Sider>
         <div className="console-logo">{this.props.logo ? [<img key="img" src={url(this.props.logo)} alt="" />, <div key="div"></div>] : null}</div>
         <div className="console-menu"><Menu /></div>
+        <div className="console-ringtone"><audio id="ringtone-audio" controls="controls" muted="muted" autoPlay={true}></audio></div>
         <div className="console-copyright">clivia-console &copy; {new Date().getFullYear()}</div>
       </Layout.Sider>
       <Layout>
