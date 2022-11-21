@@ -18,6 +18,10 @@ class Console extends React.Component {
     this.shortcut = React.createRef();
   }
 
+  ringtoneInit = () => {
+    this.shortcut.current.ringtoneInit();
+  }
+
   render = () => (
     <Layout style={{ minHeight: '100vh' }} onClick={this.ringtoneInit}>
       <Layout.Sider>

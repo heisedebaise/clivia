@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSONObject;
 import org.lpw.clivia.user.UserModel;
 
 import java.sql.Date;
+import java.sql.Timestamp;
 
 public interface OnlineService {
     /**
@@ -64,8 +65,18 @@ public interface OnlineService {
     /**
      * 统计在线用户数。
      *
-     * @param date 日期。
+     * @param date  日期。
+     * @param grade 最高等级。
      * @return 在线用户数。
      */
-    int count(Date date);
+    int count(Date date, int grade);
+
+    /**
+     * 统计在线用户数。
+     *
+     * @param lastVisit 最后访问时间。
+     * @param grade     最高等级。
+     * @return 在线用户数。
+     */
+    int count(Timestamp lastVisit, int grade);
 }

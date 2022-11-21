@@ -12,10 +12,11 @@ class Shortcut extends React.Component {
         };
 
         this.ringtone = null;
+    }
+
+    componentDidMount = () => {
         this.load();
         this.timer();
-        let root = document.getElementById('root');
-        root.onclick = this.ringtoneInit;
     }
 
     load = () => {
@@ -45,7 +46,7 @@ class Shortcut extends React.Component {
     }
 
     shortcut = (index, sc) => {
-        service(sc.service, sc.param || {}).then(data => {
+        service(sc.service, sc.parameter || {}).then(data => {
             if (data === null)
                 return;
 

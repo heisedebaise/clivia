@@ -1,13 +1,7 @@
 package org.lpw.clivia.user.stat;
 
-import java.sql.Date;
-import java.util.Calendar;
-
-import javax.inject.Inject;
-
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-
 import org.lpw.clivia.page.Pagination;
 import org.lpw.clivia.user.UserService;
 import org.lpw.clivia.user.online.OnlineService;
@@ -16,6 +10,10 @@ import org.lpw.photon.scheduler.MinuteJob;
 import org.lpw.photon.util.DateTime;
 import org.lpw.photon.util.Message;
 import org.springframework.stereotype.Service;
+
+import javax.inject.Inject;
+import java.sql.Date;
+import java.util.Calendar;
 
 @Service(StatModel.NAME + ".service")
 public class StatServiceImpl implements StatService, MinuteJob {
@@ -51,8 +49,8 @@ public class StatServiceImpl implements StatService, MinuteJob {
     @Override
     public JSONArray week() {
         JSONArray array = new JSONArray();
-        String[] series = new String[] { message.get(StatModel.NAME + ".count"),
-                message.get(StatModel.NAME + ".register"), message.get(StatModel.NAME + ".online") };
+        String[] series = new String[]{message.get(StatModel.NAME + ".count"),
+                message.get(StatModel.NAME + ".register"), message.get(StatModel.NAME + ".online")};
         statDao.query(null, 7, 1).getList().forEach(stat -> {
             String x = dateTime.toString(stat.getDate(), "MMdd");
             week(array, series[0], x, stat.getCount());
@@ -110,7 +108,7 @@ public class StatServiceImpl implements StatService, MinuteJob {
         }
         stat.setCount(userService.count());
         stat.setRegister(userService.count(date));
-        stat.setOnline(Math.max(stat.getOnline(), onlineService.count(date)));
+        stat.setOnline(Math.max(stat.getOnline(), onlineService.count(date, 90)));
         statDao.save(stat);
     }
 }

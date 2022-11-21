@@ -9,6 +9,7 @@
     font-size: 14px;
     line-height: 16px;
     border: 1px solid #ccc;
+    cursor: pointer;
 }
 
 .console-shortcut-item img {
@@ -17,5 +18,7 @@
 }
 
 .console-shortcut-ringtone {
-    display: none;
+    position: absolute;
+    left: -100vw;
+    top: -100vh;
 }

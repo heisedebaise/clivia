@@ -17,7 +17,9 @@ interface OnlineDao {
 
     OnlineModel findBySid(String sid);
 
-    SqlTable user(Timestamp[] lastVisit);
+    SqlTable user(Timestamp[] lastVisit, int grade);
+
+    SqlTable user(Timestamp lastVisit, int grade);
 
     void save(OnlineModel online);
 

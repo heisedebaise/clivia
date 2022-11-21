@@ -53,8 +53,13 @@ class OnlineDaoImpl implements OnlineDao {
     }
 
     @Override
-    public SqlTable user(Timestamp[] lastVisit) {
-        return sql.query("select c_user from m_user_online where c_last_visit between ? and ? and c_grade<?", new Object[]{lastVisit[0], lastVisit[1], 99});
+    public SqlTable user(Timestamp[] lastVisit, int grade) {
+        return sql.query("select c_user from m_user_online where c_last_visit between ? and ? and c_grade<=?", new Object[]{lastVisit[0], lastVisit[1], grade});
+    }
+
+    @Override
+    public SqlTable user(Timestamp lastVisit, int grade) {
+        return sql.query("select c_user from m_user_online where c_last_visit>=? and c_grade<=?", new Object[]{lastVisit, grade});
     }
 
     @Override

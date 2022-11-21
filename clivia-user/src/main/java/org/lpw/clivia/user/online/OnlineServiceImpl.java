@@ -7,6 +7,7 @@ import org.lpw.clivia.user.UserService;
 import org.lpw.clivia.user.auth.AuthService;
 import org.lpw.photon.ctrl.context.Header;
 import org.lpw.photon.ctrl.context.Session;
+import org.lpw.photon.dao.jdbc.SqlTable;
 import org.lpw.photon.scheduler.MinuteJob;
 import org.lpw.photon.util.DateTime;
 import org.lpw.photon.util.TimeUnit;
@@ -95,9 +96,18 @@ public class OnlineServiceImpl implements OnlineService, MinuteJob {
     }
 
     @Override
-    public int count(Date date) {
+    public int count(Date date, int grade) {
+        return count(onlineDao.user(dateTime.toTimeRange(date), grade));
+    }
+
+    @Override
+    public int count(Timestamp lastVisit, int grade) {
+        return count(onlineDao.user(lastVisit, grade));
+    }
+
+    private int count(SqlTable sqlTable) {
         Set<String> set = new HashSet<>();
-        onlineDao.user(dateTime.toTimeRange(date)).forEach(list -> set.add((String) list.get(0)));
+        sqlTable.forEach(list -> set.add((String) list.get(0)));
 
         return set.size();
     }
