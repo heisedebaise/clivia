@@ -21,8 +21,8 @@ public class ConsoleServiceImpl implements ConsoleService {
     private String console;
 
     @Override
-    public JSONArray ringtone() {
-        JSONArray array = json.toArray(io.readAsString(context.getAbsolutePath(console + "ringtone.json")));
+    public JSONArray shortcut() {
+        JSONArray array = json.toArray(io.readAsString(context.getAbsolutePath(console + "shortcut.json")));
 
         return array == null ? new JSONArray() : array;
     }

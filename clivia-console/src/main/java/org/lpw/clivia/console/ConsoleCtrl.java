@@ -46,10 +46,10 @@ public class ConsoleCtrl {
         return dashboard.get();
     }
 
-    @Execute(name = "ringtone", permit = Permit.sign, validates = {
+    @Execute(name = "shortcut", permit = Permit.sign, validates = {
             @Validate(validator = UserService.VALIDATOR_SIGN)
     })
-    public Object ringtone() {
-        return consoleService.ringtone();
+    public Object shortcut() {
+        return consoleService.shortcut();
     }
 }
