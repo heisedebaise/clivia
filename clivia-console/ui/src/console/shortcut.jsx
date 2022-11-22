@@ -1,5 +1,5 @@
 import React from 'react';
-import { Badge, Avatar, message } from 'antd';
+import { Badge,  message } from 'antd';
 import { service } from '../http';
 import './shortcut.css';
 

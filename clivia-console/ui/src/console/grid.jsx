@@ -118,27 +118,6 @@ class Grid extends React.Component {
                     return this.format(prop, model, <Switch {...s} />);
                 }
             } else if (prop.type === 'dselect') {
-                // service(props.body.uri(props.uri, prop.service), prop.parameter).then(data => {
-                //     if (data === null) return;
-
-                //     let options = {};
-                //     let vname = prop.vname || 'id';
-                //     let lname = prop.lname || 'name';
-                //     for (let d of data.list || data) {
-                //         let option = d;
-                //         if (lname.indexOf('+') > -1)
-                //             // eslint-disable-next-line
-                //             eval('option.label=' + lname);
-                //         else
-                //             option.label = d[lname];
-                //         options[d[vname]] = option.label;
-                //     }
-                //     let dselect = this.state.dselect;
-                //     dselect[prop.name] = options;
-                //     this.setState({
-                //         dselect: dselect
-                //     });
-                // });
                 this.loadDselect(props, prop);
                 column.render = model => this.format(prop, model, this.dselect(prop, model));
             } else if (prop.type === 'password')
@@ -173,6 +152,8 @@ class Grid extends React.Component {
             }
             else
                 column.render = model => this.format(prop, model, this.value(model, prop.name));
+            if (prop.sort)
+                column.sorter = true;
             this.columns.push(column);
         }
         if (props.meta.ops && props.meta.ops.length > 0) {
@@ -442,7 +423,7 @@ class Grid extends React.Component {
         });
     }
 
-    load = (pagination, search) => {
+    load = (pagination, search, sorter) => {
         if (this.timeout)
             window.clearTimeout(this.timeout);
 
@@ -455,6 +436,8 @@ class Grid extends React.Component {
             parameter = { ...parameter, ...this.props.parameter };
         if (search)
             parameter['console-grid-search'] = true;
+        if (sorter && sorter.order)
+            parameter['console-grid-sort'] = sorter.columnKey + ' ' + sorter.order;
         service(this.props.uri, parameter).then(data => {
             if (this.props.meta.interval)
                 this.timeout = window.setTimeout(this.load, this.props.meta.interval * 1000);

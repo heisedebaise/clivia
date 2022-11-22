@@ -1,6 +1,6 @@
 import React from 'react';
-import { Layout, message } from 'antd';
-import { service, url } from '../http';
+import { Layout } from 'antd';
+import { url } from '../http';
 import Menu from './menu';
 import Shortcut from './shortcut';
 import Sign from './sign';
