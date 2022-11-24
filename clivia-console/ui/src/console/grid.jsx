@@ -434,6 +434,8 @@ class Grid extends React.Component {
         }
         if (this.props.parameter)
             parameter = { ...parameter, ...this.props.parameter };
+        if (this.props.data)
+            parameter = { ...parameter, ...this.props.data };
         if (search)
             parameter['console-grid-search'] = true;
         if (sorter && sorter.order)
