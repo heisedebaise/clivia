@@ -386,7 +386,7 @@ class Grid extends React.Component {
         if (op.type === 'page')
             this.props.body.page(op.page, this.props.parameter, model);
         else
-            this.props.body.load(this.props.body.uri(this.props.uri, op.service || op.type), this.props.parameter, model);
+            this.props.body.load(this.props.body.uri(this.props.uri, op.service || op.type), this.props.parameter, { ...this.searches(), ...model });
     }
 
     preview = e => this.setState({ preview: e.currentTarget.src });
