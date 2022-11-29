@@ -11,6 +11,10 @@ import org.lpw.photon.util.Validator;
 import org.springframework.stereotype.Service;
 
 import javax.inject.Inject;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
 
 @Service(KeyvalueModel.NAME + ".service")
 public class KeyvalueServiceImpl implements KeyvalueService {
@@ -26,6 +30,8 @@ public class KeyvalueServiceImpl implements KeyvalueService {
     private ModelHelper modelHelper;
     @Inject
     private Pagination pagination;
+    @Inject
+    private Optional<Set<KeyvalueListener>> listeners;
     @Inject
     private KeyvalueDao keyvalueDao;
 
@@ -116,6 +122,9 @@ public class KeyvalueServiceImpl implements KeyvalueService {
         keyvalue.setValue(value);
         keyvalueDao.save(keyvalue);
         cleanCache();
+
+        Map<String, String> map = Map.of(key, value);
+        listeners.ifPresent(set -> set.forEach(listener -> listener.keyvalueModify(map)));
     }
 
     @Override
@@ -124,6 +133,9 @@ public class KeyvalueServiceImpl implements KeyvalueService {
             keyvalue.setId(null);
         keyvalueDao.save(keyvalue);
         cleanCache();
+
+        Map<String, String> map = Map.of(keyvalue.getKey(), keyvalue.getValue());
+        listeners.ifPresent(set -> set.forEach(listener -> listener.keyvalueModify(map)));
     }
 
     @Override
@@ -131,6 +143,7 @@ public class KeyvalueServiceImpl implements KeyvalueService {
         if (validator.isEmpty(array))
             return;
 
+        Map<String, String> map = new HashMap<>();
         for (int i = 0, size = array.size(); i < size; i++) {
             JSONObject object = array.getJSONObject(i);
             if (!object.containsKey("key") || !object.containsKey("value"))
@@ -147,14 +160,23 @@ public class KeyvalueServiceImpl implements KeyvalueService {
             }
             keyvalue.setValue(object.getString("value"));
             keyvalueDao.save(keyvalue);
+            map.put(keyvalue.getKey(), keyvalue.getValue());
         }
         cleanCache();
+        listeners.ifPresent(set -> set.forEach(listener -> listener.keyvalueModify(map)));
     }
 
     @Override
     public void delete(String id) {
+        KeyvalueModel keyvalue = keyvalueDao.findById(id);
+        if (keyvalue == null)
+            return;
+
         keyvalueDao.delete(id);
         cleanCache();
+
+        Map<String, String> map = Map.of(keyvalue.getKey(), keyvalue.getValue());
+        listeners.ifPresent(set -> set.forEach(listener -> listener.keyvalueDelete(map)));
     }
 
     private String cacheKey(String key) {
