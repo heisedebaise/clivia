@@ -3,6 +3,10 @@
     margin-bottom: 8px;
 }
 
+.console-grid-search-form .ant-form-item-row {
+    width: 100%;
+}
+
 .console-grid-search-form .ant-form-item-control-wrapper {
     flex: 1;
 }
