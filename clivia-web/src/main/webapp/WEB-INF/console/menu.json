@@ -125,6 +125,10 @@
             {
                 "label": "用户统计",
                 "service": "/user/stat/query"
+            },
+            {
+                "label": "异常登录",
+                "service": "/user/illegal/query"
             }
         ]
     }

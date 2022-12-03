@@ -95,9 +95,9 @@ public interface UserService {
      * @param password 密码。
      * @param type     认证类型。
      * @param grade    等级。
-     * @return 认证成功则返回true；否则返回false。
+     * @return 认证结果。
      */
-    boolean signIn(String uid, String password, String type, String grade);
+    int signIn(String uid, String password, String type, String grade);
 
     /**
      * 密码登入验证。
@@ -168,6 +168,7 @@ public interface UserService {
 
     /**
      * 更新手机号。
+     *
      * @param mobile 手机号。
      */
     void mobile(String mobile);

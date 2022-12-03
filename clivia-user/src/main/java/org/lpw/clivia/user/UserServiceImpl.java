@@ -7,6 +7,7 @@ import org.lpw.clivia.page.Pagination;
 import org.lpw.clivia.user.auth.AuthModel;
 import org.lpw.clivia.user.auth.AuthService;
 import org.lpw.clivia.user.crosier.CrosierService;
+import org.lpw.clivia.user.illegal.IllegalService;
 import org.lpw.clivia.user.invitecode.InvitecodeService;
 import org.lpw.clivia.user.inviter.InviterService;
 import org.lpw.clivia.user.online.OnlineModel;
@@ -76,6 +77,8 @@ public class UserServiceImpl implements UserService, ContextRefreshedListener {
     private InvitecodeService invitecodeService;
     @Inject
     private PasswordService passwordService;
+    @Inject
+    private IllegalService illegalService;
     @Inject
     private Optional<Set<UserListener>> listeners;
     @Inject
@@ -177,16 +180,22 @@ public class UserServiceImpl implements UserService, ContextRefreshedListener {
     }
 
     @Override
-    public boolean signIn(String uid, String password, String type, String grade) {
+    public int signIn(String uid, String password, String type, String grade) {
         UserModel user = types.auth(type, uid, password, grade);
-        if (user == null || user.getState() != 1)
-            return false;
+        if (user == null)
+            return 1;
+
+        if (user.getState() != 1) {
+            illegalService.save(user.getId());
+
+            return 2;
+        }
 
         signIn(user, uid);
         if (!Types.Self.equals(type))
             session.set(SESSION_AUTH3, types.getAuth(type, uid, password));
 
-        return true;
+        return 0;
     }
 
     @Override
