@@ -496,8 +496,10 @@ class Grid extends React.Component {
             } else if (column.type === 'date-range') {
                 if (value.length === 0)
                     values[column.name] = '';
-                else
-                    values[column.name] = value[0].format('YYYY-MM-DD') + ',' + value[1].format('YYYY-MM-DD')
+                else {
+                    let format = column.time ? 'YYYY-MM-DD HH:mm:ss' : 'YYYY-MM-DD';
+                    values[column.name] = value[0].format(format) + ',' + value[1].format(format);
+                }
             }
         }
 
@@ -662,7 +664,7 @@ class Search extends React.Component {
             return <DatePicker />;
 
         if (column.type === 'date-range')
-            return <RangePicker />;
+            return <RangePicker showTime={column.time} />;
 
         if (column.type === 'range') {
             return (
