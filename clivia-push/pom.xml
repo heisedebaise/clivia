@@ -15,7 +15,7 @@
         <dependency>
             <groupId>com.aliyun</groupId>
             <artifactId>aliyun-java-sdk-core</artifactId>
-            <version>4.6.1</version>
+            <version>4.6.3</version>
             <exclusions>
                 <exclusion>
                     <groupId>org.apache.httpcomponents</groupId>
@@ -26,7 +26,7 @@
         <dependency>
             <groupId>com.aliyun</groupId>
             <artifactId>aliyun-java-sdk-push</artifactId>
-            <version>3.13.10</version>
+            <version>3.13.11</version>
         </dependency>
         <dependency>
             <groupId>com.eatthepath</groupId>
