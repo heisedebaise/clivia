@@ -32,7 +32,7 @@ public class ConsoleHelperImpl implements ConsoleHelper {
         for (int i = 0; i < index; i++) {
             char ch = sort.charAt(i);
             if (ch >= 'A' && ch <= 'Z')
-                sb.append('_').append(ch - 'A');
+                sb.append('_').append(ch - 'A' + 'a');
             else
                 sb.append(ch);
         }
