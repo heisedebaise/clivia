@@ -1,15 +1,30 @@
 import React from 'react';
-import { Form, Row, Col, Radio, Select, DatePicker, Input, Button, Table, Divider, Menu, Dropdown, Modal, Switch } from 'antd';
-import { MinusOutlined, PaperClipOutlined, DashOutlined } from '@ant-design/icons';
-import { service, url } from '../http';
+import {
+    Form,
+    Row,
+    Col,
+    Radio,
+    Select,
+    DatePicker,
+    Input,
+    Button,
+    Table,
+    Divider,
+    Menu,
+    Dropdown,
+    Modal,
+    Switch
+} from 'antd';
+import {MinusOutlined, PaperClipOutlined, DashOutlined} from '@ant-design/icons';
+import {service, url} from '../http';
 import meta from './meta';
-import { toDecimal, toPercent } from './numeric';
-import { toArray } from '../json';
+import {toDecimal, toPercent} from './numeric';
+import {toArray} from '../json';
 import Category from './category';
 import User from './user';
 import './grid.css';
 
-const { RangePicker } = DatePicker;
+const {RangePicker} = DatePicker;
 
 class Grid extends React.Component {
     constructor(props) {
@@ -43,7 +58,7 @@ class Grid extends React.Component {
 
         this.columns = [];
         for (let prop of columns) {
-            let column = { key: prop.name, title: prop.label };
+            let column = {key: prop.name, title: prop.label};
             if (prop.labels)
                 column.render = model => this.format(prop, model, prop.multiple ? this.multiple(prop.labels, this.value(model, prop.name)) : prop.labels[this.value(model, prop.name)]);
             else if (prop.values) {
@@ -87,11 +102,12 @@ class Grid extends React.Component {
                     let value = this.value(model, prop.name);
                     if (value === '') return this.format(prop, model, '');
 
-                    if (value.indexOf(',') === -1) return this.format(prop, model, <img src={url(value)} alt="" onClick={this.preview} />);
+                    if (value.indexOf(',') === -1) return this.format(prop, model, <img src={url(value)} alt=""
+                                                                                        onClick={this.preview}/>);
 
                     let imgs = [];
                     for (let img of value.split(','))
-                        imgs.push(<img key={prop.name + imgs.length} src={url(img)} alt="" onClick={this.preview} />);
+                        imgs.push(<img key={prop.name + imgs.length} src={url(img)} alt="" onClick={this.preview}/>);
 
                     return this.format(prop, model, imgs);
                 }
@@ -100,7 +116,7 @@ class Grid extends React.Component {
                     let files = [];
                     for (let file of toArray(this.value(model, prop.name))) {
                         files.push(<div key={'file-' + files.length} className="file">
-                            <PaperClipOutlined />
+                            <PaperClipOutlined/>
                             <a href={url(file.uri)} target="_blank" rel="noopener noreferrer">{file.name}</a>
                         </div>);
                     }
@@ -109,7 +125,7 @@ class Grid extends React.Component {
                 }
             } else if (prop.type === 'switch') {
                 column.render = model => {
-                    let s = { defaultChecked: this.value(model, prop.name) === 1 };
+                    let s = {defaultChecked: this.value(model, prop.name) === 1};
                     if (prop.service)
                         s.onChange = this.switch.bind(this, prop, model);
                     else
@@ -123,9 +139,10 @@ class Grid extends React.Component {
             } else if (prop.type === 'password')
                 column.render = model => this.format(prop, model, '***');
             else if (prop.type === 'editor' || prop.type === 'html')
-                column.render = model => this.format(prop, model, <div dangerouslySetInnerHTML={{ __html: this.value(model, prop.name) }} />);
+                column.render = model => this.format(prop, model, <div
+                    dangerouslySetInnerHTML={{__html: this.value(model, prop.name)}}/>);
             else if (prop.type === 'user')
-                column.render = model => this.format(prop, model, <User data={this.value(model, prop.name)} />);
+                column.render = model => this.format(prop, model, <User data={this.value(model, prop.name)}/>);
             else if (prop.type === 'multi-line') {
                 column.render = model => {
                     let lines = [];
@@ -144,13 +161,13 @@ class Grid extends React.Component {
                             value = toDecimal(value, prop.size, prop.empty);
                         else if (line.type === 'percent' || line.type === 'read-only:percent')
                             value = toPercent(value);
-                        lines.push(<div key={'line:' + model.id + ':' + line.name}>{line.label} : {this.format(line, model, value)}</div>);
+                        lines.push(<div
+                            key={'line:' + model.id + ':' + line.name}>{line.label} : {this.format(line, model, value)}</div>);
                     }
 
                     return lines;
                 }
-            }
-            else
+            } else
                 column.render = model => this.format(prop, model, this.value(model, prop.name));
             if (prop.sort)
                 column.sorter = true;
@@ -178,19 +195,22 @@ class Grid extends React.Component {
                         opsize[1] = 2;
                     if (mops.length <= opsize[0]) {
                         for (let i in mops) {
-                            if (i > 0) ops.push(i % opsize[1] === 0 ? <br key={'br-' + i} /> : <Divider key={'divider-' + i} type="vertical" />);
+                            if (i > 0) ops.push(i % opsize[1] === 0 ? <br key={'br-' + i}/> :
+                                <Divider key={'divider-' + i} type="vertical"/>);
                             ops.push(this.action(mops[i], model));
                         }
                     } else {
                         opsize[0]--;
                         for (let i = 0; i < opsize[0]; i++) {
                             ops.push(this.action(mops[i], model));
-                            ops.push(i > 0 && (i % opsize[1] === 0) ? <br key={'br-' + i} /> : <Divider key={'divider-' + i} type="vertical" />);
+                            ops.push(i > 0 && (i % opsize[1] === 0) ? <br key={'br-' + i}/> :
+                                <Divider key={'divider-' + i} type="vertical"/>);
                         }
                         let items = [];
                         for (let i = opsize[0]; i < mops.length; i++)
                             items.push(<Menu.Item key={mops[i].label}>{this.action(mops[i], model)}</Menu.Item>);
-                        ops.push(<Dropdown key="more" overlay={<Menu>{items}</Menu>}><span className="console-grid-op">更多</span></Dropdown>);
+                        ops.push(<Dropdown key="more" overlay={<Menu>{items}</Menu>}><span
+                            className="console-grid-op">更多</span></Dropdown>);
                     }
 
                     return <div className="console-grid-ops">{ops}</div>;
@@ -263,7 +283,11 @@ class Grid extends React.Component {
     format = (prop, model, element) => {
         let maxlen = prop.maxlen || 64;
         if (element && typeof (element) === 'string' && element.length && element.length > maxlen)
-            element = <div>{element.substring(0, maxlen)}<span className="console-grid-more" onClick={this.more.bind(this, { label: prop.label, value: element })}><DashOutlined /></span></div>;
+            element = <div>{element.substring(0, maxlen)}<span className="console-grid-more"
+                                                               onClick={this.more.bind(this, {
+                                                                   label: prop.label,
+                                                                   value: element
+                                                               })}><DashOutlined/></span></div>;
 
         if (prop.style) {
             for (let style of prop.style) {
@@ -271,7 +295,8 @@ class Grid extends React.Component {
                     // eslint-disable-next-line
                     if (eval(style.condition))
                         return <div style={style.value}>{element}</div>;
-                } catch (e) { }
+                } catch (e) {
+                }
             }
         }
 
@@ -280,13 +305,14 @@ class Grid extends React.Component {
 
     button = op => <Button key={op.label} onClick={this.operate.bind(this, op, null)}>{op.label}</Button>;
 
-    action = (op, model) => <span key={op.label} className="console-grid-op" onClick={this.operate.bind(this, op, model)}>{op.label}</span>;
+    action = (op, model) => <span key={op.label} className="console-grid-op"
+                                  onClick={this.operate.bind(this, op, model)}>{op.label}</span>;
 
     operate = (op, model) => {
         if (op.type === 'create' || op.type === 'ucreate') {
-            let data = model && model.id ? { parent: model.id } : {};
-            if (op.parameter) data = { ...data, ...op.parameter };
-            if (op.search) data = { ...data, ...this.searches() };
+            let data = model && model.id ? {parent: model.id} : {};
+            if (op.parameter) data = {...data, ...op.parameter};
+            if (op.search) data = {...data, ...this.searches()};
             this.props.body.load(this.props.body.uri(this.props.uri, op.service || op.type), this.props.parameter, data);
 
             return;
@@ -320,7 +346,7 @@ class Grid extends React.Component {
             for (let m of this.state.list)
                 ids += ',' + m.id;
             if (ids.length > 0)
-                this.reload(op, model, { ids: ids.substring(1) });
+                this.reload(op, model, {ids: ids.substring(1)});
 
             return;
         }
@@ -348,7 +374,7 @@ class Grid extends React.Component {
                         document.body.removeChild(input);
                         if (data === null) return;
 
-                        this.load({ current: this.pageNum || 1 });
+                        this.load();
                     });
                 };
                 reader.readAsDataURL(file);
@@ -363,8 +389,7 @@ class Grid extends React.Component {
             let href = this.props.body.uri(this.props.uri, op.service || op.type);
             if (model && model.id) {
                 href += '?id=' + model.id;
-            }
-            else {
+            } else {
                 let values = this.searches();
                 for (let key in values) {
                     let value = values[key];
@@ -386,22 +411,22 @@ class Grid extends React.Component {
         if (op.type === 'page')
             this.props.body.page(op.page, this.props.parameter, model);
         else
-            this.props.body.load(this.props.body.uri(this.props.uri, op.service || op.type), this.props.parameter, { ...this.searches(), ...model });
+            this.props.body.load(this.props.body.uri(this.props.uri, op.service || op.type), this.props.parameter, {...this.searches(), ...model});
     }
 
-    preview = e => this.setState({ preview: e.currentTarget.src });
+    preview = e => this.setState({preview: e.currentTarget.src});
 
-    cancelPreview = () => this.setState({ preview: null });
+    cancelPreview = () => this.setState({preview: null});
 
-    more = lv => this.setState({ more: lv });
+    more = lv => this.setState({more: lv});
 
-    cancelMore = () => this.setState({ more: null });
+    cancelMore = () => this.setState({more: null});
 
-    cancelDelete = () => this.setState({ delete: null });
+    cancelDelete = () => this.setState({delete: null});
 
     okDelete = () => {
         this.reload(this.state.delete.op, this.state.delete.model, {});
-        this.setState({ delete: null });
+        this.setState({delete: null});
     }
 
     switch = (op, model, check) => {
@@ -411,15 +436,15 @@ class Grid extends React.Component {
     }
 
     reload = (op, model, parameter) => {
-        let param = { ...model, ...parameter }
+        let param = {...model, ...parameter}
         if (op.parameter)
-            param = { ...param, ...op.parameter };
+            param = {...param, ...op.parameter};
         if (this.props.parameter)
-            param = { ...param, ...this.props.parameter };
+            param = {...param, ...this.props.parameter};
         service(this.props.body.uri(this.props.uri, op.service || op.type), param).then(data => {
             if (data === null) return;
 
-            this.load({ current: this.pageNum || 1 });
+            this.load();
         });
     }
 
@@ -431,11 +456,14 @@ class Grid extends React.Component {
         if (pagination) {
             parameter.pageSize = pagination.pageSize;
             parameter.pageNum = pagination.current;
+        } else if (this.state.pagination) {
+            parameter.pageSize = this.state.pagination.pageSize;
+            parameter.pageNum = this.state.pagination.current;
         }
         if (this.props.parameter)
-            parameter = { ...parameter, ...this.props.parameter };
+            parameter = {...parameter, ...this.props.parameter};
         if (this.props.data)
-            parameter = { ...parameter, ...this.props.data };
+            parameter = {...parameter, ...this.props.data};
         if (search)
             parameter['console-grid-search'] = true;
         if (sorter && sorter.order)
@@ -445,33 +473,28 @@ class Grid extends React.Component {
                 this.timeout = window.setTimeout(this.load, this.props.meta.interval * 1000);
             if (data === null) return;
 
-            this.setState({
-                list: []
-            }, () => {
-                if (data instanceof Array) {
-                    this.setState({
-                        list: data
-                    });
-                } else {
-                    this.pageNum = data.number;
-                    let state = { list: data.list };
-                    if (data.count <= data.size)
-                        state.pagination = false;
-                    else {
-                        state.pagination = {
-                            total: data.count,
-                            pageSize: data.size,
-                            current: data.number,
-                            showTotal: (total, range) => {
-                                return range[0] + '-' + range[1] + ' 共' + total + '条';
-                            },
-                        };
-                    }
-                    if (this.props.meta.info)
-                        state[this.props.meta.info] = data[this.props.meta.info];
-                    this.setState(state);
+            if (data instanceof Array) {
+                this.setState({
+                    list: data
+                });
+            } else {
+                let state = {list: data.list};
+                if (data.count <= data.size)
+                    state.pagination = false;
+                else {
+                    state.pagination = {
+                        total: data.count,
+                        pageSize: data.size,
+                        current: data.number,
+                        showTotal: (total, range) => {
+                            return range[0] + '-' + range[1] + ' 共' + total + '条';
+                        },
+                    };
                 }
-            });
+                if (this.props.meta.info)
+                    state[this.props.meta.info] = data[this.props.meta.info];
+                this.setState(state);
+            }
         });
     }
 
@@ -509,23 +532,28 @@ class Grid extends React.Component {
     render = () => {
         let elements = [];
         if (this.props.meta.info)
-            elements.push(<div key={'info:' + this.props.meta.info} className="console-info" dangerouslySetInnerHTML={{ __html: this.state[this.props.meta.info] }} />);
-        if (this.search) elements.push(<Search key="search" props={this.searchProps} toolbar={this.props.meta.toolbar} grid={this} form={this.form} dselect={this.state.dselect} />);
+            elements.push(<div key={'info:' + this.props.meta.info} className="console-info"
+                               dangerouslySetInnerHTML={{__html: this.state[this.props.meta.info]}}/>);
+        if (this.search) elements.push(<Search key="search" props={this.searchProps} toolbar={this.props.meta.toolbar}
+                                               grid={this} form={this.form} dselect={this.state.dselect}/>);
         else if (this.toolbar) elements.push(<div key="toolbar" className="console-grid-toolbar">{this.toolbar}</div>);
-        elements.push(<Table key="table" columns={this.columns} dataSource={this.state.list} rowKey="id" pagination={this.state.pagination}
-            onChange={this.load} className="console-grid" scroll={this.scroll()} />);
+        elements.push(<Table key="table" columns={this.columns} dataSource={this.state.list} rowKey="id"
+                             pagination={this.state.pagination}
+                             onChange={this.load} className="console-grid" scroll={this.scroll()}/>);
         elements.push(
-            <Modal key="preview" visible={this.state.preview != null} footer={null} onCancel={this.cancelPreview} >
-                <img style={{ width: '100%' }} src={this.state.preview} alt="" />
+            <Modal key="preview" visible={this.state.preview != null} footer={null} onCancel={this.cancelPreview}>
+                <img style={{width: '100%'}} src={this.state.preview} alt=""/>
             </Modal>
         );
         elements.push(
-            <Modal key="more" visible={this.state.more} title={this.state.more ? this.state.more.label : ''} onCancel={this.cancelMore} footer={null}>
+            <Modal key="more" visible={this.state.more} title={this.state.more ? this.state.more.label : ''}
+                   onCancel={this.cancelMore} footer={null}>
                 {this.moreContent()}
             </Modal>
         );
         elements.push(
-            <Modal key="delete" visible={this.state.delete} title={this.state.delete ? this.state.delete.op.label : ''} onCancel={this.cancelDelete} onOk={this.okDelete}>
+            <Modal key="delete" visible={this.state.delete} title={this.state.delete ? this.state.delete.op.label : ''}
+                   onCancel={this.cancelDelete} onOk={this.okDelete}>
                 {this.deleteContent()}
             </Modal>
         );
@@ -535,7 +563,7 @@ class Grid extends React.Component {
 
     scroll = () => {
         if (!this.props.meta.freeze)
-            return { x: true };
+            return {x: true};
 
         let height = document.querySelector('.console-body').clientHeight;
         let form = document.querySelector('.console-grid-search-form');
@@ -545,9 +573,9 @@ class Grid extends React.Component {
         let len = this.state.list ? this.state.list.length : 0;
 
         if (len < rows)
-            return { x: true };
+            return {x: true};
 
-        return { x: true, y: 55 * rows };
+        return {x: true, y: 55 * rows};
     }
 
     moreContent = () => {
@@ -594,7 +622,7 @@ class Search extends React.Component {
         for (let column of this.props.props) {
             if (column.labels || column.values || column.type === 'dselect') initialValues[column.name] = column.value || '';
 
-            let item = { label: column.label };
+            let item = {label: column.label};
             if (column.type !== 'range')
                 item.name = column.name;
             cols.push(
@@ -615,7 +643,8 @@ class Search extends React.Component {
         cols.push(<span key="toolbar" className="console-grid-search-toolbar">{toolbar}</span>);
 
         return (
-            <Form ref={this.props.form} className="console-grid-search-form" initialValues={initialValues} onFinish={this.finish}>
+            <Form ref={this.props.form} className="console-grid-search-form" initialValues={initialValues}
+                  onFinish={this.finish}>
                 <Row gutter={24}>{cols}</Row>
             </Form>
         );
@@ -623,15 +652,15 @@ class Search extends React.Component {
 
     input = column => {
         if (column.labels) {
-            let options = [{ label: '全部', value: '' }];
+            let options = [{label: '全部', value: ''}];
             for (let index in column.labels)
-                options.push({ label: column.labels[index], value: index });
+                options.push({label: column.labels[index], value: index});
 
-            return options.length <= 3 ? <Radio.Group options={options} /> : <Select options={options} />;
+            return options.length <= 3 ? <Radio.Group options={options}/> : <Select options={options}/>;
         }
 
         if (column.values) {
-            let options = [{ label: '全部', value: '' }];
+            let options = [{label: '全部', value: ''}];
             if (column.values instanceof Array) {
                 for (let value of column.values)
                     options.push(value);
@@ -639,39 +668,39 @@ class Search extends React.Component {
                 let keys = Object.keys(column.values);
                 for (let index in keys) {
                     let key = keys[index];
-                    options.push({ label: column.values[key] || key, value: key });
+                    options.push({label: column.values[key] || key, value: key});
                 }
             } else if (typeof (column.values) === 'string') {
                 for (let value of column.values.split(','))
-                    options.push({ label: value, value: value });
+                    options.push({label: value, value: value});
             }
 
-            return options.length <= 3 ? <Radio.Group options={options} /> : <Select options={options} />;
+            return options.length <= 3 ? <Radio.Group options={options}/> : <Select options={options}/>;
         }
 
         if (column.type === 'dselect') {
-            let options = [{ label: '全部', value: '' }];
+            let options = [{label: '全部', value: ''}];
             let values = this.props.dselect[column.name];
             if (values) {
                 for (let key in values)
-                    options.push({ label: values[key], value: key });
+                    options.push({label: values[key], value: key});
             }
 
-            return <Select showSearch={true} options={options} filterOption={this.filter} />;
+            return <Select showSearch={true} options={options} filterOption={this.filter}/>;
         }
 
         if (column.type === 'date')
-            return <DatePicker />;
+            return <DatePicker/>;
 
         if (column.type === 'date-range')
-            return <RangePicker showTime={column.time} />;
+            return <RangePicker showTime={column.time}/>;
 
         if (column.type === 'range') {
             return (
                 <Input.Group className="console-grid-search-range" compact>
-                    <Form.Item name={column.name + 'Start'} noStyle><Input /></Form.Item>
-                    <span className="range-minus"><MinusOutlined /></span>
-                    <Form.Item name={column.name + 'End'} noStyle><Input /></Form.Item>
+                    <Form.Item name={column.name + 'Start'} noStyle><Input/></Form.Item>
+                    <span className="range-minus"><MinusOutlined/></span>
+                    <Form.Item name={column.name + 'End'} noStyle><Input/></Form.Item>
                 </Input.Group>
             );
         }
@@ -687,9 +716,9 @@ class Search extends React.Component {
         }
 
         if (column.type === 'category')
-            return <Category list={column.category} pointTo={column.pointTo} name={column.name} form={this} />;
+            return <Category list={column.category} pointTo={column.pointTo} name={column.name} form={this}/>;
 
-        return <Input />
+        return <Input/>
     }
 
     filter = (input, option) => {

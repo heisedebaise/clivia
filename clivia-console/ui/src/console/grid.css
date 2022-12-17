@@ -36,12 +36,9 @@
 }
 
 .console-grid th,
+.console-grid td,
 .console-grid-ops {
     white-space: nowrap;
-}
-
-.console-grid td {
-    word-break: break-all;
 }
 
 .console-grid td img {
