@@ -1,0 +1,65 @@
+{
+    "key": "clivia.olcs",
+    "uri": "/olcs/",
+    "props": [
+        {
+            "name": "user"
+        },
+        {
+            "name": "replier"
+        },
+        {
+            "name": "genre"
+        },
+        {
+            "name": "content"
+        },
+        {
+            "name": "time"
+        }
+    ],
+    "query": {
+        "type": "grid",
+        "search": [
+            {
+                "name": "user"
+            }
+        ],
+        "ops": [
+            {
+                "type": "modify"
+            }
+        ],
+        "toolbar": [
+            {
+                "type": "create"
+            }
+        ]
+    },
+    "create": {
+        "type": "form",
+        "toolbar": [
+            {
+                "type": "save",
+                "success": "query"
+            }
+        ]
+    },
+    "modify": {
+        "type": "form",
+        "toolbar": [
+            {
+                "type": "save",
+                "success": "query"
+            }
+        ]
+    },
+    "user": {
+        "type": "grid",
+        "search": [
+            {
+                "name": "user"
+            }
+        ]
+    }
+}

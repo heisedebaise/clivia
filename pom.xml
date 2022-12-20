@@ -32,6 +32,7 @@
         <module>clivia-group</module>
         <module>clivia-chat</module>
         <module>clivia-device</module>
+        <module>clivia-olcs</module>
         <module>clivia-console</module>
         <module>clivia-api</module>
         <module>clivia-web</module>
