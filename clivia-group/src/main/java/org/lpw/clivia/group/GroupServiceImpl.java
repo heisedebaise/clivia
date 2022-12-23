@@ -17,14 +17,7 @@ import org.lpw.photon.util.Validator;
 import org.springframework.stereotype.Service;
 
 import javax.inject.Inject;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 
 @Service(GroupModel.NAME + ".service")
 public class GroupServiceImpl implements GroupService, UserListener {
@@ -290,6 +283,38 @@ public class GroupServiceImpl implements GroupService, UserListener {
         groupDao.save(group);
         memberService.create(group.getId(), set, 1, owner);
         listeners.ifPresent(gls -> gls.forEach(listener -> listener.groupCreate(group, prologue)));
+
+        return 0;
+    }
+
+    @Override
+    public int groupName(String id, String name) {
+        MemberModel member = memberService.find(id, userService.id());
+        if (member == null || member.getGrade() == 0)
+            return 1;
+
+        GroupModel group = groupDao.findById(id);
+        if (group == null)
+            return 2;
+
+        group.setName(name);
+        groupDao.save(group);
+
+        return 0;
+    }
+
+    @Override
+    public int notice(String id, String notice) {
+        MemberModel member = memberService.find(id, userService.id());
+        if (member == null || member.getGrade() == 0)
+            return 1;
+
+        GroupModel group = groupDao.findById(id);
+        if (group == null)
+            return 2;
+
+        group.setNotice(notice);
+        groupDao.save(group);
 
         return 0;
     }
