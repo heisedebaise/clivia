@@ -288,6 +288,22 @@ public class GroupServiceImpl implements GroupService, UserListener {
     }
 
     @Override
+    public int avatar(String id, String avatar) {
+        MemberModel member = memberService.find(id, userService.id());
+        if (member == null || member.getGrade() == 0)
+            return 1;
+
+        GroupModel group = groupDao.findById(id);
+        if (group == null)
+            return 2;
+
+        group.setAvatar(avatar);
+        groupDao.save(group);
+
+        return 0;
+    }
+
+    @Override
     public int groupName(String id, String name) {
         MemberModel member = memberService.find(id, userService.id());
         if (member == null || member.getGrade() == 0)
