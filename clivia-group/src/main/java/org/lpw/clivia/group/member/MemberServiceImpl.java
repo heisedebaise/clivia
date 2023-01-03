@@ -70,6 +70,26 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
+    public void modify(String group, Set<String> users) {
+        memberDao.query(group).getList().forEach(member -> {
+            if (!users.remove(member.getUser()))
+                memberDao.delete(group, member.getUser());
+        });
+        if(users.isEmpty())
+            return;
+
+        Timestamp now = dateTime.now();
+        for (String user : users) {
+            MemberModel member = new MemberModel();
+            member.setGroup(group);
+            member.setUser(user);
+            member.setType(1);
+            member.setTime(now);
+            memberDao.save(member);
+        }
+    }
+
+    @Override
     public void memo(String id, String memo) {
         MemberModel member = memberDao.findById(id);
         member.setMemo(memo);

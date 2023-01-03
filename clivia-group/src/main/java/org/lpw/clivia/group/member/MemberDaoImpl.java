@@ -14,7 +14,7 @@ class MemberDaoImpl implements MemberDao {
 
     @Override
     public PageList<MemberModel> query(String group) {
-        return liteOrm.query(new LiteQuery(MemberModel.class).where("c_group=?"), new Object[]{group});
+        return liteOrm.query(new LiteQuery(MemberModel.class).where("c_group=?").order("c_grade desc,c_time"), new Object[]{group});
     }
 
     @Override

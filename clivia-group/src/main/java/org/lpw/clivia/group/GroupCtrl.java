@@ -60,6 +60,16 @@ public class GroupCtrl {
         return n == 0 ? "" : templates.get().failure(159004 + n, message.get(GroupModel.NAME + ".start." + n), null, null);
     }
 
+    @Execute(name = "member", permit = Permit.sign, validates = {
+            @Validate(validator = Validators.ID, parameter = "id", failureCode = 1),
+            @Validate(validator = UserService.VALIDATOR_SIGN)
+    })
+    public Object member() {
+        int n = groupService.member(request.get("id"), request.getAsArray("users"));
+
+        return n == 0 ? "" : templates.get().failure(159007 + n, message.get(GroupModel.NAME + ".manage." + n), null, null);
+    }
+
     @Execute(name = "avatar", permit = Permit.sign, validates = {
             @Validate(validator = Validators.ID, parameter = "id", failureCode = 1),
             @Validate(validator = Validators.MAX_LENGTH, number = {100}, parameter = "avatar", failureCode = 4),

@@ -20,6 +20,8 @@ public interface MemberService {
 
     void create(String group, Set<String> users, int type, String owner);
 
+    void modify(String group, Set<String> users);
+
     void memo(String id, String memo);
 
     void delete(String group);

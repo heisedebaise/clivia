@@ -21,6 +21,8 @@ public interface GroupService {
 
     int start(String name, String avatar, String prologue, String[] users);
 
+    int member(String id, String[] users);
+
     int avatar(String id, String avatar);
 
     int groupName(String id, String name);

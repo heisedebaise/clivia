@@ -272,6 +272,8 @@ public class GroupServiceImpl implements GroupService, UserListener {
                     sb.append(',').append(user.getNick());
             }
             name = sb.length() == 0 ? "" : sb.substring(1);
+            if (name.length() > 64)
+                name = name.substring(0, 64);
         }
 
         GroupModel group = new GroupModel();
@@ -288,6 +290,27 @@ public class GroupServiceImpl implements GroupService, UserListener {
     }
 
     @Override
+    public int member(String id, String[] users) {
+        Set<String> set = new HashSet<>(Arrays.asList(users));
+        if (set.size() < 3) return 3;
+
+        MemberModel member = memberService.find(id, userService.id());
+        if (member == null || member.getGrade() == 0)
+            return 1;
+
+        GroupModel group = groupDao.findById(id);
+        if (group == null)
+            return 2;
+
+        group.setCount(set.size());
+        groupDao.save(group);
+        memberService.modify(id, set);
+        listeners.ifPresent(gls -> gls.forEach(listener -> listener.groupUpdate(group)));
+
+        return 0;
+    }
+
+    @Override
     public int avatar(String id, String avatar) {
         MemberModel member = memberService.find(id, userService.id());
         if (member == null || member.getGrade() == 0)
@@ -299,6 +322,7 @@ public class GroupServiceImpl implements GroupService, UserListener {
 
         group.setAvatar(avatar);
         groupDao.save(group);
+        listeners.ifPresent(gls -> gls.forEach(listener -> listener.groupUpdate(group)));
 
         return 0;
     }
@@ -315,6 +339,7 @@ public class GroupServiceImpl implements GroupService, UserListener {
 
         group.setName(name);
         groupDao.save(group);
+        listeners.ifPresent(gls -> gls.forEach(listener -> listener.groupUpdate(group)));
 
         return 0;
     }
