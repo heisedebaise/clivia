@@ -57,6 +57,11 @@ class UserDaoImpl implements UserDao {
     }
 
     @Override
+    public PageList<UserModel> query(int grade) {
+        return liteOrm.query(new LiteQuery(UserModel.class).where("c_grade=?"), new Object[]{grade});
+    }
+
+    @Override
     public PageList<UserModel> query() {
         return liteOrm.query(new LiteQuery(UserModel.class), null);
     }

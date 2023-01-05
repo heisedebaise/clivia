@@ -1,0 +1,52 @@
+.olcs-item {
+    cursor: pointer;
+}
+
+.olcs-item .ant-list-item-meta-description {
+    white-space: nowrap;
+    overflow: hidden;
+}
+
+.olcs-content {
+    border: 1px solid #d9d9d9;
+    border-radius: 4px;
+}
+
+.olcs-avatar-nick {
+    padding: 8px;
+    border-bottom: 1px solid #d9d9d9;
+}
+
+.olcs-avatar-nick .nick {
+    padding-left: 8px;
+}
+
+.olcs-messages {
+    height: 50vh;
+    overflow: auto;
+}
+
+.olcs-tools {
+    border-top: 1px solid #d9d9d9;
+}
+
+.olcs-tool {
+    display: inline-block;
+    padding: 8px 0 0 8px;
+}
+
+.olcs-input {
+    padding: 8px;
+}
+
+.olcs-input textarea {
+    width: 100%;
+    height: 64px;
+    border: none;
+    outline: none;
+}
+
+.olcs-send {
+    padding: 0 8px 8px 0;
+    text-align: right;
+}

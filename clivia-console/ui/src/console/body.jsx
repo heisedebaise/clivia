@@ -6,6 +6,7 @@ import Grid from './grid';
 import Form from './form';
 import Setting from './setting';
 import Crosier from './crosier';
+import Olcs from './olcs';
 import Page from '../page';
 
 class Body {
@@ -29,6 +30,12 @@ class Body {
 
         if (uri === '/console/dashboard') {
             this.setState(<Dashboard />);
+
+            return;
+        }
+
+        if (uri === '/olcs/query') {
+            this.setState(<Olcs />);
 
             return;
         }

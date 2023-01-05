@@ -5,6 +5,7 @@ import com.alibaba.fastjson.JSONObject;
 import org.lpw.photon.dao.orm.PageList;
 
 import java.sql.Date;
+import java.util.List;
 import java.util.Set;
 
 public interface UserService {
@@ -290,6 +291,14 @@ public interface UserService {
     JSONObject query(String uid, String idcard, String name, String nick, String mobile, String email,
                      String weixin, String qq, String code, int minGrade, int maxGrade, int state, String register,
                      String from);
+
+    /**
+     * 获取指定等级用户集。
+     *
+     * @param grade 目标等级。
+     * @return 用户集。
+     */
+    List<UserModel> list(int grade);
 
     /**
      * 检索用户ID集。

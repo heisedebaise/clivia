@@ -18,18 +18,11 @@ public class OlcsCtrl {
     @Inject
     private OlcsService olcsService;
 
-    @Execute(name = "query", validates = {
+    @Execute(name = "users", validates = {
             @Validate(validator = Validators.SIGN)
     })
-    public Object query() {
-        return olcsService.query(request.get("user"));
-    }
-
-    @Execute(name = "user", validates = {
-            @Validate(validator = UserService.VALIDATOR_SIGN)
-    })
-    public Object user() {
-        return olcsService.user(request.get("user"));
+    public Object users() {
+        return olcsService.users();
     }
 
     @Execute(name = "ask", permit = Permit.always, validates = {

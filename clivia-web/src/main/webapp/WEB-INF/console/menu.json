@@ -19,6 +19,10 @@
         ]
     },
     {
+        "label": "客服",
+        "service": "/olcs/query"
+    },
+    {
         "label": "配置",
         "items": [
             {

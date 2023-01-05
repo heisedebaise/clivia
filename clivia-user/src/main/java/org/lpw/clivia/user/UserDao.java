@@ -11,6 +11,8 @@ interface UserDao {
 
     PageList<UserModel> query(String inviter, int pageSize, int pageNum);
 
+    PageList<UserModel> query(int grade);
+
     PageList<UserModel> query();
 
     UserModel findById(String id);

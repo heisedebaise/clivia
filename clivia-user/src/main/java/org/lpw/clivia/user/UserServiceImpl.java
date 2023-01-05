@@ -30,6 +30,7 @@ import org.springframework.stereotype.Service;
 
 import javax.inject.Inject;
 import java.sql.Date;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
@@ -447,6 +448,11 @@ public class UserServiceImpl implements UserService, ContextRefreshedListener {
                             String from) {
         return userDao.query(authService.users(uid), idcard, name, nick, mobile, email, weixin, qq, code, minGrade,
                 maxGrade, state, register, from, pagination.getPageSize(20), pagination.getPageNum()).toJson();
+    }
+
+    @Override
+    public List<UserModel> list(int grade) {
+        return userDao.query(grade).getList();
     }
 
     @Override
