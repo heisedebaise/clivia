@@ -1,5 +1,5 @@
 import React from 'react';
-import { Badge,  message } from 'antd';
+import { Badge, message } from 'antd';
 import { service } from '../http';
 import './shortcut.css';
 
@@ -46,6 +46,9 @@ class Shortcut extends React.Component {
     }
 
     shortcut = (index, sc) => {
+        if (!sc.service)
+            return;
+
         service(sc.service, sc.parameter || {}).then(data => {
             if (data === null)
                 return;

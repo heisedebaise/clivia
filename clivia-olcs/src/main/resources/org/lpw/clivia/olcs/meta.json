@@ -27,38 +27,7 @@
         ],
         "ops": [
             {
-                "type": "modify"
-            }
-        ],
-        "toolbar": [
-            {
-                "type": "create"
-            }
-        ]
-    },
-    "create": {
-        "type": "form",
-        "toolbar": [
-            {
-                "type": "save",
-                "success": "query"
-            }
-        ]
-    },
-    "modify": {
-        "type": "form",
-        "toolbar": [
-            {
-                "type": "save",
-                "success": "query"
-            }
-        ]
-    },
-    "user": {
-        "type": "grid",
-        "search": [
-            {
-                "name": "user"
+                "service": "reply"
             }
         ]
     }

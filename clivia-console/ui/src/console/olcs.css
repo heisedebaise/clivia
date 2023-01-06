@@ -1,3 +1,8 @@
+.olcs-member {
+    max-height: 80vh;
+    overflow: auto;
+}
+
 .olcs-item {
     cursor: pointer;
 }
@@ -24,6 +29,53 @@
 .olcs-messages {
     height: 50vh;
     overflow: auto;
+}
+
+.olcs-message-user {
+    padding: 8px;
+}
+
+.olcs-message-user .olcs-message-content {
+    display: inline-block;
+    vertical-align: top;
+    margin-left: 8px;
+}
+
+.olcs-message-user .olcs-message-text {
+    display: inline-block;
+    padding: 4px 8px;
+    max-width: 50vw;
+    border: 1px solid #d9d9d9;
+    border-radius: 0 4px 4px 4px;
+}
+
+.olcs-message-replier {
+    padding: 8px;
+    text-align: right;
+}
+
+.olcs-message-replier .olcs-message-content {
+    display: inline-block;
+    vertical-align: top;
+    margin-right: 8px;
+}
+
+.olcs-message-replier .olcs-message-text {
+    display: inline-block;
+    padding: 4px 8px;
+    max-width: 50vw;
+    border: 1px solid #d9d9d9;
+    border-radius: 4px 0 4px 4px;
+    text-align: left;
+}
+
+.olcs-message-image img {
+    max-width: 25vw;
+    max-height: 25vh;
+}
+
+.olcs-message-time {
+    color: #ccc;
 }
 
 .olcs-tools {

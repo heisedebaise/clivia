@@ -1,7 +1,6 @@
 package org.lpw.clivia.olcs;
 
 import org.lpw.clivia.Permit;
-import org.lpw.clivia.user.UserService;
 import org.lpw.photon.ctrl.context.Request;
 import org.lpw.photon.ctrl.execute.Execute;
 import org.lpw.photon.ctrl.validate.Validate;
@@ -18,11 +17,17 @@ public class OlcsCtrl {
     @Inject
     private OlcsService olcsService;
 
-    @Execute(name = "users", validates = {
+    @Execute(name = "query", validates = {
+            @Validate(validator = Validators.ID, parameter = "user", failureCode = 3),
             @Validate(validator = Validators.SIGN)
     })
-    public Object users() {
-        return olcsService.users();
+    public Object query() {
+        return olcsService.query(request.get("user"), request.getAsTimestamp("time"));
+    }
+
+    @Execute(name = "user", permit = Permit.always)
+    public Object user() {
+        return olcsService.user(request.getAsTimestamp("time"));
     }
 
     @Execute(name = "ask", permit = Permit.always, validates = {
@@ -36,11 +41,12 @@ public class OlcsCtrl {
         return "";
     }
 
-    @Execute(name = "reply", permit = Permit.always, validates = {
+    @Execute(name = "reply", validates = {
             @Validate(validator = Validators.ID, parameter = "user", failureCode = 3),
             @Validate(validator = Validators.NOT_EMPTY, parameter = "genre", failureCode = 4),
             @Validate(validator = Validators.MAX_LENGTH, number = {100}, parameter = "genre", failureCode = 5),
-            @Validate(validator = Validators.NOT_EMPTY, parameter = "content", failureCode = 6)
+            @Validate(validator = Validators.NOT_EMPTY, parameter = "content", failureCode = 6),
+            @Validate(validator = Validators.SIGN),
     })
     public Object reply() {
         olcsService.reply(request.get("user"), request.get("genre"), request.get("content"));
