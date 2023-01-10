@@ -15,6 +15,9 @@
             "name": "content"
         },
         {
+            "name": "read"
+        },
+        {
             "name": "time"
         }
     ],

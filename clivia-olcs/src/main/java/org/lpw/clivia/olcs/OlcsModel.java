@@ -22,6 +22,7 @@ public class OlcsModel extends ModelSupport {
     private String replier; // 客服
     private String genre; // 类型
     private String content; // 内容
+    private int read; // 已读：0-否；1-是
     private Timestamp time; // 时间
 
     @Jsonable
@@ -62,6 +63,16 @@ public class OlcsModel extends ModelSupport {
 
     public void setContent(String content) {
         this.content = content;
+    }
+
+    @Jsonable
+    @Column(name = "c_read")
+    public int getRead() {
+        return read;
+    }
+
+    public void setRead(int read) {
+        this.read = read;
     }
 
     @Jsonable

@@ -30,4 +30,15 @@ class OlcsDaoImpl implements OlcsDao {
     public void save(OlcsModel olcs) {
         liteOrm.save(olcs);
     }
+
+    @Override
+    public void read(String user, boolean replier, int read) {
+        liteOrm.update(new LiteQuery(OlcsModel.class).set("c_read=?").where("c_user=? and c_replier is " + (replier ? "not " : "") + "null"),
+                new Object[]{read, user});
+    }
+
+    @Override
+    public void delete(Timestamp time) {
+        liteOrm.delete(new LiteQuery(OlcsModel.class).where("c_time<?"), new Object[]{time});
+    }
 }

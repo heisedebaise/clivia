@@ -6,6 +6,7 @@ CREATE TABLE t_olcs
   c_replier CHAR(36) DEFAULT NULL COMMENT '客服',
   c_genre VARCHAR(255) DEFAULT NULL COMMENT '类型',
   c_content TEXT DEFAULT NULL COMMENT '内容',
+  c_read INT DEFAULT NULL COMMENT '已读：0-否；1-是',
   c_time DATETIME NOT NULL COMMENT '时间',
 
   PRIMARY KEY pk(c_id) USING HASH,

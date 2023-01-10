@@ -10,4 +10,8 @@ interface OlcsDao {
     OlcsModel findById(String id);
 
     void save(OlcsModel olcs);
+
+    void read(String user, boolean replier, int read);
+
+    void delete(Timestamp time);
 }

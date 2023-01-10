@@ -6,6 +6,7 @@ import org.lpw.clivia.olcs.member.MemberService;
 import org.lpw.clivia.page.Pagination;
 import org.lpw.clivia.user.UserService;
 import org.lpw.photon.ctrl.context.Session;
+import org.lpw.photon.scheduler.HourJob;
 import org.lpw.photon.util.DateTime;
 import org.lpw.photon.util.Generator;
 import org.lpw.photon.util.Message;
@@ -14,9 +15,11 @@ import org.springframework.stereotype.Service;
 
 import javax.inject.Inject;
 import java.sql.Timestamp;
+import java.util.Calendar;
+import java.util.Optional;
 
 @Service(OlcsModel.NAME + ".service")
-public class OlcsServiceImpl implements OlcsService {
+public class OlcsServiceImpl implements OlcsService, HourJob {
     @Inject
     private Validator validator;
     @Inject
@@ -34,11 +37,22 @@ public class OlcsServiceImpl implements OlcsService {
     @Inject
     private MemberService memberService;
     @Inject
+    private Optional<OlcsConfig> config;
+    @Inject
     private OlcsDao olcsDao;
     private final String casual = "olcsolcs-";
 
     @Override
     public JSONArray query(String user, Timestamp time) {
+        return query(userService.id(), time, true);
+    }
+
+    @Override
+    public JSONArray user(Timestamp time) {
+        return query(userService.id(), time, false);
+    }
+
+    private JSONArray query(String user, Timestamp time, boolean replier) {
         JSONArray array = new JSONArray();
         olcsDao.query(user, time).getList().forEach(olcs -> {
             JSONObject object = new JSONObject();
@@ -50,13 +64,10 @@ public class OlcsServiceImpl implements OlcsService {
             object.put("time", dateTime.toString(olcs.getTime()));
             array.add(object);
         });
+        if (!array.isEmpty())
+            olcsDao.read(user, replier, 1);
 
         return array;
-    }
-
-    @Override
-    public JSONArray user(Timestamp time) {
-        return query(userService.id(), time);
     }
 
     @Override
@@ -86,5 +97,16 @@ public class OlcsServiceImpl implements OlcsService {
         olcs.setTime(dateTime.now());
         olcsDao.save(olcs);
         memberService.save(user, genre.equals("text") ? content : message.get(OlcsModel.NAME + ".genre." + genre));
+    }
+
+    @Override
+    public void executeHourJob() {
+        int overdue = config.map(OlcsConfig::overdue).orElse(0);
+        if (overdue <= 0)
+            return;
+
+        Calendar calendar = Calendar.getInstance();
+        calendar.add(Calendar.DAY_OF_MONTH, -overdue);
+        olcsDao.delete(new Timestamp(calendar.getTimeInMillis()));
     }
 }
