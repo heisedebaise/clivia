@@ -34,6 +34,16 @@ class MemberDaoImpl implements MemberDao {
     }
 
     @Override
+    public void userRead(String id, Timestamp time) {
+        liteOrm.update(new LiteQuery(MemberModel.class).set("c_user_read=?").where("c_id=?"), new Object[]{time, id});
+    }
+
+    @Override
+    public void replierRead(String id, Timestamp time) {
+        liteOrm.update(new LiteQuery(MemberModel.class).set("c_replier_read=?").where("c_id=?"), new Object[]{time, id});
+    }
+
+    @Override
     public void content(String content, Timestamp time) {
         liteOrm.update(new LiteQuery(MemberModel.class).set("c_content=?").where("c_time<?"), new Object[]{content, time});
     }

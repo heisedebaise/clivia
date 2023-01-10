@@ -15,5 +15,9 @@ interface MemberDao {
 
     void content(String content, Timestamp time);
 
+    void userRead(String id,Timestamp time);
+
+    void replierRead(String id,Timestamp time);
+
     void delete(String id);
 }

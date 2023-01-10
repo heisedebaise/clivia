@@ -2,6 +2,7 @@ package org.lpw.clivia.olcs;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import org.lpw.clivia.olcs.member.MemberModel;
 import org.lpw.clivia.olcs.member.MemberService;
 import org.lpw.clivia.page.Pagination;
 import org.lpw.clivia.user.UserService;
@@ -43,16 +44,16 @@ public class OlcsServiceImpl implements OlcsService, HourJob {
     private final String casual = "olcsolcs-";
 
     @Override
-    public JSONArray query(String user, Timestamp time) {
-        return query(userService.id(), time, true);
+    public JSONObject query(String user, Timestamp time) {
+        return query(user, time, true);
     }
 
     @Override
-    public JSONArray user(Timestamp time) {
+    public JSONObject user(Timestamp time) {
         return query(userService.id(), time, false);
     }
 
-    private JSONArray query(String user, Timestamp time, boolean replier) {
+    private JSONObject query(String user, Timestamp time, boolean replier) {
         JSONArray array = new JSONArray();
         olcsDao.query(user, time).getList().forEach(olcs -> {
             JSONObject object = new JSONObject();
@@ -64,10 +65,19 @@ public class OlcsServiceImpl implements OlcsService, HourJob {
             object.put("time", dateTime.toString(olcs.getTime()));
             array.add(object);
         });
-        if (!array.isEmpty())
-            olcsDao.read(user, replier, 1);
+        if (!array.isEmpty()) {
+            if (replier)
+                memberService.replierRead(user, dateTime.now());
+            else
+                memberService.userRead(user, dateTime.now());
+        }
+        JSONObject object = new JSONObject();
+        object.put("list", array);
+        MemberModel member = memberService.findById(user);
+        if (member != null)
+            object.put("read", dateTime.toString(replier ? member.getUserRead() : member.getReplierRead()));
 
-        return array;
+        return object;
     }
 
     @Override
@@ -97,6 +107,12 @@ public class OlcsServiceImpl implements OlcsService, HourJob {
         olcs.setTime(dateTime.now());
         olcsDao.save(olcs);
         memberService.save(user, genre.equals("text") ? content : message.get(OlcsModel.NAME + ".genre." + genre));
+    }
+
+    @Override
+    public void clean(String user) {
+        olcsDao.delete(user);
+        memberService.save(user, "");
     }
 
     @Override

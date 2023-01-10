@@ -1,6 +1,6 @@
 import React from 'react';
 import { Col, Row, Collapse, List, Avatar, Button } from 'antd';
-import { PictureOutlined } from '@ant-design/icons';
+import { PictureOutlined, DeleteOutlined } from '@ant-design/icons';
 import { service, upload, url } from '../http';
 import './olcs.css';
 
@@ -12,17 +12,18 @@ class Olcs extends React.Component {
             user: {},
             messages: [],
             time: '',
-            timer: true,
+            read: '',
         };
+        this.timeout = true;
         this.timer();
     }
 
     componentWillUnmount = () => {
-        this.state.timer = false;
+        this.timeout = false;
     }
 
     timer = () => {
-        if (this.state.timer)
+        if (this.timeout)
             setTimeout(this.timer.bind(this), 1000);
         service('/olcs/member/query').then(data => {
             if (data === null)
@@ -32,18 +33,27 @@ class Olcs extends React.Component {
         });
         if (this.state.user.id) {
             service('/olcs/query', { user: this.state.user.id, time: this.state.time }).then(data => {
-                if (data === null || data.length === 0)
+                if (data === null)
                     return;
 
-                let messages = this.state.messages;
-                for (let message of data) {
-                    messages.push(message);
+                let state = {};
+                let has = data.list && data.list.length > 0;
+                if (has) {
+                    state.messages = this.state.messages;
+                    for (let message of data.list) {
+                        state.messages.push(message);
+                    }
+                    state.time = state.messages[state.messages.length - 1].time;
                 }
-                this.setState({ messages, time: messages[messages.length - 1].time });
-                setTimeout(() => {
-                    let msgs = document.querySelector('.olcs-messages');
-                    msgs.scrollTop = msgs.scrollHeight;
-                }, 250);
+                state.read = data.read || '';
+                this.setState(state);
+                if (has) {
+                    setTimeout(() => {
+                        let msgs = document.querySelector('.olcs-messages');
+                        if (msgs)
+                            msgs.scrollTop = msgs.scrollHeight;
+                    }, 250);
+                }
             });
         }
     }
@@ -63,8 +73,8 @@ class Olcs extends React.Component {
             let content = null;
             if (message.genre === 'image') {
                 content = (
-                    <a href={url(message.content)} target="_blank" >
-                        <img src={url(message.content)} />
+                    <a href={url(message.content)} rel="noreferrer" target="_blank" >
+                        <img src={url(message.content)} alt="" />
                     </a>
                 );
             } else {
@@ -80,6 +90,7 @@ class Olcs extends React.Component {
                 messages.push(
                     <div className="olcs-message-replier" key={message.id}>
                         <div className="olcs-message-content">
+                            {message.time < this.state.read ? <div className="olcs-message-read">已读</div> : <div className="olcs-message-unread">未读</div>}
                             <div className={'olcs-message-' + message.genre}>{content}</div>
                             <div className="olcs-message-time">{message.time}</div>
                         </div>
@@ -110,6 +121,9 @@ class Olcs extends React.Component {
                     <div className="olcs-tools">
                         <span className="olcs-tool" onClick={this.picture}>
                             <PictureOutlined />
+                        </span>
+                        <span className="olcs-tool" onClick={this.clean}>
+                            <DeleteOutlined />
                         </span>
                     </div>
                     <div className="olcs-input">
@@ -147,9 +161,27 @@ class Olcs extends React.Component {
         input.click();
     }
 
+    clean = () => {
+        service('/olcs/clean', { user: this.state.user.id }).then(data => {
+            if (data === null)
+                return;
+
+            this.setState({ messages: [], time: '' });
+        });
+    }
+
     send = () => {
         let textarea = document.querySelector('.olcs-input textarea');
-        service('/olcs/reply', { user: this.state.user.id, genre: 'text', content: textarea.value }).then(data => {
+        let content = textarea.value.trim();
+        let image = false;
+        if (content.indexOf('://')) {
+            let indexOf = content.lastIndexOf('.');
+            if (indexOf > -1) {
+                let suffix = content.substring(indexOf + 1).toLowerCase();
+                image = suffix === 'jpg' || suffix === 'jpeg' || suffix === 'png' || suffix === 'gif' || suffix === 'bmp' || suffix === 'svg';
+            }
+        }
+        service('/olcs/reply', { user: this.state.user.id, genre: image ? 'image' : 'text', content: content }).then(data => {
             if (data === null)
                 return;
 

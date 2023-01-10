@@ -20,6 +20,8 @@ public class MemberModel extends ModelSupport {
 
     private String content; // 内容
     private Timestamp time; // 消息时间
+    private Timestamp userRead; // 用户阅读时间
+    private Timestamp replierRead; // 客服阅读时间
 
 
     @Jsonable
@@ -40,5 +42,25 @@ public class MemberModel extends ModelSupport {
 
     public void setTime(Timestamp time) {
         this.time = time;
+    }
+
+    @Jsonable
+    @Column(name = "c_user_read")
+    public Timestamp getUserRead() {
+        return userRead;
+    }
+
+    public void setUserRead(Timestamp userRead) {
+        this.userRead = userRead;
+    }
+
+    @Jsonable
+    @Column(name = "c_replier_read")
+    public Timestamp getReplierRead() {
+        return replierRead;
+    }
+
+    public void setReplierRead(Timestamp replierRead) {
+        this.replierRead = replierRead;
     }
 }

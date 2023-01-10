@@ -53,4 +53,14 @@ public class OlcsCtrl {
 
         return "";
     }
+
+    @Execute(name = "clean", validates = {
+            @Validate(validator = Validators.ID, parameter = "user", failureCode = 3),
+            @Validate(validator = Validators.SIGN),
+    })
+    public Object clean() {
+        olcsService.clean(request.get("user"));
+
+        return "";
+    }
 }

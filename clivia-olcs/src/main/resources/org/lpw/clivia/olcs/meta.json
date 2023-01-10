@@ -1,37 +1,37 @@
 {
-    "key": "clivia.olcs",
-    "uri": "/olcs/",
-    "props": [
-        {
-            "name": "user"
-        },
-        {
-            "name": "replier"
-        },
-        {
-            "name": "genre"
-        },
-        {
-            "name": "content"
-        },
-        {
-            "name": "read"
-        },
-        {
-            "name": "time"
-        }
-    ],
-    "query": {
-        "type": "grid",
-        "search": [
-            {
-                "name": "user"
-            }
-        ],
-        "ops": [
-            {
-                "service": "reply"
-            }
-        ]
+  "key": "clivia.olcs",
+  "uri": "/olcs/",
+  "props": [
+    {
+      "name": "user"
+    },
+    {
+      "name": "replier"
+    },
+    {
+      "name": "genre"
+    },
+    {
+      "name": "content"
+    },
+    {
+      "name": "time"
     }
+  ],
+  "query": {
+    "type": "grid",
+    "search": [
+      {
+        "name": "user"
+      }
+    ],
+    "ops": [
+      {
+        "service": "reply"
+      },
+      {
+        "service": "clean"
+      }
+    ]
+  }
 }

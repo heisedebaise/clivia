@@ -32,9 +32,8 @@ class OlcsDaoImpl implements OlcsDao {
     }
 
     @Override
-    public void read(String user, boolean replier, int read) {
-        liteOrm.update(new LiteQuery(OlcsModel.class).set("c_read=?").where("c_user=? and c_replier is " + (replier ? "not " : "") + "null"),
-                new Object[]{read, user});
+    public void delete(String user) {
+        liteOrm.delete(new LiteQuery(OlcsModel.class).where("c_user=?"), new Object[]{user});
     }
 
     @Override

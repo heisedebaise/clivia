@@ -2,6 +2,7 @@ package org.lpw.clivia.olcs.member;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import org.lpw.clivia.olcs.OlcsConfig;
 import org.lpw.clivia.user.UserListener;
 import org.lpw.clivia.user.UserModel;
 import org.lpw.clivia.user.UserService;
@@ -11,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import javax.inject.Inject;
 import java.sql.Timestamp;
+import java.util.Optional;
 
 @Service(MemberModel.NAME + ".service")
 public class MemberServiceImpl implements MemberService, UserListener {
@@ -18,6 +20,8 @@ public class MemberServiceImpl implements MemberService, UserListener {
     private DateTime dateTime;
     @Inject
     private UserService userService;
+    @Inject
+    private Optional<OlcsConfig> config;
     @Inject
     private MemberDao memberDao;
     private JSONObject object = null;
@@ -35,7 +39,7 @@ public class MemberServiceImpl implements MemberService, UserListener {
 
                 JSONObject object = new JSONObject();
                 object.put("id", user.getId());
-                object.put("nick", user.getNick());
+                object.put("nick", config.isPresent() ? config.get().getNick(user) : user.getNick());
                 object.put("avatar", user.getAvatar());
                 object.put("content", member.getContent());
                 all.add(object);
@@ -48,6 +52,11 @@ public class MemberServiceImpl implements MemberService, UserListener {
         }
 
         return object;
+    }
+
+    @Override
+    public MemberModel findById(String id) {
+        return memberDao.findById(id);
     }
 
     @Override
@@ -65,6 +74,16 @@ public class MemberServiceImpl implements MemberService, UserListener {
         else
             memberDao.save(member);
         object = null;
+    }
+
+    @Override
+    public void userRead(String id, Timestamp time) {
+        memberDao.userRead(id, time);
+    }
+
+    @Override
+    public void replierRead(String id, Timestamp time) {
+        memberDao.replierRead(id, time);
     }
 
     @Override

@@ -29,6 +29,7 @@
 .olcs-messages {
     height: 50vh;
     overflow: auto;
+    background-color: rgb(245, 245, 245);
 }
 
 .olcs-message-user {
@@ -45,8 +46,8 @@
     display: inline-block;
     padding: 4px 8px;
     max-width: 50vw;
-    border: 1px solid #d9d9d9;
     border-radius: 0 4px 4px 4px;
+    background-color: #fff;
 }
 
 .olcs-message-replier {
@@ -64,9 +65,29 @@
     display: inline-block;
     padding: 4px 8px;
     max-width: 50vw;
-    border: 1px solid #d9d9d9;
+    background-color: rgb(149, 236, 105);
     border-radius: 4px 0 4px 4px;
     text-align: left;
+}
+
+.olcs-message-read,
+.olcs-message-unread {
+    display: inline-block;
+    vertical-align: bottom;
+    padding-right: 4px;
+    font-size: 0.5rem;
+}
+
+.olcs-message-read {
+    color: #ccc;
+}
+
+.olcs-message-unread {
+    color: rgb(46, 135, 255);
+}
+
+.olcs-message-image {
+    display: inline-block;
 }
 
 .olcs-message-image img {
@@ -84,7 +105,8 @@
 
 .olcs-tool {
     display: inline-block;
-    padding: 8px 0 0 8px;
+    padding-left: 8px;
+    font-size: 32px;
 }
 
 .olcs-input {

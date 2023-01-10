@@ -11,7 +11,7 @@ interface OlcsDao {
 
     void save(OlcsModel olcs);
 
-    void read(String user, boolean replier, int read);
+    void delete(String user);
 
     void delete(Timestamp time);
 }
