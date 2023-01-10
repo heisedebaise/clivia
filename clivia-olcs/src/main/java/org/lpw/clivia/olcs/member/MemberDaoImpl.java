@@ -6,6 +6,7 @@ import org.lpw.photon.dao.orm.lite.LiteQuery;
 import org.springframework.stereotype.Repository;
 
 import javax.inject.Inject;
+import java.sql.Timestamp;
 
 @Repository(MemberModel.NAME + ".dao")
 class MemberDaoImpl implements MemberDao {
@@ -30,6 +31,11 @@ class MemberDaoImpl implements MemberDao {
     @Override
     public void save(MemberModel member) {
         liteOrm.save(member);
+    }
+
+    @Override
+    public void content(String content, Timestamp time) {
+        liteOrm.update(new LiteQuery(MemberModel.class).set("c_content=?").where("c_time<?"), new Object[]{content, time});
     }
 
     @Override

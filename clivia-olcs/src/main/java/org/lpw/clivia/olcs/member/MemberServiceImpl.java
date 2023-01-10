@@ -10,6 +10,7 @@ import org.lpw.photon.util.TimeUnit;
 import org.springframework.stereotype.Service;
 
 import javax.inject.Inject;
+import java.sql.Timestamp;
 
 @Service(MemberModel.NAME + ".service")
 public class MemberServiceImpl implements MemberService, UserListener {
@@ -64,6 +65,11 @@ public class MemberServiceImpl implements MemberService, UserListener {
         else
             memberDao.save(member);
         object = null;
+    }
+
+    @Override
+    public void empty(Timestamp time) {
+        memberDao.content("", time);
     }
 
     @Override

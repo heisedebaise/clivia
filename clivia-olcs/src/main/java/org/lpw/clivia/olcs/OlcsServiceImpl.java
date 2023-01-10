@@ -107,6 +107,8 @@ public class OlcsServiceImpl implements OlcsService, HourJob {
 
         Calendar calendar = Calendar.getInstance();
         calendar.add(Calendar.DAY_OF_MONTH, -overdue);
-        olcsDao.delete(new Timestamp(calendar.getTimeInMillis()));
+        Timestamp time = new Timestamp(calendar.getTimeInMillis());
+        olcsDao.delete(time);
+        memberService.empty(time);
     }
 }
