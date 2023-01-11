@@ -7,6 +7,8 @@ import java.sql.Timestamp;
 interface MemberDao {
     PageList<MemberModel> query();
 
+    PageList<MemberModel> unread();
+
     MemberModel findById(String id);
 
     void insert(MemberModel member);

@@ -15,5 +15,7 @@ public interface MemberService {
 
     void replierRead(String id, Timestamp time);
 
+    void clean(String id);
+
     void empty(Timestamp time);
 }

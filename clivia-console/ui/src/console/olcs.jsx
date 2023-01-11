@@ -1,6 +1,7 @@
 import React from 'react';
-import { Col, Row, Collapse, List, Avatar, Button } from 'antd';
-import { PictureOutlined, DeleteOutlined } from '@ant-design/icons';
+import { Col, Row, Collapse, List, Avatar, Popover, Popconfirm, Input, Button, Space } from 'antd';
+import { SmileOutlined, PictureOutlined, SendOutlined, CodeOutlined, ClearOutlined } from '@ant-design/icons';
+import EmojiPicker from 'emoji-picker-react';
 import { service, upload, url } from '../http';
 import './olcs.css';
 
@@ -13,6 +14,8 @@ class Olcs extends React.Component {
             messages: [],
             time: '',
             read: '',
+            faqs: [],
+            searchFaqs: [],
         };
         this.timeout = true;
         this.timer();
@@ -54,6 +57,14 @@ class Olcs extends React.Component {
                             msgs.scrollTop = msgs.scrollHeight;
                     }, 250);
                 }
+            });
+        }
+        if (this.state.faqs.length === 0) {
+            service('/olcs/faq/query', { pageSize: 1024 }).then(data => {
+                if (data === null)
+                    return;
+
+                this.setState({ faqs: data.list, searchFaqs: data.list });
             });
         }
     }
@@ -110,6 +121,31 @@ class Olcs extends React.Component {
             }
         }
 
+        let image = (
+            <Space direction="vertical">
+                <Button block onClick={this.picture}>上传</Button>
+                <Input addonBefore="图片链接" id="piclink" addonAfter={<SendOutlined onClick={this.piclink} />} />
+            </Space>
+        );
+
+        let faq = (
+            <Space direction="vertical">
+                <Input.Search onChange={this.searchFaq} id="faq-search" />
+                <List className="olcs-faqs"
+                    itemLayout="horizontal"
+                    dataSource={this.state.searchFaqs}
+                    renderItem={item => (
+                        <List.Item onClick={this.sendFaq.bind(this, item)}>
+                            <List.Item.Meta
+                                title={item.subject}
+                                description={item.content}
+                            />
+                        </List.Item>
+                    )}
+                />
+            </Space>
+        );
+
         return (
             <Col span={18}>
                 <div className="olcs-content">
@@ -119,12 +155,31 @@ class Olcs extends React.Component {
                     </div>
                     <div className="olcs-messages">{messages}</div>
                     <div className="olcs-tools">
-                        <span className="olcs-tool" onClick={this.picture}>
-                            <PictureOutlined />
-                        </span>
-                        <span className="olcs-tool" onClick={this.clean}>
-                            <DeleteOutlined />
-                        </span>
+                        <Popover content={<EmojiPicker onEmojiClick={this.emoji} />} trigger="click">
+                            <span className="olcs-tool">
+                                <SmileOutlined />
+                            </span>
+                        </Popover>
+                        <Popover content={image} trigger="click">
+                            <span className="olcs-tool">
+                                <PictureOutlined />
+                            </span>
+                        </Popover>
+                        <Popover content={faq} trigger="click">
+                            <span className="olcs-tool">
+                                <CodeOutlined />
+                            </span>
+                        </Popover>
+                        <Popconfirm
+                            title="您确定要清空此聊天消息？"
+                            onConfirm={this.clean}
+                            okText="清空"
+                            cancelText="取消"
+                        >
+                            <span className="olcs-tool">
+                                <ClearOutlined />
+                            </span>
+                        </Popconfirm>
                     </div>
                     <div className="olcs-input">
                         <textarea></textarea>
@@ -135,6 +190,18 @@ class Olcs extends React.Component {
                 </div>
             </Col>
         );
+    }
+
+    emoji = (e) => {
+        let textarea = document.querySelector('.olcs-input textarea');
+        let value = textarea.value;
+        if (value === '') {
+            textarea.value = e.emoji;
+
+            return;
+        }
+
+        textarea.value = value.substring(0, textarea.selectionStart) + e.emoji + value.substring(textarea.selectionEnd);
     }
 
     picture = () => {
@@ -159,6 +226,39 @@ class Olcs extends React.Component {
             });
         };
         input.click();
+    }
+
+    piclink = () => {
+        let input = document.querySelector('#piclink');
+        if (!input || input.value.trim() === '')
+            return;
+
+        service('/olcs/reply', { user: this.state.user.id, genre: 'image', content: input.value.trim() });
+    }
+
+    searchFaq = () => {
+        let input = document.querySelector('#faq-search');
+        if (!input)
+            return;
+
+        let value = input.value.trim();
+        if (value === '') {
+            this.setState({ searchFaqs: this.state.faqs });
+
+            return;
+        }
+
+        let faqs = [];
+        for (let faq of this.state.faqs) {
+            if (faq.subject.indexOf(value) > -1 || faq.content.indexOf(value) > -1) {
+                faqs.push(faq);
+            }
+        }
+        this.setState({ searchFaqs: faqs });
+    }
+
+    sendFaq = (item) => {
+        service('/olcs/reply', { user: this.state.user.id, genre: 'text', content: item.content });
     }
 
     clean = () => {

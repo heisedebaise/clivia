@@ -19,6 +19,11 @@ class MemberDaoImpl implements MemberDao {
     }
 
     @Override
+    public PageList<MemberModel> unread() {
+        return liteOrm.query(new LiteQuery(MemberModel.class).where("c_replier_unread>?"), new Object[]{0});
+    }
+
+    @Override
     public MemberModel findById(String id) {
         return liteOrm.findById(MemberModel.class, id);
     }
@@ -35,12 +40,12 @@ class MemberDaoImpl implements MemberDao {
 
     @Override
     public void userRead(String id, Timestamp time) {
-        liteOrm.update(new LiteQuery(MemberModel.class).set("c_user_read=?").where("c_id=?"), new Object[]{time, id});
+        liteOrm.update(new LiteQuery(MemberModel.class).set("c_user_unread=?,c_user_read=?").where("c_id=?"), new Object[]{0, time, id});
     }
 
     @Override
     public void replierRead(String id, Timestamp time) {
-        liteOrm.update(new LiteQuery(MemberModel.class).set("c_replier_read=?").where("c_id=?"), new Object[]{time, id});
+        liteOrm.update(new LiteQuery(MemberModel.class).set("c_replier_unread=?,c_replier_read=?").where("c_id=?"), new Object[]{0, time, id});
     }
 
     @Override

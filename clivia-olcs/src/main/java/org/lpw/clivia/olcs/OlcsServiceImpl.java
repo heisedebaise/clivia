@@ -112,7 +112,7 @@ public class OlcsServiceImpl implements OlcsService, HourJob {
     @Override
     public void clean(String user) {
         olcsDao.delete(user);
-        memberService.save(user, "");
+        memberService.clean(user);
     }
 
     @Override

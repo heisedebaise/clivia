@@ -109,6 +109,12 @@
     font-size: 24px;
 }
 
+.olcs-faqs {
+    width: 40vw;
+    max-height: 40vh;
+    overflow: auto;
+}
+
 .olcs-input {
     padding: 8px;
 }

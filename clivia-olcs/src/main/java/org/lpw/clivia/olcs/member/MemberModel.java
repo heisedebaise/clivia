@@ -20,6 +20,8 @@ public class MemberModel extends ModelSupport {
 
     private String content; // 内容
     private Timestamp time; // 消息时间
+    private int userUnread; // 用户未读数
+    private int replierUnread; // 客服未读数
     private Timestamp userRead; // 用户阅读时间
     private Timestamp replierRead; // 客服阅读时间
 
@@ -42,6 +44,26 @@ public class MemberModel extends ModelSupport {
 
     public void setTime(Timestamp time) {
         this.time = time;
+    }
+
+    @Jsonable
+    @Column(name = "c_user_unread")
+    public int getUserUnread() {
+        return userUnread;
+    }
+
+    public void setUserUnread(int userUnread) {
+        this.userUnread = userUnread;
+    }
+
+    @Jsonable
+    @Column(name = "c_replier_unread")
+    public int getReplierUnread() {
+        return replierUnread;
+    }
+
+    public void setReplierUnread(int replierUnread) {
+        this.replierUnread = replierUnread;
     }
 
     @Jsonable

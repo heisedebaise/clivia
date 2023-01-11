@@ -50,6 +50,9 @@ public class MemberServiceImpl implements MemberService, UserListener {
             object.put("all", all);
             object.put("newer", newer);
         }
+        JSONObject unread = new JSONObject();
+        memberDao.unread().getList().forEach(member -> unread.put(member.getId(), member.getReplierUnread()));
+        object.put("unread", unread);
 
         return object;
     }
@@ -84,6 +87,19 @@ public class MemberServiceImpl implements MemberService, UserListener {
     @Override
     public void replierRead(String id, Timestamp time) {
         memberDao.replierRead(id, time);
+    }
+
+    @Override
+    public void clean(String id) {
+        MemberModel member = memberDao.findById(id);
+        if (member == null)
+            return;
+
+        member.setContent("");
+        member.setTime(dateTime.now());
+        member.setUserUnread(0);
+        member.setReplierUnread(0);
+        memberDao.save(member);
     }
 
     @Override
