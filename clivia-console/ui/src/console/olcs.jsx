@@ -10,6 +10,8 @@ class Olcs extends React.Component {
         super(props);
         this.state = {
             all: [],
+            allSearch: [],
+            newer: [],
             user: {},
             messages: [],
             time: '',
@@ -32,7 +34,7 @@ class Olcs extends React.Component {
             if (data === null)
                 return;
 
-            this.setState({ all: data.all, newer: data.newer });
+            this.setState({ all: data.all, newer: data.newer }, () => this.searchNick());
         });
         if (this.state.user.id) {
             service('/olcs/query', { user: this.state.user.id, time: this.state.time }).then(data => {
@@ -67,6 +69,28 @@ class Olcs extends React.Component {
                 this.setState({ faqs: data.list, searchFaqs: data.list });
             });
         }
+    }
+
+    searchNick = () => {
+        let input = document.querySelector('#search-nick');
+        if (!input)
+            return;
+
+        let value = input.value.trim();
+        if (value === '') {
+            this.setState({ allSearch: this.state.all });
+
+            return;
+        }
+
+        let all = [];
+        for (let a of this.state.all) {
+            if (a.nick.indexOf(value) > -1) {
+                all.push(a);
+            }
+        }
+        this.setState({ allSearch: all });
+
     }
 
     chat = (item) => {
@@ -296,9 +320,10 @@ class Olcs extends React.Component {
                 <Col span={6} className="olcs-member">
                     <Collapse defaultActiveKey={['all']}>
                         <Collapse.Panel key={'all'} header="会员">
+                            <Input.Search id="search-nick" onChange={this.searchNick} />
                             <List
                                 itemLayout="horizontal"
-                                dataSource={this.state.all}
+                                dataSource={this.state.allSearch}
                                 renderItem={item => (
                                     <List.Item className="olcs-item" onClick={this.chat.bind(this, item)}>
                                         <List.Item.Meta
