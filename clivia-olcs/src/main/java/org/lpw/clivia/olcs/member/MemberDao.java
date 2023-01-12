@@ -11,6 +11,8 @@ interface MemberDao {
 
     MemberModel findById(String id);
 
+    int sum();
+
     void insert(MemberModel member);
 
     void save(MemberModel member);

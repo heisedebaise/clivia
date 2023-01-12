@@ -1,5 +1,5 @@
 import React from 'react';
-import { Col, Row, Collapse, List, Avatar, Popover, Popconfirm, Input, Button, Space } from 'antd';
+import { Col, Row, Collapse, List, Avatar, Badge, Popover, Popconfirm, Input, Button, Space } from 'antd';
 import { SmileOutlined, PictureOutlined, SendOutlined, CodeOutlined, ClearOutlined } from '@ant-design/icons';
 import EmojiPicker from 'emoji-picker-react';
 import { service, upload, url } from '../http';
@@ -12,6 +12,7 @@ class Olcs extends React.Component {
             all: [],
             allSearch: [],
             newer: [],
+            unread: {},
             user: {},
             messages: [],
             time: '',
@@ -34,7 +35,7 @@ class Olcs extends React.Component {
             if (data === null)
                 return;
 
-            this.setState({ all: data.all, newer: data.newer }, () => this.searchNick());
+            this.setState(data, () => this.searchNick());
         });
         if (this.state.user.id) {
             service('/olcs/query', { user: this.state.user.id, time: this.state.time }).then(data => {
@@ -99,6 +100,14 @@ class Olcs extends React.Component {
 
     avatar = (user) => user.avatar ? <Avatar src={url(user.avatar)} /> : <Avatar>{(user.nick || 'C').substring(0, 1)}</Avatar>;
 
+    name = (user) => {
+        let unread = this.state.unread[user.id];
+        if (!unread || unread === 0)
+            return user.name;
+
+        return <Badge count={unread} offset={[10]}>{user.name}</Badge>;
+    }
+
     message = () => {
         if (!this.state.user.id)
             return <div></div>;
@@ -112,7 +121,7 @@ class Olcs extends React.Component {
                         <img src={url(message.content)} alt="" />
                     </a>
                 );
-            } else {
+            } else if (message.genre === 'text') {
                 if (message.content.indexOf('\n') === -1) {
                     content = message.content;
                 } else {
@@ -120,6 +129,8 @@ class Olcs extends React.Component {
                     for (let line of message.content.split('\n'))
                         content.push(<div key={content.length}>{line}</div>);
                 }
+            } else if (message.genre === 'faq') {
+                content = '常见问题';
             }
             if (message.replier) {
                 messages.push(
@@ -328,7 +339,7 @@ class Olcs extends React.Component {
                                     <List.Item className="olcs-item" onClick={this.chat.bind(this, item)}>
                                         <List.Item.Meta
                                             avatar={this.avatar(item)}
-                                            title={item.nick}
+                                            title={this.name(item)}
                                             description={item.content}
                                         />
                                     </List.Item>
@@ -343,7 +354,7 @@ class Olcs extends React.Component {
                                     <List.Item className="olcs-item" onClick={this.chat.bind(this, item)}>
                                         <List.Item.Meta
                                             avatar={this.avatar(item)}
-                                            title={item.nick}
+                                            title={this.name(item)}
                                             description={item.content}
                                         />
                                     </List.Item>

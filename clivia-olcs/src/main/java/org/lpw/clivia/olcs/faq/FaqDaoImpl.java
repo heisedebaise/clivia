@@ -18,8 +18,18 @@ class FaqDaoImpl implements FaqDao {
     }
 
     @Override
+    public PageList<FaqModel> query(int frequently) {
+        return liteOrm.query(new LiteQuery(FaqModel.class).where("c_frequently=?").order("c_sort"), new Object[]{frequently});
+    }
+
+    @Override
     public FaqModel findById(String id) {
         return liteOrm.findById(FaqModel.class, id);
+    }
+
+    @Override
+    public FaqModel findBySubject(String subject) {
+        return liteOrm.findOne(new LiteQuery(FaqModel.class).where("c_subject=?").order("c_sort"), new Object[]{subject});
     }
 
     @Override

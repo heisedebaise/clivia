@@ -7,9 +7,13 @@ import java.sql.Timestamp;
 public interface MemberService {
     JSONObject query();
 
+    JSONObject user();
+
+    JSONObject unread();
+
     MemberModel findById(String id);
 
-    void save(String id, String content);
+    void save(String id, String content, boolean reply);
 
     void userRead(String id, Timestamp time);
 

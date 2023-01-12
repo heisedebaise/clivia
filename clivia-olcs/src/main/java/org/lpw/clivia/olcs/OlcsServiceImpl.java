@@ -2,16 +2,16 @@ package org.lpw.clivia.olcs;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import org.lpw.clivia.olcs.faq.FaqModel;
+import org.lpw.clivia.olcs.faq.FaqService;
 import org.lpw.clivia.olcs.member.MemberModel;
 import org.lpw.clivia.olcs.member.MemberService;
 import org.lpw.clivia.page.Pagination;
 import org.lpw.clivia.user.UserService;
 import org.lpw.photon.ctrl.context.Session;
 import org.lpw.photon.scheduler.HourJob;
-import org.lpw.photon.util.DateTime;
-import org.lpw.photon.util.Generator;
-import org.lpw.photon.util.Message;
-import org.lpw.photon.util.Validator;
+import org.lpw.photon.util.Thread;
+import org.lpw.photon.util.*;
 import org.springframework.stereotype.Service;
 
 import javax.inject.Inject;
@@ -30,6 +30,10 @@ public class OlcsServiceImpl implements OlcsService, HourJob {
     @Inject
     private Message message;
     @Inject
+    private Json json;
+    @Inject
+    private Thread thread;
+    @Inject
     private Session session;
     @Inject
     private Pagination pagination;
@@ -37,6 +41,8 @@ public class OlcsServiceImpl implements OlcsService, HourJob {
     private UserService userService;
     @Inject
     private MemberService memberService;
+    @Inject
+    private FaqService faqService;
     @Inject
     private Optional<OlcsConfig> config;
     @Inject
@@ -55,16 +61,13 @@ public class OlcsServiceImpl implements OlcsService, HourJob {
 
     private JSONObject query(String user, Timestamp time, boolean replier) {
         JSONArray array = new JSONArray();
-        olcsDao.query(user, time).getList().forEach(olcs -> {
-            JSONObject object = new JSONObject();
-            object.put("id", olcs.getId());
-            if (olcs.getReplier() != null)
-                object.put("replier", userService.get(olcs.getReplier()));
-            object.put("genre", olcs.getGenre());
-            object.put("content", olcs.getContent());
-            object.put("time", dateTime.toString(olcs.getTime()));
-            array.add(object);
-        });
+        olcsDao.query(user, time).getList().forEach(olcs -> addToArray(array, olcs));
+        if (array.isEmpty() && !replier && time == null) {
+            JSONArray faq = faqService.frequently();
+            if (!faq.isEmpty()) {
+                addToArray(array, save(user, UserService.SYSTEM_ID, "faq", json.toString(faq), true));
+            }
+        }
         if (!array.isEmpty()) {
             if (replier)
                 memberService.replierRead(user, dateTime.now());
@@ -80,6 +83,17 @@ public class OlcsServiceImpl implements OlcsService, HourJob {
         return object;
     }
 
+    private void addToArray(JSONArray array, OlcsModel olcs) {
+        JSONObject object = new JSONObject();
+        object.put("id", olcs.getId());
+        if (olcs.getReplier() != null)
+            object.put("replier", userService.get(olcs.getReplier()));
+        object.put("genre", olcs.getGenre());
+        object.put("content", olcs.getContent());
+        object.put("time", dateTime.toString(olcs.getTime()));
+        array.add(object);
+    }
+
     @Override
     public void ask(String genre, String content) {
         String user = userService.id();
@@ -90,15 +104,24 @@ public class OlcsServiceImpl implements OlcsService, HourJob {
                 session.set(OlcsModel.NAME, user);
             }
         }
-        save(user, null, genre, content);
+        save(user, null, genre, content, false);
+        if (!genre.equals("text"))
+            return;
+
+        FaqModel faq = faqService.find(content);
+        if (faq == null)
+            return;
+
+        thread.sleep(1, TimeUnit.Second);
+        save(user, UserService.SYSTEM_ID, "text", faq.getContent(), true);
     }
 
     @Override
     public void reply(String user, String genre, String content) {
-        save(user, userService.id(), genre, content);
+        save(user, userService.id(), genre, content, true);
     }
 
-    private void save(String user, String replier, String genre, String content) {
+    private OlcsModel save(String user, String replier, String genre, String content, boolean reply) {
         OlcsModel olcs = new OlcsModel();
         olcs.setUser(user);
         olcs.setReplier(replier);
@@ -106,7 +129,9 @@ public class OlcsServiceImpl implements OlcsService, HourJob {
         olcs.setContent(content);
         olcs.setTime(dateTime.now());
         olcsDao.save(olcs);
-        memberService.save(user, genre.equals("text") ? content : message.get(OlcsModel.NAME + ".genre." + genre));
+        memberService.save(user, genre.equals("text") ? content : message.get(OlcsModel.NAME + ".genre." + genre), reply);
+
+        return olcs;
     }
 
     @Override

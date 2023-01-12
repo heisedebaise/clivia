@@ -23,4 +23,18 @@ public class MemberCtrl {
     public Object query() {
         return memberService.query();
     }
+
+    @Execute(name = "user", permit = Permit.sign, validates = {
+            @Validate(validator = UserService.VALIDATOR_SIGN)
+    })
+    public Object user() {
+        return memberService.user();
+    }
+
+    @Execute(name = "unread", permit = Permit.sign, validates = {
+            @Validate(validator = UserService.VALIDATOR_SIGN)
+    })
+    public Object unread() {
+        return memberService.unread();
+    }
 }

@@ -24,13 +24,6 @@ public class FaqCtrl {
         return faqService.query();
     }
 
-    @Execute(name = "user", validates = {
-            @Validate(validator = UserService.VALIDATOR_SIGN)
-    })
-    public Object user() {
-        return faqService.user();
-    }
-
     @Execute(name = "save", validates = {
             @Validate(validator = Validators.MAX_LENGTH, number = {100}, parameter = "subject", failureCode = 3),
             @Validate(validator = Validators.SIGN)

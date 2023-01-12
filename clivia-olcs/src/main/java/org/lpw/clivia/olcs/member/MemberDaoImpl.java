@@ -1,8 +1,10 @@
 package org.lpw.clivia.olcs.member;
 
+import org.lpw.photon.dao.jdbc.Sql;
 import org.lpw.photon.dao.orm.PageList;
 import org.lpw.photon.dao.orm.lite.LiteOrm;
 import org.lpw.photon.dao.orm.lite.LiteQuery;
+import org.lpw.photon.util.Numeric;
 import org.springframework.stereotype.Repository;
 
 import javax.inject.Inject;
@@ -10,6 +12,10 @@ import java.sql.Timestamp;
 
 @Repository(MemberModel.NAME + ".dao")
 class MemberDaoImpl implements MemberDao {
+    @Inject
+    private Numeric numeric;
+    @Inject
+    private Sql sql;
     @Inject
     private LiteOrm liteOrm;
 
@@ -26,6 +32,11 @@ class MemberDaoImpl implements MemberDao {
     @Override
     public MemberModel findById(String id) {
         return liteOrm.findById(MemberModel.class, id);
+    }
+
+    @Override
+    public int sum() {
+        return numeric.toInt(sql.query("select sum(c_replier_unread) from t_olcs_member", null).get(0, 0));
     }
 
     @Override

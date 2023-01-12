@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Set;
 
 public interface UserService {
+    String SYSTEM_ID = "00000000-0000-0000-0000-000000000000";
     /**
      * 类型是否存在验证器Bean名称。
      */

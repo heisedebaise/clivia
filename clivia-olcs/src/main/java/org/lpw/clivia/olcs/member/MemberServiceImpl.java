@@ -34,12 +34,12 @@ public class MemberServiceImpl implements MemberService, UserListener {
             long time = System.currentTimeMillis() - TimeUnit.Day.getTime();
             for (MemberModel member : memberDao.query().getList()) {
                 UserModel user = userService.findById(member.getId());
-                if (user == null || user.getGrade() > 0)
-                    continue;
+                if (user == null || user.getGrade() > 0) continue;
 
                 JSONObject object = new JSONObject();
                 object.put("id", user.getId());
-                object.put("nick", config.isPresent() ? config.get().getNick(user) : user.getNick());
+                object.put("nick", user.getNick());
+                object.put("name", config.isPresent() ? config.get().getName(user) : user.getNick());
                 object.put("avatar", user.getAvatar());
                 object.put("content", member.getContent());
                 all.add(object);
@@ -58,12 +58,35 @@ public class MemberServiceImpl implements MemberService, UserListener {
     }
 
     @Override
+    public JSONObject user() {
+        JSONObject object = new JSONObject();
+        MemberModel member = memberDao.findById(userService.id());
+        if (member == null)
+            return object;
+
+        object.put("unread", member.getUserUnread());
+        object.put("read", dateTime.toString(member.getUserRead()));
+
+        return object;
+    }
+
+    @Override
+    public JSONObject unread() {
+        JSONObject unread = new JSONObject();
+        int count = memberDao.sum();
+        if (count > 0)
+            unread.put("count", count);
+
+        return unread;
+    }
+
+    @Override
     public MemberModel findById(String id) {
         return memberDao.findById(id);
     }
 
     @Override
-    public void save(String id, String content) {
+    public void save(String id, String content, boolean reply) {
         MemberModel member = memberDao.findById(id);
         boolean isNull = member == null;
         if (isNull) {
@@ -72,10 +95,10 @@ public class MemberServiceImpl implements MemberService, UserListener {
         }
         member.setContent(content);
         member.setTime(dateTime.now());
-        if (isNull)
-            memberDao.insert(member);
-        else
-            memberDao.save(member);
+        if (reply) member.setUserUnread(member.getUserUnread() + 1);
+        else member.setReplierUnread(member.getReplierUnread() + 1);
+        if (isNull) memberDao.insert(member);
+        else memberDao.save(member);
         object = null;
     }
 
@@ -92,8 +115,7 @@ public class MemberServiceImpl implements MemberService, UserListener {
     @Override
     public void clean(String id) {
         MemberModel member = memberDao.findById(id);
-        if (member == null)
-            return;
+        if (member == null) return;
 
         member.setContent("");
         member.setTime(dateTime.now());
@@ -115,8 +137,7 @@ public class MemberServiceImpl implements MemberService, UserListener {
     @Override
     public void userSignUp(UserModel user) {
         MemberModel member = memberDao.findById(user.getId());
-        if (member != null || user.getGrade() > 0)
-            return;
+        if (member != null || user.getGrade() > 0) return;
 
         member = new MemberModel();
         member.setId(user.getId());

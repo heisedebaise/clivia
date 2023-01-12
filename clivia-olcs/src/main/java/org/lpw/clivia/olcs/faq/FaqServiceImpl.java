@@ -1,7 +1,9 @@
 package org.lpw.clivia.olcs.faq;
 
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import org.lpw.clivia.page.Pagination;
+import org.lpw.photon.dao.model.ModelHelper;
 import org.lpw.photon.util.Validator;
 import org.springframework.stereotype.Service;
 
@@ -11,6 +13,8 @@ import javax.inject.Inject;
 public class FaqServiceImpl implements FaqService {
     @Inject
     private Validator validator;
+    @Inject
+    private ModelHelper modelHelper;
     @Inject
     private Pagination pagination;
     @Inject
@@ -22,8 +26,13 @@ public class FaqServiceImpl implements FaqService {
     }
 
     @Override
-    public JSONObject user() {
-        return faqDao.query(pagination.getPageSize(20), pagination.getPageNum()).toJson();
+    public JSONArray frequently() {
+        return modelHelper.toJson(faqDao.query(1).getList());
+    }
+
+    @Override
+    public FaqModel find(String subject) {
+        return faqDao.findBySubject(subject);
     }
 
     @Override

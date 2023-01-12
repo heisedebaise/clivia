@@ -54,9 +54,10 @@ class Shortcut extends React.Component {
                 return;
 
             let list = this.state.list;
-            list[index].data = data;
+            let sc = list[index];
+            sc.data = data;
             this.setState({ list });
-            if (!data.ringtone)
+            if (!sc.ringtone || !sc.badge || !sc.data[sc.badge])
                 return;
 
             if (this.ringtone === null) {
@@ -65,7 +66,7 @@ class Shortcut extends React.Component {
                 return;
             }
 
-            this.ringtone.src = data.ringtone;
+            this.ringtone.src = sc.ringtone;
             this.ringtone.muted = '';
             this.ringtone.play();
         });
@@ -82,7 +83,7 @@ class Shortcut extends React.Component {
         let children = [];
         for (let i = 0; i < this.state.list.length; i++) {
             let sc = this.state.list[i];
-            let item = <div key={i} className="console-shortcut-item" onClick={this.body.bind(this, sc)}>{sc.icon ? <img src={sc.icon} /> : sc.data[sc.name]}</div>;
+            let item = <div key={i} className="console-shortcut-item" onClick={this.body.bind(this, sc)}>{sc.icon ? <img src={sc.icon} alt="" /> : sc.data[sc.name]}</div>;
             if (sc.badge && sc.data[sc.badge]) {
                 children.push(<Badge key={i} count={sc.data[sc.badge]}>{item}</Badge>);
             } else {
