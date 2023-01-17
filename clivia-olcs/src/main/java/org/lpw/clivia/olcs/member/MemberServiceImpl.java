@@ -25,6 +25,7 @@ public class MemberServiceImpl implements MemberService, UserListener {
     @Inject
     private MemberDao memberDao;
     private JSONObject object = null;
+    private int unread = 0;
 
     @Override
     public JSONObject query() {
@@ -72,12 +73,14 @@ public class MemberServiceImpl implements MemberService, UserListener {
 
     @Override
     public JSONObject unread() {
-        JSONObject unread = new JSONObject();
+        JSONObject object = new JSONObject();
         int count = memberDao.sum();
-        if (count > 0)
-            unread.put("count", count);
+        object.put("count", count);
+        if (count <= unread)
+            object.put("mute", true);
+        unread = count;
 
-        return unread;
+        return object;
     }
 
     @Override

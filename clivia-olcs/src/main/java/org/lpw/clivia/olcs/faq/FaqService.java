@@ -4,8 +4,7 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 
 public interface FaqService {
-
-    JSONObject query();
+    JSONObject query(int frequently);
 
     JSONArray frequently();
 

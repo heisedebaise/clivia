@@ -1,5 +1,7 @@
 package org.lpw.clivia.olcs.faq;
 
+import org.lpw.clivia.dao.DaoHelper;
+import org.lpw.clivia.dao.DaoOperation;
 import org.lpw.photon.dao.orm.PageList;
 import org.lpw.photon.dao.orm.lite.LiteOrm;
 import org.lpw.photon.dao.orm.lite.LiteQuery;
@@ -11,10 +13,17 @@ import javax.inject.Inject;
 class FaqDaoImpl implements FaqDao {
     @Inject
     private LiteOrm liteOrm;
+    @Inject
+    private DaoHelper daoHelper;
 
     @Override
-    public PageList<FaqModel> query(int pageSize, int pageNum) {
-        return liteOrm.query(new LiteQuery(FaqModel.class).order("c_sort").size(pageSize).page(pageNum), null);
+    public PageList<FaqModel> query(String subject, String content, int frequently, int pageSize, int pageNum) {
+        return daoHelper.newQueryBuilder()
+                .where("c_frequently", DaoOperation.Equals, frequently)
+                .like(null, "c_subject", subject)
+                .like(null, "c_content", content)
+                .order("c_sort")
+                .query(FaqModel.class, pageSize, pageNum);
     }
 
     @Override

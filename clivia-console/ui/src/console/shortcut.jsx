@@ -57,7 +57,7 @@ class Shortcut extends React.Component {
             let sc = list[index];
             sc.data = data;
             this.setState({ list });
-            if (!sc.ringtone || !sc.badge || !sc.data[sc.badge])
+            if (!sc.ringtone || !sc.badge || !sc.data[sc.badge] || sc.data.mute)
                 return;
 
             if (this.ringtone === null) {

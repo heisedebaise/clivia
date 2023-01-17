@@ -1,6 +1,5 @@
 package org.lpw.clivia.olcs.faq;
 
-import org.lpw.clivia.user.UserService;
 import org.lpw.photon.ctrl.context.Request;
 import org.lpw.photon.ctrl.execute.Execute;
 import org.lpw.photon.ctrl.validate.Validate;
@@ -21,7 +20,7 @@ public class FaqCtrl {
             @Validate(validator = Validators.SIGN)
     })
     public Object query() {
-        return faqService.query();
+        return faqService.query(request.getAsInt("frequently", -1));
     }
 
     @Execute(name = "save", validates = {

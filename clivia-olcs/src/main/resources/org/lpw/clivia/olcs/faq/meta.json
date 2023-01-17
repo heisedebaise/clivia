@@ -19,6 +19,11 @@
   ],
   "query": {
     "type": "grid",
+    "search": [
+      {
+        "name": "frequently"
+      }
+    ],
     "ops": [
       {
         "type": "modify"

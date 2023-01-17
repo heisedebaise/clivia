@@ -21,8 +21,8 @@ public class FaqServiceImpl implements FaqService {
     private FaqDao faqDao;
 
     @Override
-    public JSONObject query() {
-        return faqDao.query(pagination.getPageSize(20), pagination.getPageNum()).toJson();
+    public JSONObject query(int frequently) {
+        return faqDao.query(frequently, pagination.getPageSize(20), pagination.getPageNum()).toJson();
     }
 
     @Override
