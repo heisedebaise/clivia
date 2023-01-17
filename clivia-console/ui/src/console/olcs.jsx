@@ -217,9 +217,10 @@ class Olcs extends React.Component {
                         </Popconfirm>
                     </div>
                     <div className="olcs-input">
-                        <textarea></textarea>
+                        <textarea onKeyUp={this.keyup}></textarea>
                     </div>
                     <div className="olcs-send">
+                        <div className="olcs-send-enter">Ctrl+Enter</div>
                         <Button type="primary" onClick={this.send}>发送</Button>
                     </div>
                 </div>
@@ -303,6 +304,12 @@ class Olcs extends React.Component {
 
             this.setState({ messages: [], time: '' });
         });
+    }
+
+    keyup = (e) => {
+        if (e.ctrlKey && e.code === 'Enter') {
+            this.send();
+        }
     }
 
     send = () => {

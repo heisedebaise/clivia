@@ -20,7 +20,7 @@ public class FaqCtrl {
             @Validate(validator = Validators.SIGN)
     })
     public Object query() {
-        return faqService.query(request.getAsInt("frequently", -1));
+        return faqService.query(request.get("subject"), request.get("content"), request.getAsInt("frequently", -1));
     }
 
     @Execute(name = "save", validates = {

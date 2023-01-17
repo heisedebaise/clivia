@@ -62,10 +62,18 @@ public class OlcsServiceImpl implements OlcsService, HourJob {
     private JSONObject query(String user, Timestamp time, boolean replier) {
         JSONArray array = new JSONArray();
         olcsDao.query(user, time).getList().forEach(olcs -> addToArray(array, olcs));
-        if (array.isEmpty() && !replier && time == null) {
-            JSONArray faq = faqService.frequently();
-            if (!faq.isEmpty()) {
-                addToArray(array, save(user, UserService.SYSTEM_ID, "faq", json.toString(faq), true));
+        if (!replier && time == null) {
+            boolean frequently = true;
+            if (!array.isEmpty()) {
+                JSONObject object = array.getJSONObject(array.size() - 1);
+                if (object.get("genre").equals("faq"))
+                    frequently = false;
+            }
+            if (frequently) {
+                JSONArray faq = faqService.frequently();
+                if (!faq.isEmpty()) {
+                    addToArray(array, save(user, UserService.SYSTEM_ID, "faq", json.toString(faq), true));
+                }
             }
         }
         if (!array.isEmpty()) {
