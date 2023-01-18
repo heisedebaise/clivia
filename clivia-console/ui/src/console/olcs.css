@@ -77,6 +77,11 @@
     text-align: left;
 }
 
+.olcs-message-delete {
+    margin: -15px -14px 0 0;
+    text-align: right;
+}
+
 .olcs-message-read,
 .olcs-message-unread {
     display: inline-block;

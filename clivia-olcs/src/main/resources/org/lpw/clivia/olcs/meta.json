@@ -30,6 +30,9 @@
         "service": "reply"
       },
       {
+        "service": "delete"
+      },
+      {
         "service": "clean"
       }
     ]

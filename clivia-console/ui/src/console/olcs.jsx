@@ -1,6 +1,6 @@
 import React from 'react';
 import { Col, Row, Collapse, List, Avatar, Badge, Popover, Popconfirm, Input, Button, Space } from 'antd';
-import { SmileOutlined, PictureOutlined, SendOutlined, CodeOutlined, ClearOutlined } from '@ant-design/icons';
+import { CloseCircleOutlined, SmileOutlined, PictureOutlined, SendOutlined, CodeOutlined, ClearOutlined } from '@ant-design/icons';
 import EmojiPicker from 'emoji-picker-react';
 import { service, upload, url } from '../http';
 import './olcs.css';
@@ -11,6 +11,7 @@ class Olcs extends React.Component {
         this.state = {
             all: [],
             allSearch: [],
+            nick: '',
             newer: [],
             unread: {},
             user: {},
@@ -35,7 +36,19 @@ class Olcs extends React.Component {
             if (data === null)
                 return;
 
-            this.setState(data, () => this.searchNick());
+            if (this.state.nick === '') {
+                this.setState({ all: data.all, newer: data.newer, allSearch: data.all });
+
+                return;
+            }
+
+            let all = [];
+            for (let a of data.all) {
+                if (a.nick.indexOf(this.state.nick) > -1) {
+                    all.push(a);
+                }
+            }
+            this.setState({ all: data.all, newer: data.newer, allSearch: all });
         });
         if (this.state.user.id) {
             service('/olcs/query', { user: this.state.user.id, time: this.state.time }).then(data => {
@@ -47,9 +60,19 @@ class Olcs extends React.Component {
                 if (has) {
                     state.messages = this.state.messages;
                     for (let message of data.list) {
-                        state.messages.push(message);
+                        if (message.genre === 'delete') {
+                            for (let i = 0; i < state.messages.length; i++) {
+                                if (state.messages[i].id === message.id) {
+                                    state.messages.splice(i, 1);
+
+                                    break;
+                                }
+                            }
+                        } else {
+                            state.messages.push(message);
+                        }
+                        state.time = message.time;
                     }
-                    state.time = state.messages[state.messages.length - 1].time;
                 }
                 state.read = data.read || '';
                 this.setState(state);
@@ -74,23 +97,8 @@ class Olcs extends React.Component {
 
     searchNick = () => {
         let input = document.querySelector('#search-nick');
-        if (!input)
-            return;
-
-        let value = input.value.trim();
-        if (value === '') {
-            this.setState({ allSearch: this.state.all });
-
-            return;
-        }
-
-        let all = [];
-        for (let a of this.state.all) {
-            if (a.nick.indexOf(value) > -1) {
-                all.push(a);
-            }
-        }
-        this.setState({ allSearch: all });
+        if (input)
+            this.setState({ nick: input.value.trim() });
 
     }
 
@@ -137,7 +145,10 @@ class Olcs extends React.Component {
                     <div className="olcs-message-replier" key={message.id}>
                         <div className="olcs-message-content">
                             {message.time < this.state.read ? <div className="olcs-message-read">已读</div> : <div className="olcs-message-unread">未读</div>}
-                            <div className={'olcs-message-' + message.genre}>{content}</div>
+                            <div className={'olcs-message-' + message.genre}>
+                                <div className="olcs-message-delete"><CloseCircleOutlined onClick={this.delete.bind(this, message.id)} /></div>
+                                {content}
+                            </div>
                             <div className="olcs-message-time">{message.time}</div>
                         </div>
                         {this.avatar(message.replier)}
@@ -165,7 +176,7 @@ class Olcs extends React.Component {
 
         let faq = (
             <Space direction="vertical">
-                <Input.Search onChange={this.searchFaq} id="faq-search" />
+                <Input.Search onSearch={this.searchFaq} id="faq-search" />
                 <List className="olcs-faqs"
                     itemLayout="horizontal"
                     dataSource={this.state.searchFaqs}
@@ -226,6 +237,10 @@ class Olcs extends React.Component {
                 </div>
             </Col>
         );
+    }
+
+    delete = (id) => {
+        service('/olcs/delete', { id });
     }
 
     emoji = (e) => {
@@ -338,7 +353,7 @@ class Olcs extends React.Component {
                 <Col span={6} className="olcs-member">
                     <Collapse defaultActiveKey={['all']}>
                         <Collapse.Panel key={'all'} header="会员">
-                            <Input.Search id="search-nick" onChange={this.searchNick} />
+                            <Input.Search id="search-nick" onSearch={this.searchNick} />
                             <List
                                 itemLayout="horizontal"
                                 dataSource={this.state.allSearch}

@@ -143,6 +143,17 @@ public class OlcsServiceImpl implements OlcsService, HourJob {
     }
 
     @Override
+    public void delete(String id) {
+        OlcsModel olcs = olcsDao.findById(id);
+        if (validator.isEmpty(olcs.getReplier()))
+            return;
+
+        olcs.setGenre("delete");
+        olcs.setTime(dateTime.now());
+        olcsDao.save(olcs);
+    }
+
+    @Override
     public void clean(String user) {
         olcsDao.delete(user);
         memberService.clean(user);

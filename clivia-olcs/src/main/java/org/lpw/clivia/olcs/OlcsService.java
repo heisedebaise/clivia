@@ -13,5 +13,7 @@ public interface OlcsService {
 
     void reply(String user, String genre, String content);
 
+    void delete(String id);
+
     void clean(String user);
 }
