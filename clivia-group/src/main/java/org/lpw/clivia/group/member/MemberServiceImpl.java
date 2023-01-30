@@ -44,6 +44,29 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
+    public String friend(String user1, String user2) {
+        if (user1.equals(user2))
+            return self(user1);
+
+        Set<String> set = new HashSet<>();
+        memberDao.query(user1, 0).getList().forEach(member -> set.add(member.getGroup()));
+        for (MemberModel member : memberDao.query(user2, 0).getList())
+            if (set.contains(member.getGroup()))
+                return member.getGroup();
+
+        return null;
+    }
+
+    @Override
+    public String self(String user) {
+        for (MemberModel member : memberDao.query(user, 0).getList())
+            if (memberDao.count(member.getGroup()) == 1)
+                return member.getGroup();
+
+        return null;
+    }
+
+    @Override
     public String groups(String user) {
         StringBuilder sb = new StringBuilder();
         memberDao.query(user, -1).getList().forEach(member -> sb.append(',').append(member.getGroup()));
@@ -75,7 +98,7 @@ public class MemberServiceImpl implements MemberService {
             if (!users.remove(member.getUser()))
                 memberDao.delete(group, member.getUser());
         });
-        if(users.isEmpty())
+        if (users.isEmpty())
             return;
 
         Timestamp now = dateTime.now();

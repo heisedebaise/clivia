@@ -37,6 +37,11 @@ class MemberDaoImpl implements MemberDao {
     }
 
     @Override
+    public int count(String group) {
+        return liteOrm.count(new LiteQuery(MemberModel.class).where("c_group=?"), new Object[]{group});
+    }
+
+    @Override
     public void save(MemberModel member) {
         liteOrm.save(member);
     }

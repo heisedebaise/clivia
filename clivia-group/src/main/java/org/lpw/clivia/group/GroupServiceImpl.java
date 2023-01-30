@@ -5,7 +5,6 @@ import com.alibaba.fastjson.JSONObject;
 import org.lpw.clivia.group.friend.FriendService;
 import org.lpw.clivia.group.member.MemberModel;
 import org.lpw.clivia.group.member.MemberService;
-import org.lpw.clivia.keyvalue.KeyvalueService;
 import org.lpw.clivia.user.UserListener;
 import org.lpw.clivia.user.UserModel;
 import org.lpw.clivia.user.UserService;
@@ -31,8 +30,6 @@ public class GroupServiceImpl implements GroupService, UserListener {
     private Json json;
     @Inject
     private ModelHelper modelHelper;
-    @Inject
-    private KeyvalueService keyvalueService;
     @Inject
     private UserService userService;
     @Inject
@@ -161,8 +158,8 @@ public class GroupServiceImpl implements GroupService, UserListener {
 
         user = json.copy(user);
         String uid = userService.id();
-        String group = keyvalueService.value(friendsKey(uid, user.getString("id")));
-        if (validator.isEmpty(group))
+        String group = memberService.friend(uid, user.getString("id"));
+        if (group == null)
             return user;
 
         List<MemberModel> members = memberService.list(group);
@@ -230,7 +227,7 @@ public class GroupServiceImpl implements GroupService, UserListener {
         Iterator<String> iterator = set.iterator();
         String u1 = iterator.next();
         String u2 = iterator.hasNext() ? iterator.next() : u1;
-        if (!validator.isEmpty(keyvalueService.value(friendsKey(u1, u2))))
+        if (memberService.friend(u1, u2) != null)
             return null;
 
         GroupModel group = new GroupModel();
@@ -238,9 +235,6 @@ public class GroupServiceImpl implements GroupService, UserListener {
         group.setTime(dateTime.now());
         groupDao.save(group);
         memberService.create(group.getId(), set, 0, null);
-
-        keyvalueService.save(friendsKey(u1, u2), group.getId());
-        keyvalueService.save(friendsKey(u2, u1), group.getId());
         if (set.size() == 2)
             listeners.ifPresent(s -> s.forEach(listener -> listener.groupCreate(group, null)));
 
@@ -249,8 +243,8 @@ public class GroupServiceImpl implements GroupService, UserListener {
 
     @Override
     public String self(String user) {
-        String id = keyvalueService.value(friendsKey(user, user));
-        if (validator.isId(id))
+        String id = memberService.self(user);
+        if (id != null)
             return id;
 
         return friend(new String[]{user}).getId();
@@ -373,10 +367,6 @@ public class GroupServiceImpl implements GroupService, UserListener {
         delete(group, member.getUser(), member.getGrade());
     }
 
-    private String friendsKey(String user, String friend) {
-        return GroupModel.NAME + ":friends:" + user + ":" + friend;
-    }
-
     @Override
     public void userSignUp(UserModel user) {
         friend(new String[]{user.getId()});
@@ -397,15 +387,8 @@ public class GroupServiceImpl implements GroupService, UserListener {
             List<MemberModel> members = memberService.list(group.getId());
             if (!members.isEmpty()) {
                 memberService.delete(group.getId());
-                if (group.getType() == 0) {
-                    String user1 = members.get(0).getUser();
-                    String user2 = members.size() > 1 ? members.get(1).getUser() : user1;
-                    keyvalueService.delete(friendsKey(user1, user2));
-                    if (!user1.equals(user2)) {
-                        keyvalueService.delete(friendsKey(user2, user1));
-                        friendService.delete(user1, user2);
-                    }
-                }
+                if (group.getType() == 0 && members.size() == 2)
+                    friendService.delete(members.get(0).getUser(), members.get(1).getUser());
             }
             listeners.ifPresent(set -> set.forEach(listener -> listener.groupDelete(group, members)));
         } else {
