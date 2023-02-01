@@ -44,7 +44,7 @@ class Olcs extends React.Component {
 
             let all = [];
             for (let a of data.all) {
-                if (a.nick.indexOf(this.state.nick) > -1) {
+                if (a.nick && a.nick.indexOf(this.state.nick) > -1) {
                     all.push(a);
                 }
             }
