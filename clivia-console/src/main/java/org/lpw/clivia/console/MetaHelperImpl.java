@@ -223,6 +223,8 @@ public class MetaHelperImpl implements MetaHelper, ContextRefreshedListener, Cro
                     if (prop.getString("name").equals(mp.getString("name"))) {
                         JSONObject object = json.copy(mp);
                         object.putAll(prop);
+                        if (prop.containsKey("label"))
+                            object.remove("labeled");
                         prop = object;
 
                         break;
