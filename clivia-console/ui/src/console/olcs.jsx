@@ -228,7 +228,7 @@ class Olcs extends React.Component {
                         </Popconfirm>
                     </div>
                     <div className="olcs-input">
-                        <textarea onKeyUp={this.keyup}></textarea>
+                        <textarea onKeyUp={this.keyup} onPaste={this.paste}></textarea>
                     </div>
                     <div className="olcs-send">
                         <div className="olcs-send-enter">Ctrl+Enter</div>
@@ -263,17 +263,8 @@ class Olcs extends React.Component {
         input.accept = 'image/*';
         document.body.appendChild(input);
         input.onchange = (e) => {
-            upload('clivia.olcs.image', e.target.files[0]).then(data => {
+            this.upload(e.target.files[0], data => {
                 document.body.removeChild(input);
-                if (data === null)
-                    return;
-
-                service('/olcs/reply', { user: this.state.user.id, genre: 'image', content: data.path }).then(d => {
-                    if (d === null)
-                        return;
-
-                    document.querySelector('.olcs-input textarea').focus();
-                });
             });
         };
         input.click();
@@ -325,6 +316,33 @@ class Olcs extends React.Component {
         if (e.ctrlKey && e.code === 'Enter') {
             this.send();
         }
+    }
+
+    paste = (e) => {
+        if (!e.clipboardData || !e.clipboardData.items || e.clipboardData.items.length === 0)
+            return;
+
+        let item = e.clipboardData.items[0];
+        if (item.type.indexOf('image/') === -1)
+            return;
+
+        this.upload(e.clipboardData.files[0]);
+    }
+
+    upload = (file, success) => {
+        upload('clivia.olcs.image', file).then(data => {
+            if (data === null)
+                return;
+
+            service('/olcs/reply', { user: this.state.user.id, genre: 'image', content: data.path }).then(d => {
+                if (success)
+                    success(d);
+                if (d === null)
+                    return;
+
+                document.querySelector('.olcs-input textarea').focus();
+            });
+        });
     }
 
     send = () => {
