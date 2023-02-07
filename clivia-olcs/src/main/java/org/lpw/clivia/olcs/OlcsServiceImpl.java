@@ -72,7 +72,7 @@ public class OlcsServiceImpl implements OlcsService, HourJob {
             if (frequently) {
                 JSONArray faq = faqService.frequently();
                 if (!faq.isEmpty()) {
-                    addToArray(array, save(user, UserService.SYSTEM_ID, "faq", json.toString(faq), true));
+                    addToArray(array, save(user, UserService.SYSTEM_ID, "faq", json.toString(faq), null, true));
                 }
             }
         }
@@ -112,7 +112,7 @@ public class OlcsServiceImpl implements OlcsService, HourJob {
                 session.set(OlcsModel.NAME, user);
             }
         }
-        save(user, null, genre, content, false);
+        OlcsModel olcs = save(user, null, genre, content, null, false);
         if (!genre.equals("text"))
             return;
 
@@ -120,22 +120,21 @@ public class OlcsServiceImpl implements OlcsService, HourJob {
         if (faq == null)
             return;
 
-        thread.sleep(1, TimeUnit.Second);
-        save(user, UserService.SYSTEM_ID, "text", faq.getContent(), true);
+        save(user, UserService.SYSTEM_ID, "text", faq.getContent(), new Timestamp(olcs.getTime().getTime() + 1000), true);
     }
 
     @Override
     public void reply(String user, String genre, String content) {
-        save(user, userService.id(), genre, content, true);
+        save(user, userService.id(), genre, content, null, true);
     }
 
-    private OlcsModel save(String user, String replier, String genre, String content, boolean reply) {
+    private OlcsModel save(String user, String replier, String genre, String content, Timestamp time, boolean reply) {
         OlcsModel olcs = new OlcsModel();
         olcs.setUser(user);
         olcs.setReplier(replier);
         olcs.setGenre(genre);
         olcs.setContent(content);
-        olcs.setTime(dateTime.now());
+        olcs.setTime(time == null ? dateTime.now() : time);
         olcsDao.save(olcs);
         memberService.save(user, genre.equals("text") ? content : message.get(OlcsModel.NAME + ".genre." + genre), reply);
 
