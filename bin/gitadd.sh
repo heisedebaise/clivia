@@ -22,3 +22,14 @@ do
   git add $name/README.md
   git add $name/yarn.lock
 done
+
+for name in clivia-editor/ui
+do
+  git add $name/public
+  git add $name/src
+  git add $name/.gitignore
+  git add $name/index.html
+  git add $name/package.json
+  git add $name/README.md
+  git add $name/vite.config.js
+done

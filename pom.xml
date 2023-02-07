@@ -6,6 +6,11 @@
     <artifactId>clivia</artifactId>
     <packaging>pom</packaging>
     <version>1.0</version>
+    <name>clivia</name>
+    <url>https://github.com/heisedebaise/clivia</url>
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    </properties>
     <modules>
         <module>clivia-base</module>
         <module>clivia-keyvalue</module>
@@ -21,6 +26,7 @@
         <module>clivia-dict</module>
         <module>clivia-pair</module>
         <module>clivia-faq</module>
+        <module>clivia-editor</module>
         <module>clivia-user</module>
         <module>clivia-account</module>
         <module>clivia-payment</module>
@@ -38,9 +44,4 @@
         <module>clivia-api</module>
         <module>clivia-web</module>
     </modules>
-    <name>clivia</name>
-    <url>https://github.com/heisedebaise/clivia</url>
-    <properties>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    </properties>
 </project>
