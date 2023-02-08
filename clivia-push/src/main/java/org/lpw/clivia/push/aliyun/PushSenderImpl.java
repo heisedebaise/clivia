@@ -48,6 +48,8 @@ public class PushSenderImpl implements PushSender {
         request.setAndroidNotificationChannel(config.getString("channel"));
         request.setTitle(args.getString("title"));
         request.setBody(args.getString("body"));
+        if (args.containsKey("badge"))
+            request.setIOSBadge(args.getInteger("badge"));
         if (args.containsKey("iOSMusic"))
             request.setIOSMusic(args.getString("iOSMusic"));
 
