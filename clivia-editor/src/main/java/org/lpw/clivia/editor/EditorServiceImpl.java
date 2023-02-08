@@ -5,7 +5,6 @@ import com.alibaba.fastjson.JSONObject;
 import org.lpw.photon.ctrl.context.Session;
 import org.lpw.photon.util.Generator;
 import org.lpw.photon.util.Json;
-import org.lpw.photon.util.Validator;
 import org.springframework.stereotype.Service;
 
 import javax.inject.Inject;
@@ -18,8 +17,6 @@ public class EditorServiceImpl implements EditorService {
     @Inject
     private Json json;
     @Inject
-    private Validator validator;
-    @Inject
     private Generator generator;
     @Inject
     private Session session;
@@ -28,19 +25,32 @@ public class EditorServiceImpl implements EditorService {
     private final Map<String, Map<String, JSONArray>> map = new ConcurrentHashMap<>();
 
     @Override
-    public String newKey() {
-        for (int i = 0; i < 1024; i++) {
-            String key = generator.random(32);
-            if (editorDao.findByKey(key) == null)
-                return key;
-        }
+    public void put(String key, JSONArray array) {
+        map.computeIfAbsent(key, k -> new ConcurrentHashMap<>()).put(session.getId(), new JSONArray());
+        editorDao.delete(key);
+        for (int i = 0, size = array.size(); i < size; i++) {
+            JSONObject object = array.getJSONObject(i);
+            if (!object.containsKey("id"))
+                continue;
 
-        return null;
+            EditorModel editor = new EditorModel();
+            editor.setId(object.getString("id"));
+            editor.setKey(key);
+            editor.setOrder(object.getIntValue("order"));
+            editor.setContent(json.toString(object));
+            editor.setTime(object.getLongValue("time"));
+            editorDao.insert(editor, false);
+        }
     }
 
     @Override
-    public void putKey(String key) {
-        map.computeIfAbsent(key, k -> new ConcurrentHashMap<>()).put(session.getId(), new JSONArray());
+    public JSONArray get(String key, boolean empty) {
+        JSONArray array = new JSONArray();
+        editorDao.query(key).getList().forEach(editor -> array.add(json.toObject(editor.getContent())));
+        if (empty)
+            editorDao.delete(key);
+
+        return array;
     }
 
     @Override
@@ -49,8 +59,7 @@ public class EditorServiceImpl implements EditorService {
         if (!map.containsKey(key))
             return array;
 
-        for (EditorModel editor : editorDao.query(key).getList())
-            array.add(json.toObject(editor.getContent()));
+        editorDao.query(key).getList().forEach(editor -> array.add(json.toObject(editor.getContent())));
 
         return array;
     }
@@ -73,7 +82,7 @@ public class EditorServiceImpl implements EditorService {
         content.put("time", editor.getTime());
         editor.setContent(json.toString(content));
         if (isNull) {
-            editorDao.insert(editor);
+            editorDao.insert(editor, true);
             order(key);
             content.put("action", "create");
         } else {
@@ -108,7 +117,7 @@ public class EditorServiceImpl implements EditorService {
         if (editor == null || !map.containsKey(editor.getKey()))
             return;
 
-        editorDao.delete(id);
+        editorDao.delete(editor);
         order(editor.getKey());
         push(editor.getKey(), "delete", id);
     }

@@ -7,11 +7,11 @@ interface EditorDao {
 
     EditorModel findById(String id);
 
-    EditorModel findByKey(String key);
-
-    void insert(EditorModel editor);
+    void insert(EditorModel editor, boolean close);
 
     void save(EditorModel editor, boolean close);
 
-    void delete(String id);
+    void delete(EditorModel editor);
+
+    void delete(String key);
 }

@@ -23,14 +23,10 @@ class EditorDaoImpl implements EditorDao {
     }
 
     @Override
-    public EditorModel findByKey(String key) {
-        return liteOrm.findOne(new LiteQuery(EditorModel.class).where("c_key=?"), new Object[]{key});
-    }
-
-    @Override
-    public void insert(EditorModel editor) {
+    public void insert(EditorModel editor, boolean close) {
         liteOrm.insert(editor);
-        liteOrm.close();
+        if (close)
+            liteOrm.close();
     }
 
     @Override
@@ -41,8 +37,13 @@ class EditorDaoImpl implements EditorDao {
     }
 
     @Override
-    public void delete(String id) {
-        liteOrm.deleteById(EditorModel.class, id);
+    public void delete(EditorModel editor) {
+        liteOrm.delete(editor);
         liteOrm.close();
+    }
+
+    @Override
+    public void delete(String key) {
+        liteOrm.delete(new LiteQuery(EditorModel.class).where("c_key=?"), new Object[]{key});
     }
 }
