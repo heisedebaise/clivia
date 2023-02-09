@@ -1,5 +1,6 @@
 <script setup>
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, onUnmounted } from 'vue';
+import { service } from './http';
 import { message } from './locale';
 import { timeout } from './common';
 import { formatText, mergeText, clearBr } from './text';
