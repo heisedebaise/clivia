@@ -1,5 +1,5 @@
 <script setup>
-import { ref, onMounted, onUnmounted } from 'vue';
+import { ref, onMounted } from 'vue';
 import { service } from './http';
 import { message } from './locale';
 import { timeout } from './common';
@@ -496,26 +496,25 @@ const timer = () => {
 };
 
 onMounted(() => {
-    list.value = [
-        {
-            tag: 'text',
-            text: []
+    service('/editor/get', { key: 'editor' }, data => {
+        if (data.length === 0)
+            return;
+
+        list.value = data;
+        for (let i = 0; i < list.value.length; i++) {
+            let item = list.value[i];
+            item.time = new Date().getTime();
+            item.placeholder = message('placeholder.' + item.tag, 'placeholder');
         }
-    ];
-    for (let i = 0; i < list.value.length; i++) {
-        let item = list.value[i];
-        if (!item.id)
-            item.id = randomId();
-        item.placeholder = message('placeholder.' + item.tag, 'placeholder');
-    }
-    for (let tag of ['text', 'h1', 'h2', 'h3']) {
-        tags.value.push({
-            name: tag,
-            title: message('tag.' + tag),
-            sub: message('tag.' + tag + '.sub'),
-        });
-    }
-    setInterval(timer, 1000);
+        for (let tag of ['text', 'h1', 'h2', 'h3']) {
+            tags.value.push({
+                name: tag,
+                title: message('tag.' + tag),
+                sub: message('tag.' + tag + '.sub'),
+            });
+        }
+        setInterval(timer, 1000);
+    });
 });
 </script>
 
@@ -586,13 +585,13 @@ onMounted(() => {
     position: absolute;
     left: 0;
     top: 0;
-    right: 80vw;
     bottom: 0;
+    width: 100px;
 }
 
 .content {
     position: absolute;
-    left: 20vw;
+    left: 100px;
     top: 0;
     right: 0;
     bottom: 0;
@@ -621,7 +620,7 @@ onMounted(() => {
 
 .actions {
     position: absolute;
-    right: 80vw;
+    right: calc(100vw - 100px);
     display: flex;
     align-items: center;
 }
@@ -644,7 +643,7 @@ onMounted(() => {
 
 .draging {
     position: absolute;
-    left: 20vw;
+    left: 100px;
     right: 0;
     padding: 4px 8px;
     color: #ccc;
@@ -661,7 +660,7 @@ onMounted(() => {
 
 .tags {
     position: absolute;
-    left: 20vw;
+    left: 100px;
     background-color: #fff;
     border: 1px solid #ccc;
     border-radius: 4px;

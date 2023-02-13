@@ -16,6 +16,7 @@ const messages = {
         'tag.img.sub': 'Upload picture.',
         'tag.divider': 'Divider',
         'tag.divider.sub': 'Visually divide blocks.',
+        'error.empty': 'data error'
     },
     zh: {}
 };
