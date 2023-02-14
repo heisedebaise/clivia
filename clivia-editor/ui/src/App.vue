@@ -1,6 +1,6 @@
 <script setup>
 import { ref, onMounted } from 'vue';
-import { post, service } from './http';
+import { post, service, upload, url } from './http';
 import { message } from './locale';
 import { timeout, timestamp, now } from './common';
 import { formatText, mergeText, clearBr } from './text';
@@ -76,11 +76,11 @@ const isEmpty = (item, id, index) => {
 const focusById = (id, delay) => {
     if (delay) {
         setTimeout(() => {
-            document.querySelector('#' + id).focus();
+            document.getElementById(id).focus();
             cursor(id);
         }, timeout.min);
     } else {
-        document.querySelector('#' + id).focus();
+        document.getElementById(id).focus();
         cursor(id);
     }
 };
@@ -95,7 +95,7 @@ const findItemNode = (e) => {
 
 const cursor = (id) => {
     focus.value.style.left = -1;
-    let node = document.querySelector('#' + (id || focus.value.id));
+    let node = document.getElementById(id || focus.value.id);
     if (node.childNodes.length === 0)
         return;
 
@@ -139,11 +139,11 @@ const onKeyDown = (e) => {
                 id: id,
                 tag: 'text',
                 text: [{ text: '' }],
-                placeholder: message('placeholder'),
+                placeholder: message('placeholder.text'),
                 time: now(),
             });
             setTimeout(() => {
-                let node = document.querySelector('#' + id).firstElementChild;
+                let node = document.getElementById(id).firstElementChild;
                 node = node.firstChild || node;
                 setRange(node, 0, node, 0);
             }, timeout.min);
@@ -177,11 +177,11 @@ const onKeyDown = (e) => {
             id: id,
             tag: 'text',
             text: endText,
-            placeholder: message('placeholder'),
+            placeholder: message('placeholder.text'),
             time: now(),
         });
         setTimeout(() => {
-            let node = document.querySelector('#' + id).firstElementChild;
+            let node = document.getElementById(id).firstElementChild;
             node = node.firstChild || node;
             setRange(node, 0, node, 0);
         }, timeout.min);
@@ -198,7 +198,7 @@ const onKeyDown = (e) => {
                 let offset = 0;
                 if (item.text.length > 0)
                     offset = item.text[item.text.length - 1].text.length;
-                let node = document.querySelector('#' + item.id);
+                let node = document.getElementById(item.id);
                 if (node.lastElementChild)
                     node = node.lastElementChild;
                 if (node.firstChild)
@@ -220,7 +220,7 @@ const onKeyDown = (e) => {
             item.time = now();
             list.value.splice(index, 1);
             setTimeout(() => {
-                let node = document.querySelector('#' + item.id).childNodes[text + 1].firstChild;
+                let node = document.getElementById(item.id).childNodes[text + 1].firstChild;
                 setRange(node, offset, node, offset);
             }, timeout.larger);
         }
@@ -234,7 +234,7 @@ const onKeyDown = (e) => {
             list.value.splice(index, 1);
             setTimeout(() => {
                 let item = list.value[index];
-                let node = document.querySelector('#' + item.id);
+                let node = document.getElementById(item.id);
                 if (node.firstElementChild)
                     node = node.firstElementChild;
                 if (node.firstChild)
@@ -260,7 +260,7 @@ const onKeyDown = (e) => {
             item.time = now();
             list.value.splice(index + 1, 1);
             setTimeout(() => {
-                let node = document.querySelector('#' + item.id).childNodes[text + 1].firstChild;
+                let node = document.getElementById(item.id).childNodes[text + 1].firstChild;
                 setRange(node, offset, node, offset);
             }, timeout.larger);
         }
@@ -297,8 +297,6 @@ const onKeyDown = (e) => {
 
         return;
     }
-
-    console.log(e);
 };
 
 const onKeyUp = (e) => {
@@ -312,7 +310,7 @@ const onKeyUp = (e) => {
 
     let item = findById(e.target.id);
     let texts = [];
-    formatText(texts, document.querySelector('#' + item.id), 0);
+    formatText(texts, document.getElementById(item.id), 0);
     let empty = isEmpty(item);
     item.text = texts;
     item.time = now();
@@ -322,7 +320,7 @@ const onKeyUp = (e) => {
             setCursor(list.value, item.id, true);
         if (empty) {
             setTimeout(() => {
-                let node = document.querySelector('#' + item.id).childNodes[1].firstChild;
+                let node = document.getElementById(item.id).childNodes[1].firstChild;
                 setRange(node, texts[0].text.length, node, texts[0].text.length);
             }, timeout.min);
         }
@@ -334,9 +332,14 @@ const onPlusClick = (e) => {
     if (!node)
         return;
 
-    node.focus();
     focus.value.plus = true;
-    focus.value.tags = node.parentNode.offsetTop + node.parentNode.clientHeight;
+    if (node.className === 'image') {
+        focus.value.id = node.id;
+        focus.value.tags = node.parentNode.offsetTop;
+    } else {
+        node.focus();
+        focus.value.tags = node.parentNode.offsetTop + node.parentNode.clientHeight;
+    }
 };
 
 const onDragStart = (e) => {
@@ -356,7 +359,7 @@ const onDragStart = (e) => {
 
 const findByActions = () => {
     for (let item of list.value) {
-        let node = document.querySelector('#' + item.id);
+        let node = document.getElementById(item.id);
         if (node.parentNode.offsetTop === focus.value.actions)
             return node;
     }
@@ -367,7 +370,7 @@ const findByActions = () => {
 const onDragMove = (e) => {
     if (!drag.value.ing) {
         for (let item of list.value) {
-            let node = document.querySelector('#' + item.id).parentNode;
+            let node = document.getElementById(item.id).parentNode;
             if (e.pageY >= node.offsetTop && e.pageY <= node.offsetTop + node.clientHeight) {
                 focus.value.actions = node.offsetTop;
 
@@ -386,7 +389,7 @@ const onDragMove = (e) => {
     let node = null;
     for (let i in list.value) {
         let item = list.value[i];
-        node = document.querySelector('#' + item.id).parentNode;
+        node = document.getElementById(item.id).parentNode;
         if (e.pageY >= node.offsetTop && e.pageY <= node.offsetTop + node.clientHeight) {
             drag.value.top = node.offsetTop - drag.value.offset;
             drag.value.index = i;
@@ -428,7 +431,7 @@ const onDragEnd = (e) => {
 const onTagSelect = (e) => {
     let tag = '';
     for (let node = e.target; true; node = node.parentElement) {
-        if (node.className === 'tag') {
+        if ((node.className || '').indexOf('tag') === 0) {
             tag = node.dataset.name;
 
             break;
@@ -439,12 +442,18 @@ const onTagSelect = (e) => {
 
     let index = findIndex(focus.value.id);
     if (focus.value.plus) {
+        if (tag === 'img') {
+            selectImage();
+
+            return;
+        }
+
         focus.value.id = randomId();
         list.value.splice(index + 1, 0, {
             id: focus.value.id,
             tag,
             text: [],
-            placeholder: message('placeholder.' + tag, 'placeholder')
+            placeholder: message('placeholder.' + tag)
         });
         setTimeout(() => setCursor(list.value, focus.value.id, true), timeout.min);
     } else {
@@ -453,14 +462,44 @@ const onTagSelect = (e) => {
 };
 
 const changeTag = (index, tag) => {
+    if (tag === 'img') {
+        selectImage();
+
+        return;
+    }
+
     let item = list.value[index];
     let range = getRange(true);
     let text = item.text[range.startIndex].text;
     item.tag = tag;
     item.text[range.startIndex].text = text.substring(0, range.startOffset - 1) + text.substring(range.startOffset);
-    item.placeholder = message('placeholder.' + tag, 'placeholder');
+    item.placeholder = message('placeholder.' + tag);
     item.time = now();
     setTimeout(() => setCursor(list.value, item.id, true), timeout.min);
+};
+
+const selectImage = () => {
+    document.getElementById('image-uploader').click();
+};
+
+const uploadImage = (e) => {
+    upload('clivia.editor.image', e.target.files[0], data => {
+        document.getElementById('image-uploader').value = '';
+        let index = findIndex(focus.value.id);
+        focus.value.id = randomId();
+        let name = data.fileName;
+        let indexOf = name.lastIndexOf('.');
+        if (indexOf > -1)
+            name = name.substring(0, indexOf);
+        list.value.splice(index + 1, 0, {
+            id: focus.value.id,
+            tag: 'img',
+            path: data.path,
+            name,
+            url: url(data.path),
+            time: now(),
+        });
+    });
 };
 
 const onTagsHide = (e) => {
@@ -476,7 +515,7 @@ const onSelect = (e) => {
         return;
     }
 
-    let node = document.querySelector('#' + focus.value.id).parentNode;
+    let node = document.getElementById(focus.value.id).parentNode;
     focus.value.style.left = node.parentNode.offsetLeft;
     focus.value.style.top = node.offsetTop - 48;
     if (focus.value.style.top < 0) {
@@ -511,7 +550,6 @@ const timer = () => {
         }
     }
     service('/editor/save', { key: key.value, id: id.substring(1), lines }, data => {
-        console.log(data);
     });
 };
 
@@ -534,9 +572,9 @@ onMounted(() => {
         timestamp.offset = json.timestamp - (new Date().getTime() + time) / 2;
         list.value = data;
         for (let item of list.value) {
-            item.placeholder = message('placeholder.' + item.tag, 'placeholder');
+            item.placeholder = message('placeholder.' + item.tag);
         }
-        for (let tag of ['text', 'h1', 'h2', 'h3']) {
+        for (let tag of ['text', 'h1', 'h2', 'h3', 'img']) {
             tags.value.push({
                 name: tag,
                 title: message('tag.' + tag),
@@ -576,6 +614,10 @@ onMounted(() => {
                     text.text
                 }}</span>
             </p>
+            <div v-else-if="item.tag === 'img'" :id="item.id" class="image">
+                <img :src="item.url" />
+                <div class="name">{{ item.name }}</div>
+            </div>
         </div>
     </div>
     <div v-if="focus.actions > -1" class="actions" :style="{ top: focus.actions + 'px' }">
@@ -601,6 +643,7 @@ onMounted(() => {
             </div>
         </div>
     </div>
+    <input id="image-uploader" type="file" accept="image/*" @change="uploadImage" />
     <div v-if="focus.style.left > 0" class="style"
         :style="{ left: focus.style.left + 'px', top: focus.style.top + 'px' }">
         <div class="bold" @click="onBold">B</div>
@@ -624,8 +667,6 @@ onMounted(() => {
     left: 100px;
     top: 0;
     right: 0;
-    bottom: 0;
-    overflow: auto;
     padding: 4px 8px;
 }
 
@@ -646,6 +687,16 @@ onMounted(() => {
 
 .content p {
     line-height: 32px;
+}
+
+.content .image img {
+    display: block;
+    max-width: 100%;
+}
+
+.content .image .name {
+    background-color: #ccc;
+    text-align: center;
 }
 
 .actions {
@@ -678,6 +729,10 @@ onMounted(() => {
     padding: 4px 8px;
     color: #ccc;
     background-color: rgba(200, 200, 200, 0.25);
+}
+
+.draging img {
+    opacity: 0.25;
 }
 
 .tags-mark {
@@ -724,6 +779,11 @@ onMounted(() => {
 
 .tags .tag .sub {
     color: #888;
+}
+
+#image-uploader {
+    position: absolute;
+    top: -100vh;
 }
 
 .style {

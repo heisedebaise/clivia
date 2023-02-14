@@ -1,7 +1,10 @@
 #!/bin/bash
 
 cd clivia-editor/ui
-npm run build
+sed -i "s/^const root = .*;$/const root = '';/" src/http.js
+rm -rf dist
+yarn build
+git checkout src/http.js
 cd ../..
 
 rm -rf clivia-web/src/main/webapp/e

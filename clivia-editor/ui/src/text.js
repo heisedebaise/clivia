@@ -30,7 +30,7 @@ const mergeText = (item) => {
 
 const clearBr = (items) => {
     for (let item of items) {
-        let node = document.querySelector('#' + item.id);
+        let node = document.getElementById(item.id);
         for (let child of node.childNodes) {
             if (child.nodeName === 'BR') {
                 node.removeChild(child);

@@ -38,7 +38,7 @@ const setCursor = (items, id, collapse) => {
         return;
 
     let start = getCursor(source.text, selection.startIndex, selection.startOffset, target.text);
-    let node = document.querySelector('#' + id);
+    let node = document.getElementById(id);
     let startContainer = findChild(node, start[0] + 1, 0);
     if (collapse) {
         setRange(startContainer, start[1], startContainer, start[1]);

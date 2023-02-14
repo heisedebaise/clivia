@@ -18,7 +18,7 @@ const props = defineProps(['name']);
     <img v-if="name === 'h1'" src="@/assets/h1.png" />
     <img v-if="name === 'h2'" src="@/assets/h2.png" />
     <img v-if="name === 'h3'" src="@/assets/h3.png" />
-    <img v-if="name === 'image'" src="@/assets/image.png" />
+    <img v-if="name === 'img'" src="@/assets/text.png" />
     <img v-if="name === 'divider'" src="@/assets/divider.png" />
 </template>
 <style>

@@ -31,7 +31,7 @@ const markdown = (item) => {
         }
     }
 
-    let inner = document.querySelector('#' + item.id).innerText;
+    let inner = document.getElementById(item.id).innerText;
     for (let key in style) {
         let start = inner.indexOf(key);
         if (start === -1)
