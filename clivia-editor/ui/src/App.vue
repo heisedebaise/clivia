@@ -333,11 +333,10 @@ const onPlusClick = (e) => {
         return;
 
     focus.value.plus = true;
+    focus.value.id = node.id;
     if (node.className === 'image') {
-        focus.value.id = node.id;
         focus.value.tags = node.parentNode.offsetTop;
     } else {
-        node.focus();
         focus.value.tags = node.parentNode.offsetTop + node.parentNode.clientHeight;
     }
 };
