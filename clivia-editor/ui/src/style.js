@@ -1,4 +1,4 @@
-import { timeout } from "./common";
+import { timeout, now } from "./common";
 import { findById } from "./find";
 import { mergeText } from "./text";
 import { getRange, setCursor } from "./selection";
@@ -72,6 +72,7 @@ const style = (items, set) => {
         item.text.splice(range.startIndex, range.endIndex - range.startIndex + 1, ...texts);
     }
     mergeText(item);
+    item.time = now();
     setTimeout(() => setCursor(items, range.id), timeout.min);
 };
 

@@ -1,8 +1,8 @@
 <script setup>
 import { ref, onMounted } from 'vue';
-import { service } from './http';
+import { post, service } from './http';
 import { message } from './locale';
-import { timeout } from './common';
+import { timeout, timestamp, now } from './common';
 import { formatText, mergeText, clearBr } from './text';
 import { getRange, setRange, setCursor } from './selection';
 import { bold, italic, underline, through } from './style';
@@ -38,6 +38,7 @@ const drag = ref({
 });
 const tags = ref([]);
 const list = ref([]);
+const key = ref('');
 
 const randomId = () => {
     let id = 'id';
@@ -138,7 +139,8 @@ const onKeyDown = (e) => {
                 id: id,
                 tag: 'text',
                 text: [{ text: '' }],
-                placeholder: message('placeholder')
+                placeholder: message('placeholder'),
+                time: now(),
             });
             setTimeout(() => {
                 let node = document.querySelector('#' + id).firstElementChild;
@@ -159,6 +161,7 @@ const onKeyDown = (e) => {
         if (startText[start].text === '')
             startText.slice(start, 1);
         list.value[index].text = startText;
+        list.value[index].time = now();
 
         let endText = [];
         for (let i = end; i < text.length; i++) {
@@ -174,7 +177,8 @@ const onKeyDown = (e) => {
             id: id,
             tag: 'text',
             text: endText,
-            placeholder: message('placeholder')
+            placeholder: message('placeholder'),
+            time: now(),
         });
         setTimeout(() => {
             let node = document.querySelector('#' + id).firstElementChild;
@@ -212,7 +216,8 @@ const onKeyDown = (e) => {
                 offset = item.text[text].text.length;
             }
             for (let text of list.value[index].text)
-                list.value[index - 1].text.push(text);
+                item.text.push(text);
+            item.time = now();
             list.value.splice(index, 1);
             setTimeout(() => {
                 let node = document.querySelector('#' + item.id).childNodes[text + 1].firstChild;
@@ -251,7 +256,8 @@ const onKeyDown = (e) => {
                 offset = item.text[text].text.length;
             }
             for (let text of list.value[index + 1].text)
-                list.value[index].text.push(text);
+                item.text.push(text);
+            item.time = now();
             list.value.splice(index + 1, 1);
             setTimeout(() => {
                 let node = document.querySelector('#' + item.id).childNodes[text + 1].firstChild;
@@ -309,6 +315,7 @@ const onKeyUp = (e) => {
     formatText(texts, document.querySelector('#' + item.id), 0);
     let empty = isEmpty(item);
     item.text = texts;
+    item.time = now();
     if (!isEmpty(item)) {
         mergeText(item);
         if (markdown(item))
@@ -452,6 +459,7 @@ const changeTag = (index, tag) => {
     item.tag = tag;
     item.text[range.startIndex].text = text.substring(0, range.startOffset - 1) + text.substring(range.startOffset);
     item.placeholder = message('placeholder.' + tag, 'placeholder');
+    item.time = now();
     setTimeout(() => setCursor(list.value, item.id, true), timeout.min);
 };
 
@@ -493,17 +501,39 @@ const onThrough = () => {
 };
 
 const timer = () => {
+    let id = '';
+    let lines = [];
+    let time = now() - 10 * 1000;
+    for (let line of list.value) {
+        id += ',' + line.id;
+        if ((line.time || 0) > time) {
+            lines.push(line);
+        }
+    }
+    service('/editor/save', { key: key.value, id: id.substring(1), lines }, data => {
+        console.log(data);
+    });
 };
 
 onMounted(() => {
-    service('/editor/get', { key: 'editor' }, data => {
+    if (!location.search)
+        return;
+
+    let indexOf = location.search.indexOf('.');
+    if (indexOf === -1)
+        key.value = location.search.substring(1);
+    else
+        key.value = location.search.substring(1, indexOf);
+
+    let time = new Date().getTime();
+    post('/editor/get', { key: key.value }, json => {
+        let data = json.data;
         if (data.length === 0)
             return;
 
+        timestamp.offset = json.timestamp - (new Date().getTime() + time) / 2;
         list.value = data;
-        for (let i = 0; i < list.value.length; i++) {
-            let item = list.value[i];
-            item.time = new Date().getTime();
+        for (let item of list.value) {
             item.placeholder = message('placeholder.' + item.tag, 'placeholder');
         }
         for (let tag of ['text', 'h1', 'h2', 'h3']) {
@@ -513,7 +543,7 @@ onMounted(() => {
                 sub: message('tag.' + tag + '.sub'),
             });
         }
-        setInterval(timer, 1000);
+        setInterval(timer, 3000);
     });
 });
 </script>

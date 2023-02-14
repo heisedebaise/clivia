@@ -23,4 +23,11 @@ public class EditorCtrl {
     public Object get() {
         return editorService.get(request.get("key"));
     }
+
+    @Execute(name = "save", permit = Permit.always, validates = {
+            @Validate(validator = Validators.NOT_EMPTY, parameter = "key", failureCode = 3),
+    })
+    public Object save() {
+        return editorService.save(request.get("key"), request.get("id"), request.getAsJsonArray("lines"));
+    }
 }

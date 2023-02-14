@@ -3,6 +3,14 @@ const timeout = {
     larger: 100,
 };
 
+const timestamp = {
+    offset: 0
+}
+
+const now = () => new Date().getTime() + timestamp.offset;
+
 export {
-    timeout
+    timeout,
+    timestamp,
+    now,
 };
