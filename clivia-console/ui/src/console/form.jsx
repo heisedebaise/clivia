@@ -1,5 +1,5 @@
 import React from 'react';
-import { Form, Radio, Checkbox, Select, DatePicker, Switch, AutoComplete, Transfer, Input, Button, message } from 'antd';
+import { Form, Radio, Checkbox, Select, DatePicker, TimePicker, Switch, AutoComplete, Transfer, Input, Button, message } from 'antd';
 import { SyncOutlined, VerticalAlignTopOutlined, ArrowUpOutlined, ArrowDownOutlined, VerticalAlignBottomOutlined, DeleteOutlined, PlusOutlined } from '@ant-design/icons';
 import moment from 'moment';
 import { service } from '../http';
@@ -133,6 +133,8 @@ class Base extends React.Component {
                     values[prop.name] = moment(value, 'YYYY-MM-DD');
                 else if (prop.type === 'datetime')
                     values[prop.name] = moment(value, 'YYYY-MM-DD HH:mm:ss');
+                else if (prop.type === 'time')
+                    values[prop.name] = moment(value, 'HH:mm:ss');
                 else if (prop.type === 'transfer')
                     values[prop.name] = value.split(',');
             }
@@ -161,8 +163,9 @@ class Base extends React.Component {
                 continue;
             }
 
-            if (!value && value !== '') {
-                delete values[prop.name];
+            if (!value) {
+                values[prop.name] = '';
+                // delete values[prop.name];
 
                 continue;
             };
@@ -173,6 +176,8 @@ class Base extends React.Component {
                 values[prop.name] = value.format("YYYY-MM-DD");
             else if (prop.type === 'datetime')
                 values[prop.name] = value.format("YYYY-MM-DD HH:mm:ss");
+            else if (prop.type === 'time')
+                values[prop.name] = value.format("HH:mm:ss");
             else if (prop.type === 'money')
                 values[prop.name] = fromDecimal(value, 2);
             else if (prop.type === 'decimal')
@@ -457,6 +462,8 @@ class Base extends React.Component {
         if (prop.type === 'date') return <DatePicker />;
 
         if (prop.type === 'datetime') return <DatePicker showTime={prop.time || true} />;
+
+        if (prop.type === 'time') return <TimePicker />;
 
         if (prop.type === 'switch') return <Switch disabled={!prop.service && !prop.permit} onChange={this.switch.bind(this, prop)} />;
 
