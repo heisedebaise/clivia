@@ -51,7 +51,7 @@ const setCursor = (items, id, collapse) => {
 const getCursor = (source, index, offset, target) => {
     let cursor = 0;
     for (let i = 0; i < source.length; i++) {
-        if (i < index)
+        if (i < index && source[i].text)
             cursor += source[i].text.length;
         else if (i === index) {
             cursor += offset;
@@ -69,7 +69,7 @@ const getCursor = (source, index, offset, target) => {
         cursor -= length;
     }
 
-    if (cursor > 0)
+    if (cursor > 0 && target.length > 0)
         return [target.length - 1, target[target.length - 1].text.length];
 
     return [0, 0];

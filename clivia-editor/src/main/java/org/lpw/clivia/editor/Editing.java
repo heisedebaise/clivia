@@ -5,10 +5,7 @@ import com.alibaba.fastjson.JSONObject;
 import org.lpw.photon.util.Generator;
 import org.lpw.photon.util.Validator;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class Editing {
@@ -17,6 +14,7 @@ public class Editing {
     private final String key;
     private String id;
     private List<String> ids;
+    private long idTime;
     private final Map<String, JSONObject> lines;
     private long time;
     private final EditorListener listener;
@@ -27,6 +25,7 @@ public class Editing {
         this.key = key;
         id = "";
         ids = new ArrayList<>();
+        idTime = System.currentTimeMillis();
         lines = new ConcurrentHashMap<>();
         time = System.currentTimeMillis();
         this.listener = listener;
@@ -46,19 +45,49 @@ public class Editing {
         }
     }
 
-    JSONObject put(String id, JSONArray lines) {
+    JSONObject put(String id, JSONArray lines, long sync) {
         JSONObject object = new JSONObject();
-        time = System.currentTimeMillis();
-        for (int i = 0, size = lines.size(); i < size; i++) {
-            put(lines.getJSONObject(i));
+        object.put("sync", System.currentTimeMillis());
+
+        Map<String, JSONObject> map = new HashMap<>();
+        long idTime = 0;
+        if (!lines.isEmpty()) {
+            time = System.currentTimeMillis();
+            for (int i = 0, size = lines.size(); i < size; i++) {
+                JSONObject line = lines.getJSONObject(i);
+                idTime = Math.max(idTime, line.getLongValue("time"));
+                map.put(line.getString("id"), line);
+            }
         }
+        JSONArray array = new JSONArray();
+        this.lines.forEach((key, value) -> {
+            long vtime = value.getLongValue("time");
+            if (map.containsKey(key)) {
+                JSONObject line = map.remove(key);
+                long ltime = line.getLongValue("time");
+                if (ltime > vtime)
+                    this.lines.put(key, line);
+                else if (ltime < vtime)
+                    array.add(value);
+            } else if (vtime >= sync) {
+                array.add(value);
+            }
+        });
+        if (!map.isEmpty())
+            this.lines.putAll(map);
+        object.put("lines", array);
         if (this.id.equals(id))
             return object;
 
-        this.id = id;
-        List<String> list = new ArrayList<>();
-        Collections.addAll(list, id.split(","));
-        ids = list;
+        if (this.idTime > idTime) {
+            object.put("id", this.id);
+        } else {
+            this.idTime = idTime;
+            this.id = id;
+            List<String> list = new ArrayList<>();
+            Collections.addAll(list, id.split(","));
+            ids = list;
+        }
 
         return object;
     }
@@ -97,5 +126,9 @@ public class Editing {
     void save(long time) {
         if (this.time > time && listener != null)
             listener.save(key, get());
+    }
+
+    boolean overdue(long time) {
+        return this.time < time;
     }
 }

@@ -39,6 +39,9 @@ const drag = ref({
 const tags = ref([]);
 const list = ref([]);
 const key = ref('');
+const ai = ref({
+    show: false,
+});
 
 const randomId = () => {
     let id = 'id';
@@ -440,13 +443,13 @@ const onTagSelect = (e) => {
         return;
 
     let index = findIndex(focus.value.id);
-    if (focus.value.plus) {
-        if (tag === 'img') {
-            selectImage();
-
-            return;
-        }
-
+    if (tag === 'img') {
+        addImage(index);
+    } else if (tag === 'ai-text') {
+        ai.value.show = true;
+    } else if (tag === 'ai-image') {
+        ai.value.show = true;
+    } else if (focus.value.plus) {
         focus.value.id = randomId();
         list.value.splice(index + 1, 0, {
             id: focus.value.id,
@@ -462,43 +465,60 @@ const onTagSelect = (e) => {
 
 const changeTag = (index, tag) => {
     if (tag === 'img') {
-        selectImage();
-
-        return;
+        addImage(index);
+    } else if (tag === 'ai-text') {
+        ai.value.show = true;
+    } else if (tag === 'ai-image') {
+        ai.value.show = true;
+    } else {
+        let item = list.value[index];
+        let range = getRange(true);
+        let text = item.text[range.startIndex].text;
+        item.tag = tag;
+        item.text[range.startIndex].text = text.substring(0, range.startOffset - 1) + text.substring(range.startOffset);
+        item.placeholder = message('placeholder.' + tag);
+        item.time = now();
+        setTimeout(() => setCursor(list.value, item.id, true), timeout.min);
     }
-
-    let item = list.value[index];
-    let range = getRange(true);
-    let text = item.text[range.startIndex].text;
-    item.tag = tag;
-    item.text[range.startIndex].text = text.substring(0, range.startOffset - 1) + text.substring(range.startOffset);
-    item.placeholder = message('placeholder.' + tag);
-    item.time = now();
-    setTimeout(() => setCursor(list.value, item.id, true), timeout.min);
 };
 
-const selectImage = () => {
+const addImage = (index) => {
+    list.value.splice(index + 1, 0, {
+        id: randomId(),
+        tag: 'img',
+        upload: message('image.upload'),
+        time: now(),
+    });
+}
+
+const selectImage = (e) => {
+    focus.value.id = e.target.parentNode.id;
     document.getElementById('image-uploader').click();
 };
 
 const uploadImage = (e) => {
-    upload('clivia.editor.image', e.target.files[0], data => {
-        document.getElementById('image-uploader').value = '';
-        let index = findIndex(focus.value.id);
-        focus.value.id = randomId();
-        let name = data.fileName;
-        let indexOf = name.lastIndexOf('.');
-        if (indexOf > -1)
-            name = name.substring(0, indexOf);
-        list.value.splice(index + 1, 0, {
-            id: focus.value.id,
+    let index = findIndex(focus.value.id);
+    for (let i = 0; i < e.target.files.length; i++) {
+        list.value.splice(index + i, i === 0 ? 1 : 0, {
+            id: randomId(),
             tag: 'img',
-            path: data.path,
-            name,
-            url: url(data.path),
+            uploading: message('image.uploading'),
             time: now(),
         });
-    });
+        upload('clivia.editor.image', e.target.files[i], data => {
+            let name = data.fileName;
+            let indexOf = name.lastIndexOf('.');
+            if (indexOf > -1)
+                name = name.substring(0, indexOf);
+            let item = list.value[index + i];
+            item.name = name;
+            item.path = data.path;
+            item.url = url(data.path);
+            item.time = now();
+            delete item.uploading;
+        });
+    }
+    focusById(focus.value.id);
 };
 
 const onTagsHide = (e) => {
@@ -548,9 +568,32 @@ const timer = () => {
             lines.push(line);
         }
     }
-    service('/editor/save', { key: key.value, id: id.substring(1), lines }, data => {
+    service('/editor/save', { key: key.value, id: id.substring(1), lines: JSON.stringify(lines), sync: timestamp.sync }, data => {
+        timestamp.sync = data.sync;
+        if (data.id) {
+            let map = {};
+            for (let line of data.lines)
+                map[line.id] = line;
+            for (let line of list.value)
+                map[line.id] = line;
+            let lines = [];
+            for (let i of data.id.split(',')) {
+                if (map[i]) {
+                    lines.push(map[i]);
+                }
+            }
+            list.value = lines;
+        } else if (data.lines) {
+            for (let line of data.lines) {
+                list.value[findIndex(line.id)] = line;
+            }
+        }
     });
 };
+
+const onAiHide = () => {
+    ai.value.show = false;
+}
 
 onMounted(() => {
     if (!location.search)
@@ -569,11 +612,12 @@ onMounted(() => {
             return;
 
         timestamp.offset = json.timestamp - (new Date().getTime() + time) / 2;
+        timestamp.sync = json.timestamp;
         list.value = data;
-        for (let item of list.value) {
+        for (let item of list.value)
             item.placeholder = message('placeholder.' + item.tag);
-        }
-        for (let tag of ['text', 'h1', 'h2', 'h3', 'img']) {
+        setTimeout(() => focusById(list.value[0].id), timeout.larger);
+        for (let tag of ['text', 'h1', 'h2', 'h3', 'img', 'ai-text', 'ai-image']) {
             tags.value.push({
                 name: tag,
                 title: message('tag.' + tag),
@@ -614,8 +658,12 @@ onMounted(() => {
                 }}</span>
             </p>
             <div v-else-if="item.tag === 'img'" :id="item.id" class="image">
-                <img :src="item.url" />
-                <div class="name">{{ item.name }}</div>
+                <div v-if="item.uploading">{{ item.uploading }}</div>
+                <div v-else-if="item.path">
+                    <img :src="item.url" />
+                    <div class="name">{{ item.name }}</div>
+                </div>
+                <div v-else class="select" @click="selectImage">{{ item.upload }}</div>
             </div>
         </div>
     </div>
@@ -642,13 +690,20 @@ onMounted(() => {
             </div>
         </div>
     </div>
-    <input id="image-uploader" type="file" accept="image/*" @change="uploadImage" />
+    <input id="image-uploader" type="file" accept="image/*" multiple @change="uploadImage" />
     <div v-if="focus.style.left > 0" class="style"
         :style="{ left: focus.style.left + 'px', top: focus.style.top + 'px' }">
         <div class="bold" @click="onBold">B</div>
         <div class="italic" @click="onItalic">i</div>
         <div class="underline" @click="onUnderline">U</div>
         <div class="through" @click="onThrough">S</div>
+    </div>
+    <div v-if="ai.show" class="ai-mark" @click="onAiHide">
+        <div class="ai-body" @click.stop="">
+            <textarea class="ai-description"></textarea>
+            <div class="ai-submit">Submit</div>
+            <div class="ai-reply"></div>
+        </div>
     </div>
 </template>
 
@@ -696,6 +751,17 @@ onMounted(() => {
 .content .image .name {
     background-color: #ccc;
     text-align: center;
+}
+
+.content .image .select {
+    line-height: 250%;
+    text-align: center;
+    background-color: #f0f0f0;
+    cursor: pointer;
+}
+
+.content .image .select:hover {
+    background-color: #ccc;
 }
 
 .actions {
@@ -817,5 +883,48 @@ onMounted(() => {
 
 .through {
     text-decoration: line-through;
+}
+
+.ai-mark {
+    position: fixed;
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(250, 250, 250, 0.75);
+}
+
+.ai-body {
+    position: absolute;
+    left: 25vw;
+    top: 25vh;
+    right: 25vw;
+    bottom: 25vh;
+}
+
+.ai-description {
+    display: block;
+    width: 100%;
+    border: 1px solid #ccc;
+    outline: none;
+}
+
+.ai-submit {
+    text-align: center;
+    line-height: 250%;
+    background-color: #ccc;
+    cursor: pointer;
+    margin: 8px 0;
+}
+
+.ai-submit:hover {
+    background-color: #888;
+    color: #fff;
+}
+
+.ai-reply {
+    border: 1px solid #ccc;
+    height: 25vh;
+    overflow: auto;
 }
 </style>

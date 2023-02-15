@@ -2,6 +2,8 @@ package org.lpw.clivia.editor;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import org.lpw.photon.ctrl.context.Session;
+import org.lpw.photon.scheduler.HourJob;
 import org.lpw.photon.scheduler.SecondsJob;
 import org.lpw.photon.util.Generator;
 import org.lpw.photon.util.TimeUnit;
@@ -9,15 +11,18 @@ import org.lpw.photon.util.Validator;
 import org.springframework.stereotype.Service;
 
 import javax.inject.Inject;
+import java.util.Calendar;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Service(EditorModel.NAME + ".service")
-public class EditorServiceImpl implements EditorService, SecondsJob {
+public class EditorServiceImpl implements EditorService, SecondsJob, HourJob {
     @Inject
     private Validator validator;
     @Inject
     private Generator generator;
+    @Inject
+    private Session session;
     private final Map<String, Editing> map = new ConcurrentHashMap<>();
 
     @Override
@@ -40,16 +45,29 @@ public class EditorServiceImpl implements EditorService, SecondsJob {
     }
 
     @Override
-    public JSONObject save(String key, String id, JSONArray lines) {
-        if (!map.containsKey(key) || validator.isEmpty(lines))
+    public JSONObject save(String key, String id, JSONArray lines, long sync) {
+        if (!map.containsKey(key))
             return new JSONObject();
 
-        return map.get(key).put(id, lines);
+        return map.get(key).put(id, lines, sync);
     }
 
     @Override
     public void executeSecondsJob() {
-        long time = System.currentTimeMillis() - TimeUnit.Minute.getTime();
+        Calendar calendar = Calendar.getInstance();
+        if (calendar.get(Calendar.SECOND) % 5 > 0)
+            return;
+
+        long time = calendar.getTimeInMillis() - TimeUnit.Minute.getTime();
         map.values().forEach(editing -> editing.save(time));
+    }
+
+    @Override
+    public void executeHourJob() {
+        long time = System.currentTimeMillis() - TimeUnit.Day.getTime();
+        map.forEach((key, editing) -> {
+            if (editing.overdue(time))
+                map.remove(key);
+        });
     }
 }

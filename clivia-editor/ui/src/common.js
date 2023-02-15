@@ -4,7 +4,8 @@ const timeout = {
 };
 
 const timestamp = {
-    offset: 0
+    offset: 0,
+    sync: 0,
 }
 
 const now = () => new Date().getTime() + timestamp.offset;

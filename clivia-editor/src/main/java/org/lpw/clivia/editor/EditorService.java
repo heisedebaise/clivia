@@ -8,5 +8,5 @@ public interface EditorService {
 
     JSONArray get(String key);
 
-    JSONObject save(String key, String id, JSONArray lines);
+    JSONObject save(String key, String id, JSONArray lines, long sync);
 }
