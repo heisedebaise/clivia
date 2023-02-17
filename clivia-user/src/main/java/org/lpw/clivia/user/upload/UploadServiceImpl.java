@@ -52,7 +52,7 @@ public class UploadServiceImpl implements UploadService, UploadInterceptor {
 
     @Override
     public boolean enable(UploadReader uploadReader, UploadListener uploadListener, String contentType) {
-        return !userService.sign().isEmpty();
+        return userService.fromSession() != null;
     }
 
     @Override

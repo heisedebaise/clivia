@@ -22,12 +22,13 @@ public class UserModel extends ModelSupport {
     private String password; // 密码
     private String idcard; // 身份证号
     private String name; // 姓名
-    private String nick; // 昵称
     private String mobile; // 手机号
     private String email; // Email地址
     private String weixin; // 微信号
     private String qq; // QQ号
+    private String nick; // 昵称
     private String avatar; // 头像
+    private String signature; // 签名
     private int gender; // 性别：0-未知；1-男；2-女
     private Date birthday; // 出生日期
     private String inviter; // 邀请人
@@ -65,16 +66,6 @@ public class UserModel extends ModelSupport {
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    @Jsonable
-    @Column(name = "c_nick")
-    public String getNick() {
-        return nick;
-    }
-
-    public void setNick(String nick) {
-        this.nick = nick;
     }
 
     @Jsonable
@@ -118,6 +109,16 @@ public class UserModel extends ModelSupport {
     }
 
     @Jsonable
+    @Column(name = "c_nick")
+    public String getNick() {
+        return nick;
+    }
+
+    public void setNick(String nick) {
+        this.nick = nick;
+    }
+
+    @Jsonable
     @Column(name = "c_avatar")
     public String getAvatar() {
         return avatar;
@@ -125,6 +126,16 @@ public class UserModel extends ModelSupport {
 
     public void setAvatar(String avatar) {
         this.avatar = avatar;
+    }
+
+    @Jsonable
+    @Column(name = "c_signature")
+    public String getSignature() {
+        return signature;
+    }
+
+    public void setSignature(String signature) {
+        this.signature = signature;
     }
 
     @Jsonable

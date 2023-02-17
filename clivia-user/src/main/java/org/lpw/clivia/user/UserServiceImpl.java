@@ -491,12 +491,13 @@ public class UserServiceImpl implements UserService, ContextRefreshedListener {
         UserModel model = findById(id);
         model.setIdcard(user.getIdcard());
         model.setName(user.getName());
-        model.setNick(user.getNick());
         model.setMobile(user.getMobile());
         model.setEmail(user.getEmail());
         model.setWeixin(user.getWeixin());
         model.setQq(user.getQq());
+        model.setNick(user.getNick());
         model.setAvatar(user.getAvatar());
+        model.setSignature(user.getSignature());
         model.setGender(user.getGender());
         model.setBirthday(user.getBirthday());
         if (manage) {
@@ -519,15 +520,12 @@ public class UserServiceImpl implements UserService, ContextRefreshedListener {
     }
 
     @Override
-    public void info(String id, String idcard, String name, String nick, String mobile, String email, String weixin,
-                     String qq, int gender) {
+    public void info(String id, String idcard, String name, String nick, String mobile, String email, String weixin, String qq, String signature, int gender) {
         UserModel user = findById(id);
         if (!validator.isEmpty(idcard))
             user.setIdcard(idcard);
         if (!validator.isEmpty(name))
             user.setName(name);
-        if (!validator.isEmpty(nick))
-            user.setNick(nick);
         if (!validator.isEmpty(mobile))
             user.setMobile(mobile);
         if (!validator.isEmpty(email))
@@ -536,6 +534,10 @@ public class UserServiceImpl implements UserService, ContextRefreshedListener {
             user.setWeixin(weixin);
         if (!validator.isEmpty(qq))
             user.setQq(qq);
+        if (!validator.isEmpty(nick))
+            user.setNick(nick);
+        if (!validator.isEmpty(signature))
+            user.setSignature(signature);
         if (gender > 0)
             user.setGender(gender);
         save(user);

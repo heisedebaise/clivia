@@ -1,7 +1,7 @@
 package org.lpw.clivia.user;
 
 import com.alibaba.fastjson.JSONObject;
-import org.lpw.photon.ctrl.upload.UploadListener;
+import org.lpw.photon.ctrl.upload.ImageUploadListener;
 import org.lpw.photon.ctrl.upload.UploadReader;
 import org.lpw.photon.util.Context;
 import org.lpw.photon.util.Image;
@@ -14,7 +14,7 @@ import java.awt.image.BufferedImage;
 import java.io.FileOutputStream;
 
 @Controller(UserModel.NAME + ".upload-listener.avatar")
-public class AvatarUploadListenerImpl implements UploadListener {
+public class AvatarUploadListenerImpl extends ImageUploadListener {
     @Inject
     private Image image;
     @Inject
@@ -29,11 +29,6 @@ public class AvatarUploadListenerImpl implements UploadListener {
     @Override
     public String getKey() {
         return UserModel.NAME + ".avatar";
-    }
-
-    @Override
-    public boolean isUploadEnable(UploadReader uploadReader) {
-        return image.is(uploadReader.getContentType(), uploadReader.getFileName()) && !userService.sign().isEmpty();
     }
 
     @Override

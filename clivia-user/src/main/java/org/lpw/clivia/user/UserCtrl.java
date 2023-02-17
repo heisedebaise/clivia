@@ -46,16 +46,13 @@ public class UserCtrl {
 
     @Execute(name = "sign-up", permit = Permit.always, validates = {
             @Validate(validator = Validators.NOT_EMPTY, parameter = "uid", failureCode = 1),
-            @Validate(validator = Validators.MAX_LENGTH, number = {
-                    100}, parameter = "uid", failureCode = 2),
+            @Validate(validator = Validators.MAX_LENGTH, number = {100}, parameter = "uid", failureCode = 2),
             @Validate(validator = UserService.VALIDATOR_EXISTS_TYPE, parameter = "type", failureCode = 27),
-            @Validate(validator = UserService.VALIDATOR_PASSWORD, parameters = {"password",
-                    "type"}, failureCode = 3),
+            @Validate(validator = UserService.VALIDATOR_PASSWORD, parameters = {"password", "type"}, failureCode = 3),
             @Validate(validator = UserService.VALIDATOR_SIGN_UP_ENABLE, failureCode = 99),
             @Validate(validator = InvitecodeService.VALIDATOR_VALID, parameter = "invitecode", failureCode = 29),
             @Validate(validator = UserService.VALIDATOR_SIGN_UP_SMS, parameter = "sms", failureCode = 98),
-            @Validate(validator = AuthService.VALIDATOR_UID_NOT_EXISTS, parameters = {"uid", "password",
-                    "type"}, failureCode = 4)})
+            @Validate(validator = AuthService.VALIDATOR_UID_NOT_EXISTS, parameters = {"uid", "password", "type"}, failureCode = 4)})
     public Object signUp() {
         userService.signUp(request.get("uid"), request.get("password"), request.get("type"),
                 request.get("inviter"), request.get("grade"), request.get("invitecode"));
@@ -71,10 +68,8 @@ public class UserCtrl {
 
     @Execute(name = "sign-in", permit = Permit.always, validates = {
             @Validate(validator = UserService.VALIDATOR_EXISTS_TYPE, parameter = "type", failureCode = 27),
-            @Validate(validator = UserService.VALIDATOR_PASSWORD, parameters = {"password",
-                    "type"}, failureCode = 3),
-            @Validate(validator = UserService.VALIDATOR_SIGN_IN, parameters = {"uid", "password", "type",
-                    "grade"}, failureCode = 6)})
+            @Validate(validator = UserService.VALIDATOR_PASSWORD, parameters = {"password", "type"}, failureCode = 3),
+            @Validate(validator = UserService.VALIDATOR_SIGN_IN, parameters = {"uid", "password", "type", "grade"}, failureCode = 6)})
     public Object signIn() {
         return sign();
     }
@@ -106,24 +101,17 @@ public class UserCtrl {
     }
 
     @Execute(name = "modify", permit = Permit.sign, validates = {
-            @Validate(validator = Validators.MAX_LENGTH, number = {
-                    100}, parameter = "idcard", failureCode = 7),
-            @Validate(validator = Validators.MAX_LENGTH, number = {
-                    100}, parameter = "name", failureCode = 8),
-            @Validate(validator = Validators.MAX_LENGTH, number = {
-                    100}, parameter = "nick", failureCode = 9),
+            @Validate(validator = Validators.MAX_LENGTH, number = {100}, parameter = "idcard", failureCode = 7),
+            @Validate(validator = Validators.MAX_LENGTH, number = {100}, parameter = "name", failureCode = 8),
+            @Validate(validator = Validators.MAX_LENGTH, number = {100}, parameter = "nick", failureCode = 9),
             @Validate(validator = Validators.MOBILE, emptyable = true, parameter = "mobile", failureCode = 10),
             @Validate(validator = Validators.EMAIL, emptyable = true, parameter = "email", failureCode = 11),
-            @Validate(validator = Validators.MAX_LENGTH, number = {
-                    100}, parameter = "email", failureCode = 12),
-            @Validate(validator = Validators.MAX_LENGTH, number = {
-                    100}, parameter = "weixin", failureCode = 33),
-            @Validate(validator = Validators.MAX_LENGTH, number = {
-                    100}, parameter = "qq", failureCode = 34),
-            @Validate(validator = Validators.BETWEEN, number = {0,
-                    2}, parameter = "gender", failureCode = 13),
-            @Validate(validator = Validators.MAX_LENGTH, number = {
-                    100}, parameter = "avatar", failureCode = 32),
+            @Validate(validator = Validators.MAX_LENGTH, number = {100}, parameter = "email", failureCode = 12),
+            @Validate(validator = Validators.MAX_LENGTH, number = {100}, parameter = "weixin", failureCode = 33),
+            @Validate(validator = Validators.MAX_LENGTH, number = {100}, parameter = "qq", failureCode = 34),
+            @Validate(validator = Validators.BETWEEN, number = {0, 2}, parameter = "gender", failureCode = 13),
+            @Validate(validator = Validators.MAX_LENGTH, number = {200}, parameter = "avatar", failureCode = 32),
+            @Validate(validator = Validators.MAX_LENGTH, number = {100}, parameter = "signature", failureCode = 36),
             @Validate(validator = UserService.VALIDATOR_SIGN)})
     public Object modify() {
         userService.modify(request.setToModel(UserModel.class));
@@ -132,15 +120,9 @@ public class UserCtrl {
     }
 
     @Execute(name = "password", permit = Permit.sign, validates = {
-            @Validate(validator = Validators.NOT_EMPTY, parameter = "new", failureCode = 14, failureArgKeys = {
-                    UserModel.NAME + ".password.new"}),
-            @Validate(validator = Validators.NOT_EQUALS, parameters = {"old",
-                    "new"}, failureCode = 15, failureArgKeys = {UserModel.NAME + ".password.new",
-                    UserModel.NAME + ".password.old"}),
-            @Validate(validator = Validators.EQUALS, parameters = {"new",
-                    "repeat"}, failureCode = 16, failureArgKeys = {
-                    UserModel.NAME + ".password.repeat",
-                    UserModel.NAME + ".password.new"}),
+            @Validate(validator = Validators.NOT_EMPTY, parameter = "new", failureCode = 14, failureArgKeys = {UserModel.NAME + ".password.new"}),
+            @Validate(validator = Validators.NOT_EQUALS, parameters = {"old", "new"}, failureCode = 15, failureArgKeys = {UserModel.NAME + ".password.new", UserModel.NAME + ".password.old"}),
+            @Validate(validator = Validators.EQUALS, parameters = {"new", "repeat"}, failureCode = 16, failureArgKeys = {UserModel.NAME + ".password.repeat", UserModel.NAME + ".password.new"}),
             @Validate(validator = UserService.VALIDATOR_SIGN)})
     public Object password() {
         return userService.password(request.get("old"), request.get("new")) ? ""
@@ -155,8 +137,7 @@ public class UserCtrl {
     }
 
     @Execute(name = "sms-reset-password", permit = Permit.always, validates = {
-            @Validate(validator = Validators.NOT_EMPTY, parameter = "password", failureCode = 14, failureArgKeys = {
-                    UserModel.NAME + ".password.new"}),
+            @Validate(validator = Validators.NOT_EMPTY, parameter = "password", failureCode = 14, failureArgKeys = {UserModel.NAME + ".password.new"}),
             @Validate(validator = Validators.MOBILE, parameter = "mobile", failureCode = 10),
             @Validate(validator = PushService.VALIDATOR_CAPTCHA, parameter = "sms", failureCode = 35),
             @Validate(validator = AuthService.VALIDATOR_UID_EXISTS, parameter = "mobile", failureCode = 28, failureKey = UserModel.NAME
@@ -216,28 +197,19 @@ public class UserCtrl {
 
     @Execute(name = "new", validates = {
             @Validate(validator = Validators.NOT_EMPTY, parameter = "uid", failureCode = 1),
-            @Validate(validator = Validators.MAX_LENGTH, number = {
-                    100}, parameter = "uid", failureCode = 2),
-            @Validate(validator = Validators.MAX_LENGTH, number = {
-                    100}, parameter = "idcard", failureCode = 7),
-            @Validate(validator = Validators.MAX_LENGTH, number = {
-                    100}, parameter = "name", failureCode = 8),
-            @Validate(validator = Validators.MAX_LENGTH, number = {
-                    100}, parameter = "nick", failureCode = 9),
+            @Validate(validator = Validators.MAX_LENGTH, number = {100}, parameter = "uid", failureCode = 2),
+            @Validate(validator = Validators.MAX_LENGTH, number = {100}, parameter = "idcard", failureCode = 7),
+            @Validate(validator = Validators.MAX_LENGTH, number = {100}, parameter = "name", failureCode = 8),
+            @Validate(validator = Validators.MAX_LENGTH, number = {100}, parameter = "nick", failureCode = 9),
             @Validate(validator = Validators.MOBILE, emptyable = true, parameter = "mobile", failureCode = 10),
             @Validate(validator = Validators.EMAIL, emptyable = true, parameter = "email", failureCode = 11),
-            @Validate(validator = Validators.MAX_LENGTH, number = {
-                    100}, parameter = "email", failureCode = 12),
-            @Validate(validator = Validators.MAX_LENGTH, number = {
-                    100}, parameter = "weixin", failureCode = 33),
-            @Validate(validator = Validators.MAX_LENGTH, number = {
-                    100}, parameter = "qq", failureCode = 34),
-            @Validate(validator = Validators.BETWEEN, number = {0,
-                    2}, parameter = "gender", failureCode = 13),
-            @Validate(validator = Validators.MAX_LENGTH, number = {
-                    100}, parameter = "avatar", failureCode = 32),
-            @Validate(validator = Validators.BETWEEN, number = {0,
-                    1}, parameter = "state", failureCode = 24),
+            @Validate(validator = Validators.MAX_LENGTH, number = {100}, parameter = "email", failureCode = 12),
+            @Validate(validator = Validators.MAX_LENGTH, number = {100}, parameter = "weixin", failureCode = 33),
+            @Validate(validator = Validators.MAX_LENGTH, number = {100}, parameter = "qq", failureCode = 34),
+            @Validate(validator = Validators.BETWEEN, number = {0, 2}, parameter = "gender", failureCode = 13),
+            @Validate(validator = Validators.MAX_LENGTH, number = {200}, parameter = "avatar", failureCode = 32),
+            @Validate(validator = Validators.MAX_LENGTH, number = {100}, parameter = "signature", failureCode = 36),
+            @Validate(validator = Validators.BETWEEN, number = {0, 1}, parameter = "state", failureCode = 24),
             @Validate(validator = AuthService.VALIDATOR_UID_NOT_EXISTS, parameter = "uid", failureCode = 4)})
     public Object create() {
         userService.create(request.get("uid"), request.get("password"), request.get("idcard"),
@@ -251,26 +223,18 @@ public class UserCtrl {
 
     @Execute(name = "update", validates = {
             @Validate(validator = Validators.ID, parameter = "id", failureCode = 22),
-            @Validate(validator = Validators.MAX_LENGTH, number = {
-                    100}, parameter = "idcard", failureCode = 7),
-            @Validate(validator = Validators.MAX_LENGTH, number = {
-                    100}, parameter = "name", failureCode = 8),
-            @Validate(validator = Validators.MAX_LENGTH, number = {
-                    100}, parameter = "nick", failureCode = 9),
+            @Validate(validator = Validators.MAX_LENGTH, number = {100}, parameter = "idcard", failureCode = 7),
+            @Validate(validator = Validators.MAX_LENGTH, number = {100}, parameter = "name", failureCode = 8),
+            @Validate(validator = Validators.MAX_LENGTH, number = {100}, parameter = "nick", failureCode = 9),
             @Validate(validator = Validators.MOBILE, emptyable = true, parameter = "mobile", failureCode = 10),
             @Validate(validator = Validators.EMAIL, emptyable = true, parameter = "email", failureCode = 11),
-            @Validate(validator = Validators.MAX_LENGTH, number = {
-                    100}, parameter = "email", failureCode = 12),
-            @Validate(validator = Validators.MAX_LENGTH, number = {
-                    100}, parameter = "weixin", failureCode = 33),
-            @Validate(validator = Validators.MAX_LENGTH, number = {
-                    100}, parameter = "qq", failureCode = 34),
-            @Validate(validator = Validators.BETWEEN, number = {0,
-                    2}, parameter = "gender", failureCode = 13),
-            @Validate(validator = Validators.MAX_LENGTH, number = {
-                    100}, parameter = "avatar", failureCode = 32),
-            @Validate(validator = Validators.BETWEEN, number = {0,
-                    1}, parameter = "state", failureCode = 24),
+            @Validate(validator = Validators.MAX_LENGTH, number = {100}, parameter = "email", failureCode = 12),
+            @Validate(validator = Validators.MAX_LENGTH, number = {100}, parameter = "weixin", failureCode = 33),
+            @Validate(validator = Validators.MAX_LENGTH, number = {100}, parameter = "qq", failureCode = 34),
+            @Validate(validator = Validators.BETWEEN, number = {0, 2}, parameter = "gender", failureCode = 13),
+            @Validate(validator = Validators.MAX_LENGTH, number = {200}, parameter = "avatar", failureCode = 32),
+            @Validate(validator = Validators.MAX_LENGTH, number = {100}, parameter = "signature", failureCode = 36),
+            @Validate(validator = Validators.BETWEEN, number = {0, 1}, parameter = "state", failureCode = 24),
             @Validate(validator = Validators.SIGN),
             @Validate(validator = UserService.VALIDATOR_EXISTS, parameter = "id", failureCode = 25)})
     public Object update() {
@@ -290,8 +254,7 @@ public class UserCtrl {
     }
 
     @Execute(name = "grade", validates = {@Validate(validator = Validators.ID, parameter = "id", failureCode = 22),
-            @Validate(validator = Validators.BETWEEN, number = {0,
-                    98}, parameter = "grade", failureCode = 23),
+            @Validate(validator = Validators.BETWEEN, number = {0, 98}, parameter = "grade", failureCode = 23),
             @Validate(validator = Validators.SIGN),
             @Validate(validator = UserService.VALIDATOR_EXISTS, parameter = "id", failureCode = 25)})
     public Object grade() {
@@ -301,8 +264,7 @@ public class UserCtrl {
     }
 
     @Execute(name = "state", validates = {@Validate(validator = Validators.ID, parameter = "id", failureCode = 22),
-            @Validate(validator = Validators.BETWEEN, number = {0,
-                    1}, parameter = "state", failureCode = 24),
+            @Validate(validator = Validators.BETWEEN, number = {0, 1}, parameter = "state", failureCode = 24),
             @Validate(validator = Validators.SIGN),
             @Validate(validator = UserService.VALIDATOR_EXISTS, parameter = "id", failureCode = 25)})
     public Object state() {

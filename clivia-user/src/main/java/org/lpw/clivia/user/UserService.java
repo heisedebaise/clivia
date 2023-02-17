@@ -357,7 +357,7 @@ public interface UserService {
      * @param gender 性别：0-未知；1-男；2-女。
      */
     void info(String id, String idcard, String name, String nick, String mobile, String email, String weixin,
-              String qq, int gender);
+              String qq, String signature, int gender);
 
     /**
      * 设置用户等级。
