@@ -37,18 +37,18 @@ class Olcs extends React.Component {
                 return;
 
             if (this.state.nick === '') {
-                this.setState({ all: data.all, newer: data.newer, allSearch: data.all });
+                this.setState({ all: data.all, newer: data.newer, allSearch: data.all, unread: data.unread });
 
                 return;
             }
 
             let all = [];
             for (let a of data.all) {
-                if (a.nick && a.nick.indexOf(this.state.nick) > -1) {
+                if (a.name && a.name.indexOf(this.state.nick) > -1) {
                     all.push(a);
                 }
             }
-            this.setState({ all: data.all, newer: data.newer, allSearch: all });
+            this.setState({ all: data.all, newer: data.newer, allSearch: all, unread: data.unread });
         });
         if (this.state.user.id) {
             service('/olcs/query', { user: this.state.user.id, time: this.state.time }).then(data => {
