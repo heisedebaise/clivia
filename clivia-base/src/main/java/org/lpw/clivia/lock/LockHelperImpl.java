@@ -105,7 +105,7 @@ public class LockHelperImpl implements LockHelper, Atomicable, SecondsJob {
 
             thread.sleep(1, TimeUnit.MilliSecond);
         }
-        unlockDb(lock.getId());
+        unlockMap(lock.getId());
 
         return null;
     }
