@@ -123,6 +123,7 @@ const onFocus = (e) => {
 };
 
 const onKeyDown = (e) => {
+    console.log(e);
     let index = findIndex(e.target.id);
     let range = getSelection().getRangeAt(0);
     let start = parseInt(range.startContainer.parentNode.dataset.index);
@@ -295,6 +296,10 @@ const onKeyDown = (e) => {
         return;
     }
 
+    if (e.key === 'Shift') {
+        formatItem(e.target.id);
+    }
+
     if (keymap(list.value, e)) {
         e.preventDefault();
 
@@ -309,26 +314,34 @@ const onKeyUp = (e) => {
         focus.value.tags = item.offsetTop + item.clientHeight;
     } else if (e.key === 'Shift') {
         onSelect();
+    } else if (e.key === ' ') {
+        formatItem(e.target.id);
     }
+};
 
-    let item = findById(e.target.id);
+const onMouseDown = (e) => {
+    formatItem(e.target.id);
+}
+
+const formatItem = (id) => {
+    let item = findById(id);
     let texts = [];
-    formatText(texts, document.getElementById(item.id), 0);
+    formatText(texts, document.getElementById(id), 0);
     let empty = isEmpty(item);
     item.text = texts;
     item.time = now();
     if (!isEmpty(item)) {
         mergeText(item);
         if (markdown(item))
-            setCursor(list.value, item.id, true);
+            setCursor(list.value, id, true);
         if (empty) {
             setTimeout(() => {
-                let node = document.getElementById(item.id).childNodes[1].firstChild;
+                let node = document.getElementById(id).childNodes[1].firstChild;
                 setRange(node, texts[0].text.length, node, texts[0].text.length);
             }, timeout.min);
         }
     }
-};
+}
 
 const onPlusClick = (e) => {
     let node = findByActions();
@@ -414,6 +427,7 @@ const onDragEnd = (e) => {
 
     if (drag.value.last) {
         let item = list.value[index];
+        item.time = now();
         list.value.splice(index, 1);
         list.value.push(item);
         focusById(item.id, true);
@@ -425,6 +439,7 @@ const onDragEnd = (e) => {
         return;
 
     let item = list.value[index];
+    item.time = now();
     list.value.splice(index, 1);
     list.value.splice(drag.value.index - (index > drag.value.index ? 0 : 1), 0, item);
     focusById(item.id, true);
@@ -455,7 +470,8 @@ const onTagSelect = (e) => {
             id: focus.value.id,
             tag,
             text: [],
-            placeholder: message('placeholder.' + tag)
+            placeholder: message('placeholder.' + tag),
+            time: now(),
         });
         setTimeout(() => setCursor(list.value, focus.value.id, true), timeout.min);
     } else {
@@ -568,7 +584,12 @@ const timer = () => {
             lines.push(line);
         }
     }
-    service('/editor/save', { key: key.value, id: id.substring(1), lines: JSON.stringify(lines), sync: timestamp.sync }, data => {
+    service('/editor/save', {
+        key: key.value,
+        id: id.substring(1),
+        lines: JSON.stringify(lines),
+        sync: timestamp.sync
+    }, data => {
         timestamp.sync = data.sync;
         if (data.id) {
             let map = {};
@@ -634,25 +655,25 @@ onMounted(() => {
     <div class="content" @mouseup="onSelect" @dblclick="onSelect">
         <div v-for="item in list" class="item" @mouseover="onMouseover" @keydown="onKeyDown" @keyup="onKeyUp">
             <h1 v-if="item.tag === 'h1'" :id="item.id" :contenteditable="edit.enable"
-                :data-placeholder="item.placeholder" @focus="onFocus">
+                :data-placeholder="item.placeholder" @focus="onFocus" @mousedown="onMouseDown">
                 <span v-for="(text, index) in item.text" :class="text.style" :data-index="index">{{
                     text.text
                 }}</span>
             </h1>
             <h2 v-else-if="item.tag === 'h2'" :id="item.id" :contenteditable="edit.enable"
-                :data-placeholder="item.placeholder" @focus="onFocus">
+                :data-placeholder="item.placeholder" @focus="onFocus" @mousedown="onMouseDown">
                 <span v-for="(text, index) in item.text" :class="text.style" :data-index="index">{{
                     text.text
                 }}</span>
             </h2>
             <h3 v-else-if="item.tag === 'h3'" :id="item.id" :contenteditable="edit.enable"
-                :data-placeholder="item.placeholder" @focus="onFocus">
+                :data-placeholder="item.placeholder" @focus="onFocus" @mousedown="onMouseDown">
                 <span v-for="(text, index) in item.text" :class="text.style" :data-index="index">{{
                     text.text
                 }}</span>
             </h3>
             <p v-else-if="item.tag === 'text'" :id="item.id" :contenteditable="edit.enable"
-                :data-placeholder="item.placeholder" @focus="onFocus">
+                :data-placeholder="item.placeholder" @focus="onFocus" @mousedown="onMouseDown">
                 <span v-for="(text, index) in item.text" :class="text.style" :data-index="index">{{
                     text.text
                 }}</span>
@@ -660,7 +681,7 @@ onMounted(() => {
             <div v-else-if="item.tag === 'img'" :id="item.id" class="image">
                 <div v-if="item.uploading">{{ item.uploading }}</div>
                 <div v-else-if="item.path">
-                    <img :src="item.url" />
+                    <img :src="item.url" draggable="false" />
                     <div class="name">{{ item.name }}</div>
                 </div>
                 <div v-else class="select" @click="selectImage">{{ item.upload }}</div>
@@ -798,6 +819,7 @@ onMounted(() => {
 
 .draging img {
     opacity: 0.25;
+    max-width: 200px;
 }
 
 .tags-mark {
