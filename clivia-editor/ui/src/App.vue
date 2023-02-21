@@ -11,6 +11,7 @@ import { markdown } from './markdown';
 
 const edit = ref({
     enable: true,
+    composition: false,
 });
 const focus = ref({
     id: '',
@@ -123,7 +124,6 @@ const onFocus = (e) => {
 };
 
 const onKeyDown = (e) => {
-    console.log(e);
     let index = findIndex(e.target.id);
     let range = getSelection().getRangeAt(0);
     let start = parseInt(range.startContainer.parentNode.dataset.index);
@@ -193,7 +193,16 @@ const onKeyDown = (e) => {
         return;
     }
 
-    if (e.key === 'Backspace' && index > 0) {
+    if (e.key === 'Backspace') {
+        if (index === 0) {
+            if (isEmpty(null, null, index)) {
+                e.preventDefault();
+                setTimeout(() => clearBr(list.value), timeout.larger);
+            }
+
+            return;
+        }
+
         if (isEmpty(null, null, index)) {
             e.preventDefault();
             list.value.splice(index, 1);
@@ -296,10 +305,6 @@ const onKeyDown = (e) => {
         return;
     }
 
-    if (e.key === 'Shift') {
-        formatItem(e.target.id);
-    }
-
     if (keymap(list.value, e)) {
         e.preventDefault();
 
@@ -314,14 +319,20 @@ const onKeyUp = (e) => {
         focus.value.tags = item.offsetTop + item.clientHeight;
     } else if (e.key === 'Shift') {
         onSelect();
-    } else if (e.key === ' ') {
-        formatItem(e.target.id);
     }
+
+    if (!edit.value.composition)
+        formatItem(e.target.id);
 };
 
-const onMouseDown = (e) => {
+const onCompositionStart = (e) => {
+    edit.value.composition = true;
+};
+
+const onCompositionEnd = (e) => {
+    edit.value.composition = false;
     formatItem(e.target.id);
-}
+};
 
 const formatItem = (id) => {
     let item = findById(id);
@@ -336,7 +347,11 @@ const formatItem = (id) => {
             setCursor(list.value, id, true);
         if (empty) {
             setTimeout(() => {
-                let node = document.getElementById(id).childNodes[1].firstChild;
+                let node = document.getElementById(id);
+                if (node.childNodes.length === 0)
+                    return;
+
+                node = node.childNodes[1].firstChild;
                 setRange(node, texts[0].text.length, node, texts[0].text.length);
             }, timeout.min);
         }
@@ -654,26 +669,29 @@ onMounted(() => {
     <div class="drag-drop" @mousemove.stop="onDragMove" @mouseup.stop="onDragEnd"></div>
     <div class="content" @mouseup="onSelect" @dblclick="onSelect">
         <div v-for="item in list" class="item" @mouseover="onMouseover" @keydown="onKeyDown" @keyup="onKeyUp">
-            <h1 v-if="item.tag === 'h1'" :id="item.id" :contenteditable="edit.enable"
-                :data-placeholder="item.placeholder" @focus="onFocus" @mousedown="onMouseDown">
+            <h1 v-if="item.tag === 'h1'" :id="item.id" :contenteditable="edit.enable" :data-placeholder="item.placeholder"
+                @focus="onFocus" @compositionstart="onCompositionStart" @compositionend="onCompositionEnd">
                 <span v-for="(text, index) in item.text" :class="text.style" :data-index="index">{{
                     text.text
                 }}</span>
             </h1>
             <h2 v-else-if="item.tag === 'h2'" :id="item.id" :contenteditable="edit.enable"
-                :data-placeholder="item.placeholder" @focus="onFocus" @mousedown="onMouseDown">
+                :data-placeholder="item.placeholder" @focus="onFocus" @compositionstart="onCompositionStart"
+                @compositionend="onCompositionEnd">
                 <span v-for="(text, index) in item.text" :class="text.style" :data-index="index">{{
                     text.text
                 }}</span>
             </h2>
             <h3 v-else-if="item.tag === 'h3'" :id="item.id" :contenteditable="edit.enable"
-                :data-placeholder="item.placeholder" @focus="onFocus" @mousedown="onMouseDown">
+                :data-placeholder="item.placeholder" @focus="onFocus" @compositionstart="onCompositionStart"
+                @compositionend="onCompositionEnd">
                 <span v-for="(text, index) in item.text" :class="text.style" :data-index="index">{{
                     text.text
                 }}</span>
             </h3>
             <p v-else-if="item.tag === 'text'" :id="item.id" :contenteditable="edit.enable"
-                :data-placeholder="item.placeholder" @focus="onFocus" @mousedown="onMouseDown">
+                :data-placeholder="item.placeholder" @focus="onFocus" @compositionstart="onCompositionStart"
+                @compositionend="onCompositionEnd">
                 <span v-for="(text, index) in item.text" :class="text.style" :data-index="index">{{
                     text.text
                 }}</span>
@@ -712,8 +730,7 @@ onMounted(() => {
         </div>
     </div>
     <input id="image-uploader" type="file" accept="image/*" multiple @change="uploadImage" />
-    <div v-if="focus.style.left > 0" class="style"
-        :style="{ left: focus.style.left + 'px', top: focus.style.top + 'px' }">
+    <div v-if="focus.style.left > 0" class="style" :style="{ left: focus.style.left + 'px', top: focus.style.top + 'px' }">
         <div class="bold" @click="onBold">B</div>
         <div class="italic" @click="onItalic">i</div>
         <div class="underline" @click="onUnderline">U</div>
