@@ -284,7 +284,7 @@ class Base extends React.Component {
         } else if (prop.type === 'image') {
             items.push(<Form.Item {...item}><Image name={prop.name} upload={prop.upload} size={prop.size || 1} value={this.state[prop.name] || ''} form={this} /></Form.Item>);
         } else if (prop.type === 'image-viewer') {
-            items.push(<Form.Item {...item}><img src={this.state[prop.name] || ''} /></Form.Item>);
+            items.push(<Form.Item {...item}><img src={this.state[prop.name] || ''} alt="" /></Form.Item>);
         } else if (prop.type === 'file') {
             items.push(<Form.Item {...item}><File name={prop.name} upload={prop.upload} size={prop.size || 1} value={this.state[prop.name] || ''} form={this} /></Form.Item>);
         } else if (prop.type === 'folder') {
