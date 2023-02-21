@@ -14,7 +14,6 @@ import java.util.Set;
 
 /**
  * 检索构建器。
- *
  */
 public class QueryBuilder {
     private final LiteOrm liteOrm;
@@ -312,5 +311,23 @@ public class QueryBuilder {
      */
     public <T extends Model> void delete(Class<T> modelClass) {
         liteOrm.delete(new LiteQuery(modelClass).where(where.toString()), args.toArray());
+    }
+
+    /**
+     * 获取WHERE片段。
+     *
+     * @return WHERE片段。
+     */
+    public String getWhere() {
+        return where.toString();
+    }
+
+    /**
+     * 获取参数集。
+     *
+     * @return 参数集。
+     */
+    public Object[] getArgs() {
+        return args.toArray();
     }
 }
