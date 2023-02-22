@@ -127,6 +127,8 @@ public class GroupServiceImpl implements GroupService, UserListener {
         object.put("id", member.getId());
         object.put("group", member.getGroup());
         object.put("user", member.getUser());
+        object.put("type", member.getType());
+        object.put("grade", member.getGrade());
         object.put("nick", user.getNick());
         object.put("memo", member.getMemo());
         object.put("avatar", user.getAvatar());
