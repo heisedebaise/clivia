@@ -3,14 +3,10 @@ package org.lpw.clivia.upgrader;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import org.lpw.clivia.page.Pagination;
+import org.lpw.photon.ctrl.context.Request;
 import org.lpw.photon.dao.model.ModelHelper;
 import org.lpw.photon.scheduler.MinuteJob;
-import org.lpw.photon.util.Context;
-import org.lpw.photon.util.Http;
-import org.lpw.photon.util.Io;
-import org.lpw.photon.util.Json;
-import org.lpw.photon.util.Logger;
-import org.lpw.photon.util.Validator;
+import org.lpw.photon.util.*;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -36,12 +32,13 @@ public class UpgraderServiceImpl implements UpgraderService, MinuteJob {
     @Inject
     private ModelHelper modelHelper;
     @Inject
+    private Request request;
+    @Inject
     private Pagination pagination;
     @Inject
     private UpgraderDao upgraderDao;
     @Value("${" + UpgraderModel.NAME + ".synch:}")
     private String synch;
-    private final String[] names = {"android", "ios", "windows", "macos", "linux", "url"};
 
     @Override
     public JSONObject query() {
@@ -85,6 +82,15 @@ public class UpgraderServiceImpl implements UpgraderService, MinuteJob {
     }
 
     @Override
+    public JSONObject plist() {
+        JSONObject object = latest("ios");
+        if (object.containsKey("url"))
+            object.put("url", request.getUrl() + object.getString("url"));
+
+        return object;
+    }
+
+    @Override
     public void save(UpgraderModel upgrader) {
         if (validator.isEmpty(upgrader.getId()) || upgraderDao.findById(upgrader.getId()) == null)
             upgrader.setId(null);
@@ -94,9 +100,11 @@ public class UpgraderServiceImpl implements UpgraderService, MinuteJob {
             for (int i = 0; i < size; i++) {
                 JSONObject object = array.getJSONObject(i);
                 String name = object.getString("name");
-                if (validator.isEmpty(upgrader.getAndroid()) && name.contains("android"))
+                if (validator.isEmpty(upgrader.getAndroid()) && (name.contains("android") || name.endsWith(".apk")))
                     upgrader.setAndroid(object.getString("uri"));
-                if (validator.isEmpty(upgrader.getWindows()) && name.contains("windows"))
+                if (validator.isEmpty(upgrader.getIos()) && (name.contains("ios") || name.endsWith(".ipa")))
+                    upgrader.setIos(object.getString("uri"));
+                if (validator.isEmpty(upgrader.getWindows()) && (name.contains("windows") || name.endsWith(".exe")))
                     upgrader.setWindows(object.getString("uri"));
                 if (validator.isEmpty(upgrader.getMacos()) && name.contains("macos"))
                     upgrader.setMacos(object.getString("uri"));

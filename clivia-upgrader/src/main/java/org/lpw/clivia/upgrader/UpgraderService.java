@@ -7,6 +7,8 @@ public interface UpgraderService {
 
     JSONObject latest(String client);
 
+    JSONObject plist();
+
     void save(UpgraderModel upgrader);
 
     void delete(String id);

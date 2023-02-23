@@ -3,6 +3,7 @@ package org.lpw.clivia.upgrader;
 import org.lpw.clivia.Permit;
 import org.lpw.photon.ctrl.context.Request;
 import org.lpw.photon.ctrl.execute.Execute;
+import org.lpw.photon.ctrl.template.Templates;
 import org.lpw.photon.ctrl.validate.Validate;
 import org.lpw.photon.ctrl.validate.Validators;
 import org.springframework.stereotype.Controller;
@@ -46,5 +47,10 @@ public class UpgraderCtrl {
         upgraderService.delete(request.get("id"));
 
         return "";
+    }
+
+    @Execute(name = "plist", permit = Permit.always, type = Templates.FREEMARKER)
+    public Object plist() {
+        return upgraderService.plist();
     }
 }
