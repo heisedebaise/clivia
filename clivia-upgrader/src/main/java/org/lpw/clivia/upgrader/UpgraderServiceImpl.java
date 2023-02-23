@@ -85,7 +85,7 @@ public class UpgraderServiceImpl implements UpgraderService, MinuteJob {
     public JSONObject plist() {
         JSONObject object = latest("ios");
         if (object.containsKey("url"))
-            object.put("url", request.getUrl() + object.getString("url"));
+            object.put("url", request.getUrl().replaceAll("http://", "https://") + object.getString("url"));
 
         return object;
     }
