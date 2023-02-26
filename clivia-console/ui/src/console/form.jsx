@@ -290,6 +290,10 @@ class Base extends React.Component {
         } else if (prop.type === 'folder') {
             items.push(<Form.Item {...item}><Folder name={prop.name} value={this.state[prop.name] || ''} form={this} /></Form.Item>);
         } else if (prop.type === 'dselect') {
+            let parameter = this.props.parameter || {};
+            if (prop.parameter)
+                parameter = { ...parameter, ...prop.parameter };
+            prop.parameter = parameter;
             items.push(<Form.Item {...item}><DSelect body={this.props.body} uri={this.props.uri} {...prop} value={this.state[prop.name]} data={this.props.data} form={this} /></Form.Item>);
         } else if (prop.type === 'refresh') {
             items.push(<Form.Item {...item}>{this.state[prop.name] || ''} {prop.service ? <Button icon={<SyncOutlined alt={prop.label} />} onClick={this.refresh.bind(this, prop)} /> : null}</Form.Item>);

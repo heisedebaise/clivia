@@ -222,7 +222,10 @@ class Grid extends React.Component {
     }
 
     loadDselect = (props, prop) => {
-        service(props.body.uri(props.uri, prop.service), prop.parameter).then(data => {
+        let parameter = props.parameter || {};
+        if (prop.parameter)
+            parameter = { ...parameter, ...prop.parameter };
+        service(props.body.uri(props.uri, prop.service), parameter).then(data => {
             if (data === null) return;
 
             let options = {};
