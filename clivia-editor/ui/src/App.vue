@@ -43,6 +43,7 @@ const key = ref('');
 const ai = ref({
     show: false,
 });
+const mobile = ref(/(phone|pad|pod|iPhone|iPod|ios|iPad|Android|Mobile|BlackBerry|IEMobile|MQQBrowser|JUC|Fennec|wOSBrowser|BrowserNG|WebOS|Symbian|Windows Phone)/i.test(navigator.userAgent));
 
 const randomId = () => {
     let id = 'id';
@@ -632,6 +633,7 @@ const onAiHide = () => {
 }
 
 onMounted(() => {
+    console.log(mobile.value);
     if (!location.search)
         return;
 
@@ -666,8 +668,8 @@ onMounted(() => {
 </script>
 
 <template>
-    <div class="drag-drop" @mousemove.stop="onDragMove" @mouseup.stop="onDragEnd"></div>
-    <div class="content" @mouseup="onSelect" @dblclick="onSelect">
+    <div v-if="!mobile" class="drag-drop" @mousemove.stop="onDragMove" @mouseup.stop="onDragEnd"></div>
+    <div class="content" :style="{ left: mobile ? '0px' : '100px' }" @mouseup="onSelect" @dblclick="onSelect">
         <div v-for="item in list" class="item" @mouseover="onMouseover" @keydown="onKeyDown" @keyup="onKeyUp">
             <h1 v-if="item.tag === 'h1'" :id="item.id" :contenteditable="edit.enable" :data-placeholder="item.placeholder"
                 @focus="onFocus" @compositionstart="onCompositionStart" @compositionend="onCompositionEnd">
@@ -706,7 +708,7 @@ onMounted(() => {
             </div>
         </div>
     </div>
-    <div v-if="focus.actions > -1" class="actions" :style="{ top: focus.actions + 'px' }">
+    <div v-if="!mobile && focus.actions > -1" class="actions" :style="{ top: focus.actions + 'px' }">
         <div class="action" @click="onPlusClick">
             <icon name="plus" />
         </div>
@@ -716,7 +718,7 @@ onMounted(() => {
     </div>
     <div v-if="drag.ing" class="draging" :style="{ top: drag.top + 'px' }"></div>
     <div v-if="focus.tags > -1" class="tags-mark" @click="onTagsHide">
-        <div class="tags" :style="{ top: focus.tags + 'px' }">
+        <div class="tags" :style="{ top: focus.tags + 'px', left: mobile ? '8px' : '100px' }">
             <div v-for="(tag, index) in tags" :class="'tag' + (index === focus.tag ? ' tag-hover' : '')"
                 :data-name="tag.name" @click="onTagSelect">
                 <div class="icon">
@@ -756,7 +758,6 @@ onMounted(() => {
 
 .content {
     position: absolute;
-    left: 100px;
     top: 0;
     right: 0;
     padding: 4px 8px;
@@ -849,7 +850,6 @@ onMounted(() => {
 
 .tags {
     position: absolute;
-    left: 100px;
     background-color: #fff;
     border: 1px solid #ccc;
     border-radius: 4px;
