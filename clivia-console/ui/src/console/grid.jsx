@@ -605,7 +605,7 @@ class Grid extends React.Component {
                 value = this.dselect(prop, this.state.delete.model);
             items.push(<Row key={prop.name}>
                 <Col span={6}>{prop.label}</Col>
-                <Col span={18}>{value}</Col>
+                <Col span={18}>{JSON.stringify(value)}</Col>
             </Row>);
         }
 
