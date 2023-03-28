@@ -488,16 +488,6 @@ public class WeixinServiceImpl implements WeixinService, ContextRefreshedListene
             object.putAll(decryptAesCbcPkcs7(sessionKey, iv, message));
         if (!validator.isEmpty(iv2) && !validator.isEmpty(message2))
             object.putAll(decryptAesCbcPkcs7(sessionKey, iv2, message2));
-
-        String nick = object.containsKey("nickname") ? object.getString("nickname") : null;
-        if (nick == null)
-            nick = object.containsKey("nickName") ? object.getString("nickName") : null;
-        if (nick == null || nick.contains("微信")) {
-            logger.info("未获取到有效的微信信息[{}:{}:{}]", key, code, object);
-
-            return new JSONObject();
-        }
-
         saveInfo(weixin, object, object.getString(object.containsKey("openid") ? "openid" : "openId"));
         if (logger.isDebugEnable())
             logger.debug("获得微信小程序用户认证信息[{}:{}:{}]。", key, code, object);
