@@ -23,21 +23,8 @@ import org.lpw.photon.dao.model.ModelHelper;
 import org.lpw.photon.scheduler.HourJob;
 import org.lpw.photon.scheduler.MinuteJob;
 import org.lpw.photon.storage.Storages;
-import org.lpw.photon.util.Codec;
-import org.lpw.photon.util.Context;
-import org.lpw.photon.util.Converter;
-import org.lpw.photon.util.DateTime;
-import org.lpw.photon.util.Generator;
-import org.lpw.photon.util.Http;
-import org.lpw.photon.util.Io;
-import org.lpw.photon.util.Json;
-import org.lpw.photon.util.Logger;
-import org.lpw.photon.util.Numeric;
-import org.lpw.photon.util.QrCode;
 import org.lpw.photon.util.Thread;
-import org.lpw.photon.util.TimeUnit;
-import org.lpw.photon.util.Validator;
-import org.lpw.photon.util.Xml;
+import org.lpw.photon.util.*;
 import org.lpw.photon.wormhole.WormholeHelper;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -50,11 +37,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
 import java.security.Security;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.function.Function;
 
 @Service(WeixinModel.NAME + ".service")
@@ -488,16 +471,6 @@ public class WeixinServiceImpl implements WeixinService, ContextRefreshedListene
             object.putAll(decryptAesCbcPkcs7(sessionKey, iv, message));
         if (!validator.isEmpty(iv2) && !validator.isEmpty(message2))
             object.putAll(decryptAesCbcPkcs7(sessionKey, iv2, message2));
-
-        String nick = object.containsKey("nickname") ? object.getString("nickname") : null;
-        if (nick == null)
-            nick = object.containsKey("nickName") ? object.getString("nickName") : null;
-        if (nick == null || nick.contains("微信")) {
-            logger.info("未获取到有效的微信信息[{}:{}:{}]", key, code, object);
-
-            return new JSONObject();
-        }
-
         saveInfo(weixin, object, object.getString(object.containsKey("openid") ? "openid" : "openId"));
         if (logger.isDebugEnable())
             logger.debug("获得微信小程序用户认证信息[{}:{}:{}]。", key, code, object);
