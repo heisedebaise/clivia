@@ -197,7 +197,7 @@ class Base extends React.Component {
             if (mt.reload)
                 this.props.body.load(this.props.uri, this.props.parameter, this.props.data);
             else if (mt.success)
-                this.props.body.load(this.props.body.uri(this.props.uri, mt.success), this.props.parameter, this.props.data);
+                this.props.body.load(this.props.body.uri(this.props.uri, mt.success), this.props.parameter);
             else if (mt.data)
                 this.data(data);
             else

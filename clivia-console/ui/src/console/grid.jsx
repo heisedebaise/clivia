@@ -544,18 +544,18 @@ class Grid extends React.Component {
             pagination={this.state.pagination}
             onChange={this.load} className="console-grid" scroll={this.scroll()} />);
         elements.push(
-            <Modal key="preview" visible={this.state.preview != null} footer={null} onCancel={this.cancelPreview}>
+            <Modal key="preview" open={this.state.preview != null} footer={null} onCancel={this.cancelPreview}>
                 <img style={{ width: '100%' }} src={this.state.preview} alt="" />
             </Modal>
         );
         elements.push(
-            <Modal key="more" visible={this.state.more} title={this.state.more ? this.state.more.label : ''}
+            <Modal key="more" open={this.state.more} title={this.state.more ? this.state.more.label : ''}
                 onCancel={this.cancelMore} footer={null}>
                 {this.moreContent()}
             </Modal>
         );
         elements.push(
-            <Modal key="delete" visible={this.state.delete} title={this.state.delete ? this.state.delete.op.label : ''}
+            <Modal key="delete" open={this.state.delete} title={this.state.delete ? this.state.delete.op.label : ''}
                 onCancel={this.cancelDelete} onOk={this.okDelete}>
                 {this.deleteContent()}
             </Modal>
