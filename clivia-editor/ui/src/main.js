@@ -1,9 +1,6 @@
-import { createApp } from 'vue';
-import App from './App.vue';
-import icon from './icon.vue';
+import { createApp } from 'vue'
+import App from './App.vue'
 
-import './assets/main.css';
+import './assets/main.css'
 
-createApp(App)
-    .component('icon', icon)
-    .mount('#app');
+createApp(App).mount('#app')
