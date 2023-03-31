@@ -1,5 +1,14 @@
 <script setup>
 import { ref } from 'vue';
+import { focus } from './focus';
+import { compositionstart, compositionend } from './composition';
+import { keydown } from './keydown';
+import { keyup } from './keyup';
+
+const props = defineProps({
+    editable: Boolean,
+    lines: Array,
+});
 
 const vertical = ref(false);
 
@@ -9,6 +18,8 @@ const toolbar = (action) => {
     }
 };
 
+const stop = (e) => { };
+
 defineExpose({
     toolbar,
 });
@@ -16,9 +27,23 @@ defineExpose({
 
 <template>
     <div :class="'workspace workspace-' + (vertical ? 'vertical' : 'horizontal')">
-        隣宅の雌猫、三毛子に吾輩は恋焦がれていたが、恋が実る前に彼女は風邪をこじらせて死んでしまう。
-        この失恋は吾輩にとって大きな経験となる。
-        その後も珍野家で暮らしながらさまざまな人間と出会う中で、彼は人間や物事を注意深く観察し、哲学するようになる。 脚を4本もっているのに2本しか使わない贅沢さ。</div>
+        <div v-for="line in lines" class="line">
+            <h1 v-if="line.tag === 'h1'" :id="line.id" @click="focus">
+                <span v-for="text in line.texts" :contenteditable="editable" @click.stop="stop">{{ text.text }}</span>
+            </h1>
+            <h2 v-else-if="line.tag === 'h2'" :id="line.id" @click="focus">
+                <span v-for="text in line.texts" :contenteditable="editable" @click.stop="stop">{{ text.text }}</span>
+            </h2>
+            <h3 v-else-if="line.tag === 'h3'" :id="line.id" @click="focus">
+                <span v-for="text in line.texts" :contenteditable="editable" @click.stop="stop">{{ text.text }}</span>
+            </h3>
+            <p v-else-if="line.tag === 'p'" :id="line.id" @click="focus" @keydown="keydown(lines, $event)"
+                @keyup="keyup(lines, $event)" @compositionstart="compositionstart" @compositionend="compositionend">
+                <span v-for="(text, index) in line.texts" :contenteditable="editable" :data-index="index"
+                    @click.stop="stop">{{ text.text }}</span>
+            </p>
+        </div>
+    </div>
 </template>
 
 <style>
@@ -39,5 +64,20 @@ defineExpose({
     left: 0;
     top: 122px;
     writing-mode: vertical-rl;
+}
+
+.line>* {
+    margin: 0;
+    padding: 0;
+}
+
+.line>p {
+    min-height: 2rem;
+    line-height: 2rem;
+}
+
+.line span {
+    border: none;
+    outline: none;
 }
 </style>
