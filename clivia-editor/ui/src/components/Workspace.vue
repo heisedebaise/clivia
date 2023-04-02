@@ -1,6 +1,5 @@
 <script setup>
 import { ref } from 'vue';
-import { focus } from './focus';
 import { compositionstart, compositionend } from './composition';
 import { keydown } from './keydown';
 import { keyup } from './keyup';
@@ -18,10 +17,14 @@ const toolbar = (action) => {
     }
 };
 
+const second = () => {
+};
+
 const stop = (e) => { };
 
 defineExpose({
     toolbar,
+    second,
 });
 </script>
 
@@ -37,10 +40,10 @@ defineExpose({
             <h3 v-else-if="line.tag === 'h3'" :id="line.id" @click="focus">
                 <span v-for="text in line.texts" :contenteditable="editable" @click.stop="stop">{{ text.text }}</span>
             </h3>
-            <p v-else-if="line.tag === 'p'" :id="line.id" @click="focus" @keydown="keydown(lines, $event)"
-                @keyup="keyup(lines, $event)" @compositionstart="compositionstart" @compositionend="compositionend">
-                <span v-for="(text, index) in line.texts" :contenteditable="editable" :data-index="index"
-                    @click.stop="stop">{{ text.text }}</span>
+            <p v-else-if="line.tag === 'p'" :id="line.id" :contenteditable="editable" :data-placeholder="line.placeholder"
+                @keydown="keydown(lines, $event)" @keyup="keyup(lines, $event)" @compositionstart="compositionstart"
+                @compositionend="compositionend">
+                <span v-for="(text, index) in line.texts" :data-index="index" :class="text.style">{{ text.text }}</span>
             </p>
         </div>
     </div>
@@ -69,6 +72,13 @@ defineExpose({
 .line>* {
     margin: 0;
     padding: 0;
+    border: none;
+    outline: none;
+}
+
+.line>*:focus:empty::before {
+    content: attr(data-placeholder);
+    color: blueviolet;
 }
 
 .line>p {
@@ -76,8 +86,19 @@ defineExpose({
     line-height: 2rem;
 }
 
-.line span {
-    border: none;
-    outline: none;
+.line .bold {
+    font-weight: bold;
+}
+
+.line .italic {
+    font-style: italic;
+}
+
+.line .underline {
+    text-decoration: underline;
+}
+
+.line .linethrough {
+    text-decoration: line-through;
 }
 </style>

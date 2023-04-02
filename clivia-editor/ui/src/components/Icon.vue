@@ -12,10 +12,10 @@ const icons = ref({
     header: new URL('../assets/header.svg', import.meta.url).href,
     image: new URL('../assets/image.svg', import.meta.url).href,
     italic: new URL('../assets/italic.svg', import.meta.url).href,
+    linethrough: new URL('../assets/linethrough.svg', import.meta.url).href,
     link: new URL('../assets/link.svg', import.meta.url).href,
     quote: new URL('../assets/quote.svg', import.meta.url).href,
     redo: new URL('../assets/redo.svg', import.meta.url).href,
-    strikethrough: new URL('../assets/strikethrough.svg', import.meta.url).href,
     underline: new URL('../assets/underline.svg', import.meta.url).href,
     undo: new URL('../assets/undo.svg', import.meta.url).href,
 });

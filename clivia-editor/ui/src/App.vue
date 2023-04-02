@@ -1,5 +1,5 @@
 <script setup>
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, onUnmounted } from 'vue';
 import Toolbar from './components/Toolbar.vue';
 import Workspace from './components/Workspace.vue';
 
@@ -10,20 +10,29 @@ const toolbar = (action) => {
 };
 
 const lines = ref([]);
+const timer = ref(0);
 
 onMounted(() => {
   lines.value = [{
-    id: '1',
+    id: 'id1',
     tag: 'p',
+    placeholder: '123456',
     texts: [{
-      text: 'hello'
+      text: ''
     }]
   }];
+  timer.value = setInterval(() => {
+    workspace.value.second();
+  }, 1000);
+});
+
+onUnmounted(() => {
+  clearInterval(timer.value);
 });
 </script>
 
 <template>
-  <Toolbar @icon="toolbar" />
+  <Toolbar :lines="lines" @icon="toolbar" />
   <Workspace ref="workspace" :editable="true" :lines="lines" />
 </template>
 

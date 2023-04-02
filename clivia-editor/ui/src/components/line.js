@@ -1,14 +1,106 @@
-const findIndex = (lines, id) => {
-    if (lines.length === 0)
-        return 0;
+const findById = (lines, id) => {
+    for (let line of lines)
+        if (line.id === id)
+            return line;
 
+    return null;
+};
+
+const findIndex = (lines, id) => {
     for (let i = 0; i < lines.length; i++)
         if (lines[i].id === id)
             return i;
 
-    return lines.lines - 1;
+    return 0;
+};
+
+const splitTexts = (texts, cursor) => {
+    if (cursor[0] >= texts.length)
+        cursor[0] = texts.length - 1;
+    if (cursor[2] >= texts.length)
+        cursor[2] = texts.length - 1;
+    if (cursor[1] > texts[cursor[0]].text.length)
+        cursor[1] = texts[cursor[0]].text.length;
+    if (cursor[3] > texts[cursor[2]].text.length)
+        cursor[3] = texts[cursor[2]].text.length;
+
+    let array = [[], [], []];
+    for (let i = 0; i < texts.length; i++) {
+        let text = texts[i];
+        if (i < cursor[0]) {
+            array[0].push(text);
+
+            continue;
+        }
+
+        if (i > cursor[0] && i < cursor[2]) {
+            array[1].push(text);
+
+            continue;
+        }
+
+        if (i > cursor[2]) {
+            array[2].push(text);
+
+            continue;
+        }
+
+        if (i === cursor[0]) {
+            if (cursor[1] > 0) {
+                let txt = { ...text };
+                txt.text = txt.text.substring(0, cursor[1]);
+                array[0].push(txt);
+            }
+            if (cursor[1] < text.text.length) {
+                let txt = { ...text };
+                txt.text = txt.text.substring(cursor[1], cursor[0] === cursor[2] ? cursor[3] : txt.text.length);
+                array[1].push(txt);
+            }
+        }
+        if (i === cursor[2]) {
+            if (cursor[0] < cursor[2] && cursor[3] > 0) {
+                let txt = { ...text };
+                txt.text = txt.text.substring(0, cursor[3]);
+                array[1].push(txt);
+            }
+            if (cursor[3] < text.text.length) {
+                let txt = { ...text };
+                txt.text = txt.text.substring(cursor[3]);
+                array[2].push(txt);
+            }
+        }
+    }
+
+    for (let i = 0; i < array.length; i++)
+        mergeTexts(array[i]);
+
+    return array;
+};
+
+const mergeTexts = (texts) => {
+    for (let i = texts.length - 1; i >= 0; i--) {
+        if (texts[i].text.length === 0) {
+            texts.splice(i, 1);
+        } else if (texts[i].style && texts[i].style.indexOf(' ') > -1) {
+            texts[i].style = texts[i].style.trim().replace(/ +/g, ' ').split(' ').sort().join(' ');
+        }
+    }
+    for (let i = texts.length - 1; i > 0; i--) {
+        if (texts[i].style === texts[i - 1].style) {
+            texts[i - 1].text += texts[i].text;
+            texts.splice(i, 1);
+        }
+    }
+};
+
+const isEmpty = (line) => {
+    return line.texts.length === 1 && line.texts[0].text === '';
 };
 
 export {
-    findIndex
+    findById,
+    findIndex,
+    splitTexts,
+    mergeTexts,
+    isEmpty,
 };
