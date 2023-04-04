@@ -57,7 +57,7 @@ const style = (lines, cursor, name) => {
         }
         end -= length;
     }
-    setCursor(id, cursor[0], cursor[1], cursor[2], cursor[3]);
+    setCursor(id, cursor);
 };
 
 const textLength = (texts) => {

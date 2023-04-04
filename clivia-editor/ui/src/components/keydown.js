@@ -25,11 +25,11 @@ const enter = (lines, e) => {
             text: '',
         }];
         lines.splice(index, 0, l);
-        setCursor(id, 0, 0, 0, 0);
+        setCursor(id, [0, 0, 0, 0]);
     } else if (texts[2].length === 0) {
         let p = newP();
         lines.splice(index + 1, 0, p);
-        setCursor(p.id, 0, 0, 0, 0);
+        setCursor(p.id, [0, 0, 0, 0]);
     } else {
         let l1 = { ...line };
         l1.texts = texts[0];
@@ -38,7 +38,7 @@ const enter = (lines, e) => {
         l2.texts = texts[2];
         lines.splice(index, 1, l1);
         lines.splice(index + 1, 0, l2);
-        setCursor(l2.id, 0, 0, 0, 0);
+        setCursor(l2.id, [0, 0, 0, 0]);
     }
 };
 
@@ -57,7 +57,7 @@ const backspace = (lines, e) => {
             let offset = 0;
             for (let text of prev.texts)
                 offset += text.text.length;
-            setCursor(prev.id, container, offset, container, offset);
+            setCursor(prev.id, [container, offset, container, offset]);
         }
 
         return;
