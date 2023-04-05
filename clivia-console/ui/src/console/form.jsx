@@ -197,7 +197,7 @@ class Base extends React.Component {
             if (mt.reload)
                 this.props.body.load(this.props.uri, this.props.parameter, this.props.data);
             else if (mt.success)
-                this.props.body.load(this.props.body.uri(this.props.uri, mt.success), this.props.parameter);
+                this.props.body.load(this.props.body.uri(this.props.uri, mt.success), this.props.parameter, this.props.body.getSearch());
             else if (mt.data)
                 this.data(data);
             else
@@ -206,7 +206,7 @@ class Base extends React.Component {
     }
 
     cancel = mt => {
-        this.props.body.load(this.props.body.uri(this.props.uri, mt.success), this.props.parameter);
+        this.props.body.load(this.props.body.uri(this.props.uri, mt.success), this.props.parameter, this.props.body.getSearch());
     }
 
     render = () => {
@@ -226,6 +226,7 @@ class Base extends React.Component {
     }
 
     item = (items, prop, key) => {
+        // eslint-disable-next-line
         if (prop.when && !eval(prop.when))
             return;
 

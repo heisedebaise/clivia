@@ -455,7 +455,10 @@ class Grid extends React.Component {
         if (this.timeout)
             window.clearTimeout(this.timeout);
 
-        let parameter = this.searches();
+        let parameter = this.props.data || {};
+        if (this.props.parameter)
+            parameter = { ...parameter, ...this.props.parameter };
+        parameter = { ...parameter, ...this.searches() };
         if (pagination) {
             parameter.pageSize = pagination.pageSize;
             parameter.pageNum = pagination.current;
@@ -463,12 +466,10 @@ class Grid extends React.Component {
             parameter.pageSize = this.state.pagination.pageSize;
             parameter.pageNum = this.state.pagination.current;
         }
-        if (this.props.parameter)
-            parameter = { ...parameter, ...this.props.parameter };
-        if (this.props.data)
-            parameter = { ...parameter, ...this.props.data };
-        if (search)
+        if (search) {
+            this.props.body.setSearch(parameter);
             parameter['console-grid-search'] = true;
+        }
         if (sorter && sorter.order)
             parameter['console-grid-sort'] = sorter.columnKey + ' ' + sorter.order;
         service(this.props.uri, parameter).then(data => {
@@ -621,9 +622,9 @@ class Grid extends React.Component {
 class Search extends React.Component {
     render = () => {
         let cols = [];
-        let initialValues = {};
+        let initialValues = this.props.grid.props.body.getSearch() || {};
         for (let column of this.props.props) {
-            if (column.labels || column.values || column.type === 'dselect') initialValues[column.name] = column.value || '';
+            if ((column.labels || column.values || column.type === 'dselect') && !initialValues[column.name]) initialValues[column.name] = column.value || '';
 
             let item = { label: column.label };
             if (column.type !== 'range')

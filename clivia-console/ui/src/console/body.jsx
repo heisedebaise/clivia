@@ -62,6 +62,10 @@ class Body {
 
     page = (page, parameter, data) => this.setState(<Page page={page} parameter={parameter} data={data} body={this} />);
 
+    setSearch = (search) => this.search = search;
+
+    getSearch = () => this.search;
+
     setState = state => this.index.setState({ body: <div /> }, () => this.index.setState({ body: state }));
 }
 

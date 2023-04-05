@@ -96,7 +96,7 @@ class Image extends React.Component {
                 <Upload {...props} >
                     {this.props.readonly || (this.props.size > 0 && list.length >= this.props.size) ? null : (this.state.loading ? <LoadingOutlined /> : <PlusOutlined />)}
                 </Upload>
-                <Modal visible={this.state.preview != null} footer={null} onCancel={this.cancel}>
+                <Modal open={this.state.preview != null} footer={null} onCancel={this.cancel}>
                     <img alt="preview" style={{ width: '100%' }} src={this.state.preview} />
                 </Modal>
             </div>

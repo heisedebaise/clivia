@@ -29,6 +29,7 @@ class LeftMenu extends React.Component {
     };
 
     load = item => {
+        body.setSearch({});
         if (item.service)
             body.load(item.service, item.parameter, item.data);
         else if (item.page)
