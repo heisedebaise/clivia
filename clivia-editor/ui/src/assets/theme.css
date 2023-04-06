@@ -1,12 +1,15 @@
 :root {
-  --background: #ffffff;
+  --background: #fff;
   --border: #e5e5e5;
-  --icon-hover: #e5e5e5;
+  --icon: #212121;
+  --icon-disable: #ccc;
+  --icon-hover-bg: #e5e5e5;
+  --icon-hover: #212121;
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #ffffff;
+    --background: #fff;
     --border: #e5e5e5;
   }
 }

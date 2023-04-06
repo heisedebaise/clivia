@@ -1,24 +1,27 @@
 import { newId } from "./generator";
-import { getCursor, setCursor } from "./cursor";
+import { newP } from "./tag";
+import { getCursor, getCursorSingle, setCursor, setCursorSingle } from "./cursor";
 import { findEventId } from './event';
 import { findIndex, splitTexts, isEmpty } from "./line";
 
 const keydown = (lines, e) => {
-    if (e.key === 'Enter')
-        enter(lines, e);
-    if (e.key === 'Backspace')
-        backspace(lines, e);
-    // console.log(e);
-};
-
-const enter = (lines, e) => {
-    e.preventDefault();
-    let cursor = getCursor();
     let id = findEventId(e);
     let index = findIndex(lines, id);
     let line = lines[index];
+    if (e.key === 'Enter')
+        enter(lines, line, id, index, e);
+    else if (e.key === 'Backspace')
+        backspace(lines, line, id, index, e);
+    else if (e.key === 'ArrowUp' || e.key === 'ArrowDown')
+        arrow(lines, line, id, index, e);
+    console.log(e);
+};
+
+const enter = (lines, line, id, index, e) => {
+    e.preventDefault();
+    let cursor = getCursor();
     let texts = splitTexts(line.texts, cursor);
-    if (texts[0].length === 0) {
+    if (isEmpty(texts[0])) {
         let l = { ...line };
         l.id = newId();
         l.texts = [{
@@ -26,8 +29,9 @@ const enter = (lines, e) => {
         }];
         lines.splice(index, 0, l);
         setCursor(id, [0, 0, 0, 0]);
-    } else if (texts[2].length === 0) {
+    } else if (isEmpty(texts[2])) {
         let p = newP();
+        console.log(p);
         lines.splice(index + 1, 0, p);
         setCursor(p.id, [0, 0, 0, 0]);
     } else {
@@ -42,10 +46,7 @@ const enter = (lines, e) => {
     }
 };
 
-const backspace = (lines, e) => {
-    let id = findEventId(e);
-    let index = findIndex(lines, id);
-    let line = lines[index];
+const backspace = (lines, line, id, index, e) => {
     if (line.texts.length === 1 && line.texts[0].text.length <= 1) {
         e.preventDefault();
         if (line.texts[0].text.length === 1) {
@@ -64,14 +65,15 @@ const backspace = (lines, e) => {
     }
 };
 
-const newP = () => {
-    return {
-        id: newId(),
-        tag: 'p',
-        texts: [{
-            text: '',
-        }],
-    };
+const arrow = (lines, line, id, index, e) => {
+    e.preventDefault();
+    let i = 0;
+    if (e.key === 'ArrowDown' && index < lines.length - 1)
+        i = 1;
+    else if (e.key === 'ArrowUp' && index > 0)
+        i = -1;
+    if (i != 0)
+        setCursorSingle(lines[index + i], getCursorSingle(line));
 };
 
 export {

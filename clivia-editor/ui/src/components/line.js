@@ -79,7 +79,7 @@ const splitTexts = (texts, cursor) => {
 
 const mergeTexts = (texts) => {
     for (let i = texts.length - 1; i >= 0; i--) {
-        if (texts[i].text.length === 0) {
+        if (i > 0 && texts[i].text.length === 0) {
             texts.splice(i, 1);
         } else if (texts[i].style && texts[i].style.indexOf(' ') > -1) {
             texts[i].style = texts[i].style.trim().replace(/ +/g, ' ').split(' ').sort().join(' ');
@@ -93,8 +93,8 @@ const mergeTexts = (texts) => {
     }
 };
 
-const isEmpty = (line) => {
-    return line.texts.length === 1 && line.texts[0].text === '';
+const isEmpty = (texts) => {
+    return texts.length === 0 || (texts.length === 1 && texts[0].text.length === 0);
 };
 
 export {

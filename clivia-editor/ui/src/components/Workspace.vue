@@ -1,5 +1,6 @@
 <script setup>
 import { ref } from 'vue';
+import { focus } from './cursor';
 import { compositionstart, compositionend } from './composition';
 import { keydown } from './keydown';
 import { keyup } from './keyup';
@@ -31,20 +32,33 @@ defineExpose({
 <template>
     <div :class="'workspace workspace-' + (vertical ? 'vertical' : 'horizontal')">
         <div v-for="line in lines" class="line">
-            <h1 v-if="line.tag === 'h1'" :id="line.id" @click="focus">
-                <span v-for="text in line.texts" :contenteditable="editable" @click.stop="stop">{{ text.text }}</span>
+            <h1 v-if="line.tag === 'h1'" :id="line.id" :contenteditable="editable" :class="line.className"
+                :data-placeholder="line.placeholder" @focus.stop="focus" @mouseup.stop="focus"
+                @keydown="keydown(lines, $event)" @keyup="keyup(lines, $event)" @compositionstart="compositionstart"
+                @compositionend="compositionend">
+                <span v-for="(text, index) in line.texts" :data-index="index" :class="text.style">{{ text.text }}</span>
             </h1>
-            <h2 v-else-if="line.tag === 'h2'" :id="line.id" @click="focus">
-                <span v-for="text in line.texts" :contenteditable="editable" @click.stop="stop">{{ text.text }}</span>
+            <h2 v-else-if="line.tag === 'h2'" :id="line.id" :contenteditable="editable" :class="line.className"
+                :data-placeholder="line.placeholder" @focus.stop="focus" @mouseup.stop="focus"
+                @keydown="keydown(lines, $event)" @keyup="keyup(lines, $event)" @compositionstart="compositionstart"
+                @compositionend="compositionend">
+                <span v-for="(text, index) in line.texts" :data-index="index" :class="text.style">{{ text.text }}</span>
             </h2>
-            <h3 v-else-if="line.tag === 'h3'" :id="line.id" @click="focus">
-                <span v-for="text in line.texts" :contenteditable="editable" @click.stop="stop">{{ text.text }}</span>
+            <h3 v-else-if="line.tag === 'h3'" :id="line.id" :contenteditable="editable" :class="line.className"
+                :data-placeholder="line.placeholder" @focus.stop="focus" @mouseup.stop="focus"
+                @keydown="keydown(lines, $event)" @keyup="keyup(lines, $event)" @compositionstart="compositionstart"
+                @compositionend="compositionend">
+                <span v-for="(text, index) in line.texts" :data-index="index" :class="text.style">{{ text.text }}</span>
             </h3>
-            <p v-else-if="line.tag === 'p'" :id="line.id" :contenteditable="editable" :data-placeholder="line.placeholder"
+            <p v-else-if="line.tag === 'p'" :id="line.id" :contenteditable="editable" :class="line.className"
+                :data-placeholder="line.placeholder" @focus.stop="focus" @mouseup.stop="focus"
                 @keydown="keydown(lines, $event)" @keyup="keyup(lines, $event)" @compositionstart="compositionstart"
                 @compositionend="compositionend">
                 <span v-for="(text, index) in line.texts" :data-index="index" :class="text.style">{{ text.text }}</span>
             </p>
+            <div v-else-if="line.tag === 'divider'" :id="line.id" class="divider">
+                <div></div>
+            </div>
         </div>
     </div>
 </template>
@@ -76,14 +90,22 @@ defineExpose({
     outline: none;
 }
 
-.line>*:focus:empty::before {
+/* .line .empty {
     content: attr(data-placeholder);
     color: blueviolet;
-}
+} */
 
 .line>p {
-    min-height: 2rem;
-    line-height: 2rem;
+    min-height: 3rem;
+    line-height: 3rem;
+}
+
+.line>.divider {
+    padding: 0.5rem 0;
+}
+
+.line>.divider>div {
+    border-top: 1px solid var(--border);
 }
 
 .line .bold {
@@ -100,5 +122,4 @@ defineExpose({
 
 .line .linethrough {
     text-decoration: line-through;
-}
-</style>
+}</style>

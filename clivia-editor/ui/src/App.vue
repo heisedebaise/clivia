@@ -16,6 +16,7 @@ onMounted(() => {
   lines.value = [{
     id: 'id1',
     tag: 'p',
+    className: 'empty',
     placeholder: '123456',
     texts: [{
       text: ''

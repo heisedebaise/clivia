@@ -1,7 +1,8 @@
 import { findById, mergeTexts } from './line';
 import { findEventId } from "./event";
 import { composition } from './composition';
-import { getCursorSingle, setCursor, setCursorSingle } from './cursor';
+import { focus, getCursorSingle, setCursor, setCursorSingle } from './cursor';
+import { markdown } from './markdown';
 
 const keyup = (lines, e) => {
     if (composition())
@@ -16,19 +17,23 @@ const keyup = (lines, e) => {
         setCursor(line.id, [0, data.length, 0, data.length]);
     } else {
         let line = findById(lines, findEventId(e));
-        let cursor = getCursorSingle(line);
         let indexes = [];
         for (let i = 0; i < e.target.children.length; i++) {
             let index = parseInt(e.target.children[i].dataset.index);
             indexes[index] = 1;
             line.texts[index].text = e.target.children[i].innerText;
         }
-        for (let i = line.texts.length - 1; i >= 0; i--)
-            if (!indexes[i])
-                line.texts.splice(i, 1);
-        mergeTexts(line.texts);
-        setCursorSingle(line, cursor);
+        if (e.key === 'Backspace' || e.key === 'Delete') {
+            let cursor = getCursorSingle(line);
+            for (let i = line.texts.length - 1; i >= 0; i--)
+                if (!indexes[i])
+                    line.texts.splice(i, 1);
+            mergeTexts(line.texts);
+            setCursorSingle(line, cursor);
+        }
+        markdown(line);
     }
+    focus();
 };
 
 export {

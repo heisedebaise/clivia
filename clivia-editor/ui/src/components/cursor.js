@@ -1,15 +1,31 @@
-import { findById } from "./line";
+import { findEventId } from "./event";
 
-const getCursor = () => {
-    let range = getSelection().getRangeAt(0);
-
-    return [
-        getIndex(range.startContainer),
-        range.startOffset,
-        getIndex(range.endContainer),
-        range.endOffset
-    ];
+const data = {
+    focus: null,
+    cursor: null,
+    select: [],
 };
+
+const focus = (e) => {
+    if (e)
+        data.focus = findEventId(e);
+
+    setTimeout(() => {
+        let range = getSelection().getRangeAt(0);
+        data.cursor = [
+            getIndex(range.startContainer),
+            range.startOffset,
+            getIndex(range.endContainer),
+            range.endOffset
+        ];
+        for (let select of data.select)
+            select(!range.collapsed);
+    }, 10);
+};
+
+const getFocusId = () => data.focus;
+
+const getCursor = () => data.cursor;
 
 const getCursorSingle = (line) => {
     let cursor = getCursor();
@@ -20,7 +36,7 @@ const getCursorSingle = (line) => {
     return position + cursor[1];
 };
 
-const setCursor = (id,cursor) => {
+const setCursor = (id, cursor) => {
     setTimeout(() => {
         let node = document.querySelector('#' + id);
         if (!node)
@@ -62,27 +78,18 @@ const setCursorSingle = (line, position) => {
     setCursor(line.id, [container, offset, container, offset]);
 };
 
-const findCursorId = () => {
-    let range = getSelection().getRangeAt(0);
-    if (range) {
-        let node = range.startContainer;
-        for (let i = 0; i < 1024; i++) {
-            if (node.id && node.id.indexOf('id') === 0)
-                return node.id;
-
-            node = node.parentElement;
-        }
-    }
-
-    return null;
-};
-
 const getIndex = (container) => parseInt(container.nodeName === '#text' ? container.parentNode.dataset.index : container.dataset.index);
 
+const bindSelect = (func) => {
+    data.select.push(func);
+}
+
 export {
+    focus,
+    getFocusId,
     getCursor,
     getCursorSingle,
     setCursor,
     setCursorSingle,
-    findCursorId,
+    bindSelect,
 };

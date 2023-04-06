@@ -1,21 +1,20 @@
-import { getCursor, setCursor, findCursorId } from "./cursor";
+import { getFocusId, getCursor, setCursor } from "./cursor";
 import { findById, splitTexts, mergeTexts } from "./line";
 
-const bold = (lines, cursor) => style(lines, cursor, 'bold');
+const bold = (lines) => style(lines, 'bold');
 
-const italic = (lines, cursor) => style(lines, cursor, 'italic');
+const italic = (lines) => style(lines, 'italic');
 
-const underline = (lines, cursor) => style(lines, cursor, 'underline');
+const underline = (lines) => style(lines, 'underline');
 
-const linethrough = (lines, cursor) => style(lines, cursor, 'linethrough');
+const linethrough = (lines) => style(lines, 'linethrough');
 
-const style = (lines, cursor, name) => {
-    let id = findCursorId();
+const style = (lines, name) => {
+    let id = getFocusId();
     if (id === null)
         return;
 
-    if (!cursor)
-        cursor = getCursor();
+    let cursor = getCursor();
     if (cursor[0] === cursor[2] && cursor[1] === cursor[3])
         return;
 
