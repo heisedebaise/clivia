@@ -1,6 +1,6 @@
 const newId = () => {
     for (let i = 0; i < 1024; i++) {
-        let id = string(16);
+        let id = string('id', 16);
         if (!document.querySelector('#' + id))
             return id;
     }
@@ -8,8 +8,8 @@ const newId = () => {
     return string(16);
 };
 
-const string = (length) => {
-    let string = 'id';
+const string = (prefix, length) => {
+    let string = prefix;
     while (string.length < length)
         string += Math.random().toString(36).substring(2);
 

@@ -15,6 +15,9 @@ const findIndex = (lines, id) => {
 };
 
 const splitTexts = (texts, cursor) => {
+    if (isEmpty(texts))
+        return [[{ text: '' }], [{ text: '' }], [{ text: '' }]];
+
     if (cursor[0] >= texts.length)
         cursor[0] = texts.length - 1;
     if (cursor[2] >= texts.length)
@@ -86,7 +89,7 @@ const mergeTexts = (texts) => {
         }
     }
     for (let i = texts.length - 1; i > 0; i--) {
-        if (texts[i].style === texts[i - 1].style) {
+        if (texts[i].style === texts[i - 1].style && texts[i].annotation === texts[i - 1].annotation) {
             texts[i - 1].text += texts[i].text;
             texts.splice(i, 1);
         }

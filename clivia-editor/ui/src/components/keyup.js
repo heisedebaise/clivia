@@ -1,7 +1,8 @@
+import { now } from './time';
 import { findById, mergeTexts } from './line';
 import { findEventId } from "./event";
 import { composition } from './composition';
-import { focus, getCursorSingle, setCursor, setCursorSingle } from './cursor';
+import { focus, setCursor } from './cursor';
 import { markdown } from './markdown';
 
 const keyup = (lines, e) => {
@@ -13,6 +14,7 @@ const keyup = (lines, e) => {
         let line = findById(lines, selection.focusNode.parentElement.id);
         let data = selection.focusNode.data;
         line.texts[0].text = data;
+        line.time = now();
         selection.focusNode.parentElement.removeChild(selection.focusNode);
         setCursor(line.id, [0, data.length, 0, data.length]);
     } else {
@@ -24,14 +26,13 @@ const keyup = (lines, e) => {
             line.texts[index].text = e.target.children[i].innerText;
         }
         if (e.key === 'Backspace' || e.key === 'Delete') {
-            let cursor = getCursorSingle(line);
             for (let i = line.texts.length - 1; i >= 0; i--)
                 if (!indexes[i])
                     line.texts.splice(i, 1);
             mergeTexts(line.texts);
-            setCursorSingle(line, cursor);
         }
         markdown(line);
+        line.time = now();
     }
     focus();
 };

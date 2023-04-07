@@ -5,6 +5,13 @@
   --icon-disable: #ccc;
   --icon-hover-bg: #e5e5e5;
   --icon-hover: #212121;
+  --tag-title: #212121;
+  --tag-sub: #888;
+  --tag-hover-bg: #e5e5e5;
+  --image-name-bg: #888;
+  --image-select-bg: #f0f0f0;
+  --image-select-hover-bg: #ccc;
+  --annotation: #888;
 }
 
 @media (prefers-color-scheme: dark) {

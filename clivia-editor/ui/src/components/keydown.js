@@ -1,5 +1,5 @@
 import { newId } from "./generator";
-import { newP } from "./tag";
+import { newText } from "./tag";
 import { getCursor, getCursorSingle, setCursor, setCursorSingle } from "./cursor";
 import { findEventId } from './event';
 import { findIndex, splitTexts, isEmpty } from "./line";
@@ -14,6 +14,8 @@ const keydown = (lines, e) => {
         backspace(lines, line, id, index, e);
     else if (e.key === 'ArrowUp' || e.key === 'ArrowDown')
         arrow(lines, line, id, index, e);
+    else if (e.ctrlKey && e.key === 'v')
+        e.preventDefault();
     console.log(e);
 };
 
@@ -30,10 +32,9 @@ const enter = (lines, line, id, index, e) => {
         lines.splice(index, 0, l);
         setCursor(id, [0, 0, 0, 0]);
     } else if (isEmpty(texts[2])) {
-        let p = newP();
-        console.log(p);
-        lines.splice(index + 1, 0, p);
-        setCursor(p.id, [0, 0, 0, 0]);
+        let text = newText();
+        lines.splice(index + 1, 0, text);
+        setCursor(text.id, [0, 0, 0, 0]);
     } else {
         let l1 = { ...line };
         l1.texts = texts[0];

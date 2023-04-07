@@ -1,3 +1,4 @@
+import { now } from './time';
 import { getFocusId, getCursor, setCursor } from "./cursor";
 import { findById, splitTexts, mergeTexts } from "./line";
 
@@ -39,6 +40,7 @@ const style = (lines, name) => {
         texts[0].push(text);
     mergeTexts(texts[0]);
     line.texts = texts[0];
+    line.time = now();
 
     for (let i = 0; i < line.texts.length; i++) {
         let length = line.texts[i].text.length;

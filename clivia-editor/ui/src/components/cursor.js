@@ -38,10 +38,14 @@ const getCursorSingle = (line) => {
 
 const setCursor = (id, cursor) => {
     setTimeout(() => {
+        if (!id)
+            id = getFocusId();
         let node = document.querySelector('#' + id);
         if (!node)
             return;
 
+        if (!cursor)
+            cursor = getCursor();
         if (cursor[0] >= node.children.length)
             cursor[0] = node.children.length - 1;
         if (cursor[2] >= node.children.length)

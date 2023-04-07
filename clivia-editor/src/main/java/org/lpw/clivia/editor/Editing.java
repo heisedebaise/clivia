@@ -36,7 +36,11 @@ public class Editing {
         if (validator.isEmpty(array)) {
             JSONObject object = new JSONObject();
             object.put("tag", "text");
-            object.put("text", new JSONArray());
+            JSONObject text = new JSONObject();
+            text.put("text", "");
+            JSONArray texts = new JSONArray();
+            texts.add(text);
+            object.put("texts", texts);
             ids.add(put(object));
         } else {
             for (int i = 0, size = array.size(); i < size; i++) {
@@ -105,12 +109,12 @@ public class Editing {
 
     private String id() {
         for (int i = 0; i < 1024; i++) {
-            String id = generator.random(16);
+            String id = "id"+generator.random(14);
             if (!lines.containsKey(id))
                 return id;
         }
 
-        return generator.random(16);
+        return "id"+generator.random(14);
     }
 
     JSONArray get() {
