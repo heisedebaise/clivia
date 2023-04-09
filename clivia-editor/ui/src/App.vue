@@ -52,7 +52,7 @@ onMounted(() => {
     service('/editor/save', { key: key.value, id: id.substring(1), lines: JSON.stringify(array), sync: timer.value.sync }, data => {
       timer.value.sync = data.sync;
     });
-  }, 1000);
+  }, 2000);
 });
 
 onUnmounted(() => {
