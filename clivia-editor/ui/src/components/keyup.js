@@ -1,13 +1,30 @@
 import { now } from './time';
 import { findById, mergeTexts } from './line';
+import { setTag } from './keydown';
 import { findEventId } from "./event";
 import { composition } from './composition';
 import { focus, setCursor } from './cursor';
 import { markdown } from './markdown';
 
+const refs = {
+    vertical: false,
+    tag: null,
+};
+
+const bindTag = (vertical, tag) => {
+    refs.vertical = vertical;
+    refs.tag = tag;
+};
+
 const keyup = (lines, e) => {
     if (composition())
         return;
+
+    if (e.key === '/') {
+        showTag(e);
+
+        return;
+    }
 
     let selection = getSelection();
     if (selection && selection.rangeCount > 0 && selection.focusNode.nodeName === '#text' && selection.focusNode.data != '' && selection.focusNode.parentElement.id) {
@@ -37,6 +54,16 @@ const keyup = (lines, e) => {
     focus();
 };
 
+const showTag = (e) => {
+    if(refs.vertical){
+
+    }else{
+        
+    }
+    console.log(e);
+};
+
 export {
+    bindTag,
     keyup
 };

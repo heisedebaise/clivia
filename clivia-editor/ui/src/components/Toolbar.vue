@@ -1,5 +1,6 @@
 <script setup>
 import { ref, onMounted } from 'vue';
+import { setTag } from './keydown';
 import { bindSelect } from './cursor';
 import { bold, italic, underline, linethrough } from './style';
 import { newImage, newDivider } from './tag';
@@ -36,6 +37,7 @@ const tag = ref(null);
 const header = (e) => {
     let offset = findOffset(e);
     tag.value.show(offset.left, offset.top);
+    setTag(tag.value);
 };
 
 const annotation = ref(null);

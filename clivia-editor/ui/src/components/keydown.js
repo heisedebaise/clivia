@@ -4,6 +4,12 @@ import { getCursor, getCursorSingle, setCursor, setCursorSingle } from "./cursor
 import { findEventId } from './event';
 import { findIndex, splitTexts, isEmpty } from "./line";
 
+const refs = {
+    tag: null,
+};
+
+const setTag = (tag) => refs.tag = tag;
+
 const keydown = (lines, e) => {
     let id = findEventId(e);
     let index = findIndex(lines, id);
@@ -11,9 +17,11 @@ const keydown = (lines, e) => {
     if (e.key === 'Enter')
         enter(lines, line, id, index, e);
     else if (e.key === 'Backspace')
-        backspace(lines, line, id, index, e);
+        backspace(lines, line, index, e);
     else if (e.key === 'ArrowUp' || e.key === 'ArrowDown')
-        arrow(lines, line, id, index, e);
+        arrow(lines, line, index, e);
+    else if (e.key === ' ')
+        space(e);
     else if (e.ctrlKey && e.key === 'v')
         e.preventDefault();
     console.log(e);
@@ -21,6 +29,12 @@ const keydown = (lines, e) => {
 
 const enter = (lines, line, id, index, e) => {
     e.preventDefault();
+    if (refs.tag != null) {
+        refs.tag.select();
+
+        return;
+    }
+
     let cursor = getCursor();
     let texts = splitTexts(line.texts, cursor);
     if (isEmpty(texts[0])) {
@@ -47,7 +61,7 @@ const enter = (lines, line, id, index, e) => {
     }
 };
 
-const backspace = (lines, line, id, index, e) => {
+const backspace = (lines, line, index, e) => {
     if (line.texts.length === 1 && line.texts[0].text.length <= 1) {
         e.preventDefault();
         if (line.texts[0].text.length === 1) {
@@ -66,8 +80,14 @@ const backspace = (lines, line, id, index, e) => {
     }
 };
 
-const arrow = (lines, line, id, index, e) => {
+const arrow = (lines, line, index, e) => {
     e.preventDefault();
+    if (refs.tag != null) {
+        refs.tag.arrow(e);
+
+        return
+    }
+
     let i = 0;
     if (e.key === 'ArrowDown' && index < lines.length - 1)
         i = 1;
@@ -77,6 +97,16 @@ const arrow = (lines, line, id, index, e) => {
         setCursorSingle(lines[index + i], getCursorSingle(line));
 };
 
+const space = (e) => {
+    if (refs.tag != null) {
+        e.preventDefault();
+        refs.tag.select();
+
+        return;
+    }
+};
+
 export {
+    setTag,
     keydown
 };

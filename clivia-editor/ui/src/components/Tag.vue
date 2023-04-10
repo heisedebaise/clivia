@@ -2,6 +2,7 @@
 import { ref } from 'vue';
 import { now } from './time';
 import { findById } from './line';
+import { setTag } from './keydown';
 import { getFocusId, setCursor } from './cursor';
 import { message } from './locale';
 import Icon from './Icon.vue';
@@ -14,11 +15,24 @@ const props = defineProps({
 const position = ref({
     left: -1,
     top: -1,
+    index: -1,
 });
 
 const show = (left, top) => {
-    position.value = { left, top };
+    position.value = {
+        left,
+        top,
+        index: -1,
+    };
     setCursor();
+};
+
+const arrow = (e) => {
+    if (e.key === 'ArrowDown' && position.value.index < props.names.length - 1) {
+        position.value.index++;
+    } else if (e.key === 'ArrowUp' && position.value.index > 0) {
+        position.value.index--;
+    }
 };
 
 const select = (e) => {
@@ -30,18 +44,27 @@ const select = (e) => {
     if (line === null)
         return;
 
-    let node = e.target;
-    for (let i = 0; i < 1024; i++) {
-        if (node.className === 'tag') {
-            line.tag = node.dataset.name;
-            line.time = now();
-            setCursor(id);
+    let name = null;
+    if (e && e.target) {
+        let node = e.target;
+        for (let i = 0; i < 1024; i++) {
+            if (node.className === 'tag') {
+                name = node.dataset.name;
 
-            break;
+                break;
+            }
+
+            node = node.parentElement;
         }
-
-        node = node.parentElement;
+    } else if (position.value.index > -1 && position.value.index < props.names.length) {
+        name = props.names[position.value.index];
     }
+    if (name != null) {
+        line.tag = name;
+        line.time = now();
+        setCursor(id);
+    }
+    hide();
 };
 
 const hide = (e) => {
@@ -50,17 +73,21 @@ const hide = (e) => {
         top: -1,
     };
     setCursor();
+    setTag(null);
 };
 
 defineExpose({
     show,
+    arrow,
+    select,
 });
 </script>
 
 <template>
     <div v-if="position.left > 0" class="tags-mark" @click="hide">
         <div class="tags" :style="{ left: position.left + 'px', top: position.top + 'px' }">
-            <div v-for="name in names" class="tag" :data-name="name" @click="select">
+            <div v-for="(name, index) in names" :class="'tag' + (index === position.index ? ' tag-hover' : '')"
+                :data-name="name" @click="select">
                 <div class="image">
                     <Icon :name="name" />
                 </div>
@@ -97,7 +124,8 @@ defineExpose({
     cursor: pointer;
 }
 
-.tags .tag:hover {
+.tags .tag:hover,
+.tags .tag-hover {
     background-color: var(--icon-hover-bg);
     cursor: pointer;
 }

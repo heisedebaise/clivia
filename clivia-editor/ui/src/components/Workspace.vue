@@ -1,9 +1,9 @@
 <script setup>
-import { ref } from 'vue';
+import { ref, onMounted } from 'vue';
 import { focus } from './cursor';
 import { compositionstart, compositionend } from './composition';
 import { keydown } from './keydown';
-import { keyup } from './keyup';
+import { bindTag, keyup } from './keyup';
 import { mouseover, mousemove } from './drag';
 import { selectImage, uploadImage } from './image';
 import Icon from './Icon.vue';
@@ -28,6 +28,7 @@ const dragable = ref({
     left: -1,
     top: -1,
 });
+const tag = ref(null);
 const imageUploader = ref(null);
 const annotations = ref([]);
 
@@ -73,6 +74,10 @@ const annotation = () => {
 const scroll = (e) => {
     annotation();
 };
+
+onMounted(() => {
+    bindTag(vertical.value, tag.value);
+});
 
 defineExpose({
     toolbar,
@@ -132,7 +137,7 @@ defineExpose({
             </div>
         </div>
     </div>
-    <Tag :name="['h1', 'h2', 'h3', 'text']" :lines="lines" />
+    <Tag ref="tag" :name="['h1', 'h2', 'h3', 'text']" :lines="lines" />
     <input ref="imageUploader" class="image-uploader" type="file" accept="image/*" multiple
         @change="uploadImage(lines, $event)" />
     <div v-for="annotation in annotations" :class="'annotation-' + (vertical ? 'vertical' : 'horizontal')"
