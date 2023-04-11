@@ -404,6 +404,9 @@ const props = defineProps({
     <div v-else-if="name === 'h3'" :class="'icon icon-' + name">
         <img src="@/assets/h3.png" />
     </div>
+    <div v-else-if="name === 'text'" :class="'icon icon-' + name">
+        <img src="@/assets/text.png" />
+    </div>
     <div v-else-if="name === ''" :class="'icon icon-' + (enable ? 'enable' : 'disable') + ' icon-' + name"></div>
 </template>
 

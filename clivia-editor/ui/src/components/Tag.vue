@@ -3,13 +3,14 @@ import { ref } from 'vue';
 import { now } from './time';
 import { findById } from './line';
 import { setTag } from './keydown';
-import { getFocusId, setCursor } from './cursor';
+import { getFocusId, getCursor, setCursor } from './cursor';
 import { message } from './locale';
 import Icon from './Icon.vue';
 
 const props = defineProps({
     names: Array,
     lines: Array,
+    vertical: Boolean,
 });
 
 const position = ref({
@@ -60,9 +61,15 @@ const select = (e) => {
         name = props.names[position.value.index];
     }
     if (name != null) {
+        let cursor = getCursor();
+        if (cursor[1] > 0 && cursor[0] < line.texts.length && cursor[1] <= line.texts[cursor[0]].text.length && line.texts[cursor[0]].text.charAt(cursor[1] - 1) === '/') {
+            cursor[1]--;
+            cursor[3]--;
+            line.texts[cursor[0]].text = line.texts[cursor[0]].text.substring(0, cursor[1]) + line.texts[cursor[0]].text.substring(cursor[1] + 1);
+        }
         line.tag = name;
         line.time = now();
-        setCursor(id);
+        setCursor(id, cursor);
     }
     hide();
 };
@@ -85,7 +92,8 @@ defineExpose({
 
 <template>
     <div v-if="position.left > 0" class="tags-mark" @click="hide">
-        <div class="tags" :style="{ left: position.left + 'px', top: position.top + 'px' }">
+        <div :class="'tags' + (vertical && names.length > 3 ? ' tags-vertical' : ' tags-horizontal')"
+            :style="{ left: position.left + 'px', top: position.top + 'px' }">
             <div v-for="(name, index) in names" :class="'tag' + (index === position.index ? ' tag-hover' : '')"
                 :data-name="name" @click="select">
                 <div class="image">
@@ -115,6 +123,11 @@ defineExpose({
     border: 1px solid var(--border);
     border-radius: 4px;
     overflow: hidden;
+    width: 320px;
+}
+
+.tags-vertical {
+    transform: translateX(-100%);
 }
 
 .tags .tag {

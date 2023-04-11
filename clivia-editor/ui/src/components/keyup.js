@@ -6,25 +6,9 @@ import { composition } from './composition';
 import { focus, setCursor } from './cursor';
 import { markdown } from './markdown';
 
-const refs = {
-    vertical: false,
-    tag: null,
-};
-
-const bindTag = (vertical, tag) => {
-    refs.vertical = vertical;
-    refs.tag = tag;
-};
-
-const keyup = (lines, e) => {
+const keyup = (lines, vertical, tag, e) => {
     if (composition())
         return;
-
-    if (e.key === '/') {
-        showTag(e);
-
-        return;
-    }
 
     let selection = getSelection();
     if (selection && selection.rangeCount > 0 && selection.focusNode.nodeName === '#text' && selection.focusNode.data != '' && selection.focusNode.parentElement.id) {
@@ -52,18 +36,19 @@ const keyup = (lines, e) => {
         line.time = now();
     }
     focus();
+    if (e.key === '/')
+        showTag(vertical, tag, e);
 };
 
-const showTag = (e) => {
-    if(refs.vertical){
-
-    }else{
-        
+const showTag = (vertical, tag, e) => {
+    if (vertical) {
+        tag.show(e.target.offsetLeft, 80 + e.target.offsetTop);
+    } else {
+        tag.show(80, 42 + e.target.offsetTop + e.target.offsetHeight);
     }
-    console.log(e);
+    setTag(tag);
 };
 
 export {
-    bindTag,
     keyup
 };

@@ -1,10 +1,10 @@
 <script setup>
-import { ref, onMounted } from 'vue';
+import { ref } from 'vue';
 import { focus } from './cursor';
 import { compositionstart, compositionend } from './composition';
-import { keydown } from './keydown';
-import { bindTag, keyup } from './keyup';
-import { mouseover, mousemove } from './drag';
+import { setTag, keydown } from './keydown';
+import { keyup } from './keyup';
+import { mouseover, mousedown, mousemove, mouseup } from './drag';
 import { selectImage, uploadImage } from './image';
 import Icon from './Icon.vue';
 import Tag from './Tag.vue';
@@ -27,6 +27,12 @@ const workspace = ref(null);
 const dragable = ref({
     left: -1,
     top: -1,
+    height: 0,
+});
+const draging = ref({
+    left: -1,
+    top: -1,
+    html: '',
 });
 const tag = ref(null);
 const imageUploader = ref(null);
@@ -75,9 +81,35 @@ const scroll = (e) => {
     annotation();
 };
 
-onMounted(() => {
-    bindTag(vertical.value, tag.value);
-});
+const plus = (e) => {
+    let node = findDragNode();
+    if (node === null)
+        return;
+
+    if (vertical.value) {
+        tag.value.show(node.offsetLeft, 122);
+    } else {
+        tag.value.show(80, 42 + node.offsetTop + node.offsetHeight);
+    }
+    node.focus();
+    setTag(tag.value);
+};
+
+const findDragNode = () => {
+    for (let line of props.lines) {
+        let node = document.querySelector('#' + line.id);
+        if (vertical.value) {
+            let left = node.offsetLeft - 16;
+            if (dragable.value.left >= left && dragable.value.left < left + node.offsetWidth)
+                return node;
+        } else {
+            if (dragable.value.top >= node.offsetTop && dragable.value.top < node.offsetTop + node.offsetHeight)
+                return node;
+        }
+    }
+
+    return null;
+};
 
 defineExpose({
     toolbar,
@@ -87,40 +119,42 @@ defineExpose({
 
 <template>
     <div ref="workspace" :class="'workspace workspace-' + (vertical ? 'vertical' : 'horizontal')" @scroll="scroll"
-        @mousemove="mousemove">
+        @mousemove="mousemove(vertical, dragable, draging, $event)" @mouseup="mouseup(lines, draging, $event)">
         <div v-if="dragable.left >= 0 && dragable.top >= 0" class="dragable"
-            :style="{ left: dragable.left + 'px', top: dragable.top + 'px' }">
-            <div>
+            :style="{ left: dragable.left + 'px', top: dragable.top + 'px', height: dragable.height + 'px' }">
+            <div></div>
+            <div class="action" @mousedown="mousedown(vertical, draging, $event)">
                 <Icon name="drag" />
             </div>
-            <div>
-                <Icon name="plus" />
+            <div class="action">
+                <Icon name="plus" @click="plus" />
             </div>
+            <div></div>
         </div>
         <div class="editing-area" @mousemove.stop="">
-            <div v-for="line in lines" class="line" @mouseover="mouseover(lines, vertical, dragable, $event)">
+            <div v-for="line in lines" class="line" @mouseover="mouseover(vertical, dragable, $event)">
                 <h1 v-if="line.tag === 'h1'" :id="line.id" :contenteditable="editable" :class="line.className"
                     :placeholder="line.placeholder" @focus.stop="focus" @mouseup.stop="focus"
-                    @keydown="keydown(lines, $event)" @keyup="keyup(lines, $event)" @compositionstart="compositionstart"
-                    @compositionend="compositionend">
+                    @keydown="keydown(lines, $event)" @keyup="keyup(lines, vertical, tag, $event)"
+                    @compositionstart="compositionstart" @compositionend="compositionend">
                     <span v-for="(text, index) in line.texts" :class="text.style" :data-index="index">{{ text.text }}</span>
                 </h1>
                 <h2 v-else-if="line.tag === 'h2'" :id="line.id" :contenteditable="editable" :class="line.className"
                     :placeholder="line.placeholder" @focus.stop="focus" @mouseup.stop="focus"
-                    @keydown="keydown(lines, $event)" @keyup="keyup(lines, $event)" @compositionstart="compositionstart"
-                    @compositionend="compositionend">
+                    @keydown="keydown(lines, $event)" @keyup="keyup(lines, vertical, tag, $event)"
+                    @compositionstart="compositionstart" @compositionend="compositionend">
                     <span v-for="(text, index) in line.texts" :class="text.style" :data-index="index">{{ text.text }}</span>
                 </h2>
                 <h3 v-else-if="line.tag === 'h3'" :id="line.id" :contenteditable="editable" :class="line.className"
                     :placeholder="line.placeholder" @focus.stop="focus" @mouseup.stop="focus"
-                    @keydown="keydown(lines, $event)" @keyup="keyup(lines, $event)" @compositionstart="compositionstart"
-                    @compositionend="compositionend">
+                    @keydown="keydown(lines, $event)" @keyup="keyup(lines, vertical, tag, $event)"
+                    @compositionstart="compositionstart" @compositionend="compositionend">
                     <span v-for="(text, index) in line.texts" :class="text.style" :data-index="index">{{ text.text }}</span>
                 </h3>
                 <p v-else-if="line.tag === 'text'" :id="line.id" :contenteditable="editable" :class="line.className"
                     :placeholder="line.placeholder" @focus.stop="focus" @mouseup.stop="focus"
-                    @keydown="keydown(lines, $event)" @keyup="keyup(lines, $event)" @compositionstart="compositionstart"
-                    @compositionend="compositionend">
+                    @keydown="keydown(lines, $event)" @keyup="keyup(lines, vertical, tag, $event)"
+                    @compositionstart="compositionstart" @compositionend="compositionend">
                     <span v-for="(text, index) in line.texts" :class="text.style" :data-index="index">{{ text.text }}</span>
                 </p>
                 <div v-else-if="line.tag === 'image'" :id="line.id" class="image">
@@ -137,7 +171,9 @@ defineExpose({
             </div>
         </div>
     </div>
-    <Tag ref="tag" :name="['h1', 'h2', 'h3', 'text']" :lines="lines" />
+    <div v-if="draging.left >= 0 && draging.top >= 0" :class="'draging draging-' + (vertical ? 'vertical' : 'horizontal')"
+        :style="{ left: draging.left + 'px', top: draging.top + 'px' }" v-html="draging.html"></div>
+    <Tag ref="tag" :names="['h1', 'h2', 'h3', 'text']" :lines="lines" :vertical="vertical" />
     <input ref="imageUploader" class="image-uploader" type="file" accept="image/*" multiple
         @change="uploadImage(lines, $event)" />
     <div v-for="annotation in annotations" :class="'annotation-' + (vertical ? 'vertical' : 'horizontal')"
@@ -158,18 +194,21 @@ defineExpose({
     position: absolute;
 }
 
-.workspace-horizontal .dragable {
+.dragable .action:hover {
+    border-radius: 4px;
+    background-color: var(--icon-hover-bg);
+    cursor: pointer;
+}
+
+.workspace .dragable {
     display: flex;
     align-items: center;
     justify-content: space-around;
     width: 80px;
-    height: 3rem;
 }
 
-.workspace-vertical .dragable>div {
-    height: 40px;
-    width: 3rem;
-    text-align: center;
+.workspace-vertical .dragable {
+    transform: rotate(90deg);
 }
 
 .editing-area {
@@ -252,6 +291,21 @@ defineExpose({
 
 .line .linethrough {
     text-decoration: line-through;
+}
+
+.draging {
+    position: absolute;
+    color: var(--draging);
+    background-color: val(--draging-bg);
+}
+
+.draging img {
+    opacity: 0.25;
+    max-width: 200px;
+}
+
+.draging-vertical {
+    writing-mode: vertical-rl;
 }
 
 .image-uploader {

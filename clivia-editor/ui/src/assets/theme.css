@@ -8,6 +8,8 @@
   --tag-title: #212121;
   --tag-sub: #888;
   --tag-hover-bg: #e5e5e5;
+  --draging: #ccc;
+  --draging-bg: rgba(200, 200, 200, 0.25);
   --image-name-bg: #888;
   --image-select-bg: #f0f0f0;
   --image-select-hover-bg: #ccc;
