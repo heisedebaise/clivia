@@ -14,9 +14,10 @@ const toolbar = (action) => {
 
 const key = ref('');
 const lines = ref([]);
-const timer = ref({
+const save = ref({
   interval: 0,
   sync: 0,
+  id: '',
 });
 
 onMounted(() => {
@@ -29,14 +30,18 @@ onMounted(() => {
   else
     key.value = location.search.substring(1, indexOf);
   post('/editor/get', { key: key.value }, json => {
-    timer.value.sync = json.timestamp;
-    for (let line of json.data)
+    save.value.sync = json.timestamp;
+    let id = '';
+    for (let line of json.data) {
       line.placeholder = message('placeholder.' + line.tag);
+      id += ',' + line.id;
+    }
+    save.value.id = id.substring(1);
     lines.value = json.data;
     workspace.value.annotation();
   });
 
-  timer.value.interval = setInterval(() => {
+  save.value.interval = setInterval(() => {
     let id = '';
     let array = [];
     let time = now() - 5000;
@@ -45,18 +50,20 @@ onMounted(() => {
       if (line.time && line.time > time)
         array.push(line);
     }
-    if (array.length === 0)
+    if (array.length === 0 && id === save.value.id)
       return;
 
     workspace.value.annotation();
-    service('/editor/save', { key: key.value, id: id.substring(1), lines: JSON.stringify(array), sync: timer.value.sync }, data => {
-      timer.value.sync = data.sync;
+    if (id.length > 0)
+      save.value.id = id.substring(1);
+    service('/editor/save', { key: key.value, id: save.value.id, lines: JSON.stringify(array), sync: save.value.sync }, data => {
+      save.value.sync = data.sync;
     });
   }, 2000);
 });
 
 onUnmounted(() => {
-  clearInterval(timer.value.interval);
+  clearInterval(save.value.interval);
 });
 </script>
 
