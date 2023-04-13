@@ -24,6 +24,9 @@ class File extends UploadSupport {
 
             return files;
         }
+        if (this.props.value) {
+            this.props.form.value(this.props.name, this.props.value);
+        }
 
         let props = {
             action: this.action,

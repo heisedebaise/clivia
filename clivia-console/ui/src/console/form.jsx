@@ -151,6 +151,7 @@ class Base extends React.Component {
         }
 
         this.values[name] = value;
+        console.log(this.values);
     }
 
     button = mt => {
