@@ -39,9 +39,9 @@ class Base extends React.Component {
         super(props);
 
         this.form = React.createRef();
+        this.values = {};
         this.state = props.data || {};
         this.format(this.state);
-        this.values = {};
         this.binds = {};
         this.transfers = {};
         this.itemIndex = 0;
@@ -135,6 +135,8 @@ class Base extends React.Component {
                     values[prop.name] = moment(value, 'YYYY-MM-DD HH:mm:ss');
                 else if (prop.type === 'time')
                     values[prop.name] = moment(value, 'HH:mm:ss');
+                else if (prop.type === 'image' || prop.type === 'file')
+                    this.value(prop.name, value);
                 else if (prop.type === 'transfer')
                     values[prop.name] = value.split(',');
             }
@@ -151,7 +153,6 @@ class Base extends React.Component {
         }
 
         this.values[name] = value;
-        console.log(this.values);
     }
 
     button = mt => {

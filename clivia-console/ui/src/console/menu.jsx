@@ -3,14 +3,14 @@ import { Menu } from 'antd';
 import { service } from '../http';
 import body from './body';
 
-const { SubMenu } = Menu;
-
 class LeftMenu extends React.Component {
     constructor() {
         super();
 
         this.state = {
-            items: []
+            items: [],
+            item: '',
+            open: ['0-0'],
         };
         this.map = {};
         service('/console/menu').then(data => {
@@ -36,10 +36,16 @@ class LeftMenu extends React.Component {
             body.page(item.page, item.parameter, item.data);
     }
 
+    open = (keys) => {
+        this.setState({
+            open: keys.length === 0 ? [] : [keys[keys.length - 1]],
+        })
+    }
+
     render = () => {
         if (this.state.items.length === 0) return null;
 
-        return <Menu onClick={this.click} mode="inline" theme="dark" defaultOpenKeys={['0-0']} defaultSelectedKeys={[this.state.item ? '0-0' : '0-0-0']}>{this.menu(this.state.items, '0')}</Menu>;
+        return <Menu onClick={this.click} mode="inline" theme="dark" openKeys={this.state.open} defaultSelectedKeys={[this.state.item ? '0-0' : '0-0-0']} onOpenChange={this.open} items={this.menu(this.state.items, '0')} />;
     }
 
     menu = (items, parent) => {
@@ -51,10 +57,10 @@ class LeftMenu extends React.Component {
             let item = items[i];
             if (item.service || !item.items) {
                 this.map[key] = item;
-                menus.push(<Menu.Item key={key}>{item.label}</Menu.Item>);
+                menus.push({ key, label: item.label });
             }
             else {
-                menus.push(<SubMenu key={key} title={<span>{item.label}</span>} >{this.menu(item.items, key)}</SubMenu>);
+                menus.push({ key, label: item.label, children: this.menu(item.items, key) });
             }
         }
 

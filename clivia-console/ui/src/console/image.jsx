@@ -65,9 +65,6 @@ class Image extends React.Component {
 
     render = () => {
         let uri = this.state.changed ? this.state.uri : this.props.value;
-        if (!this.state.changed && this.props.value) {
-            this.props.form.value(this.props.name, this.props.value);
-        }
         let list = [];
         if (uri) {
             let uris = uri.split(',');
