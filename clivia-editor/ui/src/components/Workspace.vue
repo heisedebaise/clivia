@@ -1,9 +1,8 @@
 <script setup>
 import { ref } from 'vue';
 import { focus } from './cursor';
-import { compositionstart, compositionend } from './composition';
 import { setTag, keydown } from './keydown';
-import { keyup } from './keyup';
+import { compositionstart, compositionend, keyup } from './keyup';
 import { mouseover, mousedown, mousemove, mouseup } from './drag';
 import { selectImage, uploadImage } from './image';
 import Icon from './Icon.vue';
@@ -136,25 +135,25 @@ defineExpose({
                 <h1 v-if="line.tag === 'h1'" :id="line.id" :contenteditable="editable" :class="line.className"
                     :placeholder="line.placeholder" @focus.stop="focus" @mouseup.stop="focus"
                     @keydown="keydown(lines, $event)" @keyup="keyup(lines, vertical, tag, $event)"
-                    @compositionstart="compositionstart" @compositionend="compositionend">
+                    @compositionstart="compositionstart" @compositionend="compositionend(lines, vertical, tag, $event)">
                     <span v-for="(text, index) in line.texts" :class="text.style" :data-index="index">{{ text.text }}</span>
                 </h1>
                 <h2 v-else-if="line.tag === 'h2'" :id="line.id" :contenteditable="editable" :class="line.className"
                     :placeholder="line.placeholder" @focus.stop="focus" @mouseup.stop="focus"
                     @keydown="keydown(lines, $event)" @keyup="keyup(lines, vertical, tag, $event)"
-                    @compositionstart="compositionstart" @compositionend="compositionend">
+                    @compositionstart="compositionstart" @compositionend="compositionend(lines, vertical, tag, $event)">
                     <span v-for="(text, index) in line.texts" :class="text.style" :data-index="index">{{ text.text }}</span>
                 </h2>
                 <h3 v-else-if="line.tag === 'h3'" :id="line.id" :contenteditable="editable" :class="line.className"
                     :placeholder="line.placeholder" @focus.stop="focus" @mouseup.stop="focus"
                     @keydown="keydown(lines, $event)" @keyup="keyup(lines, vertical, tag, $event)"
-                    @compositionstart="compositionstart" @compositionend="compositionend">
+                    @compositionstart="compositionstart" @compositionend="compositionend(lines, vertical, tag, $event)">
                     <span v-for="(text, index) in line.texts" :class="text.style" :data-index="index">{{ text.text }}</span>
                 </h3>
                 <p v-else-if="line.tag === 'text'" :id="line.id" :contenteditable="editable" :class="line.className"
                     :placeholder="line.placeholder" @focus.stop="focus" @mouseup.stop="focus"
                     @keydown="keydown(lines, $event)" @keyup="keyup(lines, vertical, tag, $event)"
-                    @compositionstart="compositionstart" @compositionend="compositionend">
+                    @compositionstart="compositionstart" @compositionend="compositionend(lines, vertical, tag, $event)">
                     <span v-for="(text, index) in line.texts" :class="text.style" :data-index="index">{{ text.text }}</span>
                 </p>
                 <div v-else-if="line.tag === 'image'" :id="line.id" class="image">

@@ -2,12 +2,24 @@ import { now } from './time';
 import { findById, mergeTexts } from './line';
 import { setTag } from './keydown';
 import { findEventId } from "./event";
-import { composition } from './composition';
 import { focus, setCursor } from './cursor';
 import { markdown } from './markdown';
 
+const composition = {
+    on: false
+};
+
+const compositionstart = (e) => {
+    composition.on = true;
+};
+
+const compositionend = (lines, vertical, tag, e) => {
+    composition.on = false;
+    keyup(lines, vertical, tag, e);
+};
+
 const keyup = (lines, vertical, tag, e) => {
-    if (composition())
+    if (composition.on)
         return;
 
     let selection = getSelection();
@@ -50,5 +62,7 @@ const showTag = (vertical, tag, e) => {
 };
 
 export {
-    keyup
+    compositionstart,
+    compositionend,
+    keyup,
 };
