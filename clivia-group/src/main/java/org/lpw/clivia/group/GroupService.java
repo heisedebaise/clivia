@@ -23,6 +23,10 @@ public interface GroupService {
 
     int member(String id, String[] users);
 
+    int join(String id);
+
+    int audit(String id, String member, int audit);
+
     int avatar(String id, String avatar);
 
     int groupName(String id, String name);

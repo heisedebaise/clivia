@@ -93,7 +93,7 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
-    public void modify(String group, Set<String> users) {
+    public void modify(String group, Set<String> users, int state) {
         memberDao.query(group).getList().forEach(member -> {
             if (!users.remove(member.getUser()))
                 memberDao.delete(group, member.getUser());
@@ -107,6 +107,7 @@ public class MemberServiceImpl implements MemberService {
             member.setGroup(group);
             member.setUser(user);
             member.setType(1);
+            member.setState(state);
             member.setTime(now);
             memberDao.save(member);
         }
@@ -117,6 +118,18 @@ public class MemberServiceImpl implements MemberService {
         MemberModel member = memberDao.findById(id);
         member.setMemo(memo);
         memberDao.save(member);
+    }
+
+    @Override
+    public int state(String id, int state) {
+        MemberModel member = memberDao.findById(id);
+        if (member == null)
+            return 0;
+
+        member.setState(state);
+        memberDao.save(member);
+
+        return memberDao.count(member.getGroup());
     }
 
     @Override

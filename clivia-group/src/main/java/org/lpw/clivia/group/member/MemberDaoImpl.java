@@ -20,9 +20,9 @@ class MemberDaoImpl implements MemberDao {
     @Override
     public PageList<MemberModel> query(String user, int type) {
         if (type == -1)
-            return liteOrm.query(new LiteQuery(MemberModel.class).where("c_user=? and c_state in(0,1)"), new Object[]{user});
+            return liteOrm.query(new LiteQuery(MemberModel.class).where("c_user=? and c_state<=?"), new Object[]{user, 1});
 
-        return liteOrm.query(new LiteQuery(MemberModel.class).where("c_user=? and c_type=? and c_state in(0,1)"), new Object[]{user, type});
+        return liteOrm.query(new LiteQuery(MemberModel.class).where("c_user=? and c_type=? and c_state<=?"), new Object[]{user, type, 1});
     }
 
     @Override
@@ -38,7 +38,7 @@ class MemberDaoImpl implements MemberDao {
 
     @Override
     public int count(String group) {
-        return liteOrm.count(new LiteQuery(MemberModel.class).where("c_group=?"), new Object[]{group});
+        return liteOrm.count(new LiteQuery(MemberModel.class).where("c_group=? and c_state<=?"), new Object[]{group, 1});
     }
 
     @Override

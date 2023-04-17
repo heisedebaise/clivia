@@ -9,6 +9,7 @@ import org.lpw.photon.ctrl.template.Templates;
 import org.lpw.photon.ctrl.validate.Validate;
 import org.lpw.photon.ctrl.validate.Validators;
 import org.lpw.photon.util.Message;
+import org.lpw.photon.util.Numeric;
 import org.springframework.stereotype.Controller;
 
 import javax.inject.Inject;
@@ -18,6 +19,8 @@ import javax.inject.Inject;
 public class GroupCtrl {
     @Inject
     private Message message;
+    @Inject
+    private Numeric numeric;
     @Inject
     private Request request;
     @Inject
@@ -66,6 +69,27 @@ public class GroupCtrl {
     })
     public Object member() {
         int n = groupService.member(request.get("id"), request.getAsArray("users"));
+
+        return n == 0 ? "" : templates.get().failure(159007 + n, message.get(GroupModel.NAME + ".manage." + n), null, null);
+    }
+
+    @Execute(name = "join", permit = Permit.sign, validates = {
+            @Validate(validator = Validators.ID, parameter = "id", failureCode = 1),
+            @Validate(validator = UserService.VALIDATOR_SIGN)
+    })
+    public Object join() {
+        int n = groupService.join(request.get("id"));
+
+        return n == 0 || n >= 10 ? numeric.toString(n % 10)
+                : templates.get().failure(159007 + n, message.get(GroupModel.NAME + ".manage." + n), null, null);
+    }
+
+    @Execute(name = "audit", permit = Permit.sign, validates = {
+            @Validate(validator = Validators.ID, parameter = "id", failureCode = 1),
+            @Validate(validator = UserService.VALIDATOR_SIGN)
+    })
+    public Object audit() {
+        int n = groupService.audit(request.get("id"), request.get("member"), request.getAsInt("audit"));
 
         return n == 0 ? "" : templates.get().failure(159007 + n, message.get(GroupModel.NAME + ".manage." + n), null, null);
     }

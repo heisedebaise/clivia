@@ -288,8 +288,56 @@ public class GroupServiceImpl implements GroupService, UserListener {
     @Override
     public int member(String id, String[] users) {
         Set<String> set = new HashSet<>(Arrays.asList(users));
-        if (set.size() < 3) return 3;
+        if (set.size() < 3) return 4;
 
+        MemberModel member = memberService.find(id, userService.id());
+        if (member == null)
+            return 1;
+
+        GroupModel group = groupDao.findById(id);
+        if (group == null)
+            return 2;
+
+        if (group.getJoin() == 2)
+            return 3;
+
+        int state = group.getJoin() == 1 && member.getGrade() == 0 ? 3 : 0;
+        memberService.modify(id, set, state);
+        if (state == 0) {
+            group.setCount(set.size());
+            groupDao.save(group);
+            listeners.ifPresent(gls -> gls.forEach(listener -> listener.groupUpdate(group)));
+        }
+
+        return 0;
+    }
+
+    @Override
+    public int join(String id) {
+        MemberModel member = memberService.find(id, userService.id());
+        if (member != null)
+            return 10 + member.getState();
+
+        GroupModel group = groupDao.findById(id);
+        if (group == null)
+            return 2;
+
+        if (group.getJoin() == 2)
+            return 3;
+
+        int state = group.getJoin() == 1 ? 3 : 0;
+        memberService.join(id, state);
+        if (state == 0) {
+            group.setCount(group.getCount() + 1);
+            groupDao.save(group);
+            listeners.ifPresent(gls -> gls.forEach(listener -> listener.groupUpdate(group)));
+        }
+
+        return 10 + state;
+    }
+
+    @Override
+    public int audit(String id, String mid, int audit) {
         MemberModel member = memberService.find(id, userService.id());
         if (member == null || member.getGrade() == 0)
             return 1;
@@ -298,9 +346,8 @@ public class GroupServiceImpl implements GroupService, UserListener {
         if (group == null)
             return 2;
 
-        group.setCount(set.size());
+        group.setCount(memberService.state(mid, audit == 1 ? 0 : 4));
         groupDao.save(group);
-        memberService.modify(id, set);
         listeners.ifPresent(gls -> gls.forEach(listener -> listener.groupUpdate(group)));
 
         return 0;
