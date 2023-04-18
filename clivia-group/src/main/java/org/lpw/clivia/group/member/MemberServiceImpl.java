@@ -77,19 +77,9 @@ public class MemberServiceImpl implements MemberService {
     @Override
     public void create(String group, Set<String> users, int type, String owner) {
         Timestamp now = dateTime.now();
-        for (String user : users) {
-            if (memberDao.find(group, user) != null)
-                continue;
-
-            MemberModel member = new MemberModel();
-            member.setGroup(group);
-            member.setUser(user);
-            member.setType(type);
-            if (user.equals(owner))
-                member.setGrade(2);
-            member.setTime(now);
-            memberDao.save(member);
-        }
+        for (String user : users)
+            if (memberDao.find(group, user) == null)
+                save(group, user, type, user.equals(owner) ? 2 : 0, 0, now);
     }
 
     @Override
@@ -102,15 +92,24 @@ public class MemberServiceImpl implements MemberService {
             return;
 
         Timestamp now = dateTime.now();
-        for (String user : users) {
-            MemberModel member = new MemberModel();
-            member.setGroup(group);
-            member.setUser(user);
-            member.setType(1);
-            member.setState(state);
-            member.setTime(now);
-            memberDao.save(member);
-        }
+        for (String user : users)
+            save(group, user, 1, 0, state, now);
+    }
+
+    @Override
+    public void join(String group, int state) {
+        save(group, userService.id(), 1, 0, state, dateTime.now());
+    }
+
+    private void save(String group, String user, int type, int grade, int state, Timestamp time) {
+        MemberModel member = new MemberModel();
+        member.setGroup(group);
+        member.setUser(user);
+        member.setType(type);
+        member.setGrade(grade);
+        member.setState(state);
+        member.setTime(time);
+        memberDao.save(member);
     }
 
     @Override

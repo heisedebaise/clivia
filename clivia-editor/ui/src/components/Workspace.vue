@@ -55,14 +55,8 @@ const annotation = () => {
                 let annotation = {
                     text: text.annotation,
                     left: node.offsetLeft - scrollLeft,
-                    top: node.offsetTop - scrollTop,
+                    top: node.offsetTop - scrollTop+42,
                 };
-                if (vertical.value) {
-                    annotation.top += 122;
-                } else {
-                    annotation.left += 80;
-                    annotation.top += 42;
-                }
                 if (index < annotations.value.length) {
                     annotations.value[index] = annotation;
                 } else {

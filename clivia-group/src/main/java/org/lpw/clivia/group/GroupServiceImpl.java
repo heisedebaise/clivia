@@ -66,6 +66,7 @@ public class GroupServiceImpl implements GroupService, UserListener {
                     object.put("owner", true);
                 else if (member.getGrade() == 1)
                     object.put("master", true);
+                object.put("member", true);
             }
 
             JSONObject m = member(member);

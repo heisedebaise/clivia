@@ -1,7 +1,6 @@
 package org.lpw.clivia.group;
 
 import org.lpw.clivia.Permit;
-import org.lpw.clivia.group.member.MemberService;
 import org.lpw.clivia.user.UserService;
 import org.lpw.photon.ctrl.context.Request;
 import org.lpw.photon.ctrl.execute.Execute;
@@ -31,8 +30,8 @@ public class GroupCtrl {
     @Execute(name = "get", permit = Permit.sign, validates = {
             @Validate(validator = Validators.ID, parameter = "id", failureCode = 1),
             @Validate(validator = UserService.VALIDATOR_SIGN),
-            @Validate(validator = GroupService.VALIDATOR_EXISTS, parameter = "id", failureCode = 2),
-            @Validate(validator = MemberService.VALIDATOR_IN_GROUP, parameter = "id", failureCode = 104)})
+            @Validate(validator = GroupService.VALIDATOR_EXISTS, parameter = "id", failureCode = 2)
+    })
     public Object get() {
         return groupService.get(request.get("id"));
     }
