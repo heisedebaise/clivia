@@ -303,9 +303,9 @@ public class GroupServiceImpl implements GroupService, UserListener {
             return 3;
 
         int state = group.getJoin() == 1 && member.getGrade() == 0 ? 3 : 0;
-        memberService.modify(id, set, state);
+        int count = memberService.modify(id, set, state);
         if (state == 0) {
-            group.setCount(set.size());
+            group.setCount(count);
             groupDao.save(group);
             listeners.ifPresent(gls -> gls.forEach(listener -> listener.groupUpdate(group)));
         }

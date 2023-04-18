@@ -83,17 +83,18 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
-    public void modify(String group, Set<String> users, int state) {
+    public int modify(String group, Set<String> users, int state) {
         memberDao.query(group).getList().forEach(member -> {
             if (!users.remove(member.getUser()))
                 memberDao.delete(group, member.getUser());
         });
-        if (users.isEmpty())
-            return;
+        if (!users.isEmpty()) {
+            Timestamp now = dateTime.now();
+            for (String user : users)
+                save(group, user, 1, 0, state, now);
+        }
 
-        Timestamp now = dateTime.now();
-        for (String user : users)
-            save(group, user, 1, 0, state, now);
+        return memberDao.count(group);
     }
 
     @Override

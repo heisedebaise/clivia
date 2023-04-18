@@ -24,7 +24,7 @@ public interface MemberService {
 
     void create(String group, Set<String> users, int type, String owner);
 
-    void modify(String group, Set<String> users, int state);
+    int modify(String group, Set<String> users, int state);
 
     void join(String group, int state);
 
