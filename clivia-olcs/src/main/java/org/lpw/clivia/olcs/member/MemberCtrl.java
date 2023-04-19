@@ -21,7 +21,7 @@ public class MemberCtrl {
             @Validate(validator = UserService.VALIDATOR_SIGN)
     })
     public Object query() {
-        return memberService.query();
+        return memberService.query(request.getAsInt("size"));
     }
 
     @Execute(name = "user", permit = Permit.sign, validates = {

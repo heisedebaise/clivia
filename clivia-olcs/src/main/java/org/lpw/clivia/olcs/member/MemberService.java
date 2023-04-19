@@ -5,7 +5,7 @@ import com.alibaba.fastjson.JSONObject;
 import java.sql.Timestamp;
 
 public interface MemberService {
-    JSONObject query();
+    JSONObject query(int size);
 
     JSONObject user();
 

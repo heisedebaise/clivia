@@ -25,10 +25,11 @@ public class MemberServiceImpl implements MemberService, UserListener {
     @Inject
     private MemberDao memberDao;
     private JSONObject object = null;
+    private int size = 0;
     private int unread = 0;
 
     @Override
-    public JSONObject query() {
+    public JSONObject query(int size) {
         if (object == null) {
             JSONArray all = new JSONArray();
             JSONArray newer = new JSONArray();
@@ -50,6 +51,13 @@ public class MemberServiceImpl implements MemberService, UserListener {
             object = new JSONObject();
             object.put("all", all);
             object.put("newer", newer);
+            this.size = all.size();
+        }
+
+        JSONObject object = new JSONObject();
+        if (size != this.size) {
+            object.put("all", this.object.getJSONArray("all"));
+            object.put("newer", this.object.getJSONArray("newer"));
         }
         JSONObject unread = new JSONObject();
         memberDao.unread().getList().forEach(member -> unread.put(member.getId(), member.getReplierUnread()));

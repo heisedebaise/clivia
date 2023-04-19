@@ -30,12 +30,16 @@ class Olcs extends React.Component {
     }
 
     timer = () => {
-        if (this.timeout)
-            setTimeout(this.timer.bind(this), 1000);
-        service('/olcs/member/query').then(data => {
+        service('/olcs/member/query', { size: this.state.all.length }).then(data => {
+            if (this.timeout)
+                setTimeout(this.timer.bind(this), 1000);
             if (data === null)
                 return;
 
+            if (!data.all)
+                data.all = this.state.all;
+            if (!data.newer)
+                data.newer = this.state.newer;
             if (this.state.nick === '') {
                 this.setState({ all: data.all, newer: data.newer, allSearch: data.all, unread: data.unread });
 
