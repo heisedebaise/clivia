@@ -5,7 +5,7 @@ import com.alibaba.fastjson.JSONObject;
 public interface GroupService {
     String VALIDATOR_EXISTS = GroupModel.NAME + ".exists";
 
-    JSONObject get(String id);
+    JSONObject get(String id, boolean manage);
 
     JSONObject members(String id);
 
@@ -26,6 +26,10 @@ public interface GroupService {
     int join(String id);
 
     int audit(String id, String member, int audit);
+
+    int bans(String id, int ban);
+
+    int ban(String id, String member, int ban);
 
     int avatar(String id, String avatar);
 

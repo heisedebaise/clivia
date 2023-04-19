@@ -133,6 +133,11 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
+    public void bans(String group, int ban) {
+        memberDao.state(group, 1 - ban, ban);
+    }
+
+    @Override
     public void delete(String group) {
         memberDao.delete(group);
     }

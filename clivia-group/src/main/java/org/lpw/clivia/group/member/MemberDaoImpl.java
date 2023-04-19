@@ -47,6 +47,11 @@ class MemberDaoImpl implements MemberDao {
     }
 
     @Override
+    public void state(String group, int oldState, int newState) {
+        liteOrm.update(new LiteQuery(MemberModel.class).set("c_state=?").where("c_group=? and c_state=?"), new Object[]{newState, group, oldState});
+    }
+
+    @Override
     public void delete(String group) {
         liteOrm.delete(new LiteQuery(MemberModel.class).where("c_group=?"), new Object[]{group});
     }

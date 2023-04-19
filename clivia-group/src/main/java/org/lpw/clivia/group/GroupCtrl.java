@@ -33,7 +33,7 @@ public class GroupCtrl {
             @Validate(validator = GroupService.VALIDATOR_EXISTS, parameter = "id", failureCode = 2)
     })
     public Object get() {
-        return groupService.get(request.get("id"));
+        return groupService.get(request.get("id"), request.getAsBoolean("manage"));
     }
 
     @Execute(name = "members", validates = {@Validate(validator = Validators.SIGN)})
@@ -89,6 +89,26 @@ public class GroupCtrl {
     })
     public Object audit() {
         int n = groupService.audit(request.get("id"), request.get("member"), request.getAsInt("audit"));
+
+        return n == 0 ? "" : templates.get().failure(159007 + n, message.get(GroupModel.NAME + ".manage." + n), null, null);
+    }
+
+    @Execute(name = "bans", permit = Permit.sign, validates = {
+            @Validate(validator = Validators.ID, parameter = "id", failureCode = 1),
+            @Validate(validator = UserService.VALIDATOR_SIGN)
+    })
+    public Object bans() {
+        int n = groupService.bans(request.get("id"), request.getAsInt("ban"));
+
+        return n == 0 ? "" : templates.get().failure(159007 + n, message.get(GroupModel.NAME + ".manage." + n), null, null);
+    }
+
+    @Execute(name = "ban", permit = Permit.sign, validates = {
+            @Validate(validator = Validators.ID, parameter = "id", failureCode = 1),
+            @Validate(validator = UserService.VALIDATOR_SIGN)
+    })
+    public Object ban() {
+        int n = groupService.ban(request.get("id"), request.get("member"), request.getAsInt("ban"));
 
         return n == 0 ? "" : templates.get().failure(159007 + n, message.get(GroupModel.NAME + ".manage." + n), null, null);
     }

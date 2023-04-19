@@ -42,10 +42,10 @@ public class GroupServiceImpl implements GroupService, UserListener {
     private GroupDao groupDao;
 
     @Override
-    public JSONObject get(String id) {
+    public JSONObject get(String id, boolean manage) {
         GroupModel group = groupDao.findById(id);
         JSONObject object = modelHelper.toJson(group);
-        members(object, id, group, userService.id());
+        members(object, id, group, userService.id(), manage);
 
         return object;
     }
@@ -53,14 +53,17 @@ public class GroupServiceImpl implements GroupService, UserListener {
     @Override
     public JSONObject members(String id) {
         JSONObject object = new JSONObject();
-        members(object, id, null, "");
+        members(object, id, null, "", false);
 
         return object;
     }
 
-    private void members(JSONObject object, String id, GroupModel group, String user) {
+    private void members(JSONObject object, String id, GroupModel group, String user, boolean manage) {
         JSONArray members = new JSONArray();
         memberService.list(id).forEach(member -> {
+            if (!manage && member.getState() > 1)
+                return;
+
             if (group != null && group.getType() == 1 && member.getUser().equals(user)) {
                 if (member.getGrade() == 2)
                     object.put("owner", true);
@@ -350,6 +353,36 @@ public class GroupServiceImpl implements GroupService, UserListener {
         group.setCount(memberService.state(mid, audit == 1 ? 0 : 4));
         groupDao.save(group);
         listeners.ifPresent(gls -> gls.forEach(listener -> listener.groupUpdate(group)));
+
+        return 0;
+    }
+
+    @Override
+    public int bans(String id, int ban) {
+        MemberModel member = memberService.find(id, userService.id());
+        if (member == null || member.getGrade() == 0)
+            return 1;
+
+        GroupModel group = groupDao.findById(id);
+        if (group == null)
+            return 2;
+
+        memberService.bans(id, ban);
+
+        return 0;
+    }
+
+    @Override
+    public int ban(String id, String mid, int ban) {
+        MemberModel member = memberService.find(id, userService.id());
+        if (member == null || member.getGrade() == 0)
+            return 1;
+
+        GroupModel group = groupDao.findById(id);
+        if (group == null)
+            return 2;
+
+        memberService.state(mid, ban);
 
         return 0;
     }
