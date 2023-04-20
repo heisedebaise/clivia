@@ -230,6 +230,15 @@ public interface UserService {
     JSONObject get(String id);
 
     /**
+     * 获取用户昵称头像。
+     *
+     * @param id
+     * @param id ID值。
+     * @return 用户数据；不存在则返回空JSON。
+     */
+    JSONObject getNickAvatar(String id);
+
+    /**
      * 根据编码获得用户信息。
      *
      * @param code 唯一编码。

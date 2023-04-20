@@ -357,6 +357,19 @@ public class UserServiceImpl implements UserService, ContextRefreshedListener {
     }
 
     @Override
+    public JSONObject getNickAvatar(String id) {
+        JSONObject user = getJson(id, null);
+        JSONObject object = new JSONObject();
+        object.put("id", id);
+        if (!user.isEmpty()) {
+            object.put("nick", user.getString("nick"));
+            object.put("avatar", user.getString("avatar"));
+        }
+
+        return object;
+    }
+
+    @Override
     public UserModel findById(String id) {
         String cacheKey = CACHE_MODEL + id;
         UserModel user = cache.get(cacheKey);

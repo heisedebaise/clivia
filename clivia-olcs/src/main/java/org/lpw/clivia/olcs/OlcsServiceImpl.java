@@ -60,29 +60,20 @@ public class OlcsServiceImpl implements OlcsService, HourJob {
     }
 
     private JSONObject query(String user, Timestamp time, boolean replier) {
+        JSONObject object = new JSONObject();
         JSONArray array = new JSONArray();
-        olcsDao.query(user, time).getList().forEach(olcs -> addToArray(array, olcs));
-        if (!replier && time == null) {
-            boolean frequently = true;
-            if (!array.isEmpty()) {
-                JSONObject object = array.getJSONObject(array.size() - 1);
-                if (object.get("genre").equals("faq"))
-                    frequently = false;
-            }
-            if (frequently) {
-                JSONArray faq = faqService.frequently();
-                if (!faq.isEmpty()) {
-                    addToArray(array, save(user, UserService.SYSTEM_ID, "faq", json.toString(faq), null, true));
-                }
-            }
+        olcsDao.query(user, time).getList().forEach(olcs -> addToArray(object, array, olcs));
+        if (!replier && time == null && (array.isEmpty() || !array.getJSONObject(array.size() - 1).get("genre").equals("faq"))) {
+            addToArray(object, array, save(user, UserService.SYSTEM_ID, "faq", "", null, true));
         }
+        if (json.hasTrue(object, "faq"))
+            object.put("faq", faqService.frequently());
         if (!array.isEmpty()) {
             if (replier)
                 memberService.replierRead(user, dateTime.now());
             else
                 memberService.userRead(user, dateTime.now());
         }
-        JSONObject object = new JSONObject();
         object.put("list", array);
         MemberModel member = memberService.findById(user);
         if (member != null)
@@ -91,15 +82,19 @@ public class OlcsServiceImpl implements OlcsService, HourJob {
         return object;
     }
 
-    private void addToArray(JSONArray array, OlcsModel olcs) {
-        JSONObject object = new JSONObject();
-        object.put("id", olcs.getId());
+    private void addToArray(JSONObject object, JSONArray array, OlcsModel olcs) {
+        JSONObject obj = new JSONObject();
+        obj.put("id", olcs.getId());
         if (olcs.getReplier() != null)
-            object.put("replier", userService.get(olcs.getReplier()));
-        object.put("genre", olcs.getGenre());
-        object.put("content", olcs.getContent());
-        object.put("time", dateTime.toString(olcs.getTime()));
-        array.add(object);
+            obj.put("replier", userService.getNickAvatar(olcs.getReplier()));
+        if (olcs.getGenre().equals("faq")) {
+            obj.put("content", "");
+            object.put("faq", true);
+        } else
+            obj.put("genre", olcs.getGenre());
+        obj.put("content", olcs.getContent());
+        obj.put("time", dateTime.toString(olcs.getTime()));
+        array.add(obj);
     }
 
     @Override
