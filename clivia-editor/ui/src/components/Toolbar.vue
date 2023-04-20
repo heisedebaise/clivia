@@ -90,11 +90,11 @@ onMounted(() => {
         <Icon name="underline" :enable="enable.underline" @click="underline(lines)" />
         <Icon name="linethrough" :enable="enable.linethrough" @click="linethrough(lines)" />
         <Icon name="annotation" :enable="enable.annotation" @click="showAnnotation" />
-        <Icon name="divider" :enable="enable.divider" @click="newDivider(lines)" />
+        <Icon name="divider" :enable="enable.divider" @click="newDivider(lines, workspace.annotation)" />
         <Icon name="quote" :enable="enable.quote" @click="$emit('icon', 'quote')" />
         <Icon name="link" :enable="enable.link" @click="$emit('icon', 'link')" />
         <Icon name="backlog" :enable="enable.backlog" @click="$emit('icon', 'backlog')" />
-        <Icon name="image" :enable="enable.image" @click="newImage(lines)" />
+        <Icon name="image" :enable="enable.image" @click="newImage(lines, workspace.annotation)" />
         <Icon name="direction" :enable="enable.direction" @click="$emit('icon', 'direction')" />
         <div></div>
     </div>

@@ -5,21 +5,26 @@ import { findEventId } from "./event";
 import { focus, setCursor } from './cursor';
 import { markdown } from './markdown';
 
-const composition = {
-    on: false
+const data = {
+    composition: false,
+    annotation: null,
+};
+
+const setAnnotation = (annotation) => {
+    data.annotation = annotation;
 };
 
 const compositionstart = (e) => {
-    composition.on = true;
+    data.composition = true;
 };
 
 const compositionend = (lines, vertical, tag, e) => {
-    composition.on = false;
+    data.composition = false;
     keyup(lines, vertical, tag, e);
 };
 
 const keyup = (lines, vertical, tag, e) => {
-    if (composition.on)
+    if (data.composition)
         return;
 
     let selection = getSelection();
@@ -48,6 +53,8 @@ const keyup = (lines, vertical, tag, e) => {
         line.time = now();
     }
     focus();
+    if (data.annotation)
+        data.annotation();
     if (e.key === '/')
         showTag(vertical, tag, e);
 };
@@ -62,6 +69,7 @@ const showTag = (vertical, tag, e) => {
 };
 
 export {
+    setAnnotation,
     compositionstart,
     compositionend,
     keyup,

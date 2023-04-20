@@ -53,7 +53,6 @@ onMounted(() => {
     if (array.length === 0 && id === save.value.id)
       return;
 
-    workspace.value.annotation();
     if (id.length > 0)
       save.value.id = id.substring(1);
     service('/editor/save', { key: key.value, id: save.value.id, lines: JSON.stringify(array), sync: save.value.sync }, data => {

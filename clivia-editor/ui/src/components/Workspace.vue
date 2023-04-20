@@ -1,9 +1,11 @@
 <script setup>
 import { ref } from 'vue';
+import { findIndex } from './line';
 import { focus } from './cursor';
 import { setTag, keydown } from './keydown';
-import { compositionstart, compositionend, keyup } from './keyup';
+import { setAnnotation, compositionstart, compositionend, keyup } from './keyup';
 import { mouseover, mousedown, mousemove, mouseup } from './drag';
+import { newText } from './tag';
 import { selectImage, uploadImage } from './image';
 import Icon from './Icon.vue';
 import Tag from './Tag.vue';
@@ -55,7 +57,7 @@ const annotation = () => {
                 let annotation = {
                     text: text.annotation,
                     left: node.offsetLeft - scrollLeft,
-                    top: node.offsetTop - scrollTop+42,
+                    top: node.offsetTop - scrollTop + 42,
                 };
                 if (index < annotations.value.length) {
                     annotations.value[index] = annotation;
@@ -69,8 +71,22 @@ const annotation = () => {
             annotations.value.splice(index + 1, annotations.value.length - index);
     }, 10);
 };
+setAnnotation(annotation);
 
 const scroll = (e) => {
+    annotation();
+};
+
+const del = (e) => {
+    let node = findDragNode();
+    if (node === null)
+        return;
+
+    if (props.lines.length === 1) {
+        props.lines.splice(0, 1, newText());
+    } else {
+        props.lines.splice(findIndex(props.lines, node.id), 1);
+    }
     annotation();
 };
 
@@ -116,6 +132,9 @@ defineExpose({
         <div v-if="dragable.left >= 0 && dragable.top >= 0" class="dragable"
             :style="{ left: dragable.left + 'px', top: dragable.top + 'px', height: dragable.height + 'px' }">
             <div></div>
+            <div class="action">
+                <Icon name="delete" @click="del" />
+            </div>
             <div class="action" @mousedown="mousedown(vertical, draging, $event)">
                 <Icon name="drag" />
             </div>
@@ -158,7 +177,8 @@ defineExpose({
                     </div>
                     <div v-else class="select" @click="selectImage(imageUploader, $event)">{{ line.upload }}</div>
                 </div>
-                <div v-else-if="line.tag === 'divider'" :id="line.id" class="divider">
+                <div v-else-if="line.tag === 'divider'" :id="line.id"
+                    :class="(vertical ? 'vertical' : 'horizontal') + '-divider'">
                     <div></div>
                 </div>
             </div>
@@ -262,12 +282,20 @@ defineExpose({
     cursor: pointer;
 }
 
-.line>.divider {
+.line>.horizontal-divider {
     padding: 0.5rem 0;
 }
 
-.line>.divider>div {
+.line>.horizontal-divider>div {
     border-top: 1px solid var(--border);
+}
+
+.line>.vertical-divider {
+    padding: 0 0.5rem;
+}
+
+.line>.vertical-divider>div {
+    border-right: 1px solid var(--border);
 }
 
 .line .bold {

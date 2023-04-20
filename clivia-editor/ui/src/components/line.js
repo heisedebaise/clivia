@@ -97,7 +97,7 @@ const mergeTexts = (texts) => {
 };
 
 const isEmpty = (texts) => {
-    return texts.length === 0 || (texts.length === 1 && texts[0].text.length === 0);
+    return texts && (texts.length === 0 || (texts.length === 1 && texts[0].text.length === 0));
 };
 
 export {
