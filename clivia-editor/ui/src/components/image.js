@@ -1,8 +1,8 @@
-import { upload } from '../http';
-import { newId } from './generator';
-import { message } from './locale';
-import { now } from './time';
-import { findIndex } from './line';
+import {upload, url} from '@/http';
+import {newId} from './generator';
+import {message} from './locale';
+import {now} from './time';
+import {findIndex} from './line';
 
 const data = {
     id: null,
