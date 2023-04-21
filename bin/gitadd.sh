@@ -23,7 +23,7 @@ do
   git add $name/yarn.lock
 done
 
-for name in clivia-editor/ui clivia-editor/ui0
+for name in clivia-editor/ui
 do
   git add $name/public
   git add $name/src
