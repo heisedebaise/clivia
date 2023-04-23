@@ -24,12 +24,21 @@ public interface GroupListener {
     void groupUpdate(GroupModel group);
 
     /**
+     * 成员加入。
+     *
+     * @param group  群组。
+     * @param member 成员。
+     */
+    void groupJoin(GroupModel group, MemberModel member);
+
+    /**
      * 退出群。
      *
-     * @param group 群组。
-     * @param user  退出用户。
+     * @param group  群组。
+     * @param member 退出成员。
+     * @param audit  是否管理员移除。
      */
-    void groupExit(GroupModel group, String user);
+    void groupExit(GroupModel group, MemberModel member, boolean audit);
 
     /**
      * 删除群组。

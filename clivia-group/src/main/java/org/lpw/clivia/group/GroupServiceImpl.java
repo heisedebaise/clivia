@@ -330,11 +330,14 @@ public class GroupServiceImpl implements GroupService, UserListener {
             return 3;
 
         int state = group.getJoin() == 1 ? 3 : 0;
-        memberService.join(id, state);
+        MemberModel join = memberService.join(id, state);
         if (state == 0) {
             group.setCount(group.getCount() + 1);
             groupDao.save(group);
-            listeners.ifPresent(gls -> gls.forEach(listener -> listener.groupUpdate(group)));
+            listeners.ifPresent(gls -> gls.forEach(listener -> {
+                listener.groupUpdate(group);
+                listener.groupJoin(group, join);
+            }));
         }
 
         return 10 + state;
@@ -350,9 +353,16 @@ public class GroupServiceImpl implements GroupService, UserListener {
         if (group == null)
             return 2;
 
-        group.setCount(memberService.state(mid, audit == 1 ? 0 : 4));
+        int state = audit == 1 ? 0 : 4;
+        group.setCount(memberService.state(mid, state));
         groupDao.save(group);
-        listeners.ifPresent(gls -> gls.forEach(listener -> listener.groupUpdate(group)));
+        listeners.ifPresent(gls -> gls.forEach(listener -> {
+            listener.groupUpdate(group);
+            if (state == 0)
+                listener.groupJoin(group, member);
+            else
+                listener.groupExit(group, member, true);
+        }));
 
         return 0;
     }
@@ -475,8 +485,14 @@ public class GroupServiceImpl implements GroupService, UserListener {
             }
             listeners.ifPresent(set -> set.forEach(listener -> listener.groupDelete(group, members)));
         } else {
-            memberService.delete(group.getId(), user);
-            listeners.ifPresent(set -> set.forEach(listener -> listener.groupExit(group, user)));
+            MemberModel member = memberService.delete(group.getId(), user);
+            if (member == null)
+                return;
+
+            listeners.ifPresent(set -> set.forEach(listener -> {
+                listener.groupUpdate(group);
+                listener.groupExit(group, member, false);
+            }));
         }
     }
 }

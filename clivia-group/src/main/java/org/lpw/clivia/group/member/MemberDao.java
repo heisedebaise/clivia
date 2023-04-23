@@ -17,7 +17,7 @@ interface MemberDao {
 
     void state(String group, int oldState, int newState);
 
-    void delete(String group);
+    void delete(MemberModel member);
 
-    void delete(String group, String user);
+    void delete(String group);
 }

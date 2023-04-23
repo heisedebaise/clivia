@@ -86,7 +86,7 @@ public class MemberServiceImpl implements MemberService {
     public int modify(String group, Set<String> users, int state) {
         memberDao.query(group).getList().forEach(member -> {
             if (!users.remove(member.getUser()))
-                memberDao.delete(group, member.getUser());
+                memberDao.delete(member);
         });
         if (!users.isEmpty()) {
             Timestamp now = dateTime.now();
@@ -98,11 +98,11 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
-    public void join(String group, int state) {
-        save(group, userService.id(), 1, 0, state, dateTime.now());
+    public MemberModel join(String group, int state) {
+        return save(group, userService.id(), 1, 0, state, dateTime.now());
     }
 
-    private void save(String group, String user, int type, int grade, int state, Timestamp time) {
+    private MemberModel save(String group, String user, int type, int grade, int state, Timestamp time) {
         MemberModel member = new MemberModel();
         member.setGroup(group);
         member.setUser(user);
@@ -111,6 +111,8 @@ public class MemberServiceImpl implements MemberService {
         member.setState(state);
         member.setTime(time);
         memberDao.save(member);
+
+        return member;
     }
 
     @Override
@@ -143,7 +145,11 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
-    public void delete(String group, String user) {
-        memberDao.delete(group, user);
+    public MemberModel delete(String group, String user) {
+        MemberModel member = memberDao.find(group, user);
+        if (member != null)
+            memberDao.delete(member);
+
+        return member;
     }
 }

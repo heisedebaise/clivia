@@ -26,7 +26,7 @@ public interface MemberService {
 
     int modify(String group, Set<String> users, int state);
 
-    void join(String group, int state);
+    MemberModel join(String group, int state);
 
     void memo(String id, String memo);
 
@@ -36,5 +36,5 @@ public interface MemberService {
 
     void delete(String group);
 
-    void delete(String group, String user);
+    MemberModel delete(String group, String user);
 }
