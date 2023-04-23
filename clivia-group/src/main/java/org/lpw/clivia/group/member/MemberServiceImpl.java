@@ -39,6 +39,11 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
+    public MemberModel findById(String id) {
+        return memberDao.findById(id);
+    }
+
+    @Override
     public MemberModel find(String group, String user) {
         return memberDao.find(group, user);
     }

@@ -14,6 +14,8 @@ public interface MemberService {
 
     List<MemberModel> list(String group);
 
+    MemberModel findById(String id);
+
     MemberModel find(String group, String user);
 
     String friend(String user1, String user2);

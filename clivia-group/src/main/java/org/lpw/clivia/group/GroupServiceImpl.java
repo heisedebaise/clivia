@@ -16,7 +16,14 @@ import org.lpw.photon.util.Validator;
 import org.springframework.stereotype.Service;
 
 import javax.inject.Inject;
-import java.util.*;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
 
 @Service(GroupModel.NAME + ".service")
 public class GroupServiceImpl implements GroupService, UserListener {
@@ -353,15 +360,19 @@ public class GroupServiceImpl implements GroupService, UserListener {
         if (group == null)
             return 2;
 
+        MemberModel m = memberService.findById(mid);
+        if (m == null)
+            return 2;
+
         int state = audit == 1 ? 0 : 4;
         group.setCount(memberService.state(mid, state));
         groupDao.save(group);
         listeners.ifPresent(gls -> gls.forEach(listener -> {
             listener.groupUpdate(group);
             if (state == 0)
-                listener.groupJoin(group, member);
+                listener.groupJoin(group, m);
             else
-                listener.groupExit(group, member, true);
+                listener.groupExit(group, m, true);
         }));
 
         return 0;
