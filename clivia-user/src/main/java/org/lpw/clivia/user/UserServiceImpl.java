@@ -595,6 +595,11 @@ public class UserServiceImpl implements UserService, ContextRefreshedListener {
     }
 
     @Override
+    public void switchTo(String id) {
+        session.set(SESSION, findById(id));
+    }
+
+    @Override
     public int count() {
         return userDao.count();
     }

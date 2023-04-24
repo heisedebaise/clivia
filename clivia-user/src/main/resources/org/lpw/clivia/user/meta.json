@@ -167,6 +167,10 @@
                 "reload": true
             },
             {
+                "service": "switch-to",
+                "reload": true
+            },
+            {
                 "type": "delete"
             }
         ],

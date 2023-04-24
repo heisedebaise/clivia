@@ -232,7 +232,6 @@ public interface UserService {
     /**
      * 获取用户昵称头像。
      *
-     * @param id
      * @param id ID值。
      * @return 用户数据；不存在则返回空JSON。
      */
@@ -399,6 +398,13 @@ public interface UserService {
      * @return 重置成功则返回true；否则返回false。
      */
     boolean root(UserModel user, String password);
+
+    /**
+     * 切换用户。
+     *
+     * @param id 目标用户ID。
+     */
+    void switchTo(String id);
 
     /**
      * 统计用户数。

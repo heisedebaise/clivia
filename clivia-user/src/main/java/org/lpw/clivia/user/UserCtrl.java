@@ -273,6 +273,15 @@ public class UserCtrl {
         return "";
     }
 
+    @Execute(name = "switch-to", validates = {
+            @Validate(validator = Validators.ID, parameter = "id", failureCode = 22),
+            @Validate(validator = UserService.VALIDATOR_EXISTS, parameter = "id", failureCode = 25)})
+    public Object switchTo() {
+        userService.switchTo(request.get("id"));
+
+        return "";
+    }
+
     @Execute(name = "count", validates = {@Validate(validator = Validators.SIGN)})
     public Object count() {
         return userService.count();
