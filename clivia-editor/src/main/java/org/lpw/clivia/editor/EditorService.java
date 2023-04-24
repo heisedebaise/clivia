@@ -4,9 +4,7 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 
 public interface EditorService {
-    void put(String key, JSONArray array, EditorListener listener);
+    JSONArray get(String listener, String key);
 
-    JSONArray get(String key);
-
-    JSONObject save(String key, String id, JSONArray lines, long sync);
+    JSONObject put(String listener, String key, String id, JSONArray lines, long sync);
 }

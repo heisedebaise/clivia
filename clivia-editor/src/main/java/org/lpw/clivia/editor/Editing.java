@@ -33,19 +33,8 @@ public class Editing {
     }
 
     private void set(JSONArray array) {
-        if (validator.isEmpty(array)) {
-            JSONObject object = new JSONObject();
-            object.put("tag", "text");
-            JSONObject text = new JSONObject();
-            text.put("text", "");
-            JSONArray texts = new JSONArray();
-            texts.add(text);
-            object.put("texts", texts);
-            ids.add(put(object));
-        } else {
-            for (int i = 0, size = array.size(); i < size; i++) {
-                ids.add(put(array.getJSONObject(i)));
-            }
+        for (int i = 0, size = array.size(); i < size; i++) {
+            ids.add(put(array.getJSONObject(i)));
         }
     }
 
@@ -109,12 +98,12 @@ public class Editing {
 
     private String id() {
         for (int i = 0; i < 1024; i++) {
-            String id = "id"+generator.random(14);
+            String id = "id" + generator.random(14);
             if (!lines.containsKey(id))
                 return id;
         }
 
-        return "id"+generator.random(14);
+        return "id" + generator.random(14);
     }
 
     JSONArray get() {
@@ -129,7 +118,7 @@ public class Editing {
 
     void save(long time) {
         if (this.time > time && listener != null)
-            listener.save(key, get());
+            listener.put(key, get());
     }
 
     boolean overdue(long time) {

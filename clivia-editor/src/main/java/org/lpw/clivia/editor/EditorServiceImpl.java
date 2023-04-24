@@ -2,6 +2,8 @@ package org.lpw.clivia.editor;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import org.lpw.photon.bean.BeanFactory;
+import org.lpw.photon.bean.ContextRefreshedListener;
 import org.lpw.photon.ctrl.context.Session;
 import org.lpw.photon.scheduler.HourJob;
 import org.lpw.photon.scheduler.SecondsJob;
@@ -12,44 +14,54 @@ import org.springframework.stereotype.Service;
 
 import javax.inject.Inject;
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Service(EditorModel.NAME + ".service")
-public class EditorServiceImpl implements EditorService, SecondsJob, HourJob {
+public class EditorServiceImpl implements EditorService, ContextRefreshedListener, SecondsJob, HourJob {
     @Inject
     private Validator validator;
     @Inject
     private Generator generator;
     @Inject
     private Session session;
+    private final Map<String, EditorListener> listeners = new HashMap<>();
     private final Map<String, Editing> map = new ConcurrentHashMap<>();
 
     @Override
-    public void put(String key, JSONArray array, EditorListener listener) {
-        map.computeIfAbsent(key, k -> new Editing(validator, generator, key, array, listener));
+    public JSONArray get(String listener, String key) {
+        String k = listener + ":" + key;
+        if (map.containsKey(k))
+            return map.get(k).get();
+
+        if (!listeners.containsKey(listener))
+            return new JSONArray();
+
+        EditorListener el = listeners.get(listener);
+        JSONArray array = el.get(key);
+        map.put(k, new Editing(validator, generator, key, array, el));
+
+        return array;
     }
 
     @Override
-    public JSONArray get(String key) {
-        if (map.containsKey(key))
-            return map.get(key).get();
+    public JSONObject put(String listener, String key, String id, JSONArray lines, long sync) {
+        String k = listener + ":" + key;
+        if (map.containsKey(k))
+            return map.get(k).put(id, lines, sync);
 
-        if (key.equals("editor")) {
-            put(key, null, null);
-
-            return map.get(key).get();
-        }
-
-        return new JSONArray();
+        return new JSONObject();
     }
 
     @Override
-    public JSONObject save(String key, String id, JSONArray lines, long sync) {
-        if (!map.containsKey(key))
-            return new JSONObject();
+    public int getContextRefreshedSort() {
+        return 114;
+    }
 
-        return map.get(key).put(id, lines, sync);
+    @Override
+    public void onContextRefreshed() {
+        BeanFactory.getBeans(EditorListener.class).forEach(listener -> listeners.put(listener.name(), listener));
     }
 
     @Override
