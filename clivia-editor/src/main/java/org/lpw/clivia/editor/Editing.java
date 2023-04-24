@@ -14,7 +14,6 @@ public class Editing {
     private final String key;
     private String id;
     private List<String> ids;
-    private long idTime;
     private final Map<String, JSONObject> lines;
     private long time;
     private final EditorListener listener;
@@ -25,7 +24,6 @@ public class Editing {
         this.key = key;
         id = "";
         ids = new ArrayList<>();
-        idTime = System.currentTimeMillis();
         lines = new ConcurrentHashMap<>();
         time = System.currentTimeMillis();
         this.listener = listener;
@@ -43,12 +41,10 @@ public class Editing {
         object.put("sync", System.currentTimeMillis());
 
         Map<String, JSONObject> map = new HashMap<>();
-        long idTime = 0;
         if (!lines.isEmpty()) {
             time = System.currentTimeMillis();
             for (int i = 0, size = lines.size(); i < size; i++) {
                 JSONObject line = lines.getJSONObject(i);
-                idTime = Math.max(idTime, line.getLongValue("time"));
                 map.put(line.getString("id"), line);
             }
         }
@@ -72,15 +68,8 @@ public class Editing {
         if (this.id.equals(id))
             return object;
 
-        if (this.idTime > idTime) {
-            object.put("id", this.id);
-        } else {
-            this.idTime = idTime;
-            this.id = id;
-            List<String> list = new ArrayList<>();
-            Collections.addAll(list, id.split(","));
-            ids = list;
-        }
+        this.id = id;
+        ids = Arrays.asList(id.split(","));
 
         return object;
     }

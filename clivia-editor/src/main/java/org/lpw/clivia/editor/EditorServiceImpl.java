@@ -55,6 +55,15 @@ public class EditorServiceImpl implements EditorService, ContextRefreshedListene
     }
 
     @Override
+    public JSONObject view(String listener, String key) {
+        JSONObject object = new JSONObject();
+        object.put("title", listeners.containsKey(listener) ? listeners.get(listener).title(key) : "");
+        object.put("lines", get(listener, key));
+
+        return object;
+    }
+
+    @Override
     public int getContextRefreshedSort() {
         return 114;
     }

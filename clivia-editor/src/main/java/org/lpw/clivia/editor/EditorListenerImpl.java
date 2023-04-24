@@ -12,6 +12,11 @@ public class EditorListenerImpl implements EditorListener {
     }
 
     @Override
+    public String title(String key) {
+        return "editor";
+    }
+
+    @Override
     public JSONArray get(String key) {
         JSONObject object = new JSONObject();
         object.put("tag", "text");
