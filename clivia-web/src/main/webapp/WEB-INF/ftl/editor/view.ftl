@@ -49,7 +49,7 @@
 <#macro text tag texts>
   <${tag}><#t>
     <#list texts as text>
-      <span class="${text.style}">${text.text}</span><#t>
+      <span<#if text.style?exists> class="${text.style}"</#if>>${text.text}</span><#t>
     </#list>
   </${tag}><#t>
 </#macro>

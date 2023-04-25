@@ -75,7 +75,7 @@ public class Editing {
     }
 
     private String put(JSONObject object) {
-        String id = object.getString("id");
+        String id = object.containsKey("id") ? object.getString("id") : null;
         if (validator.isEmpty(id)) {
             id = id();
             object.put("id", id);
