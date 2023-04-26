@@ -23,15 +23,14 @@ import {
     PlusOutlined
 } from '@ant-design/icons';
 import moment from 'moment';
-import {service} from '../http';
+import { service } from '../http';
 import meta from './meta';
-import {toDecimal, fromDecimal, toPercent, fromPercent, toInt} from './numeric';
-import {toArray} from '../json';
+import { toDecimal, fromDecimal, toPercent, fromPercent, toInt } from './numeric';
+import { toArray } from '../json';
 import Image from './image';
 import File from './file';
 import Folder from './folder';
 import DSelect from './dselect';
-import Editor from './editor';
 import Category from './category';
 import User from './user';
 import './form.css';
@@ -84,14 +83,14 @@ class Base extends React.Component {
 
                     let options = [];
                     for (let d of data.list || data)
-                        options.push({value: d[prop.vname]});
+                        options.push({ value: d[prop.vname] });
                     let state = {};
                     state['auto-complete:' + prop.name] = options;
                     this.setState(state);
                 });
             }
             if (prop.type === 'agreement') {
-                service('/keyvalue/object', {key: prop.agreement}).then(data => {
+                service('/keyvalue/object', { key: prop.agreement }).then(data => {
                     if (data === null) return;
 
                     let array = toArray(data[prop.agreement]);
@@ -113,12 +112,12 @@ class Base extends React.Component {
             if (prop.bind && prop.service) {
                 if (!this.binds[prop.bind])
                     this.binds[prop.bind] = [];
-                this.binds[prop.bind].push({name: prop.name, service: prop.service});
+                this.binds[prop.bind].push({ name: prop.name, service: prop.service });
             }
         }
 
         for (let name in this.binds)
-            this.change({name: name}, {'target': {'value': this.state[name]}});
+            this.change({ name: name }, { 'target': { 'value': this.state[name] } });
     }
 
     data = data => {
@@ -219,7 +218,7 @@ class Base extends React.Component {
             for (let key in this.props.data)
                 if (!(key in values) && this.props.data[key])
                     values[key] = this.props.data[key];
-        this.submit(mt, {...values, ...this.values}).then(data => {
+        this.submit(mt, { ...values, ...this.values }).then(data => {
             if (data === null) return;
 
             if (mt.reload)
@@ -242,7 +241,7 @@ class Base extends React.Component {
         let items = [];
         if (this.props.meta.info)
             items.push(<div key={'info:' + this.props.meta.info} className="console-info"
-                            dangerouslySetInnerHTML={{__html: this.state[this.props.meta.info]}}/>);
+                dangerouslySetInnerHTML={{ __html: this.state[this.props.meta.info] }} />);
         for (let prop of meta.props(this.props.props, this.props.meta.props))
             this.item(items, prop, '');
 
@@ -266,7 +265,7 @@ class Base extends React.Component {
                 if (array[i] === null)
                     continue;
 
-                is.push(<div key={prop.name + ':divider:' + i} className="console-form-children-divider"/>);
+                is.push(<div key={prop.name + ':divider:' + i} className="console-form-children-divider" />);
                 for (let child of prop.children) {
                     let c = JSON.parse(JSON.stringify(child));
                     c.name = prop.name + ':' + c.name + ':' + i;
@@ -283,17 +282,17 @@ class Base extends React.Component {
                     is.push(
                         <div key={prop.name + ':toolbar:' + i} className="console-form-children-toolbar">
                             {i > 0 ? <div onClick={this.move.bind(this, prop, array.length, i, 0)}>
-                                <VerticalAlignTopOutlined/></div> : null}
+                                <VerticalAlignTopOutlined /></div> : null}
                             {i > 0 ?
-                                <div onClick={this.move.bind(this, prop, array.length, i, i - 1)}><ArrowUpOutlined/>
+                                <div onClick={this.move.bind(this, prop, array.length, i, i - 1)}><ArrowUpOutlined />
                                 </div> : null}
                             {i < array.length - 1 ?
-                                <div onClick={this.move.bind(this, prop, array.length, i, i + 1)}><ArrowDownOutlined/>
+                                <div onClick={this.move.bind(this, prop, array.length, i, i + 1)}><ArrowDownOutlined />
                                 </div> : null}
                             {i < array.length - 1 ?
                                 <div onClick={this.move.bind(this, prop, array.length, i, array.length - 1)}>
-                                    <VerticalAlignBottomOutlined/></div> : null}
-                            <div onClick={this.remove.bind(this, prop, i)}><DeleteOutlined/></div>
+                                    <VerticalAlignBottomOutlined /></div> : null}
+                            <div onClick={this.remove.bind(this, prop, i)}><DeleteOutlined /></div>
                         </div>
                     );
                 }
@@ -302,9 +301,9 @@ class Base extends React.Component {
                 <div key={prop.name} className="console-form-children">
                     <div className="console-form-children-title">{prop.label}</div>
                     {is}
-                    {prop.fix ? null : <div className="console-form-children-divider"/>}
+                    {prop.fix ? null : <div className="console-form-children-divider" />}
                     {prop.fix ? null : <div className="console-form-children-plus"><Button
-                        onClick={this.plus.bind(this, prop)}><PlusOutlined/></Button></div>}
+                        onClick={this.plus.bind(this, prop)}><PlusOutlined /></Button></div>}
                 </div>
             );
             this.itemIndex++;
@@ -321,35 +320,34 @@ class Base extends React.Component {
             items.push(<Form.Item {...item}>{this.readonly(prop)}</Form.Item>);
         } else if (prop.type === 'image') {
             items.push(<Form.Item {...item}><Image name={prop.name} upload={prop.upload} size={prop.size || 1}
-                                                   value={this.state[prop.name] || ''} form={this}/></Form.Item>);
+                value={this.state[prop.name] || ''} form={this} /></Form.Item>);
         } else if (prop.type === 'image-viewer') {
-            items.push(<Form.Item {...item}><img src={this.state[prop.name] || ''} alt=""/></Form.Item>);
+            items.push(<Form.Item {...item}><img src={this.state[prop.name] || ''} alt="" /></Form.Item>);
         } else if (prop.type === 'file') {
             items.push(<Form.Item {...item}><File name={prop.name} upload={prop.upload} size={prop.size || 1}
-                                                  value={this.state[prop.name] || ''} form={this}/></Form.Item>);
+                value={this.state[prop.name] || ''} form={this} /></Form.Item>);
         } else if (prop.type === 'folder') {
             items.push(<Form.Item {...item}><Folder name={prop.name} value={this.state[prop.name] || ''}
-                                                    form={this}/></Form.Item>);
+                form={this} /></Form.Item>);
         } else if (prop.type === 'dselect') {
             let parameter = this.props.parameter || {};
             if (prop.parameter)
-                parameter = {...parameter, ...prop.parameter};
+                parameter = { ...parameter, ...prop.parameter };
             prop.parameter = parameter;
             items.push(<Form.Item {...item}><DSelect body={this.props.body} uri={this.props.uri} {...prop}
-                                                     value={this.state[prop.name]} data={this.props.data} form={this}/></Form.Item>);
+                value={this.state[prop.name]} data={this.props.data} form={this} /></Form.Item>);
         } else if (prop.type === 'refresh') {
             items.push(<Form.Item {...item}>{this.state[prop.name] || ''} {prop.service ?
-                <Button icon={<SyncOutlined alt={prop.label}/>}
-                        onClick={this.refresh.bind(this, prop)}/> : null}</Form.Item>);
+                <Button icon={<SyncOutlined alt={prop.label} />}
+                    onClick={this.refresh.bind(this, prop)} /> : null}</Form.Item>);
         } else if (prop.type === 'editor') {
-            items.push(<Form.Item {...item}><Editor name={prop.name} value={this.state[prop.name] || ''}
-                                                    form={this}/></Form.Item>);
+            items.push(<Form.Item {...item}><iframe src={'/e/?listener=&key='}></iframe></Form.Item>);
         } else if (prop.type === 'html') {
             items.push(<Form.Item {...item}>
-                <div dangerouslySetInnerHTML={{__html: this.state[prop.name] || ''}}/>
+                <div dangerouslySetInnerHTML={{ __html: this.state[prop.name] || '' }} />
             </Form.Item>);
         } else if (prop.type === 'agreement') {
-            let value = this.state[prop.agreement] || {uri: '', name: ''};
+            let value = this.state[prop.agreement] || { uri: '', name: '' };
             if (value) {
                 let label = value.name;
                 let index = label.lastIndexOf('.');
@@ -357,16 +355,16 @@ class Base extends React.Component {
                 item.className += ' console-form-agreement';
                 item.label = 'agreement';
                 items.push(<Form.Item {...item}><a href={value.uri + '?filename=' + value.name} target="_blank"
-                                                   rel="noopener noreferrer">{label}</a></Form.Item>);
+                    rel="noopener noreferrer">{label}</a></Form.Item>);
             }
         } else if (prop.type === 'category') {
             let list = prop.category;
             if (!list && this.props.parameter && this.props.parameter.key)
                 list = this.props.parameter.key;
             items.push(<Form.Item {...item}><Category list={list} pointTo={prop.pointTo} name={prop.name}
-                                                      value={this.state[prop.name]} form={this}/></Form.Item>);
+                value={this.state[prop.name]} form={this} /></Form.Item>);
         } else if (prop.type === 'user') {
-            items.push(<Form.Item {...item}><User data={this.state[prop.name]}/></Form.Item>);
+            items.push(<Form.Item {...item}><User data={this.state[prop.name]} /></Form.Item>);
         } else {
             if (prop.type === 'switch')
                 item.valuePropName = 'checked';
@@ -436,11 +434,11 @@ class Base extends React.Component {
 
         if (prop.type === 'read-only:image')
             return <Image name={prop.name} upload={prop.upload} size={prop.size || 1} readonly={true}
-                          value={this.state[prop.name] || ''} form={this}/>;
+                value={this.state[prop.name] || ''} form={this} />;
 
         if (prop.type === 'read-only:file')
             return <File name={prop.name} upload={prop.upload} readonly={true} value={this.state[prop.name] || ''}
-                         form={this}/>;
+                form={this} />;
 
         if (prop.labels)
             return prop.multiple ? this.multiple(prop.labels, value) : (prop.labels[value] || '');
@@ -482,14 +480,14 @@ class Base extends React.Component {
         if (prop.labels) {
             let options = [];
             for (let index in prop.labels)
-                options.push({label: prop.labels[index], value: '' + toInt(index, 0)});
+                options.push({ label: prop.labels[index], value: '' + toInt(index, 0) });
 
             if (prop.multiple)
-                return options.length < 5 ? <Checkbox.Group options={options}/> :
-                    <Select options={options} mode="multiple" allowClear/>;
+                return options.length < 5 ? <Checkbox.Group options={options} /> :
+                    <Select options={options} mode="multiple" allowClear />;
 
-            return options.length < 5 ? <Radio.Group options={options} onChange={this.change.bind(this, prop)}/> :
-                <Select options={options}/>;
+            return options.length < 5 ? <Radio.Group options={options} onChange={this.change.bind(this, prop)} /> :
+                <Select options={options} />;
         }
 
         if (prop.values) {
@@ -502,47 +500,47 @@ class Base extends React.Component {
                 let keys = Object.keys(prop.values);
                 for (let index in keys) {
                     let key = keys[index];
-                    options.push({label: prop.values[key] || key, value: key});
+                    options.push({ label: prop.values[key] || key, value: key });
                 }
             } else if (typeof (prop.values) === 'string') {
                 for (let value of prop.values.split(','))
-                    options.push({label: value, value: value});
+                    options.push({ label: value, value: value });
             }
 
             if (prop.multiple)
-                return options.length < 5 ? <Checkbox.Group options={options}/> :
-                    <Select options={options} mode="multiple" allowClear/>;
+                return options.length < 5 ? <Checkbox.Group options={options} /> :
+                    <Select options={options} mode="multiple" allowClear />;
 
-            return options.length < 5 ? <Radio.Group options={options}/> : <Select options={options}/>;
+            return options.length < 5 ? <Radio.Group options={options} /> : <Select options={options} />;
         }
 
-        if (prop.type === 'date') return <DatePicker/>;
+        if (prop.type === 'date') return <DatePicker />;
 
-        if (prop.type === 'datetime') return <DatePicker showTime={prop.time || true}/>;
+        if (prop.type === 'datetime') return <DatePicker showTime={prop.time || true} />;
 
-        if (prop.type === 'time') return <TimePicker/>;
+        if (prop.type === 'time') return <TimePicker />;
 
-        if (prop.type === 'time-range') return <TimePicker.RangePicker/>;
+        if (prop.type === 'time-range') return <TimePicker.RangePicker />;
 
         if (prop.type === 'switch') return <Switch disabled={!prop.service && !prop.permit}
-                                                   onChange={this.switch.bind(this, prop)}/>;
+            onChange={this.switch.bind(this, prop)} />;
 
-        if (prop.type === 'text-area') return <Input.TextArea autoSize={{minRows: 2}}/>;
+        if (prop.type === 'text-area') return <Input.TextArea autoSize={{ minRows: 2 }} />;
 
-        if (prop.type === 'password') return <Input.Password/>;
+        if (prop.type === 'password') return <Input.Password />;
 
-        if (prop.type === 'auto-complete') return <AutoComplete options={this.state['auto-complete:' + prop.name]}/>;
+        if (prop.type === 'auto-complete') return <AutoComplete options={this.state['auto-complete:' + prop.name]} />;
 
         if (prop.type === 'transfer') {
             return <Transfer dataSource={this.transfers[prop.name]} showSearch={true} oneWay={true}
-                             render={item => item.title} targetKeys={this.state[prop.name]} onChange={keys => {
-                let state = {};
-                state[prop.name] = keys;
-                this.setState(state);
-            }} titles={['可选', '选中']} listStyle={{direction: 'right', width: 8192}}/>;
+                render={item => item.title} targetKeys={this.state[prop.name]} onChange={keys => {
+                    let state = {};
+                    state[prop.name] = keys;
+                    this.setState(state);
+                }} titles={['可选', '选中']} listStyle={{ direction: 'right', width: 8192 }} />;
         }
 
-        return <Input/>
+        return <Input />
     }
 
     switch = (prop, check) => {
@@ -550,7 +548,7 @@ class Base extends React.Component {
     }
 
     refresh = (prop) => {
-        service(this.props.body.uri(this.props.uri, prop.service), {id: this.state.id}).then(data => {
+        service(this.props.body.uri(this.props.uri, prop.service), { id: this.state.id }).then(data => {
             if (data === null) return;
 
             this.props.body.load(this.props.uri, this.props.parameter, data);
@@ -594,7 +592,7 @@ class Base extends React.Component {
                 buttons.push(<Button {...button} onClick={this.button.bind(this, toolbar)}>{toolbar.label}</Button>);
                 if (toolbar.success && one)
                     buttons.push(<Button key="cancel" type="dashed"
-                                         onClick={this.cancel.bind(this, toolbar)}>取消</Button>);
+                        onClick={this.cancel.bind(this, toolbar)}>取消</Button>);
             }
         }
 
@@ -606,7 +604,7 @@ class Normal extends Base {
     load = () => service(this.props.body.uri(this.props.uri, this.props.meta.service), this.props.parameter);
 
     submit = (mt, values) => {
-        let data = {...this.state, ...values}
+        let data = { ...this.state, ...values }
         for (let prop of this.props.meta.props) {
             if (prop.type === 'array') {
                 let labels = {};
@@ -646,10 +644,10 @@ class Normal extends Base {
             }
         }
 
-        return service(this.props.body.uri(this.props.uri, mt.service || mt.type), {...data, ...this.props.parameter});
+        return service(this.props.body.uri(this.props.uri, mt.service || mt.type), { ...data, ...this.props.parameter });
     }
 }
 
 export default Normal;
 
-export {Base};
+export { Base };

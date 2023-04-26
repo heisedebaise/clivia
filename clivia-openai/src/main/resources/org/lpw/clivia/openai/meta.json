@@ -1,0 +1,58 @@
+{
+  "key": "clivia.openai",
+  "uri": "/openai/",
+  "props": [
+    {
+      "name": "key"
+    },
+    {
+      "name": "authorization"
+    },
+    {
+      "name": "organization"
+    },
+    {
+      "name": "chat",
+      "values": "chats"
+    }
+  ],
+  "query": {
+    "type": "grid",
+    "search": [
+      {
+        "name": "key"
+      }
+    ],
+    "ops": [
+      {
+        "type": "modify"
+      },
+      {
+        "type": "delete"
+      }
+    ],
+    "toolbar": [
+      {
+        "type": "create"
+      }
+    ]
+  },
+  "create": {
+    "type": "form",
+    "toolbar": [
+      {
+        "type": "save",
+        "success": "query"
+      }
+    ]
+  },
+  "modify": {
+    "type": "form",
+    "toolbar": [
+      {
+        "type": "save",
+        "success": "query"
+      }
+    ]
+  }
+}

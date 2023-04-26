@@ -49,6 +49,11 @@
             <version>1.0</version>
         </dependency>
         <dependency>
+            <groupId>org.lpw.clivia</groupId>
+            <artifactId>clivia-openai</artifactId>
+            <version>1.0</version>
+        </dependency>
+        <dependency>
             <groupId>org.lpw.photon</groupId>
             <artifactId>photon-web</artifactId>
             <version>1.0</version>

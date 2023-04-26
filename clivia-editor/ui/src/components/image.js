@@ -23,7 +23,6 @@ const uploadImage = (lines, e) => {
             time: now(),
         });
         upload('clivia.editor.image', e.target.files[i], data => {
-            console.log(data);
             let name = data.fileName;
             let indexOf = name.lastIndexOf('.');
             if (indexOf > -1)

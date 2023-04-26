@@ -262,7 +262,14 @@ defineExpose({
 
 .line>.image img {
     display: block;
+}
+
+.workspace-horizontal .line>.image img {
     max-width: 100%;
+}
+
+.workspace-vertical .line>.image img {
+    max-height: 100%;
 }
 
 .line>.image .name {

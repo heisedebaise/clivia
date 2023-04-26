@@ -87,6 +87,10 @@
         "service": "/push/query"
       },
       {
+        "label": "OpenAI",
+        "service": "/openai/query"
+      },
+      {
         "label": "邀请码",
         "service": "/user/invitecode/query"
       }

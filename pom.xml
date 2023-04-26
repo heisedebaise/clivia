@@ -40,6 +40,7 @@
         <module>clivia-device</module>
         <module>clivia-olcs</module>
         <module>clivia-notification</module>
+        <module>clivia-openai</module>
         <module>clivia-console</module>
         <module>clivia-api</module>
         <module>clivia-web</module>
