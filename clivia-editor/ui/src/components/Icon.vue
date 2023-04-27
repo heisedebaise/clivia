@@ -415,6 +415,12 @@ const props = defineProps({
     <div v-else-if="name === 'text'" :class="'icon icon-' + name">
         <img src="@/assets/text.png" />
     </div>
+    <div v-else-if="name === 'ai-text'" :class="'icon icon-' + name">
+        <img src="@/assets/text.png" />
+    </div>
+    <div v-else-if="name === 'ai-image'" :class="'icon icon-' + name">
+        <img src="@/assets/text.png" />
+    </div>
     <div v-else-if="name === ''" :class="'icon icon-' + (enable ? 'enable' : 'disable') + ' icon-' + name"></div>
 </template>
 
@@ -441,4 +447,5 @@ const props = defineProps({
 
 .icon-disable ellipse {
     stroke: var(--icon-disable);
-}</style>
+}
+</style>

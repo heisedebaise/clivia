@@ -3,6 +3,7 @@ package org.lpw.clivia.openai;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import org.lpw.clivia.page.Pagination;
+import org.lpw.clivia.user.UserService;
 import org.lpw.photon.util.Http;
 import org.lpw.photon.util.Json;
 import org.lpw.photon.util.Logger;
@@ -25,11 +26,18 @@ public class OpenaiServiceImpl implements OpenaiService {
     @Inject
     private Pagination pagination;
     @Inject
+    private UserService userService;
+    @Inject
     private OpenaiDao openaiDao;
 
     @Override
     public JSONObject query(String key) {
         return openaiDao.query(key, pagination.getPageSize(20), pagination.getPageNum()).toJson();
+    }
+
+    @Override
+    public boolean has(String key) {
+        return openaiDao.findByKey(key) != null;
     }
 
     @Override
@@ -46,14 +54,15 @@ public class OpenaiServiceImpl implements OpenaiService {
     }
 
     @Override
-    public String chat(String key, String name, String content) {
+    public String chat(String key, String content) {
         OpenaiModel openai = openaiDao.findByKey(key);
         if (openai == null)
             return null;
 
         JSONObject message = new JSONObject();
         message.put("role", "user");
-        message.put("name", name);
+        String name = userService.id();
+        message.put("name", name == null ? "" : name.replaceAll("-", ""));
         message.put("content", content);
         JSONArray messages = new JSONArray();
         messages.add(message);

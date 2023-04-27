@@ -1,5 +1,6 @@
 <script setup>
-import { ref } from 'vue';
+import { ref, onMounted } from 'vue';
+import { service } from '../http';
 import { findIndex } from './line';
 import { focus } from './cursor';
 import { setTag, keydown } from './keydown';
@@ -36,6 +37,7 @@ const draging = ref({
     html: '',
 });
 const tag = ref(null);
+const tagNames = ref(['h1', 'h2', 'h3', 'text']);
 const imageUploader = ref(null);
 const annotations = ref([]);
 
@@ -120,6 +122,16 @@ const findDragNode = () => {
     return null;
 };
 
+onMounted(() => {
+    annotation();
+    service('/editor/ai', {}, data => {
+        if (data) {
+            tagNames.value.push('ai-text');
+            tagNames.value.push('ai-image');
+        }
+    });
+});
+
 defineExpose({
     toolbar,
     annotation,
@@ -186,7 +198,7 @@ defineExpose({
     </div>
     <div v-if="draging.left >= 0 && draging.top >= 0" :class="'draging draging-' + (vertical ? 'vertical' : 'horizontal')"
         :style="{ left: draging.left + 'px', top: draging.top + 'px' }" v-html="draging.html"></div>
-    <Tag ref="tag" :names="['h1', 'h2', 'h3', 'text']" :lines="lines" :vertical="vertical" />
+    <Tag ref="tag" :names="tagNames" :lines="lines" :vertical="vertical" />
     <input ref="imageUploader" class="image-uploader" type="file" accept="image/*" multiple
         @change="uploadImage(lines, $event)" />
     <div v-for="annotation in annotations" :class="'annotation-' + (vertical ? 'vertical' : 'horizontal')"

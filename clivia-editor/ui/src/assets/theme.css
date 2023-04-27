@@ -14,6 +14,7 @@
   --image-select-bg: #f0f0f0;
   --image-select-hover-bg: #ccc;
   --annotation: #888;
+  --empty: #ccc;
 }
 
 @media (prefers-color-scheme: dark) {

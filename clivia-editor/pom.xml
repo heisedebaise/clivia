@@ -18,7 +18,12 @@
     <dependencies>
         <dependency>
             <groupId>org.lpw.clivia</groupId>
-            <artifactId>clivia-base</artifactId>
+            <artifactId>clivia-user</artifactId>
+            <version>1.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.lpw.clivia</groupId>
+            <artifactId>clivia-openai</artifactId>
             <version>1.0</version>
         </dependency>
     </dependencies>

@@ -7,9 +7,11 @@ public interface OpenaiService {
 
     JSONObject query(String key);
 
+    boolean has(String key);
+
     void save(OpenaiModel openai);
 
     void delete(String id);
 
-    String chat(String key, String name, String content);
+    String chat(String key, String content);
 }

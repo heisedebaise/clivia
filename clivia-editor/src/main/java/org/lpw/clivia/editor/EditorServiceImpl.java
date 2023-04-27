@@ -2,6 +2,8 @@ package org.lpw.clivia.editor;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import org.lpw.clivia.openai.OpenaiService;
+import org.lpw.clivia.user.UserService;
 import org.lpw.photon.bean.BeanFactory;
 import org.lpw.photon.bean.ContextRefreshedListener;
 import org.lpw.photon.ctrl.context.Session;
@@ -26,8 +28,13 @@ public class EditorServiceImpl implements EditorService, ContextRefreshedListene
     private Generator generator;
     @Inject
     private Session session;
+    @Inject
+    private OpenaiService openaiService;
+    @Inject
+    private UserService userService;
     private final Map<String, EditorListener> listeners = new HashMap<>();
     private final Map<String, Editing> map = new ConcurrentHashMap<>();
+    private final String aiKey = "editor";
 
     @Override
     public JSONArray get(String listener, String key) {
@@ -61,6 +68,18 @@ public class EditorServiceImpl implements EditorService, ContextRefreshedListene
         object.put("lines", get(listener, key));
 
         return object;
+    }
+
+    @Override
+    public boolean ai() {
+        return openaiService.has(aiKey);
+    }
+
+    @Override
+    public String aiText(String content) {
+        String chat = openaiService.chat(aiKey, content);
+
+        return chat == null ? "" : chat.trim();
     }
 
     @Override

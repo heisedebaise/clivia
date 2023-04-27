@@ -6,6 +6,7 @@ import { setTag } from './keydown';
 import { getFocusId, getCursor, setCursor } from './cursor';
 import { message } from './locale';
 import Icon from './Icon.vue';
+import { service } from '../http';
 
 const props = defineProps({
     names: Array,
@@ -18,6 +19,13 @@ const position = ref({
     top: -1,
     index: -1,
 });
+const ai = ref({
+    show: '',
+    text: '',
+    image: '',
+    empty: false,
+});
+const description = ref(null);
 
 const show = (left, top) => {
     position.value = {
@@ -49,7 +57,7 @@ const select = (e) => {
     if (e && e.target) {
         let node = e.target;
         for (let i = 0; i < 1024; i++) {
-            if (node.className === 'tag') {
+            if (node && node.className === 'tag') {
                 name = node.dataset.name;
 
                 break;
@@ -61,26 +69,52 @@ const select = (e) => {
         name = props.names[position.value.index];
     }
     if (name != null) {
-        let cursor = getCursor();
-        if (cursor[1] > 0 && cursor[0] < line.texts.length && cursor[1] <= line.texts[cursor[0]].text.length && line.texts[cursor[0]].text.charAt(cursor[1] - 1) === '/') {
-            cursor[1]--;
-            cursor[3]--;
-            line.texts[cursor[0]].text = line.texts[cursor[0]].text.substring(0, cursor[1]) + line.texts[cursor[0]].text.substring(cursor[1] + 1);
+        if (name === 'ai-text') {
+            ai.value.show = 'text';
+            setTimeout(() => description.value.focus(), 100);
+        } else if (name === 'ai-image') {
+            ai.value.show = 'image';
+            setTimeout(() => description.value.focus(), 100);
+        } else {
+            let cursor = getCursor();
+            if (cursor[1] > 0 && cursor[0] < line.texts.length && cursor[1] <= line.texts[cursor[0]].text.length && line.texts[cursor[0]].text.charAt(cursor[1] - 1) === '/') {
+                cursor[1]--;
+                cursor[3]--;
+                line.texts[cursor[0]].text = line.texts[cursor[0]].text.substring(0, cursor[1]) + line.texts[cursor[0]].text.substring(cursor[1] + 1);
+            }
+            line.tag = name;
+            line.time = now();
+            setCursor(id, cursor);
         }
-        line.tag = name;
-        line.time = now();
-        setCursor(id, cursor);
     }
-    hide();
+    hideTags();
 };
 
-const hide = (e) => {
+const aiGo = (e) => {
+    ai.value.empty = true;
+    ai.value.text = message('ai.wait');
+    service('/editor/ai-' + ai.value.show, { content: description.value.innerText }, data => {
+        if (data === '') {
+            ai.value.text = message('ai.empty');
+        } else if (ai.value.show === 'text') {
+            ai.value.empty = false;
+            ai.value.text = data;
+        } else if (ai.value.show === 'image') {
+        }
+    })
+};
+
+const hideTags = (e) => {
     position.value = {
         left: -1,
         top: -1,
     };
     setCursor();
     setTag(null);
+};
+
+const hideAi = (e) => {
+    ai.value.show = '';
 };
 
 defineExpose({
@@ -91,7 +125,7 @@ defineExpose({
 </script>
 
 <template>
-    <div v-if="position.left > 0" class="tags-mark" @click="hide">
+    <div v-if="position.left > 0" class="tags-mask" @click="hideTags">
         <div :class="'tags' + (vertical && names.length > 3 ? ' tags-vertical' : ' tags-horizontal')"
             :style="{ left: position.left + 'px', top: position.top + 'px' }">
             <div v-for="(name, index) in names" :class="'tag' + (index === position.index ? ' tag-hover' : '')"
@@ -106,10 +140,21 @@ defineExpose({
             </div>
         </div>
     </div>
+    <div v-if="ai.show" class="ai-mask" @click="hideAi">
+        <div class="ai" @click.stop="">
+            <div class="description">
+                <div ref="description" class="input" contenteditable="true"></div>
+                <div class="go" @click="aiGo">{{ message('ai.go') }}</div>
+            </div>
+            <div v-if="ai.text" :class="ai.empty ? 'empty' : 'text'">{{ ai.text }}</div>
+            <div v-if="ai.image" class="image">{{ ai.image }}</div>
+        </div>
+    </div>
 </template>
 
 <style>
-.tags-mark {
+.tags-mask,
+.ai-mask {
     position: absolute;
     left: 0;
     top: 0;
@@ -160,5 +205,46 @@ defineExpose({
 
 .tags .tag .sub {
     color: var(--tag-sub);
+}
+
+.ai {
+    position: fixed;
+    left: 50vw;
+    top: 20vh;
+    background-color: var(--background);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    overflow: hidden;
+    transform: translateX(-50%);
+}
+
+.ai .description {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.ai .description .input {
+    width: 50vw;
+    border: none;
+    outline: none;
+    padding: 8px;
+}
+
+.ai .description .go {
+    padding: 0 8px;
+    cursor: pointer;
+}
+
+.ai .text,
+.ai .image,
+.ai .empty {
+    border-top: 1px solid var(--border);
+    padding: 8px;
+}
+
+.ai .empty {
+    text-align: center;
+    color: var(--empty);
 }
 </style>
