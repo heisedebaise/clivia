@@ -47,7 +47,23 @@ public class EditorServiceImpl implements EditorService, ContextRefreshedListene
 
         EditorListener el = listeners.get(listener);
         JSONArray array = el.get(key);
-        map.put(k, new Editing(validator, generator, key, array, el));
+        if (!validator.isEmpty(array))
+            map.put(k, new Editing(validator, generator, key, array, el));
+
+        return array;
+    }
+
+    @Override
+    public JSONArray empty() {
+        JSONObject object = new JSONObject();
+        object.put("tag", "text");
+        JSONObject text = new JSONObject();
+        text.put("text", "");
+        JSONArray texts = new JSONArray();
+        texts.add(text);
+        object.put("texts", texts);
+        JSONArray array = new JSONArray();
+        array.add(object);
 
         return array;
     }

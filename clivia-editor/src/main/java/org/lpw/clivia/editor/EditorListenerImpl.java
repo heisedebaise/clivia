@@ -1,11 +1,15 @@
 package org.lpw.clivia.editor;
 
 import com.alibaba.fastjson.JSONArray;
-import com.alibaba.fastjson.JSONObject;
 import org.springframework.stereotype.Service;
+
+import javax.inject.Inject;
 
 @Service(EditorModel.NAME + ".listener")
 public class EditorListenerImpl implements EditorListener {
+    @Inject
+    private EditorService editorService;
+
     @Override
     public String name() {
         return EditorModel.NAME;
@@ -18,17 +22,7 @@ public class EditorListenerImpl implements EditorListener {
 
     @Override
     public JSONArray get(String key) {
-        JSONObject object = new JSONObject();
-        object.put("tag", "text");
-        JSONObject text = new JSONObject();
-        text.put("text", "");
-        JSONArray texts = new JSONArray();
-        texts.add(text);
-        object.put("texts", texts);
-        JSONArray array = new JSONArray();
-        array.add(object);
-
-        return array;
+        return editorService.empty();
     }
 
     @Override
