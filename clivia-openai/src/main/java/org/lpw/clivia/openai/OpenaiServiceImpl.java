@@ -71,7 +71,7 @@ public class OpenaiServiceImpl implements OpenaiService {
         parameter.put("messages", messages);
         String string = http.post("https://api.openai.com/v1/chat/completions", header(openai), json.toString(parameter));
         JSONObject object = json.toObject(string);
-        if (object == null || object.containsKey("choices")) {
+        if (object == null || !object.containsKey("choices")) {
             logger.warn(null, "调用OpenAI聊天[{}:{}]失败！", parameter, string);
 
             return null;
@@ -92,7 +92,9 @@ public class OpenaiServiceImpl implements OpenaiService {
     }
 
     private Map<String, String> header(OpenaiModel openai) {
-        return Map.of("Authorization", "Bearer " + openai.getAuthorization(),
-                "OpenAI-Organization", openai.getOrganization());
+        return Map.of("Content-Type", "application/json",
+                "Authorization", "Bearer " + openai.getAuthorization(),
+                "OpenAI-Organization", openai.getOrganization()
+        );
     }
 }
