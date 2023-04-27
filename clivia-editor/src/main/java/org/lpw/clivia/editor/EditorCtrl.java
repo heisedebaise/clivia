@@ -50,4 +50,11 @@ public class EditorCtrl {
     public Object aiText() {
         return editorService.aiText(request.get("content"));
     }
+
+    @Execute(name = "ai-image", permit = Permit.sign, validates = {
+            @Validate(validator = UserService.VALIDATOR_SIGN)
+    })
+    public Object aiImage() {
+        return editorService.aiImage(request.get("content"));
+    }
 }

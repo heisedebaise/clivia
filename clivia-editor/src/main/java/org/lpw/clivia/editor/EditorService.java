@@ -15,4 +15,6 @@ public interface EditorService {
     boolean ai();
 
     String aiText(String content);
+
+    String aiImage(String content);
 }

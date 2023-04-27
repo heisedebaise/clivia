@@ -99,6 +99,13 @@ public class EditorServiceImpl implements EditorService, ContextRefreshedListene
     }
 
     @Override
+    public String aiImage(String content) {
+        String image = openaiService.image(aiKey, content);
+
+        return image == null ? "" : image.trim();
+    }
+
+    @Override
     public int getContextRefreshedSort() {
         return 114;
     }
