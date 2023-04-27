@@ -15,5 +15,5 @@ public interface OpenaiService {
 
     String chat(String key, String content);
 
-    String image(String key, String content);
+    String image(String key, String content, int count);
 }

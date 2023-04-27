@@ -1,5 +1,6 @@
 <script setup>
 import { ref } from 'vue';
+import { url } from '../http';
 import { now } from './time';
 import { findById } from './line';
 import { setTag } from './keydown';
@@ -21,9 +22,9 @@ const position = ref({
 });
 const ai = ref({
     show: '',
-    text: '',
-    image: '',
-    empty: false,
+    text: [],
+    image: [],
+    empty: '',
 });
 const description = ref(null);
 
@@ -91,15 +92,22 @@ const select = (e) => {
 };
 
 const aiGo = (e) => {
-    ai.value.empty = true;
-    ai.value.text = message('ai.wait');
-    service('/editor/ai-' + ai.value.show, { content: description.value.innerText }, data => {
+    ai.value.text = [];
+    ai.value.image = [];
+    ai.value.empty = message('ai.wait');
+    service('/editor/ai-' + ai.value.show, { content: description.value.innerText, count: e.target.dataset.count }, data => {
         if (data === '') {
-            ai.value.text = message('ai.empty');
-        } else if (ai.value.show === 'text') {
-            ai.value.empty = false;
-            ai.value.text = data;
+            ai.value.empty = message('ai.empty');
+
+            return;
+        }
+
+        ai.value.empty = '';
+        let array = data.split('\n');
+        if (ai.value.show === 'text') {
+            ai.value.text = array;
         } else if (ai.value.show === 'image') {
+            ai.value.image = array;
         }
     })
 };
@@ -144,10 +152,18 @@ defineExpose({
         <div class="ai" @click.stop="">
             <div class="description">
                 <div ref="description" class="input" contenteditable="true"></div>
-                <div class="go" @click="aiGo">{{ message('ai.go') }}</div>
+                <div v-if="ai.show === 'text'" class="go" @click="aiGo">{{ message('ai.go') }}</div>
+                <div v-if="ai.show === 'image'" class="go" data-count="1" @click="aiGo">{{ message('ai.go.1') }}</div>
+                <div v-if="ai.show === 'image'" class="go" data-count="2" @click="aiGo">{{ message('ai.go.2') }}</div>
+                <div v-if="ai.show === 'image'" class="go" data-count="4" @click="aiGo">{{ message('ai.go.4') }}</div>
             </div>
-            <div v-if="ai.text" :class="ai.empty ? 'empty' : 'text'">{{ ai.text }}</div>
-            <div v-if="ai.image" class="image">{{ ai.image }}</div>
+            <div v-if="ai.text.length > 0" class="text">
+                <p v-for="text in ai.text">{{ text }}</p>
+            </div>
+            <div v-if="ai.image.length > 0" class="image">
+                <img v-for="image in ai.image" :src="url(image)" />
+            </div>
+            <div v-if="ai.empty" class="empty">{{ ai.empty }}</div>
         </div>
     </div>
 </template>
@@ -220,8 +236,7 @@ defineExpose({
 
 .ai .description {
     display: flex;
-    align-items: center;
-    justify-content: space-between;
+    align-items: stretch;
 }
 
 .ai .description .input {
@@ -232,18 +247,44 @@ defineExpose({
 }
 
 .ai .description .go {
+    display: flex;
+    align-items: center;
     padding: 0 8px;
     cursor: pointer;
+    border-left: 1px solid var(--border);
 }
 
 .ai .text,
 .ai .image,
 .ai .empty {
+    max-height: 50vh;
+    overflow: auto;
     border-top: 1px solid var(--border);
-    padding: 8px;
+}
+
+.ai .text {
+    padding: 8px 16px;
+}
+
+.ai .text p {
+    margin: 0;
+    padding: 0;
+    line-height: 150%;
+}
+
+.ai .image {
+    padding: 0 8px;
+    text-align: center;
+}
+
+.ai .image img {
+    display: block;
+    width: 100%;
+    margin: 8px 0;
 }
 
 .ai .empty {
+    padding: 8px;
     text-align: center;
     color: var(--empty);
 }

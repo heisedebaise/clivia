@@ -4,13 +4,13 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import org.lpw.clivia.page.Pagination;
 import org.lpw.clivia.user.UserService;
-import org.lpw.photon.util.Http;
-import org.lpw.photon.util.Json;
-import org.lpw.photon.util.Logger;
-import org.lpw.photon.util.Validator;
+import org.lpw.photon.ctrl.upload.UploadService;
+import org.lpw.photon.util.*;
 import org.springframework.stereotype.Service;
 
 import javax.inject.Inject;
+import java.io.FileOutputStream;
+import java.io.OutputStream;
 import java.util.Map;
 
 @Service(OpenaiModel.NAME + ".service")
@@ -22,7 +22,11 @@ public class OpenaiServiceImpl implements OpenaiService {
     @Inject
     private Json json;
     @Inject
+    private Context context;
+    @Inject
     private Logger logger;
+    @Inject
+    private UploadService uploadService;
     @Inject
     private Pagination pagination;
     @Inject
@@ -61,8 +65,7 @@ public class OpenaiServiceImpl implements OpenaiService {
 
         JSONObject message = new JSONObject();
         message.put("role", "user");
-        String name = userService.id();
-        message.put("name", name == null ? "" : name.replaceAll("-", ""));
+        message.put("name", aiUser());
         message.put("content", content);
         JSONArray messages = new JSONArray();
         messages.add(message);
@@ -88,23 +91,22 @@ public class OpenaiServiceImpl implements OpenaiService {
             }
         }
 
-        return sb.toString();
+        return sb.toString().trim();
     }
 
     @Override
-    public String image(String key, String content) {
+    public String image(String key, String content, int count) {
         OpenaiModel openai = openaiDao.findByKey(key);
         if (openai == null)
             return null;
 
         JSONObject parameter = new JSONObject();
         parameter.put("prompt", content);
-        parameter.put("n", "2");
+        parameter.put("n", count);
         parameter.put("size", "1024x1024");
         parameter.put("response_format", "url");
-        String name = userService.id();
-        parameter.put("user", name == null ? "" : name.replaceAll("-", ""));
-        String string = http.post("https://api.openai.com/v1/chat/completions", header(openai), json.toString(parameter));
+        parameter.put("user", aiUser());
+        String string = http.post("https://api.openai.com/v1/images/generations", header(openai), json.toString(parameter));
         JSONObject object = json.toObject(string);
         if (object == null || !object.containsKey("data")) {
             logger.warn(null, "调用OpenAI绘图[{}:{}]失败！", parameter, string);
@@ -117,11 +119,20 @@ public class OpenaiServiceImpl implements OpenaiService {
         JSONArray data = object.getJSONArray("data");
         for (int i = 0, size = data.size(); i < size; i++) {
             JSONObject d = data.getJSONObject(i);
-            if (d.containsKey("url"))
-                sb.append(',').append(d.getString("url"));
+            if (d.containsKey("url")) {
+                String uri = download(d.getString("url"));
+                if (uri != null)
+                    sb.append('\n').append(uri);
+            }
         }
 
-        return sb.length() == 0 ? "" : sb.substring(1);
+        return sb.toString().trim();
+    }
+
+    private String aiUser() {
+        String name = userService.id();
+
+        return name == null ? "" : name.replaceAll("-", "");
     }
 
     private Map<String, String> header(OpenaiModel openai) {
@@ -129,5 +140,19 @@ public class OpenaiServiceImpl implements OpenaiService {
                 "Authorization", "Bearer " + openai.getAuthorization(),
                 "OpenAI-Organization", openai.getOrganization()
         );
+    }
+
+    private String download(String url) {
+        String suffix = url.substring(url.lastIndexOf('.'), url.indexOf('?'));
+        String uri = uploadService.newSavePath("image/" + suffix.substring(1), "", suffix);
+        try (OutputStream outputStream = new FileOutputStream(context.getAbsolutePath(uri))) {
+            http.get(url, null, null, null, outputStream);
+
+            return uri;
+        } catch (Throwable throwable) {
+            logger.warn(throwable, "下载AI绘图[{}]失败！", url);
+
+            return null;
+        }
     }
 }

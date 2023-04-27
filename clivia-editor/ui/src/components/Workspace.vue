@@ -37,7 +37,7 @@ const draging = ref({
     html: '',
 });
 const tag = ref(null);
-const tagNames = ref(['h1', 'h2', 'h3', 'text']);
+const tagNames = ref(['h1', 'h2', 'h3', 'text', 'ai-text', 'ai-image']);
 const imageUploader = ref(null);
 const annotations = ref([]);
 

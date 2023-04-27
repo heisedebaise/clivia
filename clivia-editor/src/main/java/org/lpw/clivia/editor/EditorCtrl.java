@@ -55,6 +55,6 @@ public class EditorCtrl {
             @Validate(validator = UserService.VALIDATOR_SIGN)
     })
     public Object aiImage() {
-        return editorService.aiImage(request.get("content"));
+        return editorService.aiImage(request.get("content"), request.getAsInt("count"));
     }
 }

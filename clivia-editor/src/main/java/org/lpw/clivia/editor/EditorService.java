@@ -16,5 +16,5 @@ public interface EditorService {
 
     String aiText(String content);
 
-    String aiImage(String content);
+    String aiImage(String content, int count);
 }
