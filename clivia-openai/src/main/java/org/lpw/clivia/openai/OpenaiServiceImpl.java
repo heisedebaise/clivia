@@ -91,6 +91,39 @@ public class OpenaiServiceImpl implements OpenaiService {
         return sb.toString();
     }
 
+    @Override
+    public String image(String key, String content) {
+        OpenaiModel openai = openaiDao.findByKey(key);
+        if (openai == null)
+            return null;
+
+        JSONObject parameter = new JSONObject();
+        parameter.put("prompt", content);
+        parameter.put("n", "2");
+        parameter.put("size", "1024x1024");
+        parameter.put("response_format", "url");
+        String name = userService.id();
+        parameter.put("user", name == null ? "" : name.replaceAll("-", ""));
+        String string = http.post("https://api.openai.com/v1/chat/completions", header(openai), json.toString(parameter));
+        JSONObject object = json.toObject(string);
+        if (object == null || !object.containsKey("data")) {
+            logger.warn(null, "调用OpenAI绘图[{}:{}]失败！", parameter, string);
+
+            return null;
+        }
+
+
+        StringBuilder sb = new StringBuilder();
+        JSONArray data = object.getJSONArray("data");
+        for (int i = 0, size = data.size(); i < size; i++) {
+            JSONObject d = data.getJSONObject(i);
+            if (d.containsKey("url"))
+                sb.append(',').append(d.getString("url"));
+        }
+
+        return sb.length() == 0 ? "" : sb.substring(1);
+    }
+
     private Map<String, String> header(OpenaiModel openai) {
         return Map.of("Content-Type", "application/json",
                 "Authorization", "Bearer " + openai.getAuthorization(),

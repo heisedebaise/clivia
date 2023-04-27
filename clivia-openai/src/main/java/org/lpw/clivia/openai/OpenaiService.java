@@ -14,4 +14,6 @@ public interface OpenaiService {
     void delete(String id);
 
     String chat(String key, String content);
+
+    String image(String key, String content);
 }
