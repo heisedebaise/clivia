@@ -50,7 +50,7 @@ const keyup = (lines, vertical, tag, e) => {
     }
     focus();
     annotation();
-    if (e.key === '/')
+    if (e.code === 'Slash')
         showTag(vertical, tag, e);
 };
 

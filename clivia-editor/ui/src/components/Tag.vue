@@ -66,7 +66,7 @@ const select = (e) => {
     }
     if (name != null) {
         let cursor = getCursor();
-        if (cursor[1] > 0 && cursor[0] < line.texts.length && cursor[1] <= line.texts[cursor[0]].text.length && line.texts[cursor[0]].text.charAt(cursor[1] - 1) === '/') {
+        if (cursor[1] > 0 && cursor[0] < line.texts.length && cursor[1] <= line.texts[cursor[0]].text.length && slash(line.texts[cursor[0]].text.charAt(cursor[1] - 1))) {
             cursor[1]--;
             cursor[3]--;
             line.texts[cursor[0]].text = line.texts[cursor[0]].text.substring(0, cursor[1]) + line.texts[cursor[0]].text.substring(cursor[1] + 1);
@@ -84,6 +84,8 @@ const select = (e) => {
     }
     hide();
 };
+
+const slash = (ch) => ch === '/' || ch === '、' || ch === '・';
 
 const hide = (e) => {
     position.value = {

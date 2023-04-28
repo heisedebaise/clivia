@@ -30,7 +30,11 @@ const get = (e) => {
         }
 
         empty.value = '';
-        reply.value = data.split('\n');
+        for (let d of data.split('\n')) {
+            d = d.trim();
+            if (d.length > 0)
+                reply.value.push(d);
+        }
     })
 };
 
