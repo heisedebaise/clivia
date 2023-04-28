@@ -20,8 +20,12 @@ const compositionend = (lines, vertical, tag, e) => {
 };
 
 const keyup = (lines, vertical, tag, e) => {
-    if (data.composition)
+    if (data.composition) {
+        if (e.code === 'Slash')
+            showTag(vertical, tag, e);
+
         return;
+    }
 
     let selection = getSelection();
     if (selection && selection.rangeCount > 0 && selection.focusNode.nodeName === '#text' && selection.focusNode.data != '' && selection.focusNode.parentElement.id) {
@@ -52,6 +56,8 @@ const keyup = (lines, vertical, tag, e) => {
     annotation();
     if (e.code === 'Slash')
         showTag(vertical, tag, e);
+    else
+        tag.hide();
 };
 
 const showTag = (vertical, tag, e) => {

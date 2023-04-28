@@ -88,6 +88,9 @@ const select = (e) => {
 const slash = (ch) => ch === '/' || ch === '、' || ch === '・';
 
 const hide = (e) => {
+    if (position.value.left === -1)
+        return;
+
     position.value = {
         left: -1,
         top: -1,
@@ -100,6 +103,7 @@ defineExpose({
     show,
     arrow,
     select,
+    hide,
 });
 </script>
 
