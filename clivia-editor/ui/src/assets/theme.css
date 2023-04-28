@@ -1,13 +1,13 @@
 :root {
   --background: #fff;
   --border: #e5e5e5;
+  --hover-bg: #e5e5e5;
+  --mask-bg: rgba(0, 0, 0, 0.45);
   --icon: #212121;
   --icon-disable: #ccc;
-  --icon-hover-bg: #e5e5e5;
   --icon-hover: #212121;
   --tag-title: #212121;
   --tag-sub: #888;
-  --tag-hover-bg: #e5e5e5;
   --draging: #ccc;
   --draging-bg: rgba(200, 200, 200, 0.25);
   --image-name-bg: #888;

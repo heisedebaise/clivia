@@ -21,9 +21,7 @@ const mouseover = (vertical, dragable, e) => {
 };
 
 const mousedown = (vertical, draging, e) => {
-    console.log(e);
     let node = findDragingNode(vertical, e);
-    console.log(node);
     if (node === null)
         return;
 

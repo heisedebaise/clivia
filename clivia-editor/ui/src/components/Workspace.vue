@@ -1,10 +1,11 @@
 <script setup>
 import { ref, onMounted } from 'vue';
-import { service } from '../http';
+import { service, url } from '../http';
+import { setAnnotation } from './handler';
 import { findIndex } from './line';
 import { focus } from './cursor';
 import { setTag, keydown } from './keydown';
-import { setAnnotation, compositionstart, compositionend, keyup } from './keyup';
+import { compositionstart, compositionend, keyup } from './keyup';
 import { mouseover, mousedown, mousemove, mouseup } from './drag';
 import { newText } from './tag';
 import { selectImage, uploadImage } from './image';
@@ -37,7 +38,7 @@ const draging = ref({
     html: '',
 });
 const tag = ref(null);
-const tagNames = ref(['h1', 'h2', 'h3', 'text', 'ai-text', 'ai-image']);
+const tagNames = ref(['h1', 'h2', 'h3', 'text']);
 const imageUploader = ref(null);
 const annotations = ref([]);
 
@@ -184,7 +185,7 @@ defineExpose({
                 <div v-else-if="line.tag === 'image'" :id="line.id" class="image">
                     <div v-if="line.uploading" class="uploading">{{ line.uploading }}</div>
                     <div v-else-if="line.path">
-                        <img :src="line.url" draggable="false" />
+                        <img :src="url(line.path)" draggable="false" />
                         <div class="name">{{ line.name }}</div>
                     </div>
                     <div v-else class="select" @click="selectImage(imageUploader, $event)">{{ line.upload }}</div>
@@ -221,7 +222,7 @@ defineExpose({
 
 .dragable .action:hover {
     border-radius: 4px;
-    background-color: var(--icon-hover-bg);
+    background-color: var(--hover-bg);
     cursor: pointer;
 }
 

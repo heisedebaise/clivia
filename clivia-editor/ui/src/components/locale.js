@@ -30,6 +30,8 @@ const messages = {
         'ai.go.4': 'Four',
         'ai.wait': 'AI robot is thinking',
         'ai.empty': 'AI bot didn\'t reply',
+        'ai.insert': 'Insert',
+        'ai.generate': 'AI generate',
         'error.empty': 'data error',
     },
     zh: {},

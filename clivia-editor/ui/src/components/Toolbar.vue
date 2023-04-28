@@ -9,8 +9,7 @@ import Tag from './Tag.vue';
 import Annotation from './Annotation.vue';
 
 defineProps({
-    lines: Array,
-    workspace: Object
+    lines: Array
 });
 
 defineEmits(['icon']);
@@ -90,16 +89,16 @@ onMounted(() => {
         <Icon name="underline" :enable="enable.underline" @click="underline(lines)" />
         <Icon name="linethrough" :enable="enable.linethrough" @click="linethrough(lines)" />
         <Icon name="annotation" :enable="enable.annotation" @click="showAnnotation" />
-        <Icon name="divider" :enable="enable.divider" @click="newDivider(lines, workspace.annotation)" />
+        <Icon name="divider" :enable="enable.divider" @click="newDivider(lines)" />
         <Icon name="quote" :enable="enable.quote" @click="$emit('icon', 'quote')" />
         <Icon name="link" :enable="enable.link" @click="$emit('icon', 'link')" />
         <Icon name="backlog" :enable="enable.backlog" @click="$emit('icon', 'backlog')" />
-        <Icon name="image" :enable="enable.image" @click="newImage(lines, workspace.annotation)" />
+        <Icon name="image" :enable="enable.image" @click="newImage(lines)" />
         <Icon name="direction" :enable="enable.direction" @click="$emit('icon', 'direction')" />
         <div></div>
     </div>
     <Tag ref="tag" :names="['h1', 'h2', 'h3']" :lines="lines" />
-    <Annotation ref="annotation" :lines="lines" :workspace="workspace" />
+    <Annotation ref="annotation" :lines="lines" />
 </template>
 
 <style>
@@ -113,7 +112,7 @@ onMounted(() => {
 }
 
 .toolbar .icon-enable:hover {
-    background-color: var(--icon-hover-bg);
+    background-color: var(--hover-bg);
     border-radius: 4px;
     cursor: pointer;
 }

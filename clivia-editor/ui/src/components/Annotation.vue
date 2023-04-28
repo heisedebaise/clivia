@@ -2,12 +2,12 @@
 import { ref } from 'vue';
 import { message } from './locale';
 import { now } from './time';
+import { annotation } from './handler';
 import { getFocusId, getCursor, setCursor } from './cursor';
 import { findById, splitTexts, isEmpty } from './line';
 
 const props = defineProps({
-    lines: Array,
-    workspace: Object
+    lines: Array
 })
 
 const position = ref({
@@ -45,7 +45,7 @@ const set = (e) => {
     line.time = now();
     hide();
     setCursor();
-    props.workspace.annotation();
+    annotation();
 }
 
 const hide = (e) => {

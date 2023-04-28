@@ -24,7 +24,6 @@ const keydown = (lines, e) => {
         space(e);
     else if (e.ctrlKey && e.key === 'v')
         e.preventDefault();
-    console.log(e);
 };
 
 const enter = (lines, line, id, index, e) => {

@@ -1,4 +1,5 @@
 import { now } from './time';
+import { annotation } from './handler';
 import { findById, mergeTexts } from './line';
 import { setTag } from './keydown';
 import { findEventId } from "./event";
@@ -7,11 +8,6 @@ import { markdown } from './markdown';
 
 const data = {
     composition: false,
-    annotation: null,
-};
-
-const setAnnotation = (annotation) => {
-    data.annotation = annotation;
 };
 
 const compositionstart = (e) => {
@@ -53,8 +49,7 @@ const keyup = (lines, vertical, tag, e) => {
         line.time = now();
     }
     focus();
-    if (data.annotation)
-        data.annotation();
+    annotation();
     if (e.key === '/')
         showTag(vertical, tag, e);
 };
@@ -69,7 +64,6 @@ const showTag = (vertical, tag, e) => {
 };
 
 export {
-    setAnnotation,
     compositionstart,
     compositionend,
     keyup,

@@ -67,7 +67,7 @@ onUnmounted(() => {
 
 <template>
   <Workspace ref="workspace" :editable="true" :lines="lines" />
-  <Toolbar :lines="lines" :workspace="workspace" @icon="toolbar" />
+  <Toolbar :lines="lines" @icon="toolbar" />
 </template>
 
 <style>

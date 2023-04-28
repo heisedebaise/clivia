@@ -1,8 +1,8 @@
-import {upload, url} from '@/http';
-import {newId} from './generator';
-import {message} from './locale';
-import {now} from './time';
-import {findIndex} from './line';
+import { upload, url } from '@/http';
+import { newId } from './generator';
+import { message } from './locale';
+import { now } from './time';
+import { findIndex } from './line';
 
 const data = {
     id: null,
@@ -30,7 +30,6 @@ const uploadImage = (lines, e) => {
             let line = lines[index + i];
             line.name = name;
             line.path = data.path;
-            line.url = url(data.path);
             line.time = now();
             delete line.uploading;
         });

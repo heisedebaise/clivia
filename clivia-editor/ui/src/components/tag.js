@@ -1,23 +1,24 @@
 import { newId } from "./generator";
 import { now } from './time';
 import { message } from './locale';
+import { annotation } from './handler';
 import { getFocusId } from './cursor';
 import { findIndex, isEmpty } from "./line";
 
-const newText = () => {
+const newText = (text) => {
     return {
         id: newId(),
         tag: 'text',
         placeholder: message('placeholder.text'),
         className: 'empty',
         texts: [{
-            text: '',
+            text: text || '',
         }],
         time: now(),
     };
 };
 
-const newImage = (lines, annotation) => {
+const newImage = (lines, path, name) => {
     let id = getFocusId();
     if (id === null)
         return;
@@ -26,9 +27,14 @@ const newImage = (lines, annotation) => {
     let image = {
         id: newId(),
         tag: 'image',
-        upload: message('image.upload'),
         time: now(),
     };
+    if (path)
+        image.path = path;
+    else
+        image.upload = message('image.upload');
+    if (name)
+        image.name = name;
     if (isEmpty(lines[index].texts))
         lines.splice(index, 1, image);
     else
