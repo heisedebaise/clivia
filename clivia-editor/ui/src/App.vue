@@ -39,26 +39,28 @@ onMounted(() => {
     workspace.value.annotation();
   });
 
-  param.value.interval = setInterval(() => {
-    let id = '';
-    let array = [];
-    let time = now() - 5000;
-    for (let line of lines.value) {
-      id += ',' + line.id;
-      if (line.time && line.time > time)
-        array.push(line);
-    }
-    id = id.substring(1);
-    if (array.length === 0 && id === param.value.id)
-      return;
-
-    param.value.id = id;
-    param.value.lines = JSON.stringify(array);
-    service('/editor/put', param.value, data => {
-      param.value.sync = data.sync;
-    });
-  }, 2000);
+  param.value.interval = setInterval(() => window.put(false), 2000);
 });
+
+window.put = (always) => {
+  let id = '';
+  let array = [];
+  let time = now() - 5000;
+  for (let line of lines.value) {
+    id += ',' + line.id;
+    if (line.time && line.time > time)
+      array.push(line);
+  }
+  id = id.substring(1);
+  if (!always && array.length === 0 && id === param.value.id)
+    return;
+
+  param.value.id = id;
+  param.value.lines = JSON.stringify(array);
+  service('/editor/put', param.value, data => {
+    param.value.sync = data.sync;
+  });
+};
 
 onUnmounted(() => {
   clearInterval(param.value.interval);

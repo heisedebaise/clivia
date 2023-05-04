@@ -2,7 +2,7 @@ import { now } from './time';
 import { annotation } from './handler';
 import { findById, mergeTexts } from './line';
 import { setTag } from './keydown';
-import { findEventId } from "./event";
+import { findEventId, findIdNode } from "./event";
 import { focus, setCursor } from './cursor';
 import { markdown } from './markdown';
 
@@ -14,15 +14,18 @@ const compositionstart = (e) => {
     data.composition = true;
 };
 
-const compositionend = (lines, vertical, tag, e) => {
+const compositionend = (lines, workspace, tag, e) => {
     data.composition = false;
-    keyup(lines, vertical, tag, e);
+    keyup(lines, workspace, tag, e);
 };
 
-const keyup = (lines, vertical, tag, e) => {
+const keyup = (lines, workspace, tag, e) => {
+    if ((e.key === 'ArrowUp' || e.key === 'ArrowDown') && tag.arrow(e))
+        return;
+
     if (data.composition) {
         if (e.code === 'Slash')
-            showTag(vertical, tag, e);
+            showTag(workspace, tag, e);
 
         return;
     }
@@ -55,17 +58,17 @@ const keyup = (lines, vertical, tag, e) => {
     focus();
     annotation();
     if (e.code === 'Slash')
-        showTag(vertical, tag, e);
+        showTag(workspace, tag, e);
     else
         tag.hide();
 };
 
-const showTag = (vertical, tag, e) => {
-    if (vertical) {
-        tag.show(e.target.offsetLeft, 80 + e.target.offsetTop);
-    } else {
-        tag.show(80, 42 + e.target.offsetTop + e.target.offsetHeight);
-    }
+const showTag = (workspace, tag, e) => {
+    let node = findIdNode(e);
+    if (node === null)
+        return;
+
+    tag.show(workspace, node);
     setTag(tag);
 };
 

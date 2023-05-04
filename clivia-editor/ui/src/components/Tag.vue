@@ -19,25 +19,60 @@ const position = ref({
     top: -1,
     index: -1,
 });
+const tags = ref(null);
 const ai = ref({
     show: ''
 });
 
-const show = (left, top) => {
-    position.value = {
-        left,
-        top,
-        index: -1,
-    };
-    setCursor();
+const show = (workspace, node) => {
+    let image = node.className === 'image' && node.children[0].className === 'view';
+    if (props.vertical) {
+        let left = node.offsetLeft - workspace.scrollLeft - 320;
+        if (image)
+            left += node.offsetWidth / 2;
+        if (left < 0) {
+            if (image)
+                left += 320;
+            else
+                left += node.offsetWidth + 320;
+        }
+        position.value = {
+            left: left,
+            top: 130,
+            index: -1,
+        };
+    } else {
+        let top = 42 + node.offsetTop + node.offsetHeight - workspace.scrollTop;
+        if (image)
+            top -= node.offsetHeight / 2;
+        let height = 80 * props.names.length;
+        if (top + height > workspace.offsetHeight) {
+            if (image)
+                top -= height;
+            else
+                top -= node.offsetHeight + height;
+            if (top < 42)
+                top = 42;
+        }
+        position.value = {
+            left: 88,
+            top: top,
+            index: -1,
+        };
+    }
 };
 
 const arrow = (e) => {
+    if (position.value.left < 0)
+        return false;
+
     if (e.key === 'ArrowDown' && position.value.index < props.names.length - 1) {
         position.value.index++;
     } else if (e.key === 'ArrowUp' && position.value.index > 0) {
         position.value.index--;
     }
+
+    return true;
 };
 
 const select = (e) => {
@@ -109,8 +144,7 @@ defineExpose({
 
 <template>
     <div v-if="position.left > 0" class="tags-mask" @click="hide">
-        <div :class="'tags' + (vertical && names.length > 3 ? ' tags-vertical' : ' tags-horizontal')"
-            :style="{ left: position.left + 'px', top: position.top + 'px' }">
+        <div ref="tags" class="tags" :style="{ left: position.left + 'px', top: position.top + 'px' }">
             <div v-for="(name, index) in names" :class="'tag' + (index === position.index ? ' tag-hover' : '')"
                 :data-name="name" @click="select">
                 <div class="image">
@@ -143,10 +177,6 @@ defineExpose({
     border-radius: 4px;
     overflow: hidden;
     width: 320px;
-}
-
-.tags-vertical {
-    transform: translateX(-100%);
 }
 
 .tags .tag {

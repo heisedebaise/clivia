@@ -81,11 +81,8 @@ const backspace = (lines, line, index, e) => {
 
 const arrow = (lines, line, index, e) => {
     e.preventDefault();
-    if (refs.tag != null) {
-        refs.tag.arrow(e);
-
-        return
-    }
+    if (refs.tag != null)
+        return;
 
     let i = 0;
     if (e.key === 'ArrowDown' && index < lines.length - 1)

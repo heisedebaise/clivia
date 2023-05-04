@@ -10,12 +10,14 @@ const data = {
 const mouseover = (vertical, dragable, e) => {
     let node = findIdNode(e);
     if (vertical) {
-        dragable.height = node.offsetWidth;
-        dragable.left = node.offsetLeft - 16;
-        dragable.top = 16;
+        dragable.left = node.offsetLeft;
+        dragable.top = 0;
+        dragable.width = node.offsetWidth;
+        dragable.height = 80;
     } else {
         dragable.left = 0;
         dragable.top = node.offsetTop;
+        dragable.width = 80;
         dragable.height = node.offsetHeight;
     }
 };

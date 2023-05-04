@@ -8,7 +8,7 @@ import { setTag, keydown } from './keydown';
 import { compositionstart, compositionend, keyup } from './keyup';
 import { mouseover, mousedown, mousemove, mouseup } from './drag';
 import { newText } from './tag';
-import { selectImage, uploadImage } from './image';
+import { selectImage, uploadImage, imageName } from './image';
 import Icon from './Icon.vue';
 import Tag from './Tag.vue';
 
@@ -27,11 +27,7 @@ const toolbar = (action) => {
 };
 
 const workspace = ref(null);
-const dragable = ref({
-    left: -1,
-    top: -1,
-    height: 0,
-});
+const dragable = ref({});
 const draging = ref({
     left: -1,
     top: -1,
@@ -98,11 +94,7 @@ const plus = (e) => {
     if (node === null)
         return;
 
-    if (vertical.value) {
-        tag.value.show(node.offsetLeft, 122);
-    } else {
-        tag.value.show(80, 42 + node.offsetTop + node.offsetHeight);
-    }
+    tag.value.show(workspace.value, node);
     node.focus();
     setTag(tag.value);
 };
@@ -142,8 +134,8 @@ defineExpose({
 <template>
     <div ref="workspace" :class="'workspace workspace-' + (vertical ? 'vertical' : 'horizontal')" @scroll="scroll"
         @mousemove="mousemove(vertical, dragable, draging, $event)" @mouseup="mouseup(lines, draging, $event)">
-        <div v-if="dragable.left >= 0 && dragable.top >= 0" class="dragable"
-            :style="{ left: dragable.left + 'px', top: dragable.top + 'px', height: dragable.height + 'px' }">
+        <div v-if="dragable.left || dragable.top" class="dragable"
+            :style="{ left: dragable.left + 'px', top: dragable.top + 'px', width: dragable.width + 'px', height: dragable.height + 'px' }">
             <div></div>
             <div class="action">
                 <Icon name="delete" @click="del" />
@@ -160,33 +152,34 @@ defineExpose({
             <div v-for="line in lines" class="line" @mouseover="mouseover(vertical, dragable, $event)">
                 <h1 v-if="line.tag === 'h1'" :id="line.id" :contenteditable="editable" :class="line.className"
                     :placeholder="line.placeholder" @focus.stop="focus" @mouseup.stop="focus"
-                    @keydown="keydown(lines, $event)" @keyup="keyup(lines, vertical, tag, $event)"
-                    @compositionstart="compositionstart" @compositionend="compositionend(lines, vertical, tag, $event)">
+                    @keydown="keydown(lines, $event)" @keyup="keyup(lines, workspace, tag, $event)"
+                    @compositionstart="compositionstart" @compositionend="compositionend(lines, workspace, tag, $event)">
                     <span v-for="(text, index) in line.texts" :class="text.style" :data-index="index">{{ text.text }}</span>
                 </h1>
                 <h2 v-else-if="line.tag === 'h2'" :id="line.id" :contenteditable="editable" :class="line.className"
                     :placeholder="line.placeholder" @focus.stop="focus" @mouseup.stop="focus"
-                    @keydown="keydown(lines, $event)" @keyup="keyup(lines, vertical, tag, $event)"
-                    @compositionstart="compositionstart" @compositionend="compositionend(lines, vertical, tag, $event)">
+                    @keydown="keydown(lines, $event)" @keyup="keyup(lines, workspace, tag, $event)"
+                    @compositionstart="compositionstart" @compositionend="compositionend(lines, workspace, tag, $event)">
                     <span v-for="(text, index) in line.texts" :class="text.style" :data-index="index">{{ text.text }}</span>
                 </h2>
                 <h3 v-else-if="line.tag === 'h3'" :id="line.id" :contenteditable="editable" :class="line.className"
                     :placeholder="line.placeholder" @focus.stop="focus" @mouseup.stop="focus"
-                    @keydown="keydown(lines, $event)" @keyup="keyup(lines, vertical, tag, $event)"
-                    @compositionstart="compositionstart" @compositionend="compositionend(lines, vertical, tag, $event)">
+                    @keydown="keydown(lines, $event)" @keyup="keyup(lines, workspace, tag, $event)"
+                    @compositionstart="compositionstart" @compositionend="compositionend(lines, workspace, tag, $event)">
                     <span v-for="(text, index) in line.texts" :class="text.style" :data-index="index">{{ text.text }}</span>
                 </h3>
                 <p v-else-if="line.tag === 'text'" :id="line.id" :contenteditable="editable" :class="line.className"
                     :placeholder="line.placeholder" @focus.stop="focus" @mouseup.stop="focus"
-                    @keydown="keydown(lines, $event)" @keyup="keyup(lines, vertical, tag, $event)"
-                    @compositionstart="compositionstart" @compositionend="compositionend(lines, vertical, tag, $event)">
+                    @keydown="keydown(lines, $event)" @keyup="keyup(lines, workspace, tag, $event)"
+                    @compositionstart="compositionstart" @compositionend="compositionend(lines, workspace, tag, $event)">
                     <span v-for="(text, index) in line.texts" :class="text.style" :data-index="index">{{ text.text }}</span>
                 </p>
                 <div v-else-if="line.tag === 'image'" :id="line.id" class="image">
                     <div v-if="line.uploading" class="uploading">{{ line.uploading }}</div>
-                    <div v-else-if="line.path">
+                    <div v-else-if="line.path" class="view">
                         <img :src="url(line.path)" draggable="false" />
-                        <div class="name">{{ line.name }}</div>
+                        <div class="name" :contenteditable="editable" @keyup.stop="imageName(lines, $event)">{{ line.name }}
+                        </div>
                     </div>
                     <div v-else class="select" @click="selectImage(imageUploader, $event)">{{ line.upload }}</div>
                 </div>
@@ -216,25 +209,25 @@ defineExpose({
     overflow: auto;
 }
 
-.dragable {
-    position: absolute;
-}
-
-.dragable .action:hover {
-    border-radius: 4px;
-    background-color: var(--hover-bg);
-    cursor: pointer;
-}
-
 .workspace .dragable {
+    position: absolute;
     display: flex;
     align-items: center;
     justify-content: space-around;
-    width: 80px;
+}
+
+.workspace-horizontal .dragable {
+    flex-direction: row;
 }
 
 .workspace-vertical .dragable {
-    transform: rotate(90deg);
+    flex-direction: column;
+}
+
+.workspace .dragable .action:hover {
+    border-radius: 4px;
+    background-color: var(--hover-bg);
+    cursor: pointer;
 }
 
 .editing-area {
@@ -285,9 +278,16 @@ defineExpose({
     max-height: 100%;
 }
 
-.line>.image .name {
+.line>.image .view {
+    display: inline-block;
+}
+
+.line>.image .view .name {
+    border: none;
+    outline: none;
     background-color: var(--image-name-bg);
     text-align: center;
+    line-height: 200%;
 }
 
 .line>.image .uploading,

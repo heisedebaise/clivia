@@ -1,8 +1,9 @@
-import { upload, url } from '@/http';
+import { upload } from '@/http';
 import { newId } from './generator';
 import { message } from './locale';
 import { now } from './time';
 import { findIndex } from './line';
+import { findEventId } from './event';
 
 const data = {
     id: null,
@@ -36,7 +37,18 @@ const uploadImage = (lines, e) => {
     }
 };
 
+const imageName = (lines, e) => {
+    let id = findEventId(e);
+    if (id === null)
+        return;
+
+    let line = lines[findIndex(lines, id)];
+    line.name = e.target.innerText;
+    line.time = now();
+};
+
 export {
     selectImage,
     uploadImage,
+    imageName,
 };
