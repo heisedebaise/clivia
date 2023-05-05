@@ -55,6 +55,14 @@
     text-align: center;
 }
 
+.console-form-editor {
+    display: block;
+    width: 100%;
+    height: 25vw;
+    border: none;
+    outline: none;
+}
+
 .console-form-agreement label,
 .console-form-toolbar label {
     display: none;

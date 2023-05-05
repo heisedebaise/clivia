@@ -5,7 +5,9 @@ import { now } from './components/time';
 import { message } from './components/locale';
 import Toolbar from './components/Toolbar.vue';
 import Workspace from './components/Workspace.vue';
+import Readonly from './components/Readonly.vue';
 
+const mode = ref(0);
 const workspace = ref(null);
 const toolbar = (action) => {
   workspace.value.toolbar(action);
@@ -36,7 +38,9 @@ onMounted(() => {
     }
     param.value.id = id.substring(1);
     lines.value = json.data;
-    workspace.value.annotation();
+    mode.value = param.value.readonly === 'true' ? 2 : 1;
+    if (workspace.value)
+      workspace.value.annotation();
   });
 
   param.value.interval = setInterval(() => window.put(false), 2000);
@@ -68,10 +72,12 @@ onUnmounted(() => {
 </script>
 
 <template>
-  <Workspace ref="workspace" :editable="true" :lines="lines" />
-  <Toolbar :lines="lines" @icon="toolbar" />
+  <Workspace v-if="mode === 1" ref="workspace" :lines="lines" />
+  <Toolbar v-if="mode === 1" :lines="lines" @icon="toolbar" />
+  <Readonly v-if="mode === 2" :lines="lines" />
 </template>
 
 <style>
 @import '@/assets/theme.css';
+@import '@/assets/style.css';
 </style>

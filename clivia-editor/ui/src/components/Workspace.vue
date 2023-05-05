@@ -13,7 +13,6 @@ import Icon from './Icon.vue';
 import Tag from './Tag.vue';
 
 const props = defineProps({
-    editable: Boolean,
     lines: Array,
 });
 
@@ -148,27 +147,27 @@ defineExpose({
             </div>
             <div></div>
         </div>
-        <div class="editing-area" @mousemove.stop="">
+        <div :class="'lines lines-' + (vertical ? 'vertical' : 'horizontal')" @mousemove.stop="">
             <div v-for="line in lines" class="line" @mouseover="mouseover(vertical, dragable, $event)">
-                <h1 v-if="line.tag === 'h1'" :id="line.id" :contenteditable="editable" :class="line.className"
+                <h1 v-if="line.tag === 'h1'" :id="line.id" contenteditable="true" :class="line.className"
                     :placeholder="line.placeholder" @focus.stop="focus" @mouseup.stop="focus"
                     @keydown="keydown(lines, $event)" @keyup="keyup(lines, workspace, tag, $event)"
                     @compositionstart="compositionstart" @compositionend="compositionend(lines, workspace, tag, $event)">
                     <span v-for="(text, index) in line.texts" :class="text.style" :data-index="index">{{ text.text }}</span>
                 </h1>
-                <h2 v-else-if="line.tag === 'h2'" :id="line.id" :contenteditable="editable" :class="line.className"
+                <h2 v-else-if="line.tag === 'h2'" :id="line.id" contenteditable="true" :class="line.className"
                     :placeholder="line.placeholder" @focus.stop="focus" @mouseup.stop="focus"
                     @keydown="keydown(lines, $event)" @keyup="keyup(lines, workspace, tag, $event)"
                     @compositionstart="compositionstart" @compositionend="compositionend(lines, workspace, tag, $event)">
                     <span v-for="(text, index) in line.texts" :class="text.style" :data-index="index">{{ text.text }}</span>
                 </h2>
-                <h3 v-else-if="line.tag === 'h3'" :id="line.id" :contenteditable="editable" :class="line.className"
+                <h3 v-else-if="line.tag === 'h3'" :id="line.id" contenteditable="true" :class="line.className"
                     :placeholder="line.placeholder" @focus.stop="focus" @mouseup.stop="focus"
                     @keydown="keydown(lines, $event)" @keyup="keyup(lines, workspace, tag, $event)"
                     @compositionstart="compositionstart" @compositionend="compositionend(lines, workspace, tag, $event)">
                     <span v-for="(text, index) in line.texts" :class="text.style" :data-index="index">{{ text.text }}</span>
                 </h3>
-                <p v-else-if="line.tag === 'text'" :id="line.id" :contenteditable="editable" :class="line.className"
+                <p v-else-if="line.tag === 'text'" :id="line.id" contenteditable="true" :class="line.className"
                     :placeholder="line.placeholder" @focus.stop="focus" @mouseup.stop="focus"
                     @keydown="keydown(lines, $event)" @keyup="keyup(lines, workspace, tag, $event)"
                     @compositionstart="compositionstart" @compositionend="compositionend(lines, workspace, tag, $event)">
@@ -178,13 +177,12 @@ defineExpose({
                     <div v-if="line.uploading" class="uploading">{{ line.uploading }}</div>
                     <div v-else-if="line.path" class="view">
                         <img :src="url(line.path)" draggable="false" />
-                        <div class="name" :contenteditable="editable" @keyup.stop="imageName(lines, $event)">{{ line.name }}
+                        <div class="name" contenteditable="true" @keyup.stop="imageName(lines, $event)">{{ line.name }}
                         </div>
                     </div>
                     <div v-else class="select" @click="selectImage(imageUploader, $event)">{{ line.upload }}</div>
                 </div>
-                <div v-else-if="line.tag === 'divider'" :id="line.id"
-                    :class="(vertical ? 'vertical' : 'horizontal') + '-divider'">
+                <div v-else-if="line.tag === 'divider'" :id="line.id" class="divider">
                     <div></div>
                 </div>
             </div>
@@ -230,65 +228,21 @@ defineExpose({
     cursor: pointer;
 }
 
-.editing-area {
-    padding: 8px;
-}
-
-.workspace-horizontal .editing-area {
+.workspace .lines-horizontal {
     margin-left: 80px;
     min-height: calc(100% - 16px);
 }
 
-.workspace-vertical .editing-area {
+.workspace .lines-vertical {
     margin-top: 80px;
     min-width: calc(100% - 16px);
     height: calc(100% - 96px);
-    writing-mode: vertical-rl;
-}
-
-.line>* {
-    margin: 0;
-    padding: 0;
-    border: none;
-    outline: none;
 }
 
 /* .line .empty {
     content: attr(data-placeholder);
     color: blueviolet;
 } */
-
-.line>h1,
-.line>h2,
-.line>h3,
-.line>p {
-    min-height: 3rem;
-    line-height: 3rem;
-}
-
-.line>.image img {
-    display: block;
-}
-
-.workspace-horizontal .line>.image img {
-    max-width: 100%;
-}
-
-.workspace-vertical .line>.image img {
-    max-height: 100%;
-}
-
-.line>.image .view {
-    display: inline-block;
-}
-
-.line>.image .view .name {
-    border: none;
-    outline: none;
-    background-color: var(--image-name-bg);
-    text-align: center;
-    line-height: 200%;
-}
 
 .line>.image .uploading,
 .line>.image .select {
@@ -300,38 +254,6 @@ defineExpose({
 .line>.image .select:hover {
     background-color: var(--image-select-hover-bg);
     cursor: pointer;
-}
-
-.line>.horizontal-divider {
-    padding: 0.5rem 0;
-}
-
-.line>.horizontal-divider>div {
-    border-top: 1px solid var(--border);
-}
-
-.line>.vertical-divider {
-    padding: 0 0.5rem;
-}
-
-.line>.vertical-divider>div {
-    border-right: 1px solid var(--border);
-}
-
-.line .bold {
-    font-weight: bold;
-}
-
-.line .italic {
-    font-style: italic;
-}
-
-.line .underline {
-    text-decoration: underline;
-}
-
-.line .linethrough {
-    text-decoration: line-through;
 }
 
 .draging {
@@ -352,18 +274,5 @@ defineExpose({
 .image-uploader {
     position: absolute;
     top: -100vh;
-}
-
-.annotation-horizontal {
-    position: absolute;
-    transform: translateY(-100%);
-    color: var(--annotation);
-}
-
-.annotation-vertical {
-    position: absolute;
-    transform: translateX(1rem);
-    color: var(--annotation);
-    writing-mode: vertical-rl;
 }
 </style>

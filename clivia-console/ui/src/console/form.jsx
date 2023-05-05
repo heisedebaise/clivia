@@ -24,6 +24,7 @@ import {
 } from '@ant-design/icons';
 import moment from 'moment';
 import { service } from '../http';
+import { random } from '../generator';
 import meta from './meta';
 import { toDecimal, fromDecimal, toPercent, fromPercent, toInt } from './numeric';
 import { toArray } from '../json';
@@ -148,6 +149,9 @@ class Base extends React.Component {
                 for (let i = 0; i < array.length; i++)
                     for (let k in array[i])
                         values[prop.name + ':' + k + ':' + i] = '' + array[i][k];
+            } else if (prop.type === 'editor') {
+                if (!this.values.editor)
+                    this.values.editor = random(32);
             } else if (value) {
                 if (prop.type === 'date')
                     values[prop.name] = moment(value, 'YYYY-MM-DD');
@@ -341,7 +345,8 @@ class Base extends React.Component {
                 <Button icon={<SyncOutlined alt={prop.label} />}
                     onClick={this.refresh.bind(this, prop)} /> : null}</Form.Item>);
         } else if (prop.type === 'editor') {
-            items.push(<Form.Item {...item}><iframe src={'/e/?listener=&key='}></iframe></Form.Item>);
+            let src = '/e/?listener=' + prop.listener + '&key=' + prop.name + '-' + (this.state.id || this.values.editor || '');
+            items.push(<Form.Item {...item}><iframe className='console-form-editor' title={prop.name} src={src}></iframe></Form.Item>);
         } else if (prop.type === 'html') {
             items.push(<Form.Item {...item}>
                 <div dangerouslySetInnerHTML={{ __html: this.state[prop.name] || '' }} />
@@ -433,12 +438,15 @@ class Base extends React.Component {
             return toPercent(value);
 
         if (prop.type === 'read-only:image')
-            return <Image name={prop.name} upload={prop.upload} size={prop.size || 1} readonly={true}
-                value={this.state[prop.name] || ''} form={this} />;
+            return <Image name={prop.name} upload={prop.upload} size={prop.size || 1} readonly={true} value={this.state[prop.name] || ''} form={this} />;
 
         if (prop.type === 'read-only:file')
-            return <File name={prop.name} upload={prop.upload} readonly={true} value={this.state[prop.name] || ''}
-                form={this} />;
+            return <File name={prop.name} upload={prop.upload} readonly={true} value={this.state[prop.name] || ''} form={this} />;
+
+        if (prop.type === 'read-only:editor') {
+            let src = '/e/?listener=' + prop.listener + '&key=' + prop.name + '-' + (this.state.id || this.values.editor || '') + '&readonly=true';
+            return <iframe className='console-form-editor' title={prop.name} src={src}></iframe>;
+        }
 
         if (prop.labels)
             return prop.multiple ? this.multiple(prop.labels, value) : (prop.labels[value] || '');

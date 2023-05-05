@@ -1,6 +1,7 @@
 import {
     message
 } from 'antd';
+import { random } from './generator';
 
 const root = 'http://localhost:8080';
 
@@ -99,9 +100,7 @@ const psid = (header, loading) => {
 
     let psid = localStorage.getItem('photon-session-id');
     if (!psid) {
-        psid = '';
-        while (psid.length < 64) psid += Math.random().toString(36).substring(2);
-        psid = psid.substring(0, 64);
+        psid = random(64);
         localStorage.setItem('photon-session-id', psid);
     }
     header['photon-session-id'] = psid;

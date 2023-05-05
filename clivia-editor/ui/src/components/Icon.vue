@@ -430,6 +430,7 @@ const props = defineProps({
 }
 
 .icon svg {
+    display: block;
     width: 16px;
 }
 
