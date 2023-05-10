@@ -5,11 +5,7 @@ import com.alibaba.fastjson.JSONObject;
 import org.lpw.clivia.page.Pagination;
 import org.lpw.clivia.user.UserService;
 import org.lpw.photon.ctrl.upload.UploadService;
-import org.lpw.photon.util.Context;
-import org.lpw.photon.util.Http;
-import org.lpw.photon.util.Json;
-import org.lpw.photon.util.Logger;
-import org.lpw.photon.util.Validator;
+import org.lpw.photon.util.*;
 import org.springframework.stereotype.Service;
 
 import javax.inject.Inject;
@@ -62,14 +58,14 @@ public class OpenaiServiceImpl implements OpenaiService {
     }
 
     @Override
-    public String chat(String key, String content) {
+    public String chat(String key, String user, String content) {
         OpenaiModel openai = openaiDao.findByKey(key);
         if (openai == null)
             return null;
 
         JSONObject message = new JSONObject();
         message.put("role", "user");
-        message.put("name", aiUser());
+        message.put("name", aiUser(user));
         message.put("content", content);
         JSONArray messages = new JSONArray();
         messages.add(message);
@@ -99,7 +95,7 @@ public class OpenaiServiceImpl implements OpenaiService {
     }
 
     @Override
-    public String image(String key, String content, int count) {
+    public String image(String key, String user, String content, int count) {
         OpenaiModel openai = openaiDao.findByKey(key);
         if (openai == null)
             return null;
@@ -109,7 +105,7 @@ public class OpenaiServiceImpl implements OpenaiService {
         parameter.put("n", count);
         parameter.put("size", "1024x1024");
         parameter.put("response_format", "url");
-        parameter.put("user", aiUser());
+        parameter.put("user", aiUser(user));
         String string = http.post("https://api.openai.com/v1/images/generations", header(openai), json.toString(parameter));
         JSONObject object = json.toObject(string);
         if (object == null || !object.containsKey("data")) {
@@ -133,10 +129,8 @@ public class OpenaiServiceImpl implements OpenaiService {
         return sb.toString().trim();
     }
 
-    private String aiUser() {
-        String name = userService.id();
-
-        return name == null ? "" : name.replaceAll("-", "");
+    private String aiUser(String user) {
+        return user == null ? "" : user.replaceAll("-", "");
     }
 
     private Map<String, String> header(OpenaiModel openai) {

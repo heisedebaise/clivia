@@ -13,7 +13,7 @@ public interface OpenaiService {
 
     void delete(String id);
 
-    String chat(String key, String content);
+    String chat(String key, String user, String content);
 
-    String image(String key, String content, int count);
+    String image(String key, String user, String content, int count);
 }

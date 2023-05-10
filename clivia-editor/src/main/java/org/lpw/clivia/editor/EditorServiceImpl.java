@@ -93,14 +93,14 @@ public class EditorServiceImpl implements EditorService, ContextRefreshedListene
 
     @Override
     public String aiText(String content) {
-        String chat = openaiService.chat(aiKey, content);
+        String chat = openaiService.chat(aiKey, userService.id(), content);
 
         return chat == null ? "" : chat;
     }
 
     @Override
     public String aiImage(String content, int count) {
-        String image = openaiService.image(aiKey, content, count);
+        String image = openaiService.image(aiKey, userService.id(), content, count);
 
         return image == null ? "" : image;
     }
