@@ -9,7 +9,7 @@ import org.springframework.stereotype.Controller;
 import javax.inject.Inject;
 
 @Controller(OpenaiModel.NAME + ".ctrl")
-@Execute(name = "/openai/", key = OpenaiModel.NAME, code = "164")
+@Execute(name = "/openai/", key = OpenaiModel.NAME, code = "115")
 public class OpenaiCtrl {
     @Inject
     private Request request;

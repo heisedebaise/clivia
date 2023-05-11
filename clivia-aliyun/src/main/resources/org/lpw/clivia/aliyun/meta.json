@@ -1,0 +1,66 @@
+{
+  "key": "clivia.aliyun",
+  "uri": "/aliyun/",
+  "props": [
+    {
+      "name": "key"
+    },
+    {
+      "name": "name"
+    },
+    {
+      "name": "accessKeyId"
+    },
+    {
+      "name": "accessKeySecret"
+    },
+    {
+      "name": "regionId"
+    },
+    {
+      "name": "endpoint"
+    },
+    {
+      "name": "instanceName"
+    }
+  ],
+  "query": {
+    "type": "grid",
+    "search": [
+      {
+        "name": "key"
+      }
+    ],
+    "ops": [
+      {
+        "type": "modify"
+      },
+      {
+        "type": "delete"
+      }
+    ],
+    "toolbar": [
+      {
+        "type": "create"
+      }
+    ]
+  },
+  "create": {
+    "type": "form",
+    "toolbar": [
+      {
+        "type": "save",
+        "success": "query"
+      }
+    ]
+  },
+  "modify": {
+    "type": "form",
+    "toolbar": [
+      {
+        "type": "save",
+        "success": "query"
+      }
+    ]
+  }
+}

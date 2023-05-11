@@ -27,6 +27,8 @@
         <module>clivia-pair</module>
         <module>clivia-faq</module>
         <module>clivia-editor</module>
+        <module>clivia-openai</module>
+        <module>clivia-aliyun</module>
         <module>clivia-user</module>
         <module>clivia-account</module>
         <module>clivia-payment</module>
@@ -40,7 +42,6 @@
         <module>clivia-device</module>
         <module>clivia-olcs</module>
         <module>clivia-notification</module>
-        <module>clivia-openai</module>
         <module>clivia-console</module>
         <module>clivia-api</module>
         <module>clivia-web</module>
