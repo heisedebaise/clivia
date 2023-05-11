@@ -9,7 +9,7 @@
     <version>${data.version}</version>
 
     <name>${data.name}</name>
-    <url>${data.url}</url>
+    <url>http://maven.apache.org</url>
 
     <dependencies>
         <dependency>

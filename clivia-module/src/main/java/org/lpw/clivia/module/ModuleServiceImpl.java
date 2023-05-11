@@ -41,8 +41,6 @@ public class ModuleServiceImpl implements ModuleService {
     private String pkg;
     @Value("${" + ModuleModel.NAME + ".version:1.0}")
     private String version;
-    @Value("${" + ModuleModel.NAME + ".url:https://github.com/heisedebaise/clivia}")
-    private String url;
     @Value("${" + ModuleModel.NAME + ".output:/WEB-INF/module/}")
     private String output;
 
@@ -206,7 +204,6 @@ public class ModuleServiceImpl implements ModuleService {
         map.put("groupId", pkg);
         map.put("name", name);
         map.put("version", version);
-        map.put("url", url);
         output(path + "pom.xml", "/module/pom", map);
     }
 
