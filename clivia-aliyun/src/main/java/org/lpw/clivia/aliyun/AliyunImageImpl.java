@@ -5,17 +5,21 @@ import com.aliyun.imagesearch20201214.models.*;
 import com.aliyun.teautil.models.RuntimeOptions;
 import org.lpw.photon.util.Context;
 import org.lpw.photon.util.Logger;
+import org.lpw.photon.util.Validator;
 import org.springframework.stereotype.Service;
 
 import javax.inject.Inject;
 import java.io.FileInputStream;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 @Service(AliyunModel.NAME + ".image")
 public class AliyunImageImpl implements AliyunImage {
     @Inject
     private Context context;
+    @Inject
+    private Validator validator;
     @Inject
     private Logger logger;
     @Inject
@@ -39,6 +43,34 @@ public class AliyunImageImpl implements AliyunImage {
             AddImageResponseBody body = new Client(aliyunService.config(aliyun)).addImageAdvance(request, new RuntimeOptions()).getBody();
             if (logger.isInfoEnable())
                 logger.info("添加阿里云图片搜索[{}:{}]。", body.success, body.message);
+
+            return true;
+        } catch (Throwable throwable) {
+            logger.warn(throwable, "添加阿里云图片搜索时发生异常！");
+
+            return false;
+        }
+    }
+
+    @Override
+    public boolean add(String key, String id, String group, Map<String, String> map) {
+        AliyunModel aliyun = aliyunDao.findByKey(key);
+        if (aliyun == null)
+            return false;
+
+        try {
+            AddImageAdvanceRequest request = new AddImageAdvanceRequest();
+            request.instanceName = aliyun.getInstanceName();
+            request.productId = id;
+            request.strAttr = group;
+            Client client = new Client(aliyunService.config(aliyun));
+            for (String name : map.keySet()) {
+                request.picName = name;
+                request.picContentObject = new FileInputStream(context.getAbsolutePath(map.get(name)));
+                AddImageResponseBody body = client.addImageAdvance(request, new RuntimeOptions()).getBody();
+                if (logger.isInfoEnable())
+                    logger.info("添加阿里云图片搜索[{}:{}]。", body.success, body.message);
+            }
 
             return true;
         } catch (Throwable throwable) {
@@ -82,7 +114,8 @@ public class AliyunImageImpl implements AliyunImage {
             DeleteImageRequest request = new DeleteImageRequest();
             request.instanceName = aliyun.getInstanceName();
             request.productId = id;
-            request.picName = name;
+            if (!validator.isEmpty(name))
+                request.picName = name;
             DeleteImageResponseBody body = new Client(aliyunService.config(aliyun)).deleteImage(request).getBody();
             if (logger.isInfoEnable())
                 logger.info("删除阿里云图片搜索[{}:{}]。", body.success, body.message);
@@ -90,6 +123,32 @@ public class AliyunImageImpl implements AliyunImage {
             return true;
         } catch (Throwable throwable) {
             logger.warn(throwable, "删除阿里云图片搜索时发生异常！");
+
+            return false;
+        }
+    }
+
+    @Override
+    public boolean delete(String key, String id, Set<String> names) {
+        AliyunModel aliyun = aliyunDao.findByKey(key);
+        if (aliyun == null)
+            return false;
+
+        try {
+            DeleteImageRequest request = new DeleteImageRequest();
+            request.instanceName = aliyun.getInstanceName();
+            request.productId = id;
+            Client client = new Client(aliyunService.config(aliyun));
+            for (String name : names) {
+                request.picName = name;
+                DeleteImageResponseBody body = client.deleteImage(request).getBody();
+                if (logger.isInfoEnable())
+                    logger.info("删除阿里云图片搜索[{}:{}]。", body.success, body.message);
+            }
+
+            return true;
+        } catch (Throwable throwable) {
+            logger.warn(throwable, "添加阿里云图片搜索时发生异常！");
 
             return false;
         }
