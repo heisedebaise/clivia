@@ -69,9 +69,9 @@ public abstract class UserTypeSupport extends TypeSupport {
             infoService.query(info.getUnionId()).forEach(i -> set.add(i.getOpenId()));
         }
 
-        String macid = request.get("macid");
-        if (!validator.isEmpty(macid))
-            set.add(macid);
+        String cuid = request.get("cuid");
+        if (!validator.isEmpty(cuid))
+            set.add(cuid);
 
         return set;
     }
