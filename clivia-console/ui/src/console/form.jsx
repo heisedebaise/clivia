@@ -122,12 +122,8 @@ class Base extends React.Component {
     }
 
     data = data => {
-        let values = this.form.current.getFieldsValue();
-        for (let key in values) {
-            values[key] = data[key];
-        }
-        this.format(values);
-        this.form.current.setFieldsValue(values);
+        this.format(data);
+        this.form.current.setFieldsValue(data);
         this.setState(data);
     }
 
@@ -153,7 +149,9 @@ class Base extends React.Component {
                 if (!this.values.editor)
                     this.values.editor = random(32);
             } else if (value) {
-                if (prop.type === 'date')
+                if (prop.type === 'image' || prop.type === 'file')
+                    this.values[prop.name] = value;
+                else if (prop.type === 'date')
                     values[prop.name] = moment(value, 'YYYY-MM-DD');
                 else if (prop.type === 'datetime')
                     values[prop.name] = moment(value, 'YYYY-MM-DD HH:mm:ss');
