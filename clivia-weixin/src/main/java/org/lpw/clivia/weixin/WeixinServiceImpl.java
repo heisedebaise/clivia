@@ -795,9 +795,9 @@ public class WeixinServiceImpl implements WeixinService, ContextRefreshedListene
         Collections.sort(list);
         StringBuilder sb = new StringBuilder();
         list.forEach(k -> sb.append('&').append(k).append('=').append(param.get(k)));
-        param.remove("jsapi_ticket");
         param.put("signature", digest.sha1(sb.deleteCharAt(0).toString()));
         param.put("appid", weixin.getAppId());
+        param.remove("jsapi_ticket");
 
         return param;
     }
