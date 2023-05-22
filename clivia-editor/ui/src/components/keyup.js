@@ -1,6 +1,7 @@
 import { now } from './time';
 import { annotation } from './handler';
-import { findById, mergeTexts } from './line';
+import { message } from './locale';
+import { findById, isEmpty, mergeTexts } from './line';
 import { setTag } from './keydown';
 import { findEventId, findIdNode } from "./event";
 import { focus, setCursor } from './cursor';
@@ -14,12 +15,12 @@ const compositionstart = (e) => {
     data.composition = true;
 };
 
-const compositionend = (lines, workspace, tag, e) => {
+const compositionend = (lines, workspace, tag, placeholder, e) => {
     data.composition = false;
-    keyup(lines, workspace, tag, e);
+    keyup(lines, workspace, tag, placeholder, e);
 };
 
-const keyup = (lines, workspace, tag, e) => {
+const keyup = (lines, workspace, tag, placeholder, e) => {
     if ((e.key === 'ArrowUp' || e.key === 'ArrowDown') && tag.arrow(e))
         return;
 
@@ -42,15 +43,30 @@ const keyup = (lines, workspace, tag, e) => {
         let line = findById(lines, findEventId(e));
         let indexes = [];
         for (let i = 0; i < e.target.children.length; i++) {
-            let index = parseInt(e.target.children[i].dataset.index);
+            let child = e.target.children[i];
+            if (child.className === 'placeholder') {
+                if (child.innerText.length > placeholder.text.length) {
+                    line.texts[line.texts.length - 1].text = child.innerText.substring(0, child.innerText.length - placeholder.text.length)
+                    placeholder.id = '';
+                }
+
+                continue;
+            }
+
+            let index = parseInt(child.dataset.index);
             indexes[index] = 1;
-            line.texts[index].text = e.target.children[i].innerText;
+            line.texts[index].text = child.innerText;
         }
         if (e.key === 'Backspace' || e.key === 'Delete') {
             for (let i = line.texts.length - 1; i >= 0; i--)
                 if (!indexes[i])
                     line.texts.splice(i, 1);
             mergeTexts(line.texts);
+            if (isEmpty(line.texts)) {
+                placeholder.id = line.id;
+                placeholder.text = message('placeholder.' + line.tag);
+                setCursor(line.id, [0, 0, 0, 0]);
+            }
         }
         markdown(line);
         line.time = now();

@@ -10,7 +10,7 @@ const newText = (text) => {
         id: newId(),
         tag: 'text',
         placeholder: message('placeholder.text'),
-        className: 'empty',
+        className: (text && text.length > 0 ? 'hide' : 'show') + '-placeholder',
         texts: [{
             text: text || '',
         }],

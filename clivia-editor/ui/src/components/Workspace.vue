@@ -2,7 +2,7 @@
 import { ref, onMounted } from 'vue';
 import { service, url } from '../http';
 import { setAnnotation } from './handler';
-import { findIndex } from './line';
+import { findIndex, isEmpty } from './line';
 import { focus } from './cursor';
 import { setTag, keydown } from './keydown';
 import { compositionstart, compositionend, keyup } from './keyup';
@@ -11,6 +11,7 @@ import { newText } from './tag';
 import { selectImage, uploadImage, imageName } from './image';
 import Icon from './Icon.vue';
 import Tag from './Tag.vue';
+import { getFocusId } from './cursor';
 
 const props = defineProps({
     lines: Array,
@@ -21,11 +22,16 @@ const vertical = ref(false);
 const toolbar = (action) => {
     if (action === 'direction') {
         vertical.value = !vertical.value;
+        dragable.value = {};
         annotation();
     }
 };
 
 const workspace = ref(null);
+const placeholder = ref({
+    id: '',
+    text: '',
+});
 const dragable = ref({});
 const draging = ref({
     left: -1,
@@ -114,6 +120,10 @@ const findDragNode = () => {
     return null;
 };
 
+const input = (e) => {
+    window.debug('11:' + JSON.stringify(e));
+};
+
 onMounted(() => {
     annotation();
     service('/editor/ai', {}, data => {
@@ -150,28 +160,36 @@ defineExpose({
         <div :class="'lines lines-' + (vertical ? 'vertical' : 'horizontal')" @mousemove.stop="">
             <div v-for="line in lines" class="line" @mouseover="mouseover(vertical, dragable, $event)">
                 <h1 v-if="line.tag === 'h1'" :id="line.id" contenteditable="true" :class="line.className"
-                    :placeholder="line.placeholder" @focus.stop="focus" @mouseup.stop="focus"
-                    @keydown="keydown(lines, $event)" @keyup="keyup(lines, workspace, tag, $event)"
-                    @compositionstart="compositionstart" @compositionend="compositionend(lines, workspace, tag, $event)">
+                    @focus.stop="focus(line, placeholder, $event)" @mouseup.stop="focus(line, placeholder, $event)"
+                    @keydown="keydown(lines, $event)" @keyup="keyup(lines, workspace, tag, placeholder, $event)"
+                    @compositionstart="compositionstart"
+                    @compositionend="compositionend(lines, workspace, tag, placeholder, $event)">
                     <span v-for="(text, index) in line.texts" :class="text.style" :data-index="index">{{ text.text }}</span>
+                    <span v-if="placeholder.id === line.id" class="placeholder">{{ placeholder.text }}</span>
                 </h1>
                 <h2 v-else-if="line.tag === 'h2'" :id="line.id" contenteditable="true" :class="line.className"
-                    :placeholder="line.placeholder" @focus.stop="focus" @mouseup.stop="focus"
-                    @keydown="keydown(lines, $event)" @keyup="keyup(lines, workspace, tag, $event)"
-                    @compositionstart="compositionstart" @compositionend="compositionend(lines, workspace, tag, $event)">
+                    @focus.stop="focus(line, placeholder, $event)" @mouseup.stop="focus(line, placeholder, $event)"
+                    @keydown="keydown(lines, $event)" @keyup="keyup(lines, workspace, tag, placeholder, $event)"
+                    @compositionstart="compositionstart"
+                    @compositionend="compositionend(lines, workspace, tag, placeholder, $event)">
                     <span v-for="(text, index) in line.texts" :class="text.style" :data-index="index">{{ text.text }}</span>
+                    <span v-if="placeholder.id === line.id" class="placeholder">{{ placeholder.text }}</span>
                 </h2>
                 <h3 v-else-if="line.tag === 'h3'" :id="line.id" contenteditable="true" :class="line.className"
-                    :placeholder="line.placeholder" @focus.stop="focus" @mouseup.stop="focus"
-                    @keydown="keydown(lines, $event)" @keyup="keyup(lines, workspace, tag, $event)"
-                    @compositionstart="compositionstart" @compositionend="compositionend(lines, workspace, tag, $event)">
+                    @focus.stop="focus(line, placeholder, $event)" @mouseup.stop="focus(line, placeholder, $event)"
+                    @keydown="keydown(lines, $event)" @keyup="keyup(lines, workspace, tag, placeholder, $event)"
+                    @compositionstart="compositionstart"
+                    @compositionend="compositionend(lines, workspace, tag, placeholder, $event)">
                     <span v-for="(text, index) in line.texts" :class="text.style" :data-index="index">{{ text.text }}</span>
+                    <span v-if="placeholder.id === line.id" class="placeholder">{{ placeholder.text }}</span>
                 </h3>
-                <p v-else-if="line.tag === 'text'" :id="line.id" contenteditable="true" :class="line.className"
-                    :placeholder="line.placeholder" @focus.stop="focus" @mouseup.stop="focus"
-                    @keydown="keydown(lines, $event)" @keyup="keyup(lines, workspace, tag, $event)"
-                    @compositionstart="compositionstart" @compositionend="compositionend(lines, workspace, tag, $event)">
+                <p v-else-if="line.tag === 'text'" :id="line.id" contenteditable="true"
+                    @focus.stop="focus(line, placeholder, $event)" @mouseup.stop="focus(line, placeholder, $event)"
+                    @keydown="keydown(lines, $event)" @keyup="keyup(lines, workspace, tag, placeholder, $event)"
+                    @compositionstart="compositionstart"
+                    @compositionend="compositionend(lines, workspace, tag, placeholder, $event)">
                     <span v-for="(text, index) in line.texts" :class="text.style" :data-index="index">{{ text.text }}</span>
+                    <span v-if="placeholder.id === line.id" class="placeholder">{{ placeholder.text }}</span>
                 </p>
                 <div v-else-if="line.tag === 'image'" :id="line.id" class="image">
                     <div v-if="line.uploading" class="uploading">{{ line.uploading }}</div>
@@ -239,11 +257,6 @@ defineExpose({
     height: calc(100% - 96px);
 }
 
-/* .line .empty {
-    content: attr(data-placeholder);
-    color: blueviolet;
-} */
-
 .line>.image .uploading,
 .line>.image .select {
     line-height: 250%;
@@ -254,6 +267,10 @@ defineExpose({
 .line>.image .select:hover {
     background-color: var(--image-select-hover-bg);
     cursor: pointer;
+}
+
+.line .placeholder {
+    color: var(--placeholder);
 }
 
 .draging {
@@ -274,5 +291,4 @@ defineExpose({
 .image-uploader {
     position: absolute;
     top: -100vh;
-}
-</style>
+}</style>

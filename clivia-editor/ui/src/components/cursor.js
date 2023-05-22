@@ -1,4 +1,6 @@
 import { findEventId } from "./event";
+import { isEmpty } from "./line";
+import { message } from "./locale";
 
 const data = {
     focus: null,
@@ -6,21 +8,34 @@ const data = {
     select: [],
 };
 
-const focus = (e) => {
+const focus = (line, placeholder, e) => {
     if (e)
         data.focus = findEventId(e);
 
-    setTimeout(() => {
-        let range = getSelection().getRangeAt(0);
-        data.cursor = [
-            getIndex(range.startContainer),
-            range.startOffset,
-            getIndex(range.endContainer),
-            range.endOffset
-        ];
-        for (let select of data.select)
-            select(!range.collapsed);
-    }, 10);
+    if (line && placeholder && isEmpty(line.texts)) {
+        placeholder.id = line.id;
+        placeholder.text = message('placeholder.' + line.tag);
+        setCursor(line.id, [0, 0, 0, 0]);
+    } else {
+        if (placeholder)
+            placeholder.id = '';
+        setTimeout(() => {
+            let range = getSelection().getRangeAt(0);
+            if (range.startContainer.id && range.startContainer.id.indexOf('id') === 0) {
+                let offset = range.startContainer.innerText.length;
+                data.cursor = [0, offset, 0, offset];
+            } else {
+                data.cursor = [
+                    getIndex(range.startContainer),
+                    range.startOffset,
+                    getIndex(range.endContainer),
+                    range.endOffset
+                ];
+            }
+            for (let select of data.select)
+                select(!range.collapsed);
+        }, 250);
+    }
 };
 
 const getFocusId = () => data.focus;

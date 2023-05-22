@@ -13,8 +13,9 @@
   --image-name-bg: #888;
   --image-select-bg: #f0f0f0;
   --image-select-hover-bg: #ccc;
+  --placeholder: rgba(55, 53, 47, 0.5);
   --annotation: #888;
-  --empty: #ccc;
+  --empty: rgba(55, 53, 47, 0.5);
 }
 
 @media (prefers-color-scheme: dark) {
