@@ -12,6 +12,11 @@ public interface InfoService {
      */
     JSONArray query();
 
+    /**
+     * 检索。
+     * @param unionId Union ID。
+     * @return 数据集。
+     */
     List<InfoModel> query(String unionId);
 
     /**
