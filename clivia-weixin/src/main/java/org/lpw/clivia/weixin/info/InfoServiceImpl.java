@@ -3,6 +3,8 @@ package org.lpw.clivia.weixin.info;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import org.lpw.clivia.lock.LockHelper;
+import org.lpw.clivia.user.auth.AuthModel;
+import org.lpw.clivia.user.auth.AuthService;
 import org.lpw.clivia.weixin.WeixinService;
 import org.lpw.photon.dao.model.ModelHelper;
 import org.lpw.photon.scheduler.MinuteJob;
@@ -26,6 +28,8 @@ public class InfoServiceImpl implements InfoService, MinuteJob {
     private ModelHelper modelHelper;
     @Inject
     private LockHelper lockHelper;
+    @Inject
+    private AuthService authService;
     @Inject
     private WeixinService weixinService;
     @Inject
@@ -65,6 +69,20 @@ public class InfoServiceImpl implements InfoService, MinuteJob {
     @Override
     public InfoModel find(String openId) {
         return infoDao.find(openId);
+    }
+
+    @Override
+    public String findUserOpenId(String appId, String user) {
+        for (AuthModel auth : authService.list(user)) {
+            if (!auth.getType().contains("weixin"))
+                continue;
+
+            InfoModel info = infoDao.find(auth.getUid());
+            if (info != null && info.getAppId().equals(appId))
+                return info.getOpenId();
+        }
+
+        return null;
     }
 
     @Override

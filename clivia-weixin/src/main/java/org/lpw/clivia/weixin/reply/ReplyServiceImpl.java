@@ -81,18 +81,17 @@ public class ReplyServiceImpl implements ReplyService {
             object.put("touser", openId);
             object.put("msgtype", reply.getSendType());
             switch (reply.getSendType()) {
-                case "text":
+                case "text" -> {
                     JSONObject text = new JSONObject();
                     text.put("content", reply.getSendMessage());
                     object.put("text", text);
-                    break;
-                case "image":
-                case "mpnews":
+                }
+                case "image", "mpnews" -> {
                     JSONObject media = new JSONObject();
                     media.put("media_id", reply.getSendPicurl());
                     object.put(reply.getSendType(), media);
-                    break;
-                case "news":
+                }
+                case "news" -> {
                     JSONObject article = new JSONObject();
                     article.put("title", reply.getSendTitle());
                     article.put("description", reply.getSendDescription());
@@ -101,16 +100,16 @@ public class ReplyServiceImpl implements ReplyService {
                     JSONArray articles = new JSONArray();
                     articles.add(article);
                     object.put("articles", articles);
-                    break;
-                case "link":
+                }
+                case "link" -> {
                     JSONObject link = new JSONObject();
                     link.put("title", reply.getSendTitle());
                     link.put("description", reply.getSendDescription());
                     link.put("url", formatUrl(reply.getSendUrl(), openId, eventKey));
                     link.put("thumb_url", reply.getSendPicurl());
                     object.put("link", link);
-                    break;
-                case "miniprogrampage":
+                }
+                case "miniprogrampage" -> {
                     JSONObject miniprogrampage = new JSONObject();
                     if (!validator.isEmpty(reply.getSendAppId()))
                         miniprogrampage.put("appid", reply.getSendAppId());
@@ -118,9 +117,10 @@ public class ReplyServiceImpl implements ReplyService {
                     miniprogrampage.put("pagepath", formatUrl(reply.getSendUrl(), openId, eventKey));
                     miniprogrampage.put("thumb_media_id", reply.getSendPicurl());
                     object.put("miniprogrampage", miniprogrampage);
-                    break;
-                default:
+                }
+                default -> {
                     return;
+                }
             }
             weixinService.byAccessToken(weixin, accessToken -> {
                 String string = http.post("https://api.weixin.qq.com/cgi-bin/message/custom/send?access_token=" + accessToken,

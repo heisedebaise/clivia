@@ -14,6 +14,7 @@ public interface InfoService {
 
     /**
      * 检索。
+     *
      * @param unionId Union ID。
      * @return 数据集。
      */
@@ -35,6 +36,15 @@ public interface InfoService {
      * @return 信息，不存在则返回null。
      */
     InfoModel find(String openId);
+
+    /**
+     * 查找用户的Open ID。
+     *
+     * @param appId App ID。
+     * @param user  用户ID。
+     * @return Open ID。
+     */
+    String findUserOpenId(String appId, String user);
 
     /**
      * 保存详情信息。
