@@ -2,15 +2,15 @@ import { now } from './time';
 import { getFocusId, getCursor, setCursor } from "./cursor";
 import { findById, splitTexts, mergeTexts } from "./line";
 
-const bold = (lines) => style(lines, 'bold');
+const bold = (lines) => setStyleName(lines, 'bold');
 
-const italic = (lines) => style(lines, 'italic');
+const italic = (lines) => setStyleName(lines, 'italic');
 
-const underline = (lines) => style(lines, 'underline');
+const underline = (lines) => setStyleName(lines, 'underline');
 
-const linethrough = (lines) => style(lines, 'linethrough');
+const linethrough = (lines) => setStyleName(lines, 'linethrough');
 
-const style = (lines, name) => {
+const setStyleName = (lines, name) => {
     let id = getFocusId();
     if (id === null)
         return;
@@ -23,6 +23,10 @@ const style = (lines, name) => {
     if (line === null)
         return;
 
+    style(line, cursor, name);
+};
+
+const style = (line, cursor, name) => {
     let texts = splitTexts(line.texts, cursor);
     let start = textLength(texts[0]);
     let end = start + textLength(texts[1]);
@@ -58,7 +62,7 @@ const style = (lines, name) => {
         }
         end -= length;
     }
-    setCursor(id, cursor);
+    setCursor(line.id, cursor);
 };
 
 const textLength = (texts) => {
@@ -74,4 +78,5 @@ export {
     italic,
     underline,
     linethrough,
+    style,
 };

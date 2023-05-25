@@ -120,10 +120,6 @@ const findDragNode = () => {
     return null;
 };
 
-const input = (e) => {
-    window.debug('11:' + JSON.stringify(e));
-};
-
 onMounted(() => {
     annotation();
     service('/editor/ai', {}, data => {
@@ -159,7 +155,7 @@ defineExpose({
         </div>
         <div :class="'lines lines-' + (vertical ? 'vertical' : 'horizontal')" @mousemove.stop="">
             <div v-for="line in lines" class="line" @mouseover="mouseover(vertical, dragable, $event)">
-                <h1 v-if="line.tag === 'h1'" :id="line.id" contenteditable="true" :class="line.className"
+                <h1 v-if="line.tag === 'h1'" :id="line.id" contenteditable="true"
                     @focus.stop="focus(line, placeholder, $event)" @mouseup.stop="focus(line, placeholder, $event)"
                     @keydown="keydown(lines, $event)" @keyup="keyup(lines, workspace, tag, placeholder, $event)"
                     @compositionstart="compositionstart"
@@ -167,7 +163,7 @@ defineExpose({
                     <span v-for="(text, index) in line.texts" :class="text.style" :data-index="index">{{ text.text }}</span>
                     <span v-if="placeholder.id === line.id" class="placeholder">{{ placeholder.text }}</span>
                 </h1>
-                <h2 v-else-if="line.tag === 'h2'" :id="line.id" contenteditable="true" :class="line.className"
+                <h2 v-else-if="line.tag === 'h2'" :id="line.id" contenteditable="true"
                     @focus.stop="focus(line, placeholder, $event)" @mouseup.stop="focus(line, placeholder, $event)"
                     @keydown="keydown(lines, $event)" @keyup="keyup(lines, workspace, tag, placeholder, $event)"
                     @compositionstart="compositionstart"
@@ -175,7 +171,7 @@ defineExpose({
                     <span v-for="(text, index) in line.texts" :class="text.style" :data-index="index">{{ text.text }}</span>
                     <span v-if="placeholder.id === line.id" class="placeholder">{{ placeholder.text }}</span>
                 </h2>
-                <h3 v-else-if="line.tag === 'h3'" :id="line.id" contenteditable="true" :class="line.className"
+                <h3 v-else-if="line.tag === 'h3'" :id="line.id" contenteditable="true"
                     @focus.stop="focus(line, placeholder, $event)" @mouseup.stop="focus(line, placeholder, $event)"
                     @keydown="keydown(lines, $event)" @keyup="keyup(lines, workspace, tag, placeholder, $event)"
                     @compositionstart="compositionstart"
@@ -291,4 +287,5 @@ defineExpose({
 .image-uploader {
     position: absolute;
     top: -100vh;
-}</style>
+}
+</style>

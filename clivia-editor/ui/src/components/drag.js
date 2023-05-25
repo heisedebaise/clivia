@@ -1,3 +1,4 @@
+import { now } from './time';
 import { findIdNode } from "./event";
 import { findIndex } from "./line";
 
@@ -73,6 +74,7 @@ const mouseup = (lines, draging, e) => {
     let source = findIndex(lines, data.source);
     let target = findIndex(lines, data.target);
     let line = lines[source];
+    line.time = now();
     if (source > target) {
         lines.splice(source, 1);
         lines.splice(target, 0, line);

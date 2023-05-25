@@ -1,7 +1,7 @@
-import { upload } from '@/http';
+import { upload } from '../http';
+import { now } from './time';
 import { newId } from './generator';
 import { message } from './locale';
-import { now } from './time';
 import { findIndex } from './line';
 import { findEventId } from './event';
 
@@ -21,7 +21,7 @@ const uploadImage = (lines, e) => {
             id: newId(),
             tag: 'image',
             uploading: message('image.uploading'),
-            time: now(),
+            time: '',
         });
         upload('clivia.editor.image', e.target.files[i], data => {
             let name = data.fileName;

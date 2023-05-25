@@ -1,7 +1,7 @@
 <script setup>
 import { ref } from 'vue';
-import { message } from './locale';
 import { now } from './time';
+import { message } from './locale';
 import { annotation } from './handler';
 import { getFocusId, getCursor, setCursor } from './cursor';
 import { findById, splitTexts, isEmpty } from './line';
@@ -53,6 +53,7 @@ const hide = (e) => {
         left: -1,
         top: -1
     };
+    input.value = '';
     setCursor();
 };
 
@@ -89,6 +90,7 @@ defineExpose({
     display: flex;
     align-items: center;
     overflow: hidden;
+    transform: translateX(-40%);
 }
 
 .annotation input {

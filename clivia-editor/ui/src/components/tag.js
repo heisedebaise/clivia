@@ -1,5 +1,5 @@
-import { newId } from "./generator";
 import { now } from './time';
+import { newId } from "./generator";
 import { message } from './locale';
 import { annotation } from './handler';
 import { getFocusId } from './cursor';
@@ -9,8 +9,6 @@ const newText = (text) => {
     return {
         id: newId(),
         tag: 'text',
-        placeholder: message('placeholder.text'),
-        className: (text && text.length > 0 ? 'hide' : 'show') + '-placeholder',
         texts: [{
             text: text || '',
         }],
@@ -44,7 +42,7 @@ const newImage = (lines, path, name) => {
     annotation();
 };
 
-const newDivider = (lines, annotation) => {
+const newDivider = (lines) => {
     let id = getFocusId();
     if (id === null)
         return;

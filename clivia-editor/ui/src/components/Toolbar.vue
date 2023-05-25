@@ -4,6 +4,7 @@ import { setTag } from './keydown';
 import { bindSelect } from './cursor';
 import { bold, italic, underline, linethrough } from './style';
 import { newImage, newDivider } from './tag';
+import { historyListener, historyBack, historyForward } from './history';
 import Icon from './Icon.vue';
 import Tag from './Tag.vue';
 import Annotation from './Annotation.vue';
@@ -12,7 +13,7 @@ defineProps({
     lines: Array
 });
 
-defineEmits(['icon']);
+const emits = defineEmits(['icon']);
 
 const enable = ref({
     undo: false,
@@ -30,6 +31,16 @@ const enable = ref({
     image: true,
     direction: true,
 });
+
+const undo = () => {
+    if (enable.value.undo)
+        emits('icon', 'history', historyBack());
+};
+
+const redo = () => {
+    if (enable.value.redo)
+        emits('icon', 'history', historyForward());
+};
 
 const tag = ref(null);
 
@@ -68,6 +79,10 @@ const findOffset = (e) => {
 };
 
 onMounted(() => {
+    historyListener((undo, redo) => {
+        enable.value.undo = undo;
+        enable.value.redo = redo;
+    });
     bindSelect((select) => {
         enable.value.bold = select;
         enable.value.italic = select;
@@ -81,8 +96,8 @@ onMounted(() => {
 <template>
     <div class="toolbar">
         <div></div>
-        <Icon name="undo" :enable="enable.undo" @click="$emit('icon', 'undo')" />
-        <Icon name="redo" :enable="enable.redo" @click="$emit('icon', 'redo')" />
+        <Icon name="undo" :enable="enable.undo" @click="undo" />
+        <Icon name="redo" :enable="enable.redo" @click="redo" />
         <Icon name="header" :enable="enable.header" @click="header" />
         <Icon name="bold" :enable="enable.bold" @click="bold(lines)" />
         <Icon name="italic" :enable="enable.italic" @click="italic(lines)" />
