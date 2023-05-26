@@ -82,9 +82,9 @@ public class AliyunImageImpl implements AliyunImage {
     }
 
     @Override
-    public Set<String> search(String key, String group, String uri) {
+    public String search(String key, String group, String uri, float score) {
         try (InputStream inputStream = new FileInputStream(context.getAbsolutePath(uri))) {
-            return search(key, group, inputStream);
+            return search(key, group, inputStream, score);
         } catch (Throwable throwable) {
             logger.warn(throwable, "搜索阿里云图片时发生异常！");
 
@@ -93,27 +93,33 @@ public class AliyunImageImpl implements AliyunImage {
     }
 
     @Override
-    public Set<String> search(String key, String group, InputStream inputStream) {
+    public String search(String key, String group, InputStream inputStream, float score) {
         AliyunModel aliyun = aliyunDao.findByKey(key);
         if (aliyun == null)
             return null;
 
         Set<String> set = new HashSet<>();
+        String id = null;
+        float s = 0;
         try {
             SearchImageByPicAdvanceRequest request = new SearchImageByPicAdvanceRequest();
             request.instanceName = aliyun.getInstanceName();
             request.filter = "str_attr=\"" + group + "\"";
             request.picContentObject = inputStream;
             SearchImageByPicResponseBody body = new Client(aliyunService.config(aliyun)).searchImageByPicAdvance(request, new RuntimeOptions()).getBody();
-            for (SearchImageByPicResponseBody.SearchImageByPicResponseBodyAuctions actions : body.getAuctions())
-                set.add(actions.productId);
+            for (SearchImageByPicResponseBody.SearchImageByPicResponseBodyAuctions auctions : body.getAuctions()) {
+                if (auctions.score > s) {
+                    id = auctions.productId;
+                    s = auctions.score;
+                }
+            }
             if (logger.isInfoEnable())
                 logger.info("搜索阿里云图片[{}:{}]。", group, set);
         } catch (Throwable throwable) {
             logger.warn(throwable, "搜索阿里云图片时发生异常！");
         }
 
-        return set;
+        return s > score ? id : null;
     }
 
     @Override

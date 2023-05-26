@@ -1,6 +1,7 @@
 package org.lpw.clivia.aliyun;
 
 import java.io.InputStream;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -9,9 +10,9 @@ public interface AliyunImage {
 
     boolean add(String key, String id, String group, Map<String, String> map);
 
-    Set<String> search(String key, String group, String uri);
+    String search(String key, String group, String uri, float score);
 
-    Set<String> search(String key, String group, InputStream inputStream);
+    String search(String key, String group, InputStream inputStream, float score);
 
     boolean delete(String key, String id, String name);
 
