@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import javax.inject.Inject;
 import java.io.FileInputStream;
+import java.io.InputStream;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
@@ -82,6 +83,17 @@ public class AliyunImageImpl implements AliyunImage {
 
     @Override
     public Set<String> search(String key, String group, String uri) {
+        try (InputStream inputStream = new FileInputStream(context.getAbsolutePath(uri))) {
+            return search(key, group, inputStream);
+        } catch (Throwable throwable) {
+            logger.warn(throwable, "搜索阿里云图片时发生异常！");
+
+            return null;
+        }
+    }
+
+    @Override
+    public Set<String> search(String key, String group, InputStream inputStream) {
         AliyunModel aliyun = aliyunDao.findByKey(key);
         if (aliyun == null)
             return null;
@@ -91,7 +103,7 @@ public class AliyunImageImpl implements AliyunImage {
             SearchImageByPicAdvanceRequest request = new SearchImageByPicAdvanceRequest();
             request.instanceName = aliyun.getInstanceName();
             request.filter = "str_attr=\"" + group + "\"";
-            request.picContentObject = new FileInputStream(context.getAbsolutePath(uri));
+            request.picContentObject = inputStream;
             SearchImageByPicResponseBody body = new Client(aliyunService.config(aliyun)).searchImageByPicAdvance(request, new RuntimeOptions()).getBody();
             for (SearchImageByPicResponseBody.SearchImageByPicResponseBodyAuctions actions : body.getAuctions())
                 set.add(actions.productId);
