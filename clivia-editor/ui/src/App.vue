@@ -24,7 +24,7 @@ const lines = ref([]);
 const toolbar = (action, data) => {
   if (action === 'history') {
     if (data)
-      lines.value = data;
+      lines.value = JSON.parse(data);
   } else
     workspace.value.toolbar(action);
 };

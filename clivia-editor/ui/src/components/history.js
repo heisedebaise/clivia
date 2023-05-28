@@ -11,12 +11,7 @@ const historyListener = (listener) => {
 const historyPut = (lines) => {
     if (history.index < history.list.length - 1)
         history.list.splice(history.index + 1, history.list.length);
-
-    let array = [];
-    for (let line of lines)
-        array.push(line);
-    history.list.push(array);
-
+    history.list.push(JSON.stringify(lines));
     if (history.list.length > 1024)
         history.list.splice(0, history.list.length - 1024);
     history.index = history.list.length - 1;
