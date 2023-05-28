@@ -1,4 +1,4 @@
-const root = 'http://192.168.20.114:8080';
+const root = 'http://localhost:8080';
 
 const service = (uri, data, success) => {
     post(uri, data, json => {
@@ -45,7 +45,7 @@ const upload = (name, file, success) => {
 }
 
 const psid = (header) => {
-    localStorage.setItem('photon-session-id','1s5q29jh9oe3sqbig4j9qtijlid1ellr9qv6tsseqjpo1lws3cidhhalkqpmcv5q');
+    // localStorage.setItem('photon-session-id','1s5q29jh9oe3sqbig4j9qtijlid1ellr9qv6tsseqjpo1lws3cidhhalkqpmcv5q');
     let psid = localStorage.getItem('photon-session-id');
     if (!psid) {
         psid = '';
