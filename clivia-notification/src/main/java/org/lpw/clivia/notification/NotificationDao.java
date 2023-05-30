@@ -11,4 +11,6 @@ interface NotificationDao {
     NotificationModel unread(String user, Set<String> genre, Timestamp expiration);
 
     void save(NotificationModel notification);
+
+    void close();
 }

@@ -28,6 +28,6 @@ public class NotificationCtrl {
             @Validate(validator = UserService.VALIDATOR_SIGN)
     })
     public Object unread() {
-        return notificationService.unread(request.getAsArray("genre"));
+        return notificationService.unread(request.getAsArray("genre"), request.getAsBoolean("waitable"));
     }
 }

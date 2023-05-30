@@ -57,4 +57,9 @@ class NotificationDaoImpl implements NotificationDao {
     public void save(NotificationModel notification) {
         liteOrm.save(notification);
     }
+
+    @Override
+    public void close() {
+        liteOrm.close();
+    }
 }

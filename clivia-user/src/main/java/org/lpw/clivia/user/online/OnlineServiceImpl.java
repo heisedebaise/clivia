@@ -55,6 +55,14 @@ public class OnlineServiceImpl implements OnlineService, MinuteJob {
     }
 
     @Override
+    public Set<String> sids(String user) {
+        Set<String> set = new HashSet<>();
+        onlineDao.query(user).getList().forEach(online -> set.add(online.getSid()));
+
+        return set;
+    }
+
+    @Override
     public void signIn(UserModel user) {
         String sid = session.getId();
         OnlineModel online = onlineDao.findBySid(sid);

@@ -5,6 +5,7 @@ import org.lpw.clivia.user.UserModel;
 
 import java.sql.Date;
 import java.sql.Timestamp;
+import java.util.Set;
 
 public interface OnlineService {
     /**
@@ -23,6 +24,14 @@ public interface OnlineService {
      * @return 在线信息。
      */
     OnlineModel findBySid(String sid);
+
+    /**
+     * 获取用户Session ID集。
+     *
+     * @param user 用户ID。
+     * @return 用户Session ID集。
+     */
+    Set<String> sids(String user);
 
     /**
      * 登入。
