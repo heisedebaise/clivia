@@ -33,6 +33,8 @@ const uploadImage = (lines, e) => {
             line.path = data.path;
             line.time = now();
             delete line.uploading;
+        }, progress => {
+            lines[index + i].uploading = message('image.uploading') + ' ' + progress + '%';
         });
     }
 };

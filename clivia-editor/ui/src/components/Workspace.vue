@@ -2,16 +2,15 @@
 import { ref, onMounted } from 'vue';
 import { service, url } from '../http';
 import { setAnnotation } from './handler';
-import { findIndex, isEmpty } from './line';
+import { findIndex } from './line';
 import { focus } from './cursor';
 import { setTag, keydown } from './keydown';
 import { compositionstart, compositionend, keyup } from './keyup';
-import { mouseover, mousedown, mousemove, mouseup } from './drag';
+import { mouseover, dragStart, dragMove, dragDone } from './drag';
 import { newText } from './tag';
 import { selectImage, uploadImage, imageName } from './image';
 import Icon from './Icon.vue';
 import Tag from './Tag.vue';
-import { getFocusId } from './cursor';
 
 const props = defineProps({
     lines: Array,
@@ -138,14 +137,16 @@ defineExpose({
 
 <template>
     <div ref="workspace" :class="'workspace workspace-' + (vertical ? 'vertical' : 'horizontal')" @scroll="scroll"
-        @mousemove="mousemove(vertical, dragable, draging, $event)" @mouseup="mouseup(lines, draging, $event)">
+        @mousemove="dragMove(vertical, dragable, draging, $event)" @mouseup="dragDone(lines, draging, $event)"
+        @touchmove="dragMove(vertical, dragable, draging, $event)" @touchend="dragDone(lines, draging, $event)">
         <div v-if="dragable.left || dragable.top" class="dragable"
             :style="{ left: dragable.left + 'px', top: dragable.top + 'px', width: dragable.width + 'px', height: dragable.height + 'px' }">
             <div></div>
             <div class="action">
                 <Icon name="delete" @click="del" />
             </div>
-            <div class="action" @mousedown="mousedown(vertical, draging, $event)">
+            <div class="action" @mousedown="dragStart(vertical, draging, $event)"
+                @touchstart="dragStart(vertical, draging, $event)">
                 <Icon name="drag" />
             </div>
             <div class="action">

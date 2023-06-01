@@ -23,7 +23,7 @@ const mouseover = (vertical, dragable, e) => {
     }
 };
 
-const mousedown = (vertical, draging, e) => {
+const dragStart = (vertical, draging, e) => {
     let node = findDragingNode(vertical, e);
     if (node === null)
         return;
@@ -33,7 +33,7 @@ const mousedown = (vertical, draging, e) => {
     draging.html = node.innerHTML;
 };
 
-const mousemove = (vertical, dragable, draging, e) => {
+const dragMove = (vertical, dragable, draging, e) => {
     if (!data.draging)
         return;
 
@@ -54,6 +54,10 @@ const mousemove = (vertical, dragable, draging, e) => {
 };
 
 const findDragingNode = (vertical, e) => {
+    if (e.touches && e.touches.length > 0) {
+        e.x = e.touches[0].pageX;
+        e.y = e.touches[0].pageY;
+    }
     for (let node of document.querySelectorAll('.line')) {
         if (vertical) {
             if (e.x >= node.offsetLeft && e.x < node.offsetLeft + node.offsetWidth)
@@ -68,7 +72,7 @@ const findDragingNode = (vertical, e) => {
     return null;
 };
 
-const mouseup = (lines, draging, e) => {
+const dragDone = (lines, draging, e) => {
     data.draging = false;
     draging.left = -1;
     let source = findIndex(lines, data.source);
@@ -86,7 +90,7 @@ const mouseup = (lines, draging, e) => {
 
 export {
     mouseover,
-    mousedown,
-    mousemove,
-    mouseup
+    dragStart,
+    dragMove,
+    dragDone
 };
