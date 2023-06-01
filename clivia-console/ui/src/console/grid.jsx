@@ -239,6 +239,11 @@ class Grid extends React.Component {
                 else
                     option.label = d[lname];
                 options[d[vname]] = option.label;
+                if (d.select && this.form) {
+                    let values = this.form.current.getFieldsValue();
+                    values[prop.name] = d[vname];
+                    this.form.current.setFieldsValue(values);
+                }
             }
             let dselect = this.state.dselect;
             dselect[prop.name] = options;

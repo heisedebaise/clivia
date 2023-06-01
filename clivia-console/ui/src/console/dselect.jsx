@@ -39,7 +39,8 @@ class DSelect extends React.Component {
         service(this.props.body.uri(this.props.uri, this.props.service), { ...parameter, ...this.props.parameter }).then(data => {
             if (data === null) return;
 
-            let options = []
+            let options = [];
+            let v = this.state.value;
             for (let option of data.list || data) {
                 let label = option[this.vname];
                 if (this.lname.indexOf('+') > -1)
@@ -51,8 +52,11 @@ class DSelect extends React.Component {
                     label: label,
                     value: option[this.vname]
                 });
+                if (option.select && !v)
+                    v = option[this.vname];
             }
-            this.setState({ options });
+            this.setState({ options, value: v });
+            this.props.form.value(this.props.name, v);
         });
     }
 
