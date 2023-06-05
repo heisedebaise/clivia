@@ -40,6 +40,16 @@ public class AliyunCtrl {
         return "";
     }
 
+    @Execute(name = "sync", validates = {
+            @Validate(validator = Validators.ID, parameter = "id", failureCode = 1),
+            @Validate(validator = Validators.SIGN)
+    })
+    public Object sync() {
+        aliyunService.sync(request.get("id"));
+
+        return "";
+    }
+
     @Execute(name = "delete", validates = {
             @Validate(validator = Validators.ID, parameter = "id", failureCode = 1),
             @Validate(validator = Validators.SIGN)

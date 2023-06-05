@@ -10,6 +10,8 @@ public interface AliyunService {
 
     void save(AliyunModel aliyun);
 
+    void sync(String id);
+
     void delete(String id);
 
     Config config(AliyunModel aliyun);

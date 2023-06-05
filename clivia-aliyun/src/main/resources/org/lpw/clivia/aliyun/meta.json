@@ -36,6 +36,9 @@
         "type": "modify"
       },
       {
+        "type": "sync"
+      },
+      {
         "type": "delete"
       }
     ],

@@ -7,6 +7,8 @@ import org.lpw.photon.util.Validator;
 import org.springframework.stereotype.Service;
 
 import javax.inject.Inject;
+import java.util.Optional;
+import java.util.Set;
 
 @Service(AliyunModel.NAME + ".service")
 public class AliyunServiceImpl implements AliyunService {
@@ -14,6 +16,8 @@ public class AliyunServiceImpl implements AliyunService {
     private Validator validator;
     @Inject
     private Pagination pagination;
+    @Inject
+    private Optional<Set<AliyunListener>> listeners;
     @Inject
     private AliyunDao aliyunDao;
 
@@ -28,6 +32,15 @@ public class AliyunServiceImpl implements AliyunService {
         if (model == null)
             aliyun.setId(null);
         aliyunDao.save(aliyun);
+    }
+
+    @Override
+    public void sync(String id) {
+        AliyunModel aliyun = aliyunDao.findById(id);
+        if (aliyun == null)
+            return;
+
+        listeners.ifPresent(set -> set.forEach(listener -> listener.sync(aliyun.getKey())));
     }
 
     @Override
