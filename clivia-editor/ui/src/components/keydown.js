@@ -1,3 +1,4 @@
+import { isComposition } from "./composition";
 import { newId } from "./generator";
 import { newText } from "./tag";
 import { getCursor, getCursorSingle, setCursor, setCursorSingle } from "./cursor";
@@ -11,6 +12,10 @@ const refs = {
 const setTag = (tag) => refs.tag = tag;
 
 const keydown = (lines, e) => {
+    if (isComposition())
+        return;
+
+    console.log(111);
     let id = findEventId(e);
     let index = findIndex(lines, id);
     let line = lines[index];

@@ -28,6 +28,7 @@ const dragStart = (vertical, draging, e) => {
     if (node === null)
         return;
 
+    node.children[0].blur();
     data.draging = true;
     data.source = node.children[0].id;
     draging.html = node.innerHTML;

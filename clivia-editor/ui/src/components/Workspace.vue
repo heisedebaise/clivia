@@ -4,8 +4,9 @@ import { service, url } from '../http';
 import { setAnnotation } from './handler';
 import { findIndex } from './line';
 import { focus } from './cursor';
+import { compositionStart, compositionEnd } from './composition';
 import { setTag, keydown } from './keydown';
-import { compositionstart, compositionend, keyup } from './keyup';
+import { keyup } from './keyup';
 import { mouseover, dragStart, dragMove, dragDone } from './drag';
 import { newText } from './tag';
 import { selectImage, uploadImage, imageName } from './image';
@@ -119,6 +120,11 @@ const findDragNode = () => {
     return null;
 };
 
+const compositionend = (e) => {
+    compositionEnd(e);
+    keyup(props.lines, workspace.value, tag.value, placeholder.value, e);
+};
+
 onMounted(() => {
     annotation();
     service('/editor/ai', {}, data => {
@@ -159,32 +165,28 @@ defineExpose({
                 <h1 v-if="line.tag === 'h1'" :id="line.id" contenteditable="true"
                     @focus.stop="focus(line, placeholder, $event)" @mouseup.stop="focus(line, placeholder, $event)"
                     @keydown="keydown(lines, $event)" @keyup="keyup(lines, workspace, tag, placeholder, $event)"
-                    @compositionstart="compositionstart"
-                    @compositionend="compositionend(lines, workspace, tag, placeholder, $event)">
+                    @compositionstart="compositionStart" @compositionend="compositionend">
                     <span v-for="(text, index) in line.texts" :class="text.style" :data-index="index">{{ text.text }}</span>
                     <span v-if="placeholder.id === line.id" class="placeholder">{{ placeholder.text }}</span>
                 </h1>
                 <h2 v-else-if="line.tag === 'h2'" :id="line.id" contenteditable="true"
                     @focus.stop="focus(line, placeholder, $event)" @mouseup.stop="focus(line, placeholder, $event)"
                     @keydown="keydown(lines, $event)" @keyup="keyup(lines, workspace, tag, placeholder, $event)"
-                    @compositionstart="compositionstart"
-                    @compositionend="compositionend(lines, workspace, tag, placeholder, $event)">
+                    @compositionstart="compositionStart" @compositionend="compositionend">
                     <span v-for="(text, index) in line.texts" :class="text.style" :data-index="index">{{ text.text }}</span>
                     <span v-if="placeholder.id === line.id" class="placeholder">{{ placeholder.text }}</span>
                 </h2>
                 <h3 v-else-if="line.tag === 'h3'" :id="line.id" contenteditable="true"
                     @focus.stop="focus(line, placeholder, $event)" @mouseup.stop="focus(line, placeholder, $event)"
                     @keydown="keydown(lines, $event)" @keyup="keyup(lines, workspace, tag, placeholder, $event)"
-                    @compositionstart="compositionstart"
-                    @compositionend="compositionend(lines, workspace, tag, placeholder, $event)">
+                    @compositionstart="compositionStart" @compositionend="compositionend">
                     <span v-for="(text, index) in line.texts" :class="text.style" :data-index="index">{{ text.text }}</span>
                     <span v-if="placeholder.id === line.id" class="placeholder">{{ placeholder.text }}</span>
                 </h3>
                 <p v-else-if="line.tag === 'text'" :id="line.id" contenteditable="true"
                     @focus.stop="focus(line, placeholder, $event)" @mouseup.stop="focus(line, placeholder, $event)"
                     @keydown="keydown(lines, $event)" @keyup="keyup(lines, workspace, tag, placeholder, $event)"
-                    @compositionstart="compositionstart"
-                    @compositionend="compositionend(lines, workspace, tag, placeholder, $event)">
+                    @compositionstart="compositionStart" @compositionend="compositionend">
                     <span v-for="(text, index) in line.texts" :class="text.style" :data-index="index">{{ text.text }}</span>
                     <span v-if="placeholder.id === line.id" class="placeholder">{{ placeholder.text }}</span>
                 </p>
