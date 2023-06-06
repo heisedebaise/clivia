@@ -430,6 +430,11 @@ public class UserServiceImpl implements UserService, ContextRefreshedListener {
     }
 
     @Override
+    public UserModel findByMobile(String mobile) {
+        return userDao.findByMobile(mobile);
+    }
+
+    @Override
     public JSONArray fill(JSONArray array, String[] names) {
         for (int i = 0, size = array.size(); i < size; i++) {
             JSONObject object = array.getJSONObject(i);

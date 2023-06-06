@@ -270,6 +270,14 @@ public interface UserService {
     JSONObject find(String idUidCode);
 
     /**
+     * 根据手机号获取用户信息。
+     *
+     * @param mobile 手机号。
+     * @return 用户信息；如果不存在则返回null。
+     */
+    UserModel findByMobile(String mobile);
+
+    /**
      * 填充数据。
      *
      * @param array 数组数组。

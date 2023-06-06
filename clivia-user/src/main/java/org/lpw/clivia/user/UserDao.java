@@ -19,6 +19,8 @@ interface UserDao {
 
     UserModel findByCode(String code);
 
+    UserModel findByMobile(String mobile);
+
     Set<String> ids(String idcard, String name, String nick, String mobile, String email, String weixin, String qq);
 
     int count();

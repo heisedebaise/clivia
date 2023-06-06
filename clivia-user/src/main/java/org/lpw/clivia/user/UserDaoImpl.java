@@ -77,6 +77,11 @@ class UserDaoImpl implements UserDao {
     }
 
     @Override
+    public UserModel findByMobile(String mobile) {
+        return liteOrm.findOne(new LiteQuery(UserModel.class).where("c_mobile=?"), new Object[]{mobile});
+    }
+
+    @Override
     public Set<String> ids(String idcard, String name, String nick, String mobile, String email, String weixin, String qq) {
         StringBuilder sb = new StringBuilder("select c_id from t_user where");
         List<Object> args = new ArrayList<>();
