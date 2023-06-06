@@ -9,6 +9,7 @@ CREATE TABLE t_aliyun
   c_region_id VARCHAR(255) DEFAULT NULL COMMENT '实例区域ID',
   c_endpoint VARCHAR(255) DEFAULT NULL COMMENT '实例区域域名',
   c_instance_name VARCHAR(255) DEFAULT NULL COMMENT '实例名称',
+  c_concurrency INT DEFAULT 0 COMMENT '每秒并发数',
 
   PRIMARY KEY pk(c_id) USING HASH,
   UNIQUE KEY uk_key(c_key) USING HASH

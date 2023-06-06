@@ -3,17 +3,17 @@ package org.lpw.clivia.aliyun;
 import com.aliyun.imagesearch20201214.Client;
 import com.aliyun.imagesearch20201214.models.*;
 import com.aliyun.teautil.models.RuntimeOptions;
-import org.lpw.photon.util.Context;
-import org.lpw.photon.util.Logger;
-import org.lpw.photon.util.Validator;
+import org.lpw.photon.util.Thread;
+import org.lpw.photon.util.*;
 import org.springframework.stereotype.Service;
 
 import javax.inject.Inject;
 import java.io.FileInputStream;
 import java.io.InputStream;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 @Service(AliyunModel.NAME + ".image")
 public class AliyunImageImpl implements AliyunImage {
@@ -22,58 +22,47 @@ public class AliyunImageImpl implements AliyunImage {
     @Inject
     private Validator validator;
     @Inject
+    private Numeric numeric;
+    @Inject
+    private Thread thread;
+    @Inject
     private Logger logger;
     @Inject
     private AliyunService aliyunService;
     @Inject
     private AliyunDao aliyunDao;
+    private final ExecutorService executorService = Executors.newSingleThreadExecutor();
 
     @Override
-    public boolean add(String key, String id, String name, String group, String uri) {
+    public boolean add(String key, String group, String id, String uri) {
         AliyunModel aliyun = aliyunDao.findByKey(key);
         if (aliyun == null)
             return false;
 
-        try {
-            AddImageAdvanceRequest request = new AddImageAdvanceRequest();
-            request.instanceName = aliyun.getInstanceName();
-            request.productId = id;
-            request.picName = name;
-            request.strAttr = group;
-            request.picContentObject = new FileInputStream(context.getAbsolutePath(uri));
-            AddImageResponseBody body = new Client(aliyunService.config(aliyun)).addImageAdvance(request, new RuntimeOptions()).getBody();
-            if (logger.isInfoEnable())
-                logger.info("添加阿里云图片搜索[{}:{}]。", body.success, body.message);
-
+        delete(aliyun, id);
+        if (validator.isEmpty(uri))
             return true;
-        } catch (Throwable throwable) {
-            logger.warn(throwable, "添加阿里云图片搜索时发生异常！");
 
-            return false;
-        }
-    }
-
-    @Override
-    public boolean add(String key, String id, String group, Map<String, String> map) {
-        AliyunModel aliyun = aliyunDao.findByKey(key);
-        if (aliyun == null)
-            return false;
-
-        try {
+        Future<Boolean> future = submit(aliyun, () -> {
             AddImageAdvanceRequest request = new AddImageAdvanceRequest();
             request.instanceName = aliyun.getInstanceName();
             request.productId = id;
             request.strAttr = group;
             Client client = new Client(aliyunService.config(aliyun));
-            for (String name : map.keySet()) {
-                request.picName = name;
-                request.picContentObject = new FileInputStream(context.getAbsolutePath(map.get(name)));
+            String[] uris = uri.split(",");
+            for (int i = 0; i < uris.length; i++) {
+                request.picName = numeric.toString(i);
+                request.picContentObject = new FileInputStream(context.getAbsolutePath(uris[i]));
                 AddImageResponseBody body = client.addImageAdvance(request, new RuntimeOptions()).getBody();
                 if (logger.isInfoEnable())
                     logger.info("添加阿里云图片搜索[{}:{}]。", body.success, body.message);
             }
 
             return true;
+        });
+
+        try {
+            return future.get();
         } catch (Throwable throwable) {
             logger.warn(throwable, "添加阿里云图片搜索时发生异常！");
 
@@ -98,10 +87,9 @@ public class AliyunImageImpl implements AliyunImage {
         if (aliyun == null)
             return null;
 
-        Set<String> set = new HashSet<>();
-        String id = null;
-        float s = 0;
-        try {
+        Future<String> future = submit(aliyun, () -> {
+            String id = null;
+            float s = 0;
             SearchImageByPicAdvanceRequest request = new SearchImageByPicAdvanceRequest();
             request.instanceName = aliyun.getInstanceName();
             request.filter = "str_attr=\"" + group + "\"";
@@ -114,31 +102,42 @@ public class AliyunImageImpl implements AliyunImage {
                 }
             }
             if (logger.isInfoEnable())
-                logger.info("搜索阿里云图片[{}:{}]。", group, set);
+                logger.info("搜索阿里云图片[{}:{}]。", group);
+
+            return s > score ? id : null;
+
+        });
+
+        try {
+            return future.get();
         } catch (Throwable throwable) {
             logger.warn(throwable, "搜索阿里云图片时发生异常！");
-        }
 
-        return s > score ? id : null;
+            return null;
+        }
     }
 
     @Override
-    public boolean delete(String key, String id, String name) {
+    public boolean delete(String key, String id) {
         AliyunModel aliyun = aliyunDao.findByKey(key);
-        if (aliyun == null)
-            return false;
 
-        try {
+        return aliyun != null && delete(aliyun, id);
+    }
+
+    private boolean delete(AliyunModel aliyun, String id) {
+        Future<Boolean> future = submit(aliyun, () -> {
             DeleteImageRequest request = new DeleteImageRequest();
             request.instanceName = aliyun.getInstanceName();
             request.productId = id;
-            if (!validator.isEmpty(name))
-                request.picName = name;
             DeleteImageResponseBody body = new Client(aliyunService.config(aliyun)).deleteImage(request).getBody();
             if (logger.isInfoEnable())
                 logger.info("删除阿里云图片搜索[{}:{}]。", body.success, body.message);
 
             return true;
+        });
+
+        try {
+            return future.get();
         } catch (Throwable throwable) {
             logger.warn(throwable, "删除阿里云图片搜索时发生异常！");
 
@@ -146,29 +145,15 @@ public class AliyunImageImpl implements AliyunImage {
         }
     }
 
-    @Override
-    public boolean delete(String key, String id, Set<String> names) {
-        AliyunModel aliyun = aliyunDao.findByKey(key);
-        if (aliyun == null)
-            return false;
+    private synchronized <T> Future<T> submit(AliyunModel aliyun, Callable<T> callable) {
+        Future<T> future = executorService.submit(callable);
+        executorService.submit(() -> sleep(aliyun));
 
-        try {
-            DeleteImageRequest request = new DeleteImageRequest();
-            request.instanceName = aliyun.getInstanceName();
-            request.productId = id;
-            Client client = new Client(aliyunService.config(aliyun));
-            for (String name : names) {
-                request.picName = name;
-                DeleteImageResponseBody body = client.deleteImage(request).getBody();
-                if (logger.isInfoEnable())
-                    logger.info("删除阿里云图片搜索[{}:{}]。", body.success, body.message);
-            }
+        return future;
+    }
 
-            return true;
-        } catch (Throwable throwable) {
-            logger.warn(throwable, "添加阿里云图片搜索时发生异常！");
-
-            return false;
-        }
+    private void sleep(AliyunModel aliyun) {
+        if (aliyun.getConcurrency() > 0)
+            thread.sleep(1000 / aliyun.getConcurrency(), TimeUnit.MilliSecond);
     }
 }

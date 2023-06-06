@@ -24,6 +24,7 @@ public class AliyunModel extends ModelSupport {
     private String regionId; // 实例区域ID
     private String endpoint; // 实例区域域名
     private String instanceName; // 实例名称
+    private int concurrency; // 每秒并发数
 
     @Jsonable
     @Column(name = "c_key")
@@ -93,5 +94,15 @@ public class AliyunModel extends ModelSupport {
 
     public void setInstanceName(String instanceName) {
         this.instanceName = instanceName;
+    }
+
+    @Jsonable
+    @Column(name = "c_concurrency")
+    public int getConcurrency() {
+        return concurrency;
+    }
+
+    public void setConcurrency(int concurrency) {
+        this.concurrency = concurrency;
     }
 }

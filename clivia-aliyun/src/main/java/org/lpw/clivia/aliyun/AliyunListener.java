@@ -1,5 +1,7 @@
 package org.lpw.clivia.aliyun;
 
+import java.util.Map;
+
 public interface AliyunListener {
-    void sync(String key);
+    Map<String, String> sync(String key);
 }

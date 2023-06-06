@@ -22,6 +22,9 @@
     },
     {
       "name": "instanceName"
+    },
+    {
+      "name": "concurrency"
     }
   ],
   "query": {
@@ -36,7 +39,8 @@
         "type": "modify"
       },
       {
-        "type": "sync"
+        "service": "sync",
+        "reload": true
       },
       {
         "type": "delete"
