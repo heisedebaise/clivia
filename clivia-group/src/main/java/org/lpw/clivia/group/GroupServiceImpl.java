@@ -382,6 +382,7 @@ public class GroupServiceImpl implements GroupService, UserListener {
             return 2;
 
         memberService.bans(id, ban);
+        listeners.ifPresent(set -> set.forEach(listener -> listener.groupBans(group, ban == 1)));
 
         return 0;
     }
@@ -396,7 +397,8 @@ public class GroupServiceImpl implements GroupService, UserListener {
         if (group == null)
             return 2;
 
-        memberService.state(mid, ban);
+        MemberModel model = memberService.ban(mid, ban);
+        listeners.ifPresent(set -> set.forEach(listener -> listener.groupBan(group, model, ban == 1)));
 
         return 0;
     }

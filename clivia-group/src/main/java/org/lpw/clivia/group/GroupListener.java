@@ -32,6 +32,23 @@ public interface GroupListener {
     void groupJoin(GroupModel group, MemberModel member);
 
     /**
+     * 全部禁言。
+     *
+     * @param group 群组。
+     * @param ban   true-禁言；false-解禁。
+     */
+    void groupBans(GroupModel group, boolean ban);
+
+    /**
+     * 禁言。
+     *
+     * @param group  群组。
+     * @param member 成员。
+     * @param ban    true-禁言；false-解禁。
+     */
+    void groupBan(GroupModel group, MemberModel member, boolean ban);
+
+    /**
      * 退出群。
      *
      * @param group  群组。

@@ -145,6 +145,17 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
+    public MemberModel ban(String id, int ban) {
+        MemberModel member = memberDao.findById(id);
+        if (member != null) {
+            member.setState(ban);
+            memberDao.save(member);
+        }
+
+        return member;
+    }
+
+    @Override
     public void delete(String group) {
         memberDao.delete(group);
     }

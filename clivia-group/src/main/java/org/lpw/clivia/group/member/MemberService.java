@@ -36,6 +36,8 @@ public interface MemberService {
 
     void bans(String group, int ban);
 
+    MemberModel ban(String id, int ban);
+
     void delete(String group);
 
     MemberModel delete(String group, String user);
