@@ -15,7 +15,6 @@ const keydown = (lines, e) => {
     if (isComposition())
         return;
 
-    console.log(111);
     let id = findEventId(e);
     let index = findIndex(lines, id);
     let line = lines[index];

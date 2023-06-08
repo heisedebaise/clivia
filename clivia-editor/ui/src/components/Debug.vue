@@ -18,9 +18,9 @@ window.debug = (message) => text.value = { index: text.value.index + 1, message 
     position: fixed;
     left: 0;
     right: 0;
-    top: 0;
+    bottom: 0;
     background-color: var(--background);
-    border-bottom: 1px solid var(--border);
+    border-top: 1px solid var(--border);
     padding: 2vw;
 }
 </style>

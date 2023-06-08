@@ -2,11 +2,13 @@
 import { ref, onMounted, onUnmounted } from 'vue';
 import { post, service } from './http';
 import { now } from './components/time';
+import { newText } from './components/tag';
 import { historyPut } from './components/history';
 import Toolbar from './components/Toolbar.vue';
 import Workspace from './components/Workspace.vue';
 import Readonly from './components/Readonly.vue';
-import { newText } from './components/tag';
+
+window.safari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
 
 const mode = ref(0);
 const workspace = ref(null);

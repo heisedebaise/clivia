@@ -19,28 +19,36 @@ const focus = (line, placeholder, e) => {
     } else {
         if (placeholder)
             placeholder.id = '';
-        setTimeout(() => {
-            let range = getSelection().getRangeAt(0);
-            if (range.startContainer.id && range.startContainer.id.indexOf('id') === 0) {
-                let offset = range.startContainer.innerText.length;
-                data.cursor = [0, offset, 0, offset];
-            } else {
-                data.cursor = [
-                    getIndex(range.startContainer),
-                    range.startOffset,
-                    getIndex(range.endContainer),
-                    range.endOffset
-                ];
-            }
-            for (let select of data.select)
-                select(!range.collapsed);
-        }, 250);
+        setTimeout(getCursorSync, 250);
     }
+};
+
+const focusLast = (lines) => {
+    document.querySelector('#' + lines[lines.length - 1].id).focus();
 };
 
 const getFocusId = () => data.focus;
 
 const getCursor = () => data.cursor;
+
+const getCursorSync = () => {
+    let range = getSelection().getRangeAt(0);
+    if (range.startContainer.id && range.startContainer.id.indexOf('id') === 0) {
+        let offset = range.startContainer.innerText.length;
+        data.cursor = [0, offset, 0, offset];
+    } else {
+        data.cursor = [
+            getIndex(range.startContainer),
+            range.startOffset,
+            getIndex(range.endContainer),
+            range.endOffset
+        ];
+    }
+    for (let select of data.select)
+        select(!range.collapsed);
+
+    return data.cursor;
+};
 
 const getCursorSingle = (line) => {
     let cursor = getCursor();
@@ -68,9 +76,15 @@ const setCursor = (id, cursor) => {
         if (cursor[0] > cursor[2])
             cursor[0] = cursor[2];
         let start = node.children[cursor[0]];
+        if (!start)
+            return;
+
         if (cursor[1] > start.innerHTML.length)
             cursor[1] = start.innerHTML.length;
         let end = node.children[cursor[2]];
+        if (!end)
+            return;
+
         if (cursor[3] > end.innerHTML.length)
             cursor[3] = end.innerHTML.length;
         let range = document.createRange();
@@ -105,8 +119,10 @@ const bindSelect = (func) => {
 
 export {
     focus,
+    focusLast,
     getFocusId,
     getCursor,
+    getCursorSync,
     getCursorSingle,
     setCursor,
     setCursorSingle,

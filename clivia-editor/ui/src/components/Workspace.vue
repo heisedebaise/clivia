@@ -1,9 +1,10 @@
 <script setup>
 import { ref, onMounted } from 'vue';
 import { service, url } from '../http';
+import { message } from './locale';
 import { setAnnotation } from './handler';
-import { findIndex } from './line';
-import { focus } from './cursor';
+import { findIndex, isEmpty } from './line';
+import { focus, focusLast } from './cursor';
 import { compositionStart, compositionEnd } from './composition';
 import { setTag, keydown } from './keydown';
 import { keyup } from './keyup';
@@ -126,6 +127,12 @@ const compositionend = (e) => {
 };
 
 onMounted(() => {
+    if (props.lines.length === 1 && isEmpty(props.lines[0].texts)) {
+        placeholder.value = {
+            id: props.lines[0].id,
+            text: message('placeholder.' + props.lines[0].tag),
+        };
+    }
     annotation();
     service('/editor/ai', {}, data => {
         if (data) {
@@ -160,7 +167,7 @@ defineExpose({
             </div>
             <div></div>
         </div>
-        <div :class="'lines lines-' + (vertical ? 'vertical' : 'horizontal')" @mousemove.stop="">
+        <div :class="'lines lines-' + (vertical ? 'vertical' : 'horizontal')" @click.self="focusLast(lines)">
             <div v-for="line in lines" class="line" @mouseover="mouseover(vertical, dragable, $event)">
                 <h1 v-if="line.tag === 'h1'" :id="line.id" contenteditable="true"
                     @focus.stop="focus(line, placeholder, $event)" @mouseup.stop="focus(line, placeholder, $event)"
