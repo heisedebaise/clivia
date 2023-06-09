@@ -62,7 +62,7 @@ const image = (e) => {
 };
 
 onMounted(() => {
-    setTimeout(() => description.value.focus(), 100);
+    setTimeout(() => description.value.focus(), 250);
 });
 </script>
 

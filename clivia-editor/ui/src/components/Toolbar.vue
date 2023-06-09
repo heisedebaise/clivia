@@ -5,6 +5,7 @@ import { bindSelect } from './cursor';
 import { bold, italic, underline, linethrough } from './style';
 import { newImage, newDivider } from './tag';
 import { historyListener, historyBack, historyForward } from './history';
+import { direction } from './workspace';
 import Icon from './Icon.vue';
 import Tag from './Tag.vue';
 import Annotation from './Annotation.vue';
@@ -30,12 +31,12 @@ const enable = ref({
 
 const undo = () => {
     if (enable.value.undo)
-        emits('icon', 'history', historyBack());
+        historyBack();
 };
 
 const redo = () => {
     if (enable.value.redo)
-        emits('icon', 'history', historyForward());
+        historyForward();
 };
 
 const tag = ref(null);
@@ -105,7 +106,7 @@ onMounted(() => {
         <Icon name="link" :enable="enable.link" @click="$emit('icon', 'link')" />
         <Icon name="backlog" :enable="enable.backlog" @click="$emit('icon', 'backlog')" />
         <Icon name="image" :enable="enable.image" @click="newImage()" />
-        <Icon name="direction" :enable="enable.direction" @click="$emit('icon', 'direction')" />
+        <Icon name="direction" :enable="enable.direction" @click="direction" />
         <div></div>
     </div>
     <Tag ref="tag" :names="['h1', 'h2', 'h3']" />

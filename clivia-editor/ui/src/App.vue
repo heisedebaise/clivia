@@ -9,10 +9,9 @@ import Toolbar from './components/Toolbar.vue';
 import Workspace from './components/Workspace.vue';
 import Readonly from './components/Readonly.vue';
 
-window.safari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
+window.safari = /^((?!chrome|android).)*(safari|firefox)/i.test(navigator.userAgent);
 
 const mode = ref(0);
-const workspace = ref(null);
 const param = {
   sync: 0,
   id: '',
@@ -21,14 +20,6 @@ const timer = {
   interval: 0,
   running: false,
   time: 0,
-};
-
-const toolbar = (action, data) => {
-  if (action === 'history') {
-    if (data)
-      store.lines = JSON.parse(data);
-  } else
-    workspace.value.toolbar(action);
 };
 
 onMounted(() => {
@@ -54,8 +45,6 @@ onMounted(() => {
     store.lines = json.data;
     historyPut(store.lines);
     mode.value = param.readonly === 'true' ? 2 : 1;
-    if (workspace.value)
-      workspace.value.annotation();
   });
 
   timer.interval = setInterval(() => window.put(false), 1000);
@@ -100,8 +89,8 @@ onUnmounted(() => {
 </script>
 
 <template>
-  <Workspace v-if="mode === 1" ref="workspace" />
-  <Toolbar v-if="mode === 1" @icon="toolbar" />
+  <Workspace v-if="mode === 1" />
+  <Toolbar v-if="mode === 1" />
   <Readonly v-if="mode === 2" />
 </template>
 

@@ -1,3 +1,4 @@
+import { store } from "../store";
 const history = {
     list: [],
     index: 0,
@@ -20,22 +21,20 @@ const historyPut = (lines) => {
 
 const historyBack = () => {
     if (history.index <= 0)
-        return null;
+        return;
 
     history.index--;
     history.listener(history.index > 0, history.index < history.list.length - 1);
-
-    return history.list[history.index];
+    store.lines = JSON.parse(history.list[history.index]);
 };
 
 const historyForward = () => {
     if (history.index >= history.list.length - 1)
-        return null;
+        return;
 
     history.index++;
     history.listener(history.index > 0, history.index < history.list.length - 1);
-
-    return history.list[history.index];
+    store.lines = JSON.parse(history.list[history.index]);
 };
 
 export {

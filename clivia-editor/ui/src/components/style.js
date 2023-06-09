@@ -1,4 +1,3 @@
-import { store } from '../store';
 import { now } from './time';
 import { getFocusId, getCursor, setCursor } from "./cursor";
 import { findById, splitTexts, mergeTexts } from "./line";

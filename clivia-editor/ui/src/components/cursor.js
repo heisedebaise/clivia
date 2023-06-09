@@ -1,11 +1,11 @@
+import { nextTick } from 'vue';
 import { store } from '../store';
 import { findEventId } from "./event";
 import { isEmpty } from "./line";
-import { message } from "./locale";
 
 const data = {
     focus: null,
-    cursor: null,
+    cursor: [0, 0, 0, 0],
     select: [],
 };
 
@@ -23,7 +23,7 @@ const focus = (index, e) => {
     } else {
         if (line)
             store.placeholder = '';
-        setTimeout(getCursorSync, 250);
+        nextTick(getCursorSync);
     }
 };
 
@@ -36,7 +36,11 @@ const getFocusId = () => data.focus;
 const getCursor = () => data.cursor;
 
 const getCursorSync = () => {
-    let range = getSelection().getRangeAt(0);
+    let selection = getSelection();
+    if (selection.rangeCount === 0)
+        return null;
+
+    let range = selection.getRangeAt(0);
     if (range.startContainer.id && range.startContainer.id.indexOf('id') === 0) {
         let offset = range.startContainer.innerText.length;
         data.cursor = [0, offset, 0, offset];
@@ -64,7 +68,7 @@ const getCursorSingle = (line) => {
 };
 
 const setCursor = (id, cursor) => {
-    setTimeout(() => {
+    nextTick(() => {
         if (!id)
             id = getFocusId();
         let node = document.querySelector('#' + id);
@@ -97,7 +101,7 @@ const setCursor = (id, cursor) => {
         let selection = getSelection();
         selection.removeAllRanges();
         selection.addRange(range);
-    }, 10);
+    });
 };
 
 const setCursorSingle = (line, position) => {

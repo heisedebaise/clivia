@@ -1,5 +1,5 @@
 <script setup>
-import { ref, onMounted } from 'vue';
+import { ref, nextTick, onMounted } from 'vue';
 import { store } from '../store';
 import { service, url } from '../http';
 import { message } from './locale';
@@ -12,16 +12,9 @@ import { keyup } from './keyup';
 import { mouseover, dragStart, dragMove, dragDone } from './drag';
 import { newText } from './tag';
 import { selectImage, uploadImage, imageName } from './image';
+import { setDirection } from './workspace';
 import Icon from './Icon.vue';
 import Tag from './Tag.vue';
-
-const toolbar = (action) => {
-    if (action === 'direction') {
-        store.vertical = !store.vertical;
-        dragable.value = {};
-        annotation();
-    }
-};
 
 const workspace = ref(null);
 const dragable = ref({});
@@ -35,8 +28,15 @@ const tagNames = ref(['h1', 'h2', 'h3', 'text']);
 const imageUploader = ref(null);
 const annotations = ref([]);
 
+const direction = (action) => {
+    store.vertical = !store.vertical;
+    dragable.value = {};
+    annotation();
+};
+setDirection(direction);
+
 const annotation = () => {
-    setTimeout(() => {
+    nextTick(() => {
         let index = 0;
         let scrollTop = workspace.value.scrollTop;
         let scrollLeft = workspace.value.scrollLeft;
@@ -64,8 +64,8 @@ const annotation = () => {
             }
         }
         if (index < annotations.value.length)
-            annotations.value.splice(index + 1, annotations.value.length - index);
-    }, 10);
+            annotations.value.splice(index, annotations.value.length - index);
+    });
 };
 setAnnotation(annotation);
 
@@ -128,11 +128,6 @@ onMounted(() => {
             tagNames.value.push('ai-image');
         }
     });
-});
-
-defineExpose({
-    toolbar,
-    annotation,
 });
 </script>
 

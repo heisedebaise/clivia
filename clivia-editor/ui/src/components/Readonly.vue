@@ -1,5 +1,5 @@
 <script setup>
-import { ref, onMounted } from 'vue';
+import { ref, nextTick, onMounted } from 'vue';
 import { store } from '../store';
 import { url } from '../http';
 import Icon from './Icon.vue';
@@ -8,7 +8,7 @@ const readonly = ref(null);
 const annotations = ref([]);
 
 const annotation = () => {
-    setTimeout(() => {
+    nextTick(() => {
         let index = 0;
         let scrollTop = readonly.value.scrollTop;
         let scrollLeft = readonly.value.scrollLeft;
@@ -37,14 +37,14 @@ const annotation = () => {
         }
         if (index < annotations.value.length)
             annotations.value.splice(index + 1, annotations.value.length - index);
-    }, 10);
+    });
 };
 
 const direction = () => {
     store.vertical = !store.vertical;
     annotation();
     if (store.vertical)
-        setTimeout(() => readonly.value.scrollLeft = readonly.value.scrollWidth, 10);
+        nextTick(() => readonly.value.scrollLeft = readonly.value.scrollWidth);
 };
 
 onMounted(annotation);
