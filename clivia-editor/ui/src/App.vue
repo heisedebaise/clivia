@@ -1,5 +1,6 @@
 <script setup>
 import { ref, onMounted, onUnmounted } from 'vue';
+import { store } from './store';
 import { post, service } from './http';
 import { now } from './components/time';
 import { newText } from './components/tag';
@@ -21,12 +22,11 @@ const timer = {
   running: false,
   time: 0,
 };
-const lines = ref([]);
 
 const toolbar = (action, data) => {
   if (action === 'history') {
     if (data)
-      lines.value = JSON.parse(data);
+      store.lines = JSON.parse(data);
   } else
     workspace.value.toolbar(action);
 };
@@ -51,8 +51,8 @@ onMounted(() => {
       id += ',' + line.id;
     }
     param.id = id.substring(1);
-    lines.value = json.data;
-    historyPut(lines.value);
+    store.lines = json.data;
+    historyPut(store.lines);
     mode.value = param.readonly === 'true' ? 2 : 1;
     if (workspace.value)
       workspace.value.annotation();
@@ -69,7 +69,7 @@ window.put = (always) => {
   let id = '';
   let array = [];
   let time = 0;
-  for (let line of lines.value) {
+  for (let line of store.lines) {
     id += ',' + line.id;
     if (line.time && line.time > timer.time) {
       array.push(line);
@@ -84,7 +84,7 @@ window.put = (always) => {
     return;
   }
 
-  historyPut(lines.value);
+  historyPut(store.lines);
   param.id = id;
   param.lines = JSON.stringify(array);
   service('/editor/put', param, data => {
@@ -100,9 +100,9 @@ onUnmounted(() => {
 </script>
 
 <template>
-  <Workspace v-if="mode === 1" ref="workspace" :lines="lines" />
-  <Toolbar v-if="mode === 1" :lines="lines" @icon="toolbar" />
-  <Readonly v-if="mode === 2" :lines="lines" />
+  <Workspace v-if="mode === 1" ref="workspace" />
+  <Toolbar v-if="mode === 1" @icon="toolbar" />
+  <Readonly v-if="mode === 2" />
 </template>
 
 <style>

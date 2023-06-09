@@ -1,3 +1,4 @@
+import { store } from '../store';
 import { findEventId } from "./event";
 import { isEmpty } from "./line";
 import { message } from "./locale";
@@ -8,23 +9,26 @@ const data = {
     select: [],
 };
 
-const focus = (line, placeholder, e) => {
+const focus = (index, e) => {
     if (e)
         data.focus = findEventId(e);
 
-    if (line && placeholder && isEmpty(line.texts)) {
-        placeholder.id = line.id;
-        placeholder.text = message('placeholder.' + line.tag);
+    let line = null;
+    if (index || index === 0)
+        line = store.lines[index];
+
+    if (line && isEmpty(line.texts)) {
+        store.placeholder = line.id;
         setCursor(line.id, [0, 0, 0, 0]);
     } else {
-        if (placeholder)
-            placeholder.id = '';
+        if (line)
+            store.placeholder = '';
         setTimeout(getCursorSync, 250);
     }
 };
 
-const focusLast = (lines) => {
-    document.querySelector('#' + lines[lines.length - 1].id).focus();
+const focusLast = () => {
+    document.querySelector('#' + store.lines[store.lines.length - 1].id).focus();
 };
 
 const getFocusId = () => data.focus;

@@ -1,3 +1,4 @@
+import { store } from '../store';
 import { now } from './time';
 import { findIdNode } from "./event";
 import { findIndex } from "./line";
@@ -73,19 +74,19 @@ const findDragingNode = (vertical, e) => {
     return null;
 };
 
-const dragDone = (lines, draging, e) => {
+const dragDone = (draging, e) => {
     data.draging = false;
     draging.left = -1;
-    let source = findIndex(lines, data.source);
-    let target = findIndex(lines, data.target);
-    let line = lines[source];
+    let source = findIndex(data.source);
+    let target = findIndex(data.target);
+    let line = store.lines[source];
     line.time = now();
     if (source > target) {
-        lines.splice(source, 1);
-        lines.splice(target, 0, line);
+        store.lines.splice(source, 1);
+        store.lines.splice(target, 0, line);
     } else if (source < target) {
-        lines.splice(target, 0, line);
-        lines.splice(source, 1);
+        store.lines.splice(target, 0, line);
+        store.lines.splice(source, 1);
     }
 };
 

@@ -2,13 +2,9 @@
 import { ref } from 'vue';
 import { now } from './time';
 import { message } from './locale';
-import { annotation } from './handler';
+import { annotation } from './annotation';
 import { getFocusId, getCursor, setCursor } from './cursor';
 import { findById, splitTexts, isEmpty } from './line';
-
-const props = defineProps({
-    lines: Array
-})
 
 const position = ref({
     left: -1,
@@ -27,7 +23,7 @@ const set = (e) => {
     if (id === null)
         return;
 
-    let line = findById(props.lines, id);
+    let line = findById(id);
     if (line == null)
         return;
 

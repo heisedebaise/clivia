@@ -1,8 +1,9 @@
 <script setup>
 import { ref, onMounted } from 'vue';
+import { store } from '../store';
 import { service, url } from '../http';
 import { message } from './locale';
-import { setAnnotation } from './handler';
+import { setAnnotation } from './annotation';
 import { findIndex, isEmpty } from './line';
 import { focus, focusLast } from './cursor';
 import { compositionStart, compositionEnd } from './composition';
@@ -14,25 +15,15 @@ import { selectImage, uploadImage, imageName } from './image';
 import Icon from './Icon.vue';
 import Tag from './Tag.vue';
 
-const props = defineProps({
-    lines: Array,
-});
-
-const vertical = ref(false);
-
 const toolbar = (action) => {
     if (action === 'direction') {
-        vertical.value = !vertical.value;
+        store.vertical = !store.vertical;
         dragable.value = {};
         annotation();
     }
 };
 
 const workspace = ref(null);
-const placeholder = ref({
-    id: '',
-    text: '',
-});
 const dragable = ref({});
 const draging = ref({
     left: -1,
@@ -49,7 +40,7 @@ const annotation = () => {
         let index = 0;
         let scrollTop = workspace.value.scrollTop;
         let scrollLeft = workspace.value.scrollLeft;
-        for (let line of props.lines) {
+        for (let line of store.lines) {
             if (!line.texts)
                 continue;
 
@@ -87,10 +78,10 @@ const del = (e) => {
     if (node === null)
         return;
 
-    if (props.lines.length === 1) {
-        props.lines.splice(0, 1, newText());
+    if (store.lines.length === 1) {
+        store.lines.splice(0, 1, newText());
     } else {
-        props.lines.splice(findIndex(props.lines, node.id), 1);
+        store.lines.splice(findIndex(node.id), 1);
     }
     annotation();
 };
@@ -106,9 +97,9 @@ const plus = (e) => {
 };
 
 const findDragNode = () => {
-    for (let line of props.lines) {
+    for (let line of store.lines) {
         let node = document.querySelector('#' + line.id);
-        if (vertical.value) {
+        if (store.vertical) {
             let left = node.offsetLeft - 16;
             if (dragable.value.left >= left && dragable.value.left < left + node.offsetWidth)
                 return node;
@@ -123,15 +114,12 @@ const findDragNode = () => {
 
 const compositionend = (e) => {
     compositionEnd(e);
-    keyup(props.lines, workspace.value, tag.value, placeholder.value, e);
+    keyup(workspace.value, tag.value, e);
 };
 
 onMounted(() => {
-    if (props.lines.length === 1 && isEmpty(props.lines[0].texts)) {
-        placeholder.value = {
-            id: props.lines[0].id,
-            text: message('placeholder.' + props.lines[0].tag),
-        };
+    if (store.lines.length === 1 && isEmpty(store.lines[0].texts)) {
+        store.placeholder = store.lines[0].id;
     }
     annotation();
     service('/editor/ai', {}, data => {
@@ -149,9 +137,9 @@ defineExpose({
 </script>
 
 <template>
-    <div ref="workspace" :class="'workspace workspace-' + (vertical ? 'vertical' : 'horizontal')" @scroll="scroll"
-        @mousemove="dragMove(vertical, dragable, draging, $event)" @mouseup="dragDone(lines, draging, $event)"
-        @touchmove="dragMove(vertical, dragable, draging, $event)" @touchend="dragDone(lines, draging, $event)">
+    <div ref="workspace" :class="'workspace workspace-' + (store.vertical ? 'vertical' : 'horizontal')" @scroll="scroll"
+        @mousemove="dragMove(vertical, dragable, draging, $event)" @mouseup="dragDone(draging, $event)"
+        @touchmove="dragMove(vertical, dragable, draging, $event)" @touchend="dragDone(draging, $event)">
         <div v-if="dragable.left || dragable.top" class="dragable"
             :style="{ left: dragable.left + 'px', top: dragable.top + 'px', width: dragable.width + 'px', height: dragable.height + 'px' }">
             <div></div>
@@ -167,41 +155,37 @@ defineExpose({
             </div>
             <div></div>
         </div>
-        <div :class="'lines lines-' + (vertical ? 'vertical' : 'horizontal')" @click.self="focusLast(lines)">
-            <div v-for="line in lines" class="line" @mouseover="mouseover(vertical, dragable, $event)">
-                <h1 v-if="line.tag === 'h1'" :id="line.id" contenteditable="true"
-                    @focus.stop="focus(line, placeholder, $event)" @mouseup.stop="focus(line, placeholder, $event)"
-                    @keydown="keydown(lines, $event)" @keyup="keyup(lines, workspace, tag, placeholder, $event)"
+        <div :class="'lines lines-' + (store.vertical ? 'vertical' : 'horizontal')" @click.self="focusLast">
+            <div v-for="(line, index) in store.lines" class="line" @mouseover="mouseover(vertical, dragable, $event)">
+                <h1 v-if="line.tag === 'h1'" :id="line.id" contenteditable="true" @focus.stop="focus(index, $event)"
+                    @mouseup.stop="focus(index, $event)" @keydown="keydown" @keyup="keyup(workspace, tag, $event)"
                     @compositionstart="compositionStart" @compositionend="compositionend">
-                    <span v-for="(text, index) in line.texts" :class="text.style" :data-index="index">{{ text.text }}</span>
-                    <span v-if="placeholder.id === line.id" class="placeholder">{{ placeholder.text }}</span>
+                    <span v-for="(text, i) in line.texts" :class="text.style" :data-index="i">{{ text.text }}</span>
+                    <span v-if="line.id === store.placeholder" class="placeholder">{{ message('placeholder.h1') }}</span>
                 </h1>
-                <h2 v-else-if="line.tag === 'h2'" :id="line.id" contenteditable="true"
-                    @focus.stop="focus(line, placeholder, $event)" @mouseup.stop="focus(line, placeholder, $event)"
-                    @keydown="keydown(lines, $event)" @keyup="keyup(lines, workspace, tag, placeholder, $event)"
+                <h2 v-else-if="line.tag === 'h2'" :id="line.id" contenteditable="true" @focus.stop="focus(index, $event)"
+                    @mouseup.stop="focus(index, $event)" @keydown="keydown" @keyup="keyup(workspace, tag, $event)"
                     @compositionstart="compositionStart" @compositionend="compositionend">
-                    <span v-for="(text, index) in line.texts" :class="text.style" :data-index="index">{{ text.text }}</span>
-                    <span v-if="placeholder.id === line.id" class="placeholder">{{ placeholder.text }}</span>
+                    <span v-for="(text, i) in line.texts" :class="text.style" :data-index="i">{{ text.text }}</span>
+                    <span v-if="line.id === store.placeholder" class="placeholder">{{ message('placeholder.h2') }}</span>
                 </h2>
-                <h3 v-else-if="line.tag === 'h3'" :id="line.id" contenteditable="true"
-                    @focus.stop="focus(line, placeholder, $event)" @mouseup.stop="focus(line, placeholder, $event)"
-                    @keydown="keydown(lines, $event)" @keyup="keyup(lines, workspace, tag, placeholder, $event)"
+                <h3 v-else-if="line.tag === 'h3'" :id="line.id" contenteditable="true" @focus.stop="focus(index, $event)"
+                    @mouseup.stop="focus(index, $event)" @keydown="keydown" @keyup="keyup(workspace, tag, $event)"
                     @compositionstart="compositionStart" @compositionend="compositionend">
-                    <span v-for="(text, index) in line.texts" :class="text.style" :data-index="index">{{ text.text }}</span>
-                    <span v-if="placeholder.id === line.id" class="placeholder">{{ placeholder.text }}</span>
+                    <span v-for="(text, i) in line.texts" :class="text.style" :data-index="i">{{ text.text }}</span>
+                    <span v-if="line.id === store.placeholder" class="placeholder">{{ message('placeholder.h3') }}</span>
                 </h3>
-                <p v-else-if="line.tag === 'text'" :id="line.id" contenteditable="true"
-                    @focus.stop="focus(line, placeholder, $event)" @mouseup.stop="focus(line, placeholder, $event)"
-                    @keydown="keydown(lines, $event)" @keyup="keyup(lines, workspace, tag, placeholder, $event)"
+                <p v-else-if="line.tag === 'text'" :id="line.id" contenteditable="true" @focus.stop="focus(index, $event)"
+                    @mouseup.stop="focus(index, $event)" @keydown="keydown" @keyup="keyup(workspace, tag, $event)"
                     @compositionstart="compositionStart" @compositionend="compositionend">
-                    <span v-for="(text, index) in line.texts" :class="text.style" :data-index="index">{{ text.text }}</span>
-                    <span v-if="placeholder.id === line.id" class="placeholder">{{ placeholder.text }}</span>
+                    <span v-for="(text, i) in line.texts" :class="text.style" :data-index="i">{{ text.text }}</span>
+                    <span v-if="line.id === store.placeholder" class="placeholder">{{ message('placeholder.text') }}</span>
                 </p>
                 <div v-else-if="line.tag === 'image'" :id="line.id" class="image">
                     <div v-if="line.uploading" class="uploading">{{ line.uploading }}</div>
                     <div v-else-if="line.path" class="view">
                         <img :src="url(line.path)" draggable="false" />
-                        <div class="name" contenteditable="true" @keyup.stop="imageName(lines, $event)">{{ line.name }}
+                        <div class="name" contenteditable="true" @keyup.stop="imageName">{{ line.name }}
                         </div>
                     </div>
                     <div v-else class="select" @click="selectImage(imageUploader, $event)">{{ line.upload }}</div>
@@ -212,12 +196,12 @@ defineExpose({
             </div>
         </div>
     </div>
-    <div v-if="draging.left >= 0 && draging.top >= 0" :class="'draging draging-' + (vertical ? 'vertical' : 'horizontal')"
+    <div v-if="draging.left >= 0 && draging.top >= 0"
+        :class="'draging draging-' + (store.vertical ? 'vertical' : 'horizontal')"
         :style="{ left: draging.left + 'px', top: draging.top + 'px' }" v-html="draging.html"></div>
-    <Tag ref="tag" :names="tagNames" :lines="lines" :vertical="vertical" />
-    <input ref="imageUploader" class="image-uploader" type="file" accept="image/*" multiple
-        @change="uploadImage(lines, $event)" />
-    <div v-for="annotation in annotations" :class="'annotation-' + (vertical ? 'vertical' : 'horizontal')"
+    <Tag ref="tag" :names="tagNames" />
+    <input ref="imageUploader" class="image-uploader" type="file" accept="image/*" multiple @change="uploadImage" />
+    <div v-for="annotation in annotations" :class="'annotation-' + (store.vertical ? 'vertical' : 'horizontal')"
         :style="{ left: annotation.left + 'px', top: annotation.top + 'px' }">{{ annotation.text }}</div>
 </template>
 

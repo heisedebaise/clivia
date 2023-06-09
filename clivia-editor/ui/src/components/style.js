@@ -1,16 +1,17 @@
+import { store } from '../store';
 import { now } from './time';
 import { getFocusId, getCursor, setCursor } from "./cursor";
 import { findById, splitTexts, mergeTexts } from "./line";
 
-const bold = (lines) => setStyleName(lines, 'bold');
+const bold = () => setStyleName('bold');
 
-const italic = (lines) => setStyleName(lines, 'italic');
+const italic = () => setStyleName('italic');
 
-const underline = (lines) => setStyleName(lines, 'underline');
+const underline = () => setStyleName('underline');
 
-const linethrough = (lines) => setStyleName(lines, 'linethrough');
+const linethrough = () => setStyleName('linethrough');
 
-const setStyleName = (lines, name) => {
+const setStyleName = (name) => {
     let id = getFocusId();
     if (id === null)
         return;
@@ -19,7 +20,7 @@ const setStyleName = (lines, name) => {
     if (cursor[0] === cursor[2] && cursor[1] === cursor[3])
         return;
 
-    let line = findById(lines, id);
+    let line = findById(id);
     if (line === null)
         return;
 

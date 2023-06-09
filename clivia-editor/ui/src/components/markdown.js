@@ -1,4 +1,4 @@
-import { annotation } from "./handler";
+import { annotation } from "./annotation";
 import { setCursor } from "./cursor";
 import { style } from "./style";
 

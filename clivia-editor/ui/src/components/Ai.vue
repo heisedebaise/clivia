@@ -1,16 +1,16 @@
 <script setup>
 import { ref, onMounted } from 'vue';
+import { store } from '../store';
 import { service, url } from '../http';
 import { message } from './locale';
 import { getFocusId } from './cursor';
 import { findIndex } from './line';
 import { newText } from './tag';
 import { newImage } from './tag';
-import { annotation } from './handler';
+import { annotation } from './annotation';
 
 const props = defineProps({
-    type: String,
-    lines: Array
+    type: String
 });
 
 const emits = defineEmits(['hide']);
@@ -46,9 +46,9 @@ const text = () => {
     if (id === null)
         return;
 
-    let index = findIndex(props.lines, id);
+    let index = findIndex(id);
     for (let text of reply.value)
-        props.lines.splice(++index, 0, newText(text));
+        store.lines.splice(++index, 0, newText(text));
     annotation();
     emits('hide');
 };
@@ -57,7 +57,7 @@ const image = (e) => {
     if (reply.value.length === 0)
         return;
 
-    newImage(props.lines, reply.value[e.target.dataset.index], message('ai.generate'));
+    newImage(reply.value[e.target.dataset.index], message('ai.generate'));
     emits('hide');
 };
 

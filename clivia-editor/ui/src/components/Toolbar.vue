@@ -9,10 +9,6 @@ import Icon from './Icon.vue';
 import Tag from './Tag.vue';
 import Annotation from './Annotation.vue';
 
-defineProps({
-    lines: Array
-});
-
 const emits = defineEmits(['icon']);
 
 const enable = ref({
@@ -99,21 +95,21 @@ onMounted(() => {
         <Icon name="undo" :enable="enable.undo" @click="undo" />
         <Icon name="redo" :enable="enable.redo" @click="redo" />
         <Icon name="header" :enable="enable.header" @click="header" />
-        <Icon name="bold" :enable="enable.bold" @click="bold(lines)" />
-        <Icon name="italic" :enable="enable.italic" @click="italic(lines)" />
-        <Icon name="underline" :enable="enable.underline" @click="underline(lines)" />
-        <Icon name="linethrough" :enable="enable.linethrough" @click="linethrough(lines)" />
+        <Icon name="bold" :enable="enable.bold" @click="bold" />
+        <Icon name="italic" :enable="enable.italic" @click="italic" />
+        <Icon name="underline" :enable="enable.underline" @click="underline" />
+        <Icon name="linethrough" :enable="enable.linethrough" @click="linethrough" />
         <Icon name="annotation" :enable="enable.annotation" @click="showAnnotation" />
-        <Icon name="divider" :enable="enable.divider" @click="newDivider(lines)" />
+        <Icon name="divider" :enable="enable.divider" @click="newDivider" />
         <Icon name="quote" :enable="enable.quote" @click="$emit('icon', 'quote')" />
         <Icon name="link" :enable="enable.link" @click="$emit('icon', 'link')" />
         <Icon name="backlog" :enable="enable.backlog" @click="$emit('icon', 'backlog')" />
-        <Icon name="image" :enable="enable.image" @click="newImage(lines)" />
+        <Icon name="image" :enable="enable.image" @click="newImage()" />
         <Icon name="direction" :enable="enable.direction" @click="$emit('icon', 'direction')" />
         <div></div>
     </div>
-    <Tag ref="tag" :names="['h1', 'h2', 'h3']" :lines="lines" />
-    <Annotation ref="annotation" :lines="lines" />
+    <Tag ref="tag" :names="['h1', 'h2', 'h3']" />
+    <Annotation ref="annotation" />
 </template>
 
 <style>

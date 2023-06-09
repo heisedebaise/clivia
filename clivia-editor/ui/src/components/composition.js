@@ -4,12 +4,10 @@ const data = {
 
 const compositionStart = (e) => {
     data.composition = true;
-    console.log('start');
 };
 
 const compositionEnd = (e) => {
     data.composition = false;
-    console.log('end');
 };
 
 const isComposition = () => data.composition;

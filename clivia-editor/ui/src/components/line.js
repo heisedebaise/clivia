@@ -1,14 +1,16 @@
-const findById = (lines, id) => {
-    for (let line of lines)
+import { store } from '../store';
+
+const findById = (id) => {
+    for (let line of store.lines)
         if (line.id === id)
             return line;
 
     return null;
 };
 
-const findIndex = (lines, id) => {
-    for (let i = 0; i < lines.length; i++)
-        if (lines[i].id === id)
+const findIndex = (id) => {
+    for (let i = 0; i < store.lines.length; i++)
+        if (store.lines[i].id === id)
             return i;
 
     return 0;

@@ -1,3 +1,4 @@
+import { store } from '../store';
 import { upload } from '../http';
 import { now } from './time';
 import { newId } from './generator';
@@ -14,10 +15,10 @@ const selectImage = (uploader, e) => {
     uploader.click();
 };
 
-const uploadImage = (lines, e) => {
-    let index = findIndex(lines, data.id);
+const uploadImage = (e) => {
+    let index = findIndex(data.id);
     for (let i = 0; i < e.target.files.length; i++) {
-        lines.splice(index + i, i === 0 ? 1 : 0, {
+        store.lines.splice(index + i, i === 0 ? 1 : 0, {
             id: newId(),
             tag: 'image',
             uploading: message('image.uploading'),
@@ -28,23 +29,23 @@ const uploadImage = (lines, e) => {
             let indexOf = name.lastIndexOf('.');
             if (indexOf > -1)
                 name = name.substring(0, indexOf);
-            let line = lines[index + i];
+            let line = store.lines[index + i];
             line.name = name;
             line.path = data.path;
             line.time = now();
             delete line.uploading;
         }, progress => {
-            lines[index + i].uploading = message('image.uploading') + ' ' + progress + '%';
+            store.lines[index + i].uploading = message('image.uploading') + ' ' + progress + '%';
         });
     }
 };
 
-const imageName = (lines, e) => {
+const imageName = (e) => {
     let id = findEventId(e);
     if (id === null)
         return;
 
-    let line = lines[findIndex(lines, id)];
+    let line = store.lines[findIndex(id)];
     line.name = e.target.innerText;
     line.time = now();
 };

@@ -1,5 +1,6 @@
 <script setup>
 import { ref } from 'vue';
+import { store } from '../store';
 import { now } from './time';
 import { findById } from './line';
 import { setTag } from './keydown';
@@ -9,9 +10,7 @@ import Icon from './Icon.vue';
 import Ai from './Ai.vue';
 
 const props = defineProps({
-    names: Array,
-    lines: Array,
-    vertical: Boolean
+    names: Array
 });
 
 const position = ref({
@@ -26,7 +25,7 @@ const ai = ref({
 
 const show = (workspace, node) => {
     let image = node.className === 'image' && node.children[0].className === 'view';
-    if (props.vertical) {
+    if (store.vertical) {
         let left = node.offsetLeft - workspace.scrollLeft - 320;
         if (image)
             left += node.offsetWidth / 2;
@@ -80,7 +79,7 @@ const select = (e) => {
     if (id === null)
         return;
 
-    let line = findById(props.lines, id);
+    let line = findById(id);
     if (line === null)
         return;
 
@@ -157,7 +156,7 @@ defineExpose({
             </div>
         </div>
     </div>
-    <Ai v-if="ai.show" :type="ai.show" :lines="lines" @hide="ai.show = ''"></Ai>
+    <Ai v-if="ai.show" :type="ai.show" @hide="ai.show = ''"></Ai>
 </template>
 
 <style>

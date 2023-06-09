@@ -1,13 +1,9 @@
 <script setup>
 import { ref, onMounted } from 'vue';
+import { store } from '../store';
 import { url } from '../http';
 import Icon from './Icon.vue';
 
-const props = defineProps({
-    lines: Array,
-});
-
-const vertical = ref(false);
 const readonly = ref(null);
 const annotations = ref([]);
 
@@ -16,7 +12,7 @@ const annotation = () => {
         let index = 0;
         let scrollTop = readonly.value.scrollTop;
         let scrollLeft = readonly.value.scrollLeft;
-        for (let line of props.lines) {
+        for (let line of store.lines) {
             if (!line.texts)
                 continue;
 
@@ -45,9 +41,9 @@ const annotation = () => {
 };
 
 const direction = () => {
-    vertical.value = !vertical.value;
+    store.vertical = !store.vertical;
     annotation();
-    if (vertical.value)
+    if (store.vertical)
         setTimeout(() => readonly.value.scrollLeft = readonly.value.scrollWidth, 10);
 };
 
@@ -56,8 +52,8 @@ onMounted(annotation);
 
 <template>
     <div ref="readonly" class="readonly" @scroll="annotation">
-        <div :class="'lines lines-' + (vertical ? 'vertical' : 'horizontal')">
-            <div v-for="line in lines" class="line">
+        <div :class="'lines lines-' + (store.vertical ? 'vertical' : 'horizontal')">
+            <div v-for="line in store.lines" class="line">
                 <h1 v-if="line.tag === 'h1'" :id="line.id" :class="line.className">
                     <span v-for="(text, index) in line.texts" :class="text.style" :data-index="index">{{ text.text }}</span>
                 </h1>
@@ -82,10 +78,10 @@ onMounted(annotation);
             </div>
         </div>
     </div>
-    <div v-for="annotation in annotations" :class="'annotation-' + (vertical ? 'vertical' : 'horizontal')"
+    <div v-for="annotation in annotations" :class="'annotation-' + (store.vertical ? 'vertical' : 'horizontal')"
         :style="{ left: annotation.left + 'px', top: annotation.top + 'px' }">{{ annotation.text }}</div>
-    <div :class="'direction direction-' + (vertical ? 'vertical' : 'horizontal')" @click="direction">
-        <Icon name="direction" enable="true" />
+    <div :class="'direction direction-' + (store.vertical ? 'vertical' : 'horizontal')" @click="direction">
+        <Icon name="direction" :enable="true" />
     </div>
 </template>
 
@@ -94,6 +90,11 @@ onMounted(annotation);
     width: 100%;
     height: 100%;
     overflow: auto;
+}
+
+.readonly .lines-vertical {
+    min-width: calc(100% - 16px);
+    min-height: calc(100% - 16px);
 }
 
 .direction {
