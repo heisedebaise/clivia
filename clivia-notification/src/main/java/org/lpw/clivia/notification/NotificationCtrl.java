@@ -24,9 +24,7 @@ public class NotificationCtrl {
         return notificationService.user(request.get("genre"));
     }
 
-    @Execute(name = "unread", permit = Permit.sign, validates = {
-            @Validate(validator = UserService.VALIDATOR_SIGN)
-    })
+    @Execute(name = "unread", permit = Permit.always)
     public Object unread() {
         return notificationService.unread(request.getAsArray("genre"), request.getAsBoolean("waitable"));
     }

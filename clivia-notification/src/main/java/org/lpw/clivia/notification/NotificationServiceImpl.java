@@ -42,11 +42,17 @@ public class NotificationServiceImpl implements NotificationService {
 
     @Override
     public JSONObject unread(String[] genre, boolean waitable) {
+        String user = userService.id();
+        if (validator.isEmpty(user)) {
+            thread.sleep(10, TimeUnit.Second);
+
+            return new JSONObject();
+        }
+
         Set<String> set = new HashSet<>();
         for (String g : genre)
             if (!validator.isEmpty(g))
                 set.add(g);
-        String user = userService.id();
         Timestamp expiration = dateTime.now();
         if (waitable) {
             for (int i = 0; i < 10; i++) {
