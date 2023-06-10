@@ -9,8 +9,6 @@ import Toolbar from './components/Toolbar.vue';
 import Workspace from './components/Workspace.vue';
 import Readonly from './components/Readonly.vue';
 
-window.safari = /^((?!chrome|android).)*(safari|firefox)/i.test(navigator.userAgent);
-
 const mode = ref(0);
 const param = {
   sync: 0,

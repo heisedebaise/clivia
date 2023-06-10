@@ -6,7 +6,7 @@ import { message } from './locale';
 import { findById, isEmpty, mergeTexts } from './line';
 import { setTag } from './keydown';
 import { findEventId, findIdNode } from "./event";
-import { focus, getCursorSync, setCursor } from './cursor';
+import { getCursorSync, setCursor } from './cursor';
 import { markdown } from './markdown';
 
 const keyup = (workspace, tag, e) => {
@@ -15,17 +15,13 @@ const keyup = (workspace, tag, e) => {
 
     let line = findById(findEventId(e));
     if (isComposition()) {
-        if (window.safari && isEmpty(line.texts))
-            line.texts[0].text = '.';
         if (e.code === 'Slash')
             showTag(workspace, tag, e);
 
         return;
     }
 
-    let cursor = [];
-    if (window.safari)
-        cursor = getCursorSync();
+    let cursor = getCursorSync();
     let indexes = [];
     for (let i = 0; i < e.target.children.length; i++) {
         let child = e.target.children[i];
@@ -42,8 +38,6 @@ const keyup = (workspace, tag, e) => {
 
         let index = parseInt(child.dataset.index);
         indexes[index] = 1;
-        if (window.safari && index === 0 && text.indexOf('.') === 0)
-            text = text.substring(1);
         if (line.texts[index].text === text)
             continue;
 
@@ -61,10 +55,7 @@ const keyup = (workspace, tag, e) => {
     }
     markdown(line);
     line.time = now();
-    if (window.safari)
-        setCursor(line.id, cursor);
-    else
-        focus();
+    setCursor(line.id, cursor);
     annotation();
     if (e.code === 'Slash')
         showTag(workspace, tag, e);

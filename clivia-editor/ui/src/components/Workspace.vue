@@ -117,6 +117,22 @@ const compositionend = (e) => {
     keyup(workspace.value, tag.value, e);
 };
 
+const className = (index, i) => {
+    let line = store.lines[index];
+    if (line.id === store.placeholder && isEmpty(line.texts))
+        return 'placeholder';
+
+    return line.texts[i].style;
+};
+
+const innerText = (index, i) => {
+    let line = store.lines[index];
+    if (line.id === store.placeholder && isEmpty(line.texts))
+        return message('placeholder.' + line.tag);
+
+    return line.texts[i].text;
+};
+
 onMounted(() => {
     if (store.lines.length === 1 && isEmpty(store.lines[0].texts)) {
         store.placeholder = store.lines[0].id;
@@ -155,26 +171,26 @@ onMounted(() => {
                 <h1 v-if="line.tag === 'h1'" :id="line.id" contenteditable="true" @focus.stop="focus(index, $event)"
                     @mouseup.stop="focus(index, $event)" @keydown="keydown" @keyup="keyup(workspace, tag, $event)"
                     @compositionstart="compositionStart" @compositionend="compositionend">
-                    <span v-for="(text, i) in line.texts" :class="text.style" :data-index="i">{{ text.text }}</span>
-                    <span v-if="line.id === store.placeholder" class="placeholder">{{ message('placeholder.h1') }}</span>
+                    <span v-for="(text, i) in line.texts" :class="className(index, i)" :data-index="i">{{
+                        innerText(index, i) }}</span>
                 </h1>
                 <h2 v-else-if="line.tag === 'h2'" :id="line.id" contenteditable="true" @focus.stop="focus(index, $event)"
                     @mouseup.stop="focus(index, $event)" @keydown="keydown" @keyup="keyup(workspace, tag, $event)"
                     @compositionstart="compositionStart" @compositionend="compositionend">
-                    <span v-for="(text, i) in line.texts" :class="text.style" :data-index="i">{{ text.text }}</span>
-                    <span v-if="line.id === store.placeholder" class="placeholder">{{ message('placeholder.h2') }}</span>
+                    <span v-for="(text, i) in line.texts" :class="className(index, i)" :data-index="i">{{
+                        innerText(index, i) }}</span>
                 </h2>
                 <h3 v-else-if="line.tag === 'h3'" :id="line.id" contenteditable="true" @focus.stop="focus(index, $event)"
                     @mouseup.stop="focus(index, $event)" @keydown="keydown" @keyup="keyup(workspace, tag, $event)"
                     @compositionstart="compositionStart" @compositionend="compositionend">
-                    <span v-for="(text, i) in line.texts" :class="text.style" :data-index="i">{{ text.text }}</span>
-                    <span v-if="line.id === store.placeholder" class="placeholder">{{ message('placeholder.h3') }}</span>
+                    <span v-for="(text, i) in line.texts" :class="className(index, i)" :data-index="i">{{
+                        innerText(index, i) }}</span>
                 </h3>
                 <p v-else-if="line.tag === 'text'" :id="line.id" contenteditable="true" @focus.stop="focus(index, $event)"
                     @mouseup.stop="focus(index, $event)" @keydown="keydown" @keyup="keyup(workspace, tag, $event)"
                     @compositionstart="compositionStart" @compositionend="compositionend">
-                    <span v-for="(text, i) in line.texts" :class="text.style" :data-index="i">{{ text.text }}</span>
-                    <span v-if="line.id === store.placeholder" class="placeholder">{{ message('placeholder.text') }}</span>
+                    <span v-for="(text, i) in line.texts" :class="className(index, i)" :data-index="i">{{
+                        innerText(index, i) }}</span>
                 </p>
                 <div v-else-if="line.tag === 'image'" :id="line.id" class="image">
                     <div v-if="line.uploading" class="uploading">{{ line.uploading }}</div>
