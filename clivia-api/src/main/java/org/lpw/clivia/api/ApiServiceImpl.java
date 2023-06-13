@@ -1,33 +1,25 @@
 package org.lpw.clivia.api;
 
-import java.io.ByteArrayOutputStream;
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Set;
-
-import javax.inject.Inject;
-
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.serializer.SerializerFeature;
-
 import org.lpw.photon.bean.BeanFactory;
 import org.lpw.photon.cache.Cache;
 import org.lpw.photon.ctrl.execute.Execute;
 import org.lpw.photon.dao.model.Model;
 import org.lpw.photon.dao.model.ModelTable;
 import org.lpw.photon.dao.model.ModelTables;
-import org.lpw.photon.util.Context;
-import org.lpw.photon.util.Io;
-import org.lpw.photon.util.Json;
-import org.lpw.photon.util.Logger;
-import org.lpw.photon.util.Message;
-import org.lpw.photon.util.Numeric;
-import org.lpw.photon.util.Validator;
+import org.lpw.photon.util.*;
 import org.springframework.stereotype.Service;
+
+import javax.inject.Inject;
+import java.io.ByteArrayOutputStream;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Set;
 
 @Service(ApiModel.NAME + ".service")
 public class ApiServiceImpl implements ApiService {
@@ -196,8 +188,7 @@ public class ApiServiceImpl implements ApiService {
         if (model.contains(value.toString()))
             return 1;
 
-        if (value instanceof JSONArray) {
-            JSONArray array = (JSONArray) value;
+        if (value instanceof JSONArray array) {
             if (array.size() == 1 && model.contains(array.getString(0)))
                 return 1;
 
@@ -206,8 +197,7 @@ public class ApiServiceImpl implements ApiService {
             return 2;
         }
 
-        if (value instanceof JSONObject) {
-            JSONObject obj = (JSONObject) value;
+        if (value instanceof JSONObject obj) {
             obj.keySet().forEach(key -> response(obj, key, prefix));
 
             return 3;
@@ -227,8 +217,7 @@ public class ApiServiceImpl implements ApiService {
     private JSONArray response(JSONArray array, String name, String prefix) {
         JSONArray newArray = new JSONArray();
         array.forEach(object -> {
-            if (object instanceof JSONObject) {
-                JSONObject obj = (JSONObject) object;
+            if (object instanceof JSONObject obj) {
                 obj.keySet().forEach(key -> response(obj, key, prefix));
                 newArray.add(obj);
             } else
@@ -277,6 +266,6 @@ public class ApiServiceImpl implements ApiService {
 
     private void format(JSONObject object, String name) {
         JSON json = object.getObject(name, JSON.class);
-        object.put(name, json.toString().replaceAll("\t", "    "));
+        object.put(name, json.toString(SerializerFeature.PrettyFormat).replaceAll("\t", "    "));
     }
 }

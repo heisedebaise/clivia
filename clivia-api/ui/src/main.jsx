@@ -18,7 +18,8 @@ class Main extends React.Component {
             logo: '',
             user: {},
             data: [],
-            item: {}
+            item: {},
+            open: ['0-0']
         };
         this.map = {};
         this.url = window.location.href;
@@ -116,7 +117,7 @@ class Main extends React.Component {
             <Layout style={{ minHeight: '100vh' }}>
                 <Layout.Sider>
                     <div className="api-logo">{this.props.logo ? [<img key="img" src={url(this.props.logo)} alt="" />, <div key="div"></div>] : null}</div>
-                    <div className="api-menu"><Menu onClick={this.show} mode="inline" theme="dark" defaultOpenKeys={['0-0']} defaultSelectedKeys={[this.state.item.uri ? '0-0' : '0-0-0']}>{this.menu(this.state.data, '0')}</Menu></div>
+                    <div className="api-menu"><Menu onClick={this.show} mode="inline" theme="dark" openKeys={this.state.open} defaultSelectedKeys={[this.state.item.uri ? '0-0' : '0-0-0']} onOpenChange={this.open} items={this.menu(this.state.data, '0')} /></div>
                     <div className="api-copyright">clivia-api &copy; {new Date().getFullYear()}</div>
                 </Layout.Sider>
                 <Layout>
@@ -138,14 +139,22 @@ class Main extends React.Component {
             let key = parent + '-' + i;
             let item = items[i];
             this.map[key] = item;
-            if (item.services)
-                menus.push(<Menu.SubMenu key={key} title={<span>{item.name}</span>} >{this.menu(item.services, key)}</Menu.SubMenu>);
-            else
-                menus.push(<Menu.Item key={key}>{item.name}</Menu.Item>);
+            if (item.service || !item.services) {
+                menus.push({ key, label: item.name });
+            }
+            else {
+                menus.push({ key, label: item.name, children: this.menu(item.services, key) });
+            }
         }
 
         return menus;
     };
+
+    open = (keys) => {
+        this.setState({
+            open: keys.length === 0 ? [] : [keys[keys.length - 1]],
+        })
+    }
 
     show = e => {
         this.setState({

@@ -24,13 +24,13 @@ class Sign extends React.Component {
 
     render = () => (
         <Space direction="vertical">
-            <Steps direction="vertical" current={6}>
-                <Steps.Step title="添加签名时间戳参数" description="获取当前时间戳，精确到毫秒，参数名为：sign-time。" icon={1} />
-                <Steps.Step title="参数名排序" description="将所有参数根据参数名ASCII码升序排列。" icon={2} />
-                <Steps.Step title="拼接参数" description="用等号'='拼接参数名与值，并用'&'符号连接，如：a=1&b=2&c=3&sign-time=1234567890123" icon={3} />
-                <Steps.Step title="添加密钥" description="添加'&secret={secret value}'" icon={4} />
-                <Steps.Step title="计算MD5值" description="计算字符串的MD5值，转化为小写字母，即为签名值，签名参数名为sign。" icon={5} />
-            </Steps>
+            <Steps direction="vertical" current={6} items={[
+                { icon: 1, title: '添加签名时间戳参数', description: '获取当前时间戳，精确到毫秒，参数名为：sign-time。' },
+                { icon: 2, title: '参数名排序', description: '将所有参数根据参数名ASCII码升序排列。' },
+                { icon: 3, title: '拼接参数', description: '用等号\'=\'拼接参数名与值，并用\'&\'符号连接，如：a=1&b=2&c=3&sign-time=1234567890123' },
+                { icon: 4, title: '添加密钥', description: '添加\'&secret={secret value}\'' },
+                { icon: 5, title: '计算MD5值', description: '计算字符串的MD5值，转化为小写字母，即为签名值，签名参数名为sign。' }
+            ]} />
             <div>示例</div>
             <div className="sign-form">
                 <div className="sign-form-line">

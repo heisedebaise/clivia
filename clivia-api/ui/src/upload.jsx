@@ -20,6 +20,10 @@ class Upload extends React.Component {
     }
 }`;
 
+    curl = `curl -H 'photon-session-id: ${localStorage.getItem('photon-session-id')}' 
+  -F '${this.props.meta.upload}=@/path/to/file' 
+  ${this.props.url}/photon/ctrl-http/upload`;
+
     render = () => (
         <Space direction="vertical" style={{ width: '100%' }}>
             <Divider dashed={true}>文件方式上传</Divider>
@@ -40,7 +44,7 @@ class Upload extends React.Component {
             <Divider dashed={true}>cURL方式上传</Divider>
             <Alert type="info" message={'接口地址：' + this.props.url + '/photon/ctrl-http/upload'} />
             <div>发送</div>
-            <pre>curl -H 'photon-session-id: {localStorage.getItem('photon-session-id')}' -F '{this.props.meta.upload}=@/path/to/file' {this.props.url}/photon/ctrl-http/upload</pre>
+            <pre>{this.curl}</pre>
             <div>返回结果</div>
             <pre>{this.responseFile}</pre>
         </Space>
