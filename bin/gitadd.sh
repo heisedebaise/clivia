@@ -17,7 +17,6 @@ do
   git add $name/bin
   git add $name/public
   git add $name/src
-  git add $name/config-overrides.js
   git add $name/package.json
   git add $name/README.md
   git add $name/yarn.lock
