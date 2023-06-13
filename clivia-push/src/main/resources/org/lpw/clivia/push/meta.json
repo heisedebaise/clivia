@@ -42,10 +42,6 @@
             },
             {
                 "name": "name"
-            },
-            {
-                "name": "state",
-                "labels": "states"
             }
         ],
         "ops": [

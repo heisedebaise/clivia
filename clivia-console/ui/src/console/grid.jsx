@@ -38,18 +38,20 @@ class Grid extends React.Component {
             more: null,
             delete: null,
         };
+    }
 
-        let columns = meta.props(props.props, props.meta.props);
-        if (props.meta.search && props.meta.search.length > 0) {
+    componentDidMount = () => {
+        let columns = meta.props(this.props.props, this.props.meta.props);
+        if (this.props.meta.search && this.props.meta.search.length > 0) {
             this.form = React.createRef();
-            this.searchProps = meta.props(columns, props.meta.search);
+            this.searchProps = meta.props(columns, this.props.meta.search);
             this.search = true;
             for (let prop of this.searchProps)
                 if (prop.type === 'dselect')
-                    this.loadDselect(props, prop);
-        } else if (props.meta.toolbar && props.meta.toolbar.length > 0) {
+                    this.loadDselect(this.props, prop);
+        } else if (this.props.meta.toolbar && this.props.meta.toolbar.length > 0) {
             this.toolbar = [];
-            for (let toolbar of props.meta.toolbar) {
+            for (let toolbar of this.props.meta.toolbar) {
                 if (!toolbar.hidden) {
                     this.toolbar.push(this.button(toolbar));
                 }
@@ -134,7 +136,7 @@ class Grid extends React.Component {
                     return this.format(prop, model, <Switch {...s} />);
                 }
             } else if (prop.type === 'dselect') {
-                this.loadDselect(props, prop);
+                this.loadDselect(this.props, prop);
                 column.render = model => this.format(prop, model, this.dselect(prop, model));
             } else if (prop.type === 'password')
                 column.render = model => this.format(prop, model, '***');
@@ -146,7 +148,7 @@ class Grid extends React.Component {
             else if (prop.type === 'multi-line') {
                 column.render = model => {
                     let lines = [];
-                    for (let line of meta.props(props.props, prop.lines)) {
+                    for (let line of meta.props(this.props.props, prop.lines)) {
                         let value = this.value(model, line.name);
                         if (!value && value !== 0)
                             continue;
@@ -173,23 +175,23 @@ class Grid extends React.Component {
                 column.sorter = true;
             this.columns.push(column);
         }
-        if (props.meta.ops && props.meta.ops.length > 0) {
+        if (this.props.meta.ops && this.props.meta.ops.length > 0) {
             this.columns.push({
                 title: '',
                 render: model => {
                     let mops = [];
-                    for (let op of props.meta.ops)
+                    for (let op of this.props.meta.ops)
                         // eslint-disable-next-line
                         if (!op.when || eval(op.when))
                             mops.push(op);
 
                     let ops = [];
                     let opsize = [2];
-                    if (props.meta.opsize) {
-                        if (props.meta.opsize.length > 0)
-                            opsize[0] = props.meta.opsize[0];
-                        if (props.meta.opsize.length > 1)
-                            opsize[1] = props.meta.opsize[1];
+                    if (this.props.meta.opsize) {
+                        if (this.props.meta.opsize.length > 0)
+                            opsize[0] = this.props.meta.opsize[0];
+                        if (this.props.meta.opsize.length > 1)
+                            opsize[1] = this.props.meta.opsize[1];
                     }
                     if (opsize.length < 2)
                         opsize[1] = 2;
@@ -219,7 +221,7 @@ class Grid extends React.Component {
         }
 
         this.load(null);
-    }
+    };
 
     loadDselect = (props, prop) => {
         let parameter = props.parameter || {};

@@ -45,7 +45,7 @@ class Sign extends React.Component {
         return (
             <div className="console-sign">
                 <div className="console-sign-loading"><Spin spinning={this.state.loading} /></div>
-                <Dropdown overlay={menu}>
+                <Dropdown menu={menu}>
                     <div className="console-sign-avatar">
                         {this.props.user.avatar ? <Avatar src={url(this.props.user.avatar)} /> : <Avatar>{nick.substring(0, 1)}</Avatar>}
                         <span>{nick}</span>

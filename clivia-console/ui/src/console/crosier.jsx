@@ -8,6 +8,9 @@ class Crosier extends React.Component {
         super(props);
 
         this.state = {};
+    }
+
+    componentDidMount = () => {
         service('/user/crosier/grades').then(data => {
             if (data == null) return;
 

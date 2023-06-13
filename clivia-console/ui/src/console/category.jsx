@@ -11,18 +11,21 @@ class Category extends React.Component {
             value: ''
         };
         props.form.value(props.name, props.value);
-        service('/category/list', { key: props.list, pointTo: props.pointTo }).then(data => {
+    }
+
+    componentDidMount = () => {
+        service('/category/list', { key: this.props.list, pointTo: this.props.pointTo }).then(data => {
             if (data === null)
                 return;
 
             let state = {
                 list: [],
-                value: props.value
+                value: this.props.value
             };
             this.format(state.list, data);
             this.setState(state);
         });
-    }
+    };
 
     format = (target, source) => {
         if (source.length === 0)

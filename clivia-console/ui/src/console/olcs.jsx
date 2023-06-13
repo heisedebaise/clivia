@@ -22,8 +22,11 @@ class Olcs extends React.Component {
             searchFaqs: [],
         };
         this.timeout = true;
-        this.timer();
     }
+
+    componentDidMount = () => {
+        this.timer();
+    };
 
     componentWillUnmount = () => {
         this.timeout = false;
@@ -373,39 +376,36 @@ class Olcs extends React.Component {
         return (
             <Row gutter={[8, 8]}>
                 <Col span={6} className="olcs-member">
-                    <Collapse defaultActiveKey={['all']}>
-                        <Collapse.Panel key={'all'} header="会员">
-                            <Input.Search id="search-nick" onSearch={this.searchNick} />
-                            <List
-                                itemLayout="horizontal"
-                                dataSource={this.state.allSearch}
-                                renderItem={item => (
-                                    <List.Item className="olcs-item" onClick={this.chat.bind(this, item)}>
-                                        <List.Item.Meta
-                                            avatar={this.avatar(item)}
-                                            title={this.name(item)}
-                                            description={item.content}
-                                        />
-                                    </List.Item>
-                                )}
-                            />
-                        </Collapse.Panel>
-                        <Collapse.Panel key={'newer'} header="新会员">
-                            <List
-                                itemLayout="horizontal"
-                                dataSource={this.state.newer}
-                                renderItem={item => (
-                                    <List.Item className="olcs-item" onClick={this.chat.bind(this, item)}>
-                                        <List.Item.Meta
-                                            avatar={this.avatar(item)}
-                                            title={this.name(item)}
-                                            description={item.content}
-                                        />
-                                    </List.Item>
-                                )}
-                            />
-                        </Collapse.Panel>
-                    </Collapse>
+                    <Collapse defaultActiveKey={['all']} items={[{
+                        key: 'all', label: '会员,', children: [<Input.Search id="search-nick" key="search" onSearch={this.searchNick} />,
+                        <List key="all-list"
+                            itemLayout="horizontal"
+                            dataSource={this.state.allSearch}
+                            renderItem={item => (
+                                <List.Item className="olcs-item" onClick={this.chat.bind(this, item)}>
+                                    <List.Item.Meta
+                                        avatar={this.avatar(item)}
+                                        title={this.name(item)}
+                                        description={item.content}
+                                    />
+                                </List.Item>
+                            )}
+                        />]
+                    }, {
+                        key: 'newer', label: '新会员', children: [<List key="newer-key"
+                            itemLayout="horizontal"
+                            dataSource={this.state.newer}
+                            renderItem={item => (
+                                <List.Item className="olcs-item" onClick={this.chat.bind(this, item)}>
+                                    <List.Item.Meta
+                                        avatar={this.avatar(item)}
+                                        title={this.name(item)}
+                                        description={item.content}
+                                    />
+                                </List.Item>
+                            )}
+                        />]
+                    }]} />
                 </Col>
                 {this.message()}
             </Row>

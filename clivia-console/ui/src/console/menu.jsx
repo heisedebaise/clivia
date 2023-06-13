@@ -13,6 +13,9 @@ class LeftMenu extends React.Component {
             open: ['0-0'],
         };
         this.map = {};
+    }
+
+    componentDidMount = () => {
         service('/console/menu').then(data => {
             if (data === null || data.length === 0) return;
 
@@ -22,7 +25,7 @@ class LeftMenu extends React.Component {
                 item: item
             }, () => this.load(item ? data[0] : data[0].items[0]));
         });
-    }
+    };
 
     click = e => {
         this.load(this.map[e.key]);

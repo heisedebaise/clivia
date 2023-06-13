@@ -13,6 +13,9 @@ class Dashboard extends React.Component {
             columns: []
         };
         this.timeout = null;
+    }
+
+    componentDidMount = () => {
         service('/console/dashboard').then(data => {
             if (data === null) return;
 
@@ -43,7 +46,7 @@ class Dashboard extends React.Component {
             }
             this.setState(state, this.load);
         });
-    }
+    };
 
     render = () => <Row gutter={[8, 8]}>{this.state.columns.map((column, index) => <Col key={index} span={column.span}>{this.cards(index, column.cards)}</Col>)}</Row>;
 
