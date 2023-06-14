@@ -22,6 +22,7 @@ public class DeviceModel extends ModelSupport {
     private String sid; // Session ID
     private String type; // 类型
     private String identifier; // 标识符
+    private String description; // 描述
     private String lang; // 语言
     private Timestamp time; // 时间
 
@@ -63,6 +64,16 @@ public class DeviceModel extends ModelSupport {
 
     public void setIdentifier(String identifier) {
         this.identifier = identifier;
+    }
+
+    @Jsonable
+    @Column(name = "c_description")
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     @Jsonable

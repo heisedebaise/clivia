@@ -1,5 +1,6 @@
 package org.lpw.clivia.device;
 
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import org.lpw.clivia.page.Pagination;
 import org.lpw.clivia.user.UserListener;
@@ -7,6 +8,7 @@ import org.lpw.clivia.user.UserModel;
 import org.lpw.clivia.user.UserService;
 import org.lpw.photon.cache.Cache;
 import org.lpw.photon.ctrl.context.Session;
+import org.lpw.photon.dao.model.ModelHelper;
 import org.lpw.photon.util.DateTime;
 import org.lpw.photon.util.Validator;
 import org.springframework.stereotype.Service;
@@ -23,6 +25,8 @@ public class DeviceServiceImpl implements DeviceService, UserListener {
     @Inject
     private Cache cache;
     @Inject
+    private ModelHelper modelHelper;
+    @Inject
     private Session session;
     @Inject
     private Pagination pagination;
@@ -37,12 +41,17 @@ public class DeviceServiceImpl implements DeviceService, UserListener {
     }
 
     @Override
+    public JSONArray user() {
+        return modelHelper.toJson(deviceDao.query(userService.id()).getList());
+    }
+
+    @Override
     public DeviceModel find(String sid) {
         return cache.computeIfAbsent(DeviceModel.NAME + ":" + sid, key -> deviceDao.find(sid), false);
     }
 
     @Override
-    public void save(String type, String identifier, String lang) {
+    public void save(String type, String identifier, String description, String lang) {
         String sid = session.getId();
         DeviceModel device = deviceDao.find(sid);
         if (device == null) {
@@ -52,6 +61,7 @@ public class DeviceServiceImpl implements DeviceService, UserListener {
         device.setUser(userService.id());
         device.setType(type);
         device.setIdentifier(identifier);
+        device.setDescription(description);
         device.setLang(lang);
         device.setTime(dateTime.now());
         deviceDao.save(device);

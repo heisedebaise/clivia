@@ -1,5 +1,7 @@
 package org.lpw.clivia.device;
 
+import org.lpw.clivia.Permit;
+import org.lpw.clivia.user.UserService;
 import org.lpw.photon.ctrl.context.Request;
 import org.lpw.photon.ctrl.execute.Execute;
 import org.lpw.photon.ctrl.validate.Validate;
@@ -23,16 +25,24 @@ public class DeviceCtrl {
         return deviceService.query();
     }
 
-    @Execute(name = "save", validates = {
+    @Execute(name = "user", permit = Permit.sign, validates = {
+            @Validate(validator = UserService.VALIDATOR_SIGN)
+    })
+    public Object user() {
+        return deviceService.user();
+    }
+
+    @Execute(name = "save", permit = Permit.sign, validates = {
             @Validate(validator = Validators.NOT_EMPTY, parameter = "type", failureCode = 3),
             @Validate(validator = Validators.MAX_LENGTH, number = {100}, parameter = "type", failureCode = 4),
             @Validate(validator = Validators.NOT_EMPTY, parameter = "identifier", failureCode = 5),
             @Validate(validator = Validators.MAX_LENGTH, number = {100}, parameter = "identifier", failureCode = 6),
+            @Validate(validator = Validators.MAX_LENGTH, number = {100}, parameter = "description", failureCode = 6),
             @Validate(validator = Validators.MAX_LENGTH, number = {100}, parameter = "lang", failureCode = 7),
-            @Validate(validator = Validators.SIGN)
+            @Validate(validator = UserService.VALIDATOR_SIGN)
     })
     public Object save() {
-        deviceService.save(request.get("type"), request.get("identifier"), request.get("lang"));
+        deviceService.save(request.get("type"), request.get("identifier"), request.get("description"), request.get("lang"));
 
         return "";
     }
