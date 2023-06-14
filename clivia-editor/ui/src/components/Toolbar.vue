@@ -51,7 +51,7 @@ const annotation = ref(null);
 
 const showAnnotation = (e) => {
     let offset = findOffset(e);
-    annotation.value.show(offset.left, offset.top);
+    annotation.value.show(offset.left, offset.top, '', 'x');
 };
 
 const findOffset = (e) => {

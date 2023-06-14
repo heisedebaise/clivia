@@ -2,6 +2,7 @@ import { store } from '../store';
 import { now } from './time';
 import { findIdNode } from "./event";
 import { findIndex } from "./line";
+import { annotation } from './annotation';
 
 const data = {
     draging: false,
@@ -88,6 +89,7 @@ const dragDone = (draging, e) => {
         store.lines.splice(target, 0, line);
         store.lines.splice(source, 1);
     }
+    annotation();
 };
 
 export {

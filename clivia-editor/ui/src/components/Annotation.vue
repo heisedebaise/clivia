@@ -5,16 +5,21 @@ import { message } from './locale';
 import { annotation } from './annotation';
 import { getFocusId, getCursor, setCursor } from './cursor';
 import { findById, splitTexts, isEmpty } from './line';
+import Icon from './Icon.vue';
+
+const emits = defineEmits(['unset']);
 
 const position = ref({
     left: -1,
     top: -1,
+    transform: '',
 });
 
 const input = ref('');
 
-const show = (left, top) => {
-    position.value = { left, top };
+const show = (left, top, value, transform) => {
+    position.value = { left, top, transform };
+    input.value = value || '';
     setCursor();
 };
 
@@ -44,6 +49,11 @@ const set = (e) => {
     annotation();
 }
 
+const unset = (e) => {
+    hide();
+    emits('unset');
+};
+
 const hide = (e) => {
     position.value = {
         left: -1,
@@ -60,16 +70,22 @@ defineExpose({
 
 <template>
     <div v-if="position.left > 0" class="annotation-mark" @click="hide">
-        <div class="annotation" :style="{ left: position.left + 'px', top: position.top + 'px' }" @click.stop="">
+        <div :class="'annotation annotation-' + position.transform"
+            :style="{ left: position.left + 'px', top: position.top + 'px' }" @click.stop="">
             <div class="input">
                 <input :placeholder="message('placeholder.annotation')" v-model="input" />
             </div>
-            <div class="ok" @click="set">OK</div>
+            <div class="button" @click="set">
+                <Icon name="check-circle" :enable="true" />
+            </div>
+            <div v-if="position.transform === 'y'" class="button" @click="unset">
+                <Icon name="close-circle" :enable="true" />
+            </div>
         </div>
     </div>
 </template>
 
-<style>
+<style scoped>
 .annotation-mark {
     position: absolute;
     left: 0;
@@ -85,8 +101,14 @@ defineExpose({
     border-radius: 4px;
     display: flex;
     align-items: center;
-    overflow: hidden;
+}
+
+.annotation-x {
     transform: translateX(-40%);
+}
+
+.annotation-y {
+    transform: translateY(-100%);
 }
 
 .annotation input {
@@ -94,10 +116,13 @@ defineExpose({
     outline: none;
 }
 
-.annotation .ok {
-    line-height: 2rem;
-    padding: 0 4px;
-    background-color: #ccc;
+.annotation .button {
+    padding: 4px;
     cursor: pointer;
+    border-left: 1px solid var(--border);
+}
+
+.annotation .button:hover {
+    background-color: var(--hover-bg);
 }
 </style>

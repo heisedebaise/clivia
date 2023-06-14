@@ -3,9 +3,10 @@ import { ref, nextTick, onMounted } from 'vue';
 import { store } from '../store';
 import { service, url } from '../http';
 import { message } from './locale';
+import { now } from './time';
 import { setAnnotation } from './annotation';
-import { findIndex, isEmpty } from './line';
-import { focus, focusLast } from './cursor';
+import { findById, findIndex, isEmpty } from './line';
+import { focus, focusLast, setCursor } from './cursor';
 import { compositionStart, compositionEnd } from './composition';
 import { setTag, keydown } from './keydown';
 import { keyup } from './keyup';
@@ -15,22 +16,27 @@ import { selectImage, uploadImage, imageName } from './image';
 import { setDirection } from './workspace';
 import Icon from './Icon.vue';
 import Tag from './Tag.vue';
+import Annotation from './Annotation.vue';
 
 const workspace = ref(null);
-const dragable = ref({});
-const draging = ref({
-    left: -1,
-    top: -1,
-    html: '',
-});
 const tag = ref(null);
-const tagNames = ref(['h1', 'h2', 'h3', 'text']);
 const imageUploader = ref(null);
-const annotations = ref([]);
+const annotationRef = ref(null);
+const data = ref({
+    dragable: {},
+    draging: {
+        left: -1,
+        top: -1,
+        html: '',
+    },
+    tags: ['h1', 'h2', 'h3', 'text'],
+    annotations: [],
+    annotation: null,
+});
 
-const direction = (action) => {
+const direction = () => {
     store.vertical = !store.vertical;
-    dragable.value = {};
+    data.value.dragable = {};
     annotation();
 };
 setDirection(direction);
@@ -51,20 +57,22 @@ const annotation = () => {
 
                 let node = document.querySelector('#' + line.id).children[i];
                 let annotation = {
+                    id: line.id,
+                    index: i,
                     text: text.annotation,
                     left: node.offsetLeft - scrollLeft,
                     top: node.offsetTop - scrollTop + 42,
                 };
-                if (index < annotations.value.length) {
-                    annotations.value[index] = annotation;
+                if (index < data.value.annotations.length) {
+                    data.value.annotations[index] = annotation;
                 } else {
-                    annotations.value.push(annotation);
+                    data.value.annotations.push(annotation);
                 }
                 index++;
             }
         }
-        if (index < annotations.value.length)
-            annotations.value.splice(index, annotations.value.length - index);
+        if (index < data.value.annotations.length)
+            data.value.annotations.splice(index, data.value.annotations.length - index);
     });
 };
 setAnnotation(annotation);
@@ -101,10 +109,10 @@ const findDragNode = () => {
         let node = document.querySelector('#' + line.id);
         if (store.vertical) {
             let left = node.offsetLeft - 16;
-            if (dragable.value.left >= left && dragable.value.left < left + node.offsetWidth)
+            if (data.value.dragable.left >= left && data.value.dragable.left < left + node.offsetWidth)
                 return node;
         } else {
-            if (dragable.value.top >= node.offsetTop && dragable.value.top < node.offsetTop + node.offsetHeight)
+            if (data.value.dragable.top >= node.offsetTop && data.value.dragable.top < node.offsetTop + node.offsetHeight)
                 return node;
         }
     }
@@ -122,7 +130,11 @@ const className = (index, i) => {
     if (line.id === store.placeholder && isEmpty(line.texts))
         return 'placeholder';
 
-    return line.texts[i].style;
+    let style = line.texts[i].style;
+    if (line.texts.length > i && line.texts[i].annotation)
+        style += ' annotation';
+
+    return style;
 };
 
 const innerText = (index, i) => {
@@ -133,6 +145,26 @@ const innerText = (index, i) => {
     return line.texts[i].text;
 };
 
+const showAnnotation = (annotation) => {
+    data.value.annotation = annotation;
+    annotationRef.value.show(annotation.left, annotation.top, annotation.text, 'y');
+    setCursor(annotation.id, [annotation.index, 0, annotation.index, annotation.text.length]);
+};
+
+const unsetAnnotation = () => {
+    if (!data.value.annotation)
+        return;
+
+    let line = findById(data.value.annotation.id);
+    if (!line || line.texts.length <= data.value.annotation.index)
+        return;
+
+    let text = line.texts[data.value.annotation.index];
+    delete text.annotation;
+    line.time = now();
+    annotation();
+};
+
 onMounted(() => {
     if (store.lines.length === 1 && isEmpty(store.lines[0].texts)) {
         store.placeholder = store.lines[0].id;
@@ -140,8 +172,8 @@ onMounted(() => {
     annotation();
     service('/editor/ai', {}, data => {
         if (data) {
-            tagNames.value.push('ai-text');
-            tagNames.value.push('ai-image');
+            data.value.tags.push('ai-text');
+            data.value.tags.push('ai-image');
         }
     });
 });
@@ -149,16 +181,16 @@ onMounted(() => {
 
 <template>
     <div ref="workspace" :class="'workspace workspace-' + (store.vertical ? 'vertical' : 'horizontal')" @scroll="scroll"
-        @mousemove="dragMove(vertical, dragable, draging, $event)" @mouseup="dragDone(draging, $event)"
-        @touchmove="dragMove(vertical, dragable, draging, $event)" @touchend="dragDone(draging, $event)">
-        <div v-if="dragable.left || dragable.top" class="dragable"
-            :style="{ left: dragable.left + 'px', top: dragable.top + 'px', width: dragable.width + 'px', height: dragable.height + 'px' }">
+        @mousemove="dragMove(vertical, data.dragable, data.draging, $event)" @mouseup="dragDone(data.draging, $event)"
+        @touchmove="dragMove(vertical, data.dragable, data.draging, $event)" @touchend="dragDone(data.draging, $event)">
+        <div v-if="data.dragable.left || data.dragable.top" class="dragable"
+            :style="{ left: data.dragable.left + 'px', top: data.dragable.top + 'px', width: data.dragable.width + 'px', height: data.dragable.height + 'px' }">
             <div></div>
             <div class="action">
                 <Icon name="delete" @click="del" />
             </div>
-            <div class="action" @mousedown="dragStart(vertical, draging, $event)"
-                @touchstart="dragStart(vertical, draging, $event)">
+            <div class="action" @mousedown="dragStart(vertical, data.draging, $event)"
+                @touchstart="dragStart(vertical, data.draging, $event)">
                 <Icon name="drag" />
             </div>
             <div class="action">
@@ -167,7 +199,7 @@ onMounted(() => {
             <div></div>
         </div>
         <div :class="'lines lines-' + (store.vertical ? 'vertical' : 'horizontal')" @click.self="focusLast">
-            <div v-for="(line, index) in store.lines" class="line" @mouseover="mouseover(vertical, dragable, $event)">
+            <div v-for="(line, index) in store.lines" class="line" @mouseover="mouseover(vertical, data.dragable, $event)">
                 <h1 v-if="line.tag === 'h1'" :id="line.id" contenteditable="true" @focus.stop="focus(index, $event)"
                     @mouseup.stop="focus(index, $event)" @keydown="keydown" @keyup="keyup(workspace, tag, $event)"
                     @compositionstart="compositionStart" @compositionend="compositionend">
@@ -207,13 +239,15 @@ onMounted(() => {
             </div>
         </div>
     </div>
-    <div v-if="draging.left >= 0 && draging.top >= 0"
+    <div v-if="data.draging.left >= 0 && data.draging.top >= 0"
         :class="'draging draging-' + (store.vertical ? 'vertical' : 'horizontal')"
-        :style="{ left: draging.left + 'px', top: draging.top + 'px' }" v-html="draging.html"></div>
-    <Tag ref="tag" :names="tagNames" />
+        :style="{ left: data.draging.left + 'px', top: data.draging.top + 'px' }" v-html="data.draging.html"></div>
+    <Tag ref="tag" :names="data.tags" />
     <input ref="imageUploader" class="image-uploader" type="file" accept="image/*" multiple @change="uploadImage" />
-    <div v-for="annotation in annotations" :class="'annotation-' + (store.vertical ? 'vertical' : 'horizontal')"
-        :style="{ left: annotation.left + 'px', top: annotation.top + 'px' }">{{ annotation.text }}</div>
+    <div v-for="annotation in data.annotations" :class="'annotation-' + (store.vertical ? 'vertical' : 'horizontal')"
+        :style="{ left: annotation.left + 'px', top: annotation.top + 'px' }" @click.self="showAnnotation(annotation)">{{
+            annotation.text }}</div>
+    <Annotation ref="annotationRef" @unset="unsetAnnotation" />
 </template>
 
 <style>
@@ -274,6 +308,10 @@ onMounted(() => {
     color: var(--placeholder);
 }
 
+.line .annotation {
+    background-color: var(--hover-bg);
+}
+
 .draging {
     position: absolute;
     color: var(--draging);
@@ -292,5 +330,10 @@ onMounted(() => {
 .image-uploader {
     position: absolute;
     top: -100vh;
+}
+
+.annotation-vertical,
+.annotation-horizontal {
+    font-size: 0.5rem;
 }
 </style>

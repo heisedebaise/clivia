@@ -69,8 +69,10 @@ const getCursorSingle = (line) => {
 
 const setCursor = (id, cursor) => {
     nextTick(() => {
-        if (!id)
-            id = getFocusId();
+        if (id)
+            data.focus = id;
+        else
+            id = data.focus;
         let node = document.querySelector('#' + id);
         if (!node)
             return;
