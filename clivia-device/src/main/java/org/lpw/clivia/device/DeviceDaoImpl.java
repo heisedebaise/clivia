@@ -19,7 +19,12 @@ class DeviceDaoImpl implements DeviceDao {
 
     @Override
     public PageList<DeviceModel> query(String user) {
-        return liteOrm.query(new LiteQuery(DeviceModel.class).where("c_user=?"), new Object[]{user});
+        return liteOrm.query(new LiteQuery(DeviceModel.class).where("c_user=?").order("c_time desc"), new Object[]{user});
+    }
+
+    @Override
+    public DeviceModel findById(String id) {
+        return liteOrm.findById(DeviceModel.class, id);
     }
 
     @Override

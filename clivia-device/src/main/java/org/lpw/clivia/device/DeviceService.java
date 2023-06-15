@@ -11,4 +11,6 @@ public interface DeviceService {
     DeviceModel find(String sid);
 
     void save(String type, String identifier, String description, String lang);
+
+    void offline(String id);
 }

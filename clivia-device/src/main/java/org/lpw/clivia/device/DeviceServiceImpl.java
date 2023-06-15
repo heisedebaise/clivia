@@ -6,6 +6,7 @@ import org.lpw.clivia.page.Pagination;
 import org.lpw.clivia.user.UserListener;
 import org.lpw.clivia.user.UserModel;
 import org.lpw.clivia.user.UserService;
+import org.lpw.clivia.user.online.OnlineService;
 import org.lpw.photon.cache.Cache;
 import org.lpw.photon.ctrl.context.Session;
 import org.lpw.photon.dao.model.ModelHelper;
@@ -32,6 +33,8 @@ public class DeviceServiceImpl implements DeviceService, UserListener {
     private Pagination pagination;
     @Inject
     private UserService userService;
+    @Inject
+    private OnlineService onlineService;
     @Inject
     private DeviceDao deviceDao;
 
@@ -69,9 +72,19 @@ public class DeviceServiceImpl implements DeviceService, UserListener {
     }
 
     @Override
-    public void userSignOut(UserModel user) {
-        deviceDao.delete(session.getId());
-        cleanCache(session.getId());
+    public void offline(String id) {
+        DeviceModel device = deviceDao.findById(id);
+        if (device == null || !device.getUser().equals(userService.id()))
+            return;
+
+        onlineService.signOutSid(device.getSid());
+        deviceDao.delete(device.getSid());
+    }
+
+    @Override
+    public void userSignOut(UserModel user, String sid) {
+        deviceDao.delete(sid);
+        cleanCache(sid);
     }
 
     @Override

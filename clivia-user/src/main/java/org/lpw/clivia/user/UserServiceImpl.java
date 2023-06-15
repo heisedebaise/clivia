@@ -264,16 +264,12 @@ public class UserServiceImpl implements UserService, ContextRefreshedListener {
 
     @Override
     public void signOut() {
-        listeners.ifPresent(set -> set.forEach(listener -> listener.userSignOut(fromSession())));
-        onlineService.signOut();
-        session.remove(SESSION);
-        session.remove(SESSION_AUTH3);
-        session.remove(SESSION_UID);
+        signOut(session.getId());
     }
 
     @Override
     public void signOut(String sid) {
-        listeners.ifPresent(set -> set.forEach(listener -> listener.userSignOut(fromSession())));
+        listeners.ifPresent(set -> set.forEach(listener -> listener.userSignOut(fromSession(sid), sid)));
         session.remove(sid, SESSION);
         session.remove(sid, SESSION_AUTH3);
         session.remove(sid, SESSION_UID);
@@ -321,7 +317,14 @@ public class UserServiceImpl implements UserService, ContextRefreshedListener {
 
     @Override
     public UserModel fromSession() {
-        OnlineModel online = onlineService.findBySid(session.getId());
+        return fromSession(null);
+    }
+
+    private UserModel fromSession(String sid) {
+        if (validator.isEmpty(sid))
+            sid = session.getId();
+
+        OnlineModel online = onlineService.findBySid(sid);
         if (online == null)
             return null;
 

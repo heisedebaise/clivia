@@ -7,6 +7,8 @@ interface DeviceDao {
 
     PageList<DeviceModel> query(String user);
 
+    DeviceModel findById(String id);
+
     DeviceModel find(String sid);
 
     void save(DeviceModel device);

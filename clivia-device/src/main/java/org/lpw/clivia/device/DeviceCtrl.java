@@ -46,4 +46,13 @@ public class DeviceCtrl {
 
         return "";
     }
+
+    @Execute(name = "offline", permit = Permit.sign, validates = {
+            @Validate(validator = UserService.VALIDATOR_SIGN)
+    })
+    public Object offline() {
+        deviceService.offline(request.get("id"));
+
+        return "";
+    }
 }

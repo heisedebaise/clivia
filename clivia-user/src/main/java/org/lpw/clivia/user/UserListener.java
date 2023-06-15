@@ -32,8 +32,9 @@ public interface UserListener {
      * 用户等出。
      *
      * @param user 用户。
+     * @param sid  Session ID。
      */
-    default void userSignOut(UserModel user) {
+    default void userSignOut(UserModel user, String sid) {
     }
 
     /**
