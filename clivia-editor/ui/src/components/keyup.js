@@ -9,14 +9,14 @@ import { findEventId, findIdNode } from "./event";
 import { getCursorSync, setCursor } from './cursor';
 import { markdown } from './markdown';
 
-const keyup = (workspace, tag, e) => {
+const keyup = (tag, e) => {
     if ((e.key === 'ArrowUp' || e.key === 'ArrowDown') && tag.arrow(e))
         return;
 
     let line = findById(findEventId(e));
     if (isComposition()) {
         if (e.code === 'Slash')
-            showTag(workspace, tag, e);
+            showTag(tag, e);
 
         return;
     }
@@ -58,17 +58,17 @@ const keyup = (workspace, tag, e) => {
     setCursor(line.id, cursor);
     annotation();
     if (e.code === 'Slash')
-        showTag(workspace, tag, e);
+        showTag(tag, e);
     else
         tag.hide();
 };
 
-const showTag = (workspace, tag, e) => {
+const showTag = (tag, e) => {
     let node = findIdNode(e);
     if (node === null)
         return;
 
-    tag.show(workspace, node);
+    tag.show(node);
     setTag(tag);
 };
 

@@ -111,6 +111,10 @@ defineExpose({
     transform: translateY(-100%);
 }
 
+.annotation-xy {
+    transform: translate(-40%, -100%);
+}
+
 .annotation input {
     border: none;
     outline: none;

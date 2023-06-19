@@ -1,5 +1,5 @@
 <script setup>
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, vShow } from 'vue';
 import { setTag } from './keydown';
 import { bindSelect } from './cursor';
 import { bold, italic, underline, linethrough } from './style';
@@ -12,6 +12,11 @@ import Annotation from './Annotation.vue';
 
 const emits = defineEmits(['icon']);
 
+const style = ref({
+    className: 'toolbar',
+    position: {},
+});
+
 const enable = ref({
     undo: false,
     redo: false,
@@ -21,6 +26,7 @@ const enable = ref({
     underline: false,
     linethrough: false,
     annotation: false,
+    search: true,
     divider: true,
     quote: false,
     link: false,
@@ -43,7 +49,7 @@ const tag = ref(null);
 
 const header = (e) => {
     let offset = findOffset(e);
-    tag.value.show(offset.left, offset.top);
+    tag.value.show(null, offset.left, offset.top);
     setTag(tag.value);
 };
 
@@ -51,7 +57,7 @@ const annotation = ref(null);
 
 const showAnnotation = (e) => {
     let offset = findOffset(e);
-    annotation.value.show(offset.left, offset.top, '', 'x');
+    annotation.value.show(offset.left, offset.top, '', window.mobile ? 'xy' : 'x');
 };
 
 const findOffset = (e) => {
@@ -59,11 +65,14 @@ const findOffset = (e) => {
     let top = -1;
     let node = e.target;
     for (let i = 0; i < 1024; i++) {
+        if (!node)
+            break;
+
         if (node.className && typeof node.className === 'string') {
             if (node.className.indexOf('icon') > -1) {
                 left = node.offsetLeft;
-            } else if (node.className === 'toolbar') {
-                top = node.offsetHeight - 1;
+            } else if (node.className.indexOf('toolbar') === 0) {
+                top = window.mobile ? (node.offsetTop + 1) : (node.offsetHeight - 1);
 
                 break;
             }
@@ -75,7 +84,25 @@ const findOffset = (e) => {
     return { left, top };
 };
 
+const resize = (e) => {
+    if (!window.mobile)
+        return;
+
+    style.value = {
+        className: 'toolbar toolbar-mobile',
+        position: {
+            top: window.visualViewport.height - 42 + 'px',
+        },
+    };
+};
+
 onMounted(() => {
+    resize();
+    if (window.visualViewport)
+        window.visualViewport.addEventListener('resize', resize);
+    else
+        window.addEventListener('resize', resize);
+
     historyListener((undo, redo) => {
         enable.value.undo = undo;
         enable.value.redo = redo;
@@ -91,7 +118,7 @@ onMounted(() => {
 </script>
 
 <template>
-    <div class="toolbar">
+    <div :class="style.className" :style="style.position">
         <div></div>
         <Icon name="undo" :enable="enable.undo" @click="undo" />
         <Icon name="redo" :enable="enable.redo" @click="redo" />
@@ -101,10 +128,10 @@ onMounted(() => {
         <Icon name="underline" :enable="enable.underline" @click="underline" />
         <Icon name="linethrough" :enable="enable.linethrough" @click="linethrough" />
         <Icon name="annotation" :enable="enable.annotation" @click="showAnnotation" />
+        <Icon name="search" :enable="enable.search" @click="" />
         <Icon name="divider" :enable="enable.divider" @click="newDivider" />
         <Icon name="quote" :enable="enable.quote" @click="$emit('icon', 'quote')" />
         <Icon name="link" :enable="enable.link" @click="$emit('icon', 'link')" />
-        <Icon name="backlog" :enable="enable.backlog" @click="$emit('icon', 'backlog')" />
         <Icon name="image" :enable="enable.image" @click="newImage()" />
         <Icon name="direction" :enable="enable.direction" @click="direction" />
         <div></div>
@@ -113,7 +140,7 @@ onMounted(() => {
     <Annotation ref="annotation" />
 </template>
 
-<style>
+<style scoped>
 .toolbar {
     display: flex;
     align-items: center;
@@ -121,6 +148,12 @@ onMounted(() => {
     border-top: 1px solid var(--border);
     border-bottom: 1px solid var(--border);
     height: 40px;
+}
+
+.toolbar-mobile {
+    position: fixed;
+    left: 0;
+    right: 0;
 }
 
 .toolbar .icon-enable:hover {

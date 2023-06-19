@@ -10,19 +10,21 @@ import { focus, focusLast, setCursor } from './cursor';
 import { compositionStart, compositionEnd } from './composition';
 import { setTag, keydown } from './keydown';
 import { keyup } from './keyup';
-import { mouseover, dragStart, dragMove, dragDone } from './drag';
 import { newText } from './tag';
 import { selectImage, uploadImage, imageName } from './image';
 import { setDirection } from './workspace';
-import Icon from './Icon.vue';
 import Tag from './Tag.vue';
 import Annotation from './Annotation.vue';
+import Operate from './Operate.vue';
 
+const operate = ref(null);
 const workspace = ref(null);
 const tag = ref(null);
 const imageUploader = ref(null);
 const annotationRef = ref(null);
 const data = ref({
+    className: '',
+    position: {},
     dragable: {},
     draging: {
         left: -1,
@@ -166,6 +168,8 @@ const unsetAnnotation = () => {
 };
 
 onMounted(() => {
+    data.value.className = 'workspace workspace-' + (store.vertical ? 'vertical' : 'horizontal');
+    data.value.position = window.mobile ? { top: '0', bottom: '42px', } : { top: '42px', bottom: '0' };
     if (store.lines.length === 1 && isEmpty(store.lines[0].texts)) {
         store.placeholder = store.lines[0].id;
     }
@@ -180,46 +184,31 @@ onMounted(() => {
 </script>
 
 <template>
-    <div ref="workspace" :class="'workspace workspace-' + (store.vertical ? 'vertical' : 'horizontal')" @scroll="scroll"
-        @mousemove="dragMove(vertical, data.dragable, data.draging, $event)" @mouseup="dragDone(data.draging, $event)"
-        @touchmove="dragMove(vertical, data.dragable, data.draging, $event)" @touchend="dragDone(data.draging, $event)">
-        <div v-if="data.dragable.left || data.dragable.top" class="dragable"
-            :style="{ left: data.dragable.left + 'px', top: data.dragable.top + 'px', width: data.dragable.width + 'px', height: data.dragable.height + 'px' }">
-            <div></div>
-            <div class="action">
-                <Icon name="delete" @click="del" />
-            </div>
-            <div class="action" @mousedown="dragStart(vertical, data.draging, $event)"
-                @touchstart="dragStart(vertical, data.draging, $event)">
-                <Icon name="drag" />
-            </div>
-            <div class="action">
-                <Icon name="plus" @click="plus" />
-            </div>
-            <div></div>
-        </div>
+    <div ref="workspace" :class="data.className" :style="data.position" @scroll="scroll" @mousemove="operate.move"
+        @mouseup="operate.done" @touchmove="operate.move" @touchend="operate.done">
+        <Operate ref="operate" :tag="tag" />
         <div :class="'lines lines-' + (store.vertical ? 'vertical' : 'horizontal')" @click.self="focusLast">
-            <div v-for="(line, index) in store.lines" class="line" @mouseover="mouseover(vertical, data.dragable, $event)">
+            <div v-for="(line, index) in store.lines" class="line" @mouseover="operate.hover">
                 <h1 v-if="line.tag === 'h1'" :id="line.id" contenteditable="true" @focus.stop="focus(index, $event)"
-                    @mouseup.stop="focus(index, $event)" @keydown="keydown" @keyup="keyup(workspace, tag, $event)"
+                    @mouseup.stop="focus(index, $event)" @keydown="keydown" @keyup="keyup(tag, $event)"
                     @compositionstart="compositionStart" @compositionend="compositionend">
                     <span v-for="(text, i) in line.texts" :class="className(index, i)" :data-index="i">{{
                         innerText(index, i) }}</span>
                 </h1>
                 <h2 v-else-if="line.tag === 'h2'" :id="line.id" contenteditable="true" @focus.stop="focus(index, $event)"
-                    @mouseup.stop="focus(index, $event)" @keydown="keydown" @keyup="keyup(workspace, tag, $event)"
+                    @mouseup.stop="focus(index, $event)" @keydown="keydown" @keyup="keyup(tag, $event)"
                     @compositionstart="compositionStart" @compositionend="compositionend">
                     <span v-for="(text, i) in line.texts" :class="className(index, i)" :data-index="i">{{
                         innerText(index, i) }}</span>
                 </h2>
                 <h3 v-else-if="line.tag === 'h3'" :id="line.id" contenteditable="true" @focus.stop="focus(index, $event)"
-                    @mouseup.stop="focus(index, $event)" @keydown="keydown" @keyup="keyup(workspace, tag, $event)"
+                    @mouseup.stop="focus(index, $event)" @keydown="keydown" @keyup="keyup(tag, $event)"
                     @compositionstart="compositionStart" @compositionend="compositionend">
                     <span v-for="(text, i) in line.texts" :class="className(index, i)" :data-index="i">{{
                         innerText(index, i) }}</span>
                 </h3>
                 <p v-else-if="line.tag === 'text'" :id="line.id" contenteditable="true" @focus.stop="focus(index, $event)"
-                    @mouseup.stop="focus(index, $event)" @keydown="keydown" @keyup="keyup(workspace, tag, $event)"
+                    @mouseup.stop="focus(index, $event)" @keydown="keydown" @keyup="keyup(tag, $event)"
                     @compositionstart="compositionStart" @compositionend="compositionend">
                     <span v-for="(text, i) in line.texts" :class="className(index, i)" :data-index="i">{{
                         innerText(index, i) }}</span>
@@ -239,10 +228,7 @@ onMounted(() => {
             </div>
         </div>
     </div>
-    <div v-if="data.draging.left >= 0 && data.draging.top >= 0"
-        :class="'draging draging-' + (store.vertical ? 'vertical' : 'horizontal')"
-        :style="{ left: data.draging.left + 'px', top: data.draging.top + 'px' }" v-html="data.draging.html"></div>
-    <Tag ref="tag" :names="data.tags" />
+    <Tag ref="tag" :names="data.tags" :workspace="workspace" />
     <input ref="imageUploader" class="image-uploader" type="file" accept="image/*" multiple @change="uploadImage" />
     <div v-for="annotation in data.annotations" :class="'annotation-' + (store.vertical ? 'vertical' : 'horizontal')"
         :style="{ left: annotation.left + 'px', top: annotation.top + 'px' }" @click.self="showAnnotation(annotation)">{{
@@ -254,9 +240,7 @@ onMounted(() => {
 .workspace {
     position: absolute;
     left: 0;
-    top: 42px;
     right: 0;
-    bottom: 0;
     overflow: auto;
 }
 
@@ -282,14 +266,14 @@ onMounted(() => {
 }
 
 .workspace .lines-horizontal {
-    margin-left: 80px;
+    margin-left: 64px;
     min-height: calc(100% - 16px);
 }
 
 .workspace .lines-vertical {
-    margin-top: 80px;
+    margin-top: 64px;
     min-width: calc(100% - 16px);
-    height: calc(100% - 96px);
+    height: calc(100% - 80px);
 }
 
 .line>.image .uploading,
@@ -310,21 +294,6 @@ onMounted(() => {
 
 .line .annotation {
     background-color: var(--hover-bg);
-}
-
-.draging {
-    position: absolute;
-    color: var(--draging);
-    background-color: val(--draging-bg);
-}
-
-.draging img {
-    opacity: 0.25;
-    max-width: 200px;
-}
-
-.draging-vertical {
-    writing-mode: vertical-rl;
 }
 
 .image-uploader {

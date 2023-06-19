@@ -9,6 +9,8 @@ import Toolbar from './components/Toolbar.vue';
 import Workspace from './components/Workspace.vue';
 import Readonly from './components/Readonly.vue';
 
+window.mobile = /(phone|pad|pod|iPhone|iPod|ios|iPad|Android|Mobile|BlackBerry|IEMobile|MQQBrowser|JUC|Fennec|wOSBrowser|BrowserNG|WebOS|Symbian|Windows Phone)/i.test(navigator.userAgent);
+
 const mode = ref(0);
 const param = {
   sync: 0,

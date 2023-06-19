@@ -2,7 +2,7 @@
 import { ref } from 'vue';
 import { store } from '../store';
 import { now } from './time';
-import { findById } from './line';
+import { findById, isEmpty } from './line';
 import { setTag } from './keydown';
 import { getFocusId, getCursor, setCursor } from './cursor';
 import { message } from './locale';
@@ -10,7 +10,8 @@ import Icon from './Icon.vue';
 import Ai from './Ai.vue';
 
 const props = defineProps({
-    names: Array
+    names: Array,
+    workspace: Object,
 });
 
 const position = ref({
@@ -23,10 +24,17 @@ const ai = ref({
     show: ''
 });
 
-const show = (workspace, node) => {
+const show = (node, left, top) => {
+    if (!node) {
+        position.value.left = left;
+        position.value.top = top;
+
+        return;
+    }
+
     let image = node.className === 'image' && node.children[0].className === 'view';
     if (store.vertical) {
-        let left = node.offsetLeft - workspace.scrollLeft - 320;
+        let left = node.offsetLeft - props.workspace.scrollLeft - 320;
         if (image)
             left += node.offsetWidth / 2;
         if (left < 0) {
@@ -37,15 +45,15 @@ const show = (workspace, node) => {
         }
         position.value = {
             left: left,
-            top: 130,
+            top: 114,
             index: -1,
         };
     } else {
-        let top = 42 + node.offsetTop + node.offsetHeight - workspace.scrollTop;
+        let top = (window.mobile ? 0 : 42) + node.offsetTop + node.offsetHeight - props.workspace.scrollTop;
         if (image)
             top -= node.offsetHeight / 2;
         let height = 80 * props.names.length;
-        if (top + height > workspace.offsetHeight) {
+        if (top + height > props.workspace.offsetHeight) {
             if (image)
                 top -= height;
             else
@@ -54,7 +62,7 @@ const show = (workspace, node) => {
                 top = 42;
         }
         position.value = {
-            left: 88,
+            left: 72,
             top: top,
             index: -1,
         };
@@ -104,6 +112,8 @@ const select = (e) => {
             cursor[1]--;
             cursor[3]--;
             line.texts[cursor[0]].text = line.texts[cursor[0]].text.substring(0, cursor[1]) + line.texts[cursor[0]].text.substring(cursor[1] + 1);
+            if (isEmpty(line.texts))
+                store.placeholder = line.id;
         }
         setCursor(id, cursor);
 
@@ -175,7 +185,6 @@ defineExpose({
     border: 1px solid var(--border);
     border-radius: 4px;
     overflow: hidden;
-    width: 320px;
 }
 
 .tags .tag {
