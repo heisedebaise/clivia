@@ -16,7 +16,20 @@ const findIdNode = (e) => {
     return null;
 };
 
+const findParentByClass = (e, className) => {
+    let node = e.target;
+    for (let i = 0; i < 1024; i++) {
+        if (node.className === className)
+            return node;
+
+        node = node.parentElement;
+    }
+
+    return null;
+};
+
 export {
     findEventId,
     findIdNode,
+    findParentByClass
 };

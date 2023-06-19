@@ -1,7 +1,7 @@
 <script setup>
 import { ref, onMounted, nextTick } from 'vue';
 import { store } from '../store';
-import { findEventId } from './event';
+import { findEventId, findParentByClass } from './event';
 import { now } from './time';
 import { findIndex } from './line';
 import { setTag } from './keydown';
@@ -10,9 +10,11 @@ import Icon from './Icon.vue';
 import { message } from './locale';
 
 const props = defineProps({
-    tag: Object
+    workspace: Object,
+    tag: Object,
 });
 
+const morer = ref(null);
 const data = ref({
     id: '',
     style: {},
@@ -81,19 +83,22 @@ const move = (e) => {
 
     data.value.draging.id = node.children[0].id;
     if (store.vertical) {
-        data.value.style.left = e.x - data.value.draging.offset + 'px';
+        data.value.style.left = e.x - data.value.draging.offset + props.workspace.scrollLeft + 'px';
         data.value.draging.left = node.offsetLeft;
         data.value.draging.top = 72;
     } else {
-        data.value.style.top = e.y - data.value.draging.offset + 'px';
+        data.value.style.top = e.y - data.value.draging.offset + props.workspace.scrollTop + 'px';
         data.value.draging.left = 72;
         data.value.draging.top = node.offsetTop;
     }
 };
 
 const done = (e) => {
-    if (!data.value.draging.show)
+    if (!data.value.draging.show || !data.value.draging.left || data.value.draging.left < 0 || !data.value.draging.top || data.value.draging.top < 0) {
+        data.value.draging = {};
+
         return;
+    }
 
     let source = findIndex(data.value.id);
     let target = findIndex(data.value.draging.id);
@@ -117,10 +122,11 @@ const findDragingNode = (e) => {
     }
     for (let node of document.querySelectorAll('.line')) {
         if (store.vertical) {
-            if (e.x >= node.offsetLeft && e.x < node.offsetLeft + node.offsetWidth)
+            let left = node.offsetLeft - props.workspace.scrollLeft;
+            if (e.x >= left && e.x < left + node.offsetWidth)
                 return node;
         } else {
-            let top = node.offsetTop + (window.mobile ? 0 : 42);
+            let top = node.offsetTop - props.workspace.scrollTop + (window.mobile ? 0 : 42);
             if (e.y >= top && e.y < top + node.offsetHeight)
                 return node;
         }
@@ -129,8 +135,106 @@ const findDragingNode = (e) => {
     return null;
 };
 
-const more = () => {
-    data.value.more.show = true;
+const more = (e) => {
+    if (data.value.draging.show)
+        return;
+
+    let headers = [];
+    for (let line of store.lines) {
+        if (line.tag === 'h1' || line.tag === 'h2' || line.tag === 'h3') {
+            let text = '';
+            for (let t of line.texts)
+                text += t.text;
+            if (text.length > 16)
+                text = text.substring(0, 16) + '...';
+            headers.push({
+                id: line.id,
+                tag: line.tag,
+                text,
+            });
+        }
+    }
+
+    data.value.more = {
+        show: true,
+        headers,
+        style: {
+            left: '-1000vw',
+            top: '-1000vh'
+        }
+    };
+
+    nextTick(() => {
+        let node = findParentByClass(e, 'operate');
+        if (store.vertical) {
+            let left = e.x - morer.value.offsetWidth - 22;
+            if (left <= 0)
+                left = e.x + 22;
+            data.value.more.style = {
+                left: left + 'px',
+                top: node.offsetTop + (window.mobile ? 0 : 42) + 'px',
+            };
+
+        } else {
+            let top = e.y - morer.value.offsetHeight - 22;
+            if (top < (window.mobile ? 0 : 42))
+                top = e.y + 22;
+            data.value.more.style = {
+                left: node.offsetLeft + 'px',
+                top: top + 'px',
+            };
+        }
+    });
+};
+
+const jumpTo = (id) => {
+    let node = document.querySelector('#' + id);
+    if (node) {
+        if (store.vertical)
+            props.workspace.scrollLeft = node.offsetLeft + node.offsetWidth - props.workspace.offsetWidth;
+        else
+            props.workspace.scrollTop = node.offsetTop;
+    }
+    data.value.more.show = false;
+};
+
+const moveUp = (e) => {
+    let index = findIndex(data.value.id);
+    if (index <= 0)
+        return;
+
+    swap(index, index - 1);
+};
+
+const moveDown = (e) => {
+    let index = findIndex(data.value.id);
+    if (index >= store.lines.length - 1)
+        return;
+
+    swap(index, index + 1);
+};
+
+const swap = (index1, index2) => {
+    let line1 = store.lines[index1];
+    let line2 = store.lines[index2];
+    store.lines[index1] = line2;
+    store.lines[index2] = line1;
+    line1.time = now();
+    line2.time = now();
+    data.value.id = line2.id;
+    annotation();
+    data.value.more.show = false;
+}
+
+const remove = (e) => {
+    if (store.lines.length === 1) {
+        store.lines.splice(0, 1, newText());
+    } else {
+        store.lines.splice(findIndex(data.value.id), 1);
+    }
+    annotation();
+    data.value.more.show = false;
+    window.put(true);
 };
 
 const plus = () => {
@@ -160,20 +264,24 @@ defineExpose({
 <template>
     <div class="operates" :style="data.style" @mousedown="start" @touchstart="start">
         <div></div>
-        <div class="operate" @click="more">
+        <div class="operate" @click.stop="more">
             <Icon name="more" />
         </div>
-        <div class="operate" @click="plus">
+        <div class="operate" @click.stop="plus">
             <Icon name="plus" />
         </div>
         <div></div>
     </div>
     <div v-if="data.more.show" class="more-operate-mask" @click.self="data.more.show = false">
-        <div class="more-operate" :style="{ top: data.more.top }">
-            <div>{{ message('operate.move.up') }}</div>
-            <div>{{ message('operate.move.down') }}</div>
+        <div ref="morer" class="more-operate" :style="data.more.style">
+            <div v-if="data.more.headers.length > 0" class="jump-to">{{ message('operate.jump-to') }}</div>
+            <div v-for="header in data.more.headers" :class="'operate operate-' + header.tag"
+                @click.self="jumpTo(header.id)">{{ header.text }}</div>
+            <div v-if="data.more.headers.length > 0" class="divider"></div>
+            <div class="operate" @click="moveUp">{{ message('operate.move.up') }}</div>
+            <div class="operate" @click="moveDown">{{ message('operate.move.down') }}</div>
             <div class="divider"></div>
-            <div>{{ message('operate.delete') }}</div>
+            <div class="operate" @click="remove">{{ message('operate.remove') }}</div>
         </div>
     </div>
     <div v-if="data.draging.show && data.draging.left > 0 && data.draging.top > 0"
@@ -190,7 +298,7 @@ defineExpose({
     cursor: pointer;
 }
 
-.operate:hover {
+.operates .operate:hover {
     border-radius: 4px;
     overflow: hidden;
     background-color: var(--hover-bg);
@@ -210,9 +318,36 @@ defineExpose({
     border: 1px solid var(--border);
     background-color: var(--background);
     border-radius: 8px;
+    padding: 8px 0;
+    overflow: hidden;
+}
+
+.more-operate .operate {
+    padding: 8px 16px;
+    cursor: pointer;
+    white-space: nowrap;
+}
+
+.more-operate .operate:hover {
+    background-color: var(--hover-bg);
+}
+
+.more-operate .jump-to {
+    padding: 0 16px 8px 16px;
+    border-bottom: 1px solid var(--border);
+    cursor: default;
+}
+
+.more-operate .operate-h2 {
+    text-indent: 1rem;
+}
+
+.more-operate .operate-h3 {
+    text-indent: 2rem;
 }
 
 .more-operate .divider {
+    margin: 8px 0;
     border-top: 1px solid var(--border);
 }
 

@@ -25,12 +25,6 @@ const annotationRef = ref(null);
 const data = ref({
     className: '',
     position: {},
-    dragable: {},
-    draging: {
-        left: -1,
-        top: -1,
-        html: '',
-    },
     tags: ['h1', 'h2', 'h3', 'text'],
     annotations: [],
     annotation: null,
@@ -83,48 +77,9 @@ const scroll = (e) => {
     annotation();
 };
 
-const del = (e) => {
-    let node = findDragNode();
-    if (node === null)
-        return;
-
-    if (store.lines.length === 1) {
-        store.lines.splice(0, 1, newText());
-    } else {
-        store.lines.splice(findIndex(node.id), 1);
-    }
-    annotation();
-};
-
-const plus = (e) => {
-    let node = findDragNode();
-    if (node === null)
-        return;
-
-    tag.value.show(workspace.value, node);
-    node.focus();
-    setTag(tag.value);
-};
-
-const findDragNode = () => {
-    for (let line of store.lines) {
-        let node = document.querySelector('#' + line.id);
-        if (store.vertical) {
-            let left = node.offsetLeft - 16;
-            if (data.value.dragable.left >= left && data.value.dragable.left < left + node.offsetWidth)
-                return node;
-        } else {
-            if (data.value.dragable.top >= node.offsetTop && data.value.dragable.top < node.offsetTop + node.offsetHeight)
-                return node;
-        }
-    }
-
-    return null;
-};
-
 const compositionend = (e) => {
     compositionEnd(e);
-    keyup(workspace.value, tag.value, e);
+    keyup(tag.value, e);
 };
 
 const className = (index, i) => {
@@ -186,7 +141,7 @@ onMounted(() => {
 <template>
     <div ref="workspace" :class="data.className" :style="data.position" @scroll="scroll" @mousemove="operate.move"
         @mouseup="operate.done" @touchmove="operate.move" @touchend="operate.done">
-        <Operate ref="operate" :tag="tag" />
+        <Operate ref="operate" :workspace="workspace" :tag="tag" />
         <div :class="'lines lines-' + (store.vertical ? 'vertical' : 'horizontal')" @click.self="focusLast">
             <div v-for="(line, index) in store.lines" class="line" @mouseover="operate.hover">
                 <h1 v-if="line.tag === 'h1'" :id="line.id" contenteditable="true" @focus.stop="focus(index, $event)"
