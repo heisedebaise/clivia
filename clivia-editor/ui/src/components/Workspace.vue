@@ -24,7 +24,6 @@ const imageUploader = ref(null);
 const annotationRef = ref(null);
 const data = ref({
     className: '',
-    position: {},
     tags: ['h1', 'h2', 'h3', 'text'],
     annotations: [],
     annotation: null,
@@ -32,8 +31,8 @@ const data = ref({
 
 const direction = () => {
     store.vertical = !store.vertical;
-    data.value.dragable = {};
     annotation();
+    nextTick(() => operate.value.hover());
 };
 setDirection(direction);
 
@@ -123,8 +122,7 @@ const unsetAnnotation = () => {
 };
 
 onMounted(() => {
-    data.value.className = 'workspace workspace-' + (store.vertical ? 'vertical' : 'horizontal');
-    data.value.position = window.mobile ? { top: '0', bottom: '42px', } : { top: '42px', bottom: '0' };
+    data.value.className = 'workspace workspace-' + (window.mobile ? 'mobile' : 'desktop');
     if (store.lines.length === 1 && isEmpty(store.lines[0].texts)) {
         store.placeholder = store.lines[0].id;
     }
@@ -139,8 +137,8 @@ onMounted(() => {
 </script>
 
 <template>
-    <div ref="workspace" :class="data.className" :style="data.position" @scroll="scroll" @mousemove="operate.move"
-        @mouseup="operate.done" @touchmove="operate.move" @touchend="operate.done">
+    <div ref="workspace" :class="data.className" @scroll="scroll" @mousemove="operate.move" @mouseup="operate.done"
+        @touchmove="operate.move" @touchend="operate.done">
         <Operate ref="operate" :workspace="workspace" :tag="tag" />
         <div :class="'lines lines-' + (store.vertical ? 'vertical' : 'horizontal')" @click.self="focusLast">
             <div v-for="(line, index) in store.lines" class="line" @mouseover="operate.hover">
@@ -199,25 +197,14 @@ onMounted(() => {
     overflow: auto;
 }
 
-.workspace .dragable {
-    position: absolute;
-    display: flex;
-    align-items: center;
-    justify-content: space-around;
+.workspace-desktop {
+    top: 42px;
+    bottom: 0;
 }
 
-.workspace-horizontal .dragable {
-    flex-direction: row;
-}
-
-.workspace-vertical .dragable {
-    flex-direction: column;
-}
-
-.workspace .dragable .action:hover {
-    border-radius: 4px;
-    background-color: var(--hover-bg);
-    cursor: pointer;
+.workspace-mobile {
+    top: 0;
+    bottom: 42px;
 }
 
 .workspace .lines-horizontal {

@@ -45,7 +45,7 @@ const show = (node, left, top) => {
         }
         position.value = {
             left: left,
-            top: 114,
+            top: window.mobile ? 72 : 114,
             index: -1,
         };
     } else {

@@ -1,5 +1,5 @@
 <script setup>
-import { ref, onMounted, vShow } from 'vue';
+import { ref, onMounted, vShow, nextTick } from 'vue';
 import { setTag } from './keydown';
 import { bindSelect } from './cursor';
 import { bold, italic, underline, linethrough } from './style';
@@ -88,12 +88,14 @@ const resize = (e) => {
     if (!window.mobile)
         return;
 
-    style.value = {
-        className: 'toolbar toolbar-mobile',
-        position: {
-            top: window.visualViewport.height - 42 + 'px',
-        },
-    };
+    nextTick(() => {
+        style.value = {
+            className: 'toolbar toolbar-mobile',
+            position: {
+                top: window.visualViewport.height - 42 + 'px',
+            },
+        };
+    });
 };
 
 onMounted(() => {
@@ -148,6 +150,7 @@ onMounted(() => {
     border-top: 1px solid var(--border);
     border-bottom: 1px solid var(--border);
     height: 40px;
+    background-color: var(--background);
 }
 
 .toolbar-mobile {

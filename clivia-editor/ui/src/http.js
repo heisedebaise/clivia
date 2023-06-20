@@ -1,4 +1,4 @@
-const root = 'http://localhost:8080';
+const root = 'http://192.168.20.114:8080';
 
 const service = (uri, data, success) => {
     post(uri, data, json => {
