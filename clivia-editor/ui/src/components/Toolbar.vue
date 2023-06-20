@@ -9,6 +9,7 @@ import { direction } from './workspace';
 import Icon from './Icon.vue';
 import Tag from './Tag.vue';
 import Annotation from './Annotation.vue';
+import { store } from '../store';
 
 const emits = defineEmits(['icon']);
 
@@ -98,13 +99,34 @@ const resize = (e) => {
     });
 };
 
-onMounted(() => {
-    resize();
-    if (window.visualViewport)
-        window.visualViewport.addEventListener('resize', resize);
-    else
-        window.addEventListener('resize', resize);
+window.toolbar = () => {
+    if (!window.mobile)
+        return;
 
+    let node = document.querySelector('#' + store.focus);
+    if (!node)
+        return;
+
+    let top = node.offsetTop - 40;
+    if (top <= 0)
+        top += node.offsetHeight + 40;
+    style.value.position.top = top + 'px';
+};
+
+onMounted(() => {
+    // resize();
+    // if (window.visualViewport)
+    //     window.visualViewport.addEventListener('resize', resize);
+    // else
+    //     window.addEventListener('resize', resize);
+
+    style.value.className = 'toolbar' + (window.mobile ? ' toolbar-mobile' : '');
+    style.value = {
+        className: 'toolbar' + (window.mobile ? ' toolbar-mobile' : ''),
+        position: {
+            top: '-1000vh',
+        }
+    };
     historyListener((undo, redo) => {
         enable.value.undo = undo;
         enable.value.redo = redo;
@@ -154,7 +176,7 @@ onMounted(() => {
 }
 
 .toolbar-mobile {
-    position: fixed;
+    position: absolute;
     left: 0;
     right: 0;
 }

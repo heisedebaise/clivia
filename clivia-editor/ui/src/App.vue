@@ -5,7 +5,6 @@ import { post, service } from './http';
 import { now } from './components/time';
 import { newText } from './components/tag';
 import { historyPut } from './components/history';
-import Toolbar from './components/Toolbar.vue';
 import Workspace from './components/Workspace.vue';
 import Readonly from './components/Readonly.vue';
 
@@ -90,7 +89,6 @@ onUnmounted(() => {
 
 <template>
   <Workspace v-if="mode === 1" />
-  <Toolbar v-if="mode === 1" />
   <Readonly v-if="mode === 2" />
 </template>
 

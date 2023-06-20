@@ -5,14 +5,14 @@ import { service, url } from '../http';
 import { message } from './locale';
 import { now } from './time';
 import { setAnnotation } from './annotation';
-import { findById, findIndex, isEmpty } from './line';
+import { findById, isEmpty } from './line';
 import { focus, focusLast, setCursor } from './cursor';
 import { compositionStart, compositionEnd } from './composition';
-import { setTag, keydown } from './keydown';
+import { keydown } from './keydown';
 import { keyup } from './keyup';
-import { newText } from './tag';
 import { selectImage, uploadImage, imageName } from './image';
 import { setDirection } from './workspace';
+import Toolbar from './Toolbar.vue';
 import Tag from './Tag.vue';
 import Annotation from './Annotation.vue';
 import Operate from './Operate.vue';
@@ -139,7 +139,6 @@ onMounted(() => {
 <template>
     <div ref="workspace" :class="data.className" @scroll="scroll" @mousemove="operate.move" @mouseup="operate.done"
         @touchmove="operate.move" @touchend="operate.done">
-        <Operate ref="operate" :workspace="workspace" :tag="tag" />
         <div :class="'lines lines-' + (store.vertical ? 'vertical' : 'horizontal')" @click.self="focusLast">
             <div v-for="(line, index) in store.lines" class="line" @mouseover="operate.hover">
                 <h1 v-if="line.tag === 'h1'" :id="line.id" contenteditable="true" @focus.stop="focus(index, $event)"
@@ -180,6 +179,8 @@ onMounted(() => {
                 </div>
             </div>
         </div>
+        <Toolbar />
+        <Operate ref="operate" :workspace="workspace" :tag="tag" />
     </div>
     <Tag ref="tag" :names="data.tags" :workspace="workspace" />
     <input ref="imageUploader" class="image-uploader" type="file" accept="image/*" multiple @change="uploadImage" />
@@ -204,7 +205,7 @@ onMounted(() => {
 
 .workspace-mobile {
     top: 0;
-    bottom: 42px;
+    bottom: 0;
 }
 
 .workspace .lines-horizontal {

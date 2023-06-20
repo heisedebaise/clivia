@@ -4,14 +4,15 @@ import { findEventId } from "./event";
 import { isEmpty } from "./line";
 
 const data = {
-    focus: null,
     cursor: [0, 0, 0, 0],
     select: [],
 };
 
 const focus = (index, e) => {
-    if (e)
-        data.focus = findEventId(e);
+    if (e) {
+        store.focus = findEventId(e);
+        window.toolbar();
+    }
 
     let line = null;
     if (index || index === 0)
@@ -31,7 +32,7 @@ const focusLast = () => {
     document.querySelector('#' + store.lines[store.lines.length - 1].id).focus();
 };
 
-const getFocusId = () => data.focus;
+const getFocusId = () => store.focus;
 
 const getCursor = () => data.cursor;
 
@@ -69,10 +70,12 @@ const getCursorSingle = (line) => {
 
 const setCursor = (id, cursor) => {
     nextTick(() => {
-        if (id)
-            data.focus = id;
+        if (id) {
+            store.focus = id;
+            window.toolbar();
+        }
         else
-            id = data.focus;
+            id = store.focus;
         let node = document.querySelector('#' + id);
         if (!node)
             return;
