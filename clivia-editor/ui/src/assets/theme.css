@@ -1,26 +1,9 @@
 :root {
   --background: #fff;
+  --color: #212121;
   --border: #e5e5e5;
   --hover-bg: #e5e5e5;
+  --disable: #ccc;
   --mask-bg: rgba(0, 0, 0, 0.45);
-  --icon: #212121;
-  --icon-disable: #ccc;
-  --icon-hover: #212121;
-  --tag-title: #212121;
-  --tag-sub: #888;
-  --draging: #ccc;
-  --draging-bg: rgba(200, 200, 200, 0.25);
-  --image-name-bg: #888;
-  --image-select-bg: #f0f0f0;
-  --image-select-hover-bg: #ccc;
   --placeholder: rgba(55, 53, 47, 0.5);
-  --annotation: #888;
-  --empty: rgba(55, 53, 47, 0.5);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #fff;
-    --border: #e5e5e5;
-  }
 }

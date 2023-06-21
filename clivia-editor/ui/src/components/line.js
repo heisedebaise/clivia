@@ -1,6 +1,6 @@
-import { store } from '../store';
+import { store } from "../store";
 
-const findById = (id) => {
+const findLine = (id) => {
     for (let line of store.lines)
         if (line.id === id)
             return line;
@@ -103,7 +103,7 @@ const isEmpty = (texts) => {
 };
 
 export {
-    findById,
+    findLine,
     findIndex,
     splitTexts,
     mergeTexts,

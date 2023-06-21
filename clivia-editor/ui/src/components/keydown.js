@@ -1,43 +1,33 @@
 import { store } from "../store";
-import { isComposition } from "./composition";
-import { newId } from "./generator";
-import { newText } from "./tag";
-import { getCursor, getCursorSingle, setCursor, setCursorSingle } from "./cursor";
-import { findEventId } from './event';
+import { now } from './time';
+import { findEventId } from "./event";
+import { getCursor, setCursor, getCursorSingle, setCursorSingle } from "./cursor";
 import { findIndex, splitTexts, isEmpty } from "./line";
+import { newText, newId } from "./tag";
+import { isComposition } from "./composition";
 
-const refs = {
-    tag: null,
-};
-
-const setTag = (tag) => refs.tag = tag;
-
-const keydown = (e) => {
+const keydown = (event) => {
     if (isComposition())
         return;
 
-    let id = findEventId(e);
+    let id = findEventId(event);
+    if (id === null)
+        return;
+
     let index = findIndex(id);
     let line = store.lines[index];
-    if (e.key === 'Enter')
-        enter(line, id, index, e);
-    else if (e.key === 'Backspace')
-        backspace(line, index, e);
-    else if (e.key === 'ArrowUp' || e.key === 'ArrowDown')
-        arrow(line, index, e);
-    else if (e.key === ' ')
-        space(e);
-    else if (e.ctrlKey && e.key === 'v')
-        e.preventDefault();
+    if (event.key === 'Enter')
+        enter(event, index, line);
+    else if (event.key === 'Backspace')
+        backspace(event, index, line);
+    else if (event.key === 'ArrowUp' || event.key === 'ArrowDown')
+        arrow(event, index, line);
+    else if (event.ctrlKey && event.key === 'v')
+        event.preventDefault();
 };
 
-const enter = (line, id, index, e) => {
-    e.preventDefault();
-    if (refs.tag != null) {
-        refs.tag.select();
-
-        return;
-    }
+const enter = (event, index, line) => {
+    event.preventDefault();
 
     let cursor = getCursor();
     let texts = splitTexts(line.texts, cursor);
@@ -47,10 +37,11 @@ const enter = (line, id, index, e) => {
         l.texts = [{
             text: '',
         }];
+        l.time = now();
         store.lines.splice(index, 0, l);
-        setCursor(id, [0, 0, 0, 0]);
+        setCursor(line.id, [0, 0, 0, 0]);
     } else if (isEmpty(texts[2])) {
-        let text = newText();
+        let text = newText('p');
         store.lines.splice(index + 1, 0, text);
         setCursor(text.id, [0, 0, 0, 0]);
     } else {
@@ -65,9 +56,9 @@ const enter = (line, id, index, e) => {
     }
 };
 
-const backspace = (line, index, e) => {
+const backspace = (event, index, line) => {
     if (line.texts.length === 1 && line.texts[0].text.length <= 1) {
-        e.preventDefault();
+        event.preventDefault();
         if (line.texts[0].text.length === 1) {
             line.texts[0].text = '';
         } else if (index > 0) {
@@ -84,30 +75,18 @@ const backspace = (line, index, e) => {
     }
 };
 
-const arrow = (line, index, e) => {
-    e.preventDefault();
-    if (refs.tag != null)
-        return;
+const arrow = (event, index, line) => {
+    event.preventDefault();
 
     let i = 0;
-    if (e.key === 'ArrowDown' && index < store.lines.length - 1)
+    if (event.key === 'ArrowDown' && index < store.lines.length - 1)
         i = 1;
-    else if (e.key === 'ArrowUp' && index > 0)
+    else if (event.key === 'ArrowUp' && index > 0)
         i = -1;
     if (i != 0)
         setCursorSingle(store.lines[index + i], getCursorSingle(line));
 };
 
-const space = (e) => {
-    if (refs.tag != null) {
-        e.preventDefault();
-        refs.tag.select();
-
-        return;
-    }
-};
-
 export {
-    setTag,
-    keydown
-};
+    keydown,
+}

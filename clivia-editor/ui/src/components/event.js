@@ -1,35 +1,27 @@
-const findEventId = (e) => {
-    let node = findIdNode(e);
+import { findIdNode } from './node';
 
-    return node == null ? null : node.id;
+const data = {};
+
+const listen = (type, listener) => {
+    let listeners = data[type] || [];
+    listeners.push(listener);
+    data[type] = listeners;
 };
 
-const findIdNode = (e) => {
-    let node = e.target;
-    for (let i = 0; i < 1024; i++) {
-        if (node.id && node.id.indexOf('id') === 0)
-            return node;
-
-        node = node.parentElement;
-    }
-
-    return null;
+const trigger = (type, event) => {
+    let listeners = data[type] || [];
+    for (let listener of listeners)
+        listener(event);
 };
 
-const findParentByClass = (e, className) => {
-    let node = e.target;
-    for (let i = 0; i < 1024; i++) {
-        if (node.className === className)
-            return node;
+const findEventId = (event) => {
+    let node = findIdNode(event.target);
 
-        node = node.parentElement;
-    }
-
-    return null;
+    return node === null ? null : node.id;
 };
 
 export {
+    listen,
+    trigger,
     findEventId,
-    findIdNode,
-    findParentByClass
 };

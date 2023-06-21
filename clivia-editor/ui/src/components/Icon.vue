@@ -6,7 +6,7 @@ const props = defineProps({
 </script>
 
 <template>
-    <div v-if="name === 'annotation'" :class="'icon icon-' + (enable ? 'enable' : 'disable') + ' icon-' + name">
+    <div v-if="name === 'annotation'" :class="'icon icon-' + (enable ? 'enable' : 'disable')">
         <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" fill="none" version="1.1"
             width="16" height="21.4056396484375" viewBox="0 0 16 21.4056396484375">
             <g style="mix-blend-mode:passthrough">
@@ -24,7 +24,7 @@ const props = defineProps({
             </g>
         </svg>
     </div>
-    <div v-else-if="name === 'backlog'" :class="'icon icon-' + (enable ? 'enable' : 'disable') + ' icon-' + name">
+    <div v-else-if="name === 'backlog'" :class="'icon icon-' + (enable ? 'enable' : 'disable')">
         <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" fill="none" version="1.1"
             width="15.999999046325684" height="15.999999046325684" viewBox="0 0 15.999999046325684 15.999999046325684">
             <defs>
@@ -54,7 +54,7 @@ const props = defineProps({
             </g>
         </svg>
     </div>
-    <div v-else-if="name === 'bold'" :class="'icon icon-' + (enable ? 'enable' : 'disable') + ' icon-' + name">
+    <div v-else-if="name === 'bold'" :class="'icon icon-' + (enable ? 'enable' : 'disable')">
         <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" fill="none" version="1.1"
             width="16" height="16" viewBox="0 0 16 16">
             <defs>
@@ -76,7 +76,7 @@ const props = defineProps({
             </g>
         </svg>
     </div>
-    <div v-else-if="name === 'direction'" :class="'icon icon-' + (enable ? 'enable' : 'disable') + ' icon-' + name">
+    <div v-else-if="name === 'direction'" :class="'icon icon-' + (enable ? 'enable' : 'disable')">
         <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" fill="none" version="1.1"
             width="16" height="16" viewBox="0 0 16 16">
             <defs>
@@ -94,7 +94,7 @@ const props = defineProps({
             </g>
         </svg>
     </div>
-    <div v-else-if="name === 'divider'" :class="'icon icon-' + (enable ? 'enable' : 'disable') + ' icon-' + name">
+    <div v-else-if="name === 'divider'" :class="'icon icon-' + (enable ? 'enable' : 'disable')">
         <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" fill="none" version="1.1"
             width="16" height="16" viewBox="0 0 16 16">
             <defs>
@@ -141,7 +141,15 @@ const props = defineProps({
             </g>
         </svg>
     </div>
-    <div v-else-if="name === 'header'" :class="'icon icon-' + (enable ? 'enable' : 'disable') + ' icon-' + name">
+    <div v-else-if="name === 'drag'" :class="'icon icon-' + (enable ? 'enable' : 'disable')">
+        <svg viewBox="64 64 896 896" focusable="false" data-icon="drag" width="1em" height="1em" fill="currentColor"
+            aria-hidden="true">
+            <path
+                d="M909.3 506.3L781.7 405.6a7.23 7.23 0 00-11.7 5.7V476H548V254h64.8c6 0 9.4-7 5.7-11.7L517.7 114.7a7.14 7.14 0 00-11.3 0L405.6 242.3a7.23 7.23 0 005.7 11.7H476v222H254v-64.8c0-6-7-9.4-11.7-5.7L114.7 506.3a7.14 7.14 0 000 11.3l127.5 100.8c4.7 3.7 11.7.4 11.7-5.7V548h222v222h-64.8c-6 0-9.4 7-5.7 11.7l100.8 127.5c2.9 3.7 8.5 3.7 11.3 0l100.8-127.5c3.7-4.7.4-11.7-5.7-11.7H548V548h222v64.8c0 6 7 9.4 11.7 5.7l127.5-100.8a7.3 7.3 0 00.1-11.4z">
+            </path>
+        </svg>
+    </div>
+    <div v-else-if="name === 'header'" :class="'icon icon-' + (enable ? 'enable' : 'disable')">
         <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" fill="none" version="1.1"
             width="16" height="16" viewBox="0 0 16 16">
             <defs>
@@ -178,7 +186,7 @@ const props = defineProps({
             </g>
         </svg>
     </div>
-    <div v-else-if="name === 'image'" :class="'icon icon-' + (enable ? 'enable' : 'disable') + ' icon-' + name">
+    <div v-else-if="name === 'image'" :class="'icon icon-' + (enable ? 'enable' : 'disable')">
         <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" fill="none" version="1.1"
             width="16" height="16" viewBox="0 0 16 16">
             <g style="mix-blend-mode:passthrough">
@@ -205,7 +213,7 @@ const props = defineProps({
             </g>
         </svg>
     </div>
-    <div v-else-if="name === 'italic'" :class="'icon icon-' + (enable ? 'enable' : 'disable') + ' icon-' + name">
+    <div v-else-if="name === 'italic'" :class="'icon icon-' + (enable ? 'enable' : 'disable')">
         <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" fill="none" version="1.1"
             width="16" height="16" viewBox="0 0 16 16">
             <defs>
@@ -232,7 +240,7 @@ const props = defineProps({
             </g>
         </svg>
     </div>
-    <div v-else-if="name === 'linethrough'" :class="'icon icon-' + (enable ? 'enable' : 'disable') + ' icon-' + name">
+    <div v-else-if="name === 'linethrough'" :class="'icon icon-' + (enable ? 'enable' : 'disable')">
         <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" fill="none" version="1.1"
             width="16" height="16" viewBox="0 0 16 16">
             <defs>
@@ -264,7 +272,7 @@ const props = defineProps({
             </g>
         </svg>
     </div>
-    <div v-else-if="name === 'link'" :class="'icon icon-' + (enable ? 'enable' : 'disable') + ' icon-' + name">
+    <div v-else-if="name === 'link'" :class="'icon icon-' + (enable ? 'enable' : 'disable')">
         <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" fill="none" version="1.1"
             width="16" height="16" viewBox="0 0 16 16">
             <defs>
@@ -289,7 +297,7 @@ const props = defineProps({
             </g>
         </svg>
     </div>
-    <div v-else-if="name === 'quote'" :class="'icon icon-' + (enable ? 'enable' : 'disable') + ' icon-' + name">
+    <div v-else-if="name === 'quote'" :class="'icon icon-' + (enable ? 'enable' : 'disable')">
         <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" fill="none" version="1.1"
             width="16" height="16" viewBox="0 0 16 16">
             <defs>
@@ -311,7 +319,7 @@ const props = defineProps({
             </g>
         </svg>
     </div>
-    <div v-else-if="name === 'redo'" :class="'icon icon-' + (enable ? 'enable' : 'disable') + ' icon-' + name">
+    <div v-else-if="name === 'redo'" :class="'icon icon-' + (enable ? 'enable' : 'disable')">
         <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" fill="none" version="1.1"
             width="16" height="16" viewBox="0 0 16 16">
             <defs>
@@ -332,7 +340,7 @@ const props = defineProps({
             </g>
         </svg>
     </div>
-    <div v-else-if="name === 'search'" :class="'icon icon-' + (enable ? 'enable' : 'disable') + ' icon-' + name">
+    <div v-else-if="name === 'search'" :class="'icon icon-' + (enable ? 'enable' : 'disable')">
         <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" fill="none" version="1.1"
             width="17.999998092651367" height="17.999998092651367" viewBox="0 0 17.999998092651367 17.999998092651367">
             <defs>
@@ -358,7 +366,7 @@ const props = defineProps({
             </g>
         </svg>
     </div>
-    <div v-else-if="name === 'underline'" :class="'icon icon-' + (enable ? 'enable' : 'disable') + ' icon-' + name">
+    <div v-else-if="name === 'underline'" :class="'icon icon-' + (enable ? 'enable' : 'disable')">
         <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" fill="none" version="1.1"
             width="16" height="16" viewBox="0 0 16 16">
             <defs>
@@ -384,7 +392,7 @@ const props = defineProps({
             </g>
         </svg>
     </div>
-    <div v-else-if="name === 'undo'" :class="'icon icon-' + (enable ? 'enable' : 'disable') + ' icon-' + name">
+    <div v-else-if="name === 'undo'" :class="'icon icon-' + (enable ? 'enable' : 'disable')">
         <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" fill="none" version="1.1"
             width="16" height="16" viewBox="0 0 16 16">
             <defs>
@@ -405,7 +413,7 @@ const props = defineProps({
             </g>
         </svg>
     </div>
-    <div v-else-if="name === 'more'" :class="'icon icon-' + (enable ? 'enable' : 'disable') + ' icon-' + name">
+    <div v-else-if="name === 'more'" :class="'icon icon-' + (enable ? 'enable' : 'disable')">
         <svg viewBox="0 0 10 10"
             style="width: 14px; height: 14px; display: block; fill: inherit; flex-shrink: 0; backface-visibility: hidden;">
             <path
@@ -413,7 +421,7 @@ const props = defineProps({
             </path>
         </svg>
     </div>
-    <div v-else-if="name === 'plus'" :class="'icon icon-' + (enable ? 'enable' : 'disable') + ' icon-' + name">
+    <div v-else-if="name === 'plus'" :class="'icon icon-' + (enable ? 'enable' : 'disable')">
         <svg viewBox="0 0 16 16"
             style="width: 16px; height: 100%; display: block; fill: inherit; flex-shrink: 0; backface-visibility: hidden;">
             <path
@@ -421,7 +429,7 @@ const props = defineProps({
             </path>
         </svg>
     </div>
-    <div v-else-if="name === 'delete'" :class="'icon icon-' + (enable ? 'enable' : 'disable') + ' icon-' + name">
+    <div v-else-if="name === 'delete'" :class="'icon icon-' + (enable ? 'enable' : 'disable')">
         <svg viewBox="0 0 16 16" class="trash"
             style="width: 16px; height: 16px; display: block; fill: rgba(55, 53, 47, 0.85); flex-shrink: 0; backface-visibility: hidden;">
             <path
@@ -429,7 +437,7 @@ const props = defineProps({
             </path>
         </svg>
     </div>
-    <div v-else-if="name === 'check-circle'" :class="'icon icon-' + (enable ? 'enable' : 'disable') + ' icon-' + name">
+    <div v-else-if="name === 'check-circle'" :class="'icon icon-' + (enable ? 'enable' : 'disable')">
         <svg viewBox="64 64 896 896" focusable="false" data-icon="check-circle" width="1em" height="1em" fill="currentColor"
             aria-hidden="true">
             <path
@@ -440,7 +448,7 @@ const props = defineProps({
             </path>
         </svg>
     </div>
-    <div v-else-if="name === 'close-circle'" :class="'icon icon-' + (enable ? 'enable' : 'disable') + ' icon-' + name">
+    <div v-else-if="name === 'close-circle'" :class="'icon icon-' + (enable ? 'enable' : 'disable')">
         <svg viewBox="64 64 896 896" focusable="false" data-icon="close-circle" width="1em" height="1em" fill="currentColor"
             aria-hidden="true">
             <path
@@ -451,28 +459,28 @@ const props = defineProps({
             </path>
         </svg>
     </div>
-    <div v-else-if="name === 'h1'" :class="'icon icon-' + name">
-        <img src="@/assets/h1.png" />
+    <div v-else-if="name === 'h1'" class="image">
+        <img src="../assets/h1.png" />
     </div>
-    <div v-else-if="name === 'h2'" :class="'icon icon-' + name">
-        <img src="@/assets/h2.png" />
+    <div v-else-if="name === 'h2'" class="image">
+        <img src="../assets/h2.png" />
     </div>
-    <div v-else-if="name === 'h3'" :class="'icon icon-' + name">
-        <img src="@/assets/h3.png" />
+    <div v-else-if="name === 'h3'" class="image">
+        <img src="../assets/h3.png" />
     </div>
-    <div v-else-if="name === 'text'" :class="'icon icon-' + name">
-        <img src="@/assets/text.png" />
+    <div v-else-if="name === 'p'" class="image">
+        <img src="../assets/p.png" />
     </div>
-    <div v-else-if="name === 'ai-text'" :class="'icon icon-' + name">
-        <img src="@/assets/text.png" />
+    <div v-else-if="name === 'ai-text'" class="image">
+        <img src="../assets/p.png" />
     </div>
-    <div v-else-if="name === 'ai-image'" :class="'icon icon-' + name">
-        <img src="@/assets/text.png" />
+    <div v-else-if="name === 'ai-image'" class="image">
+        <img src="../assets/p.png" />
     </div>
-    <div v-else-if="name === ''" :class="'icon icon-' + (enable ? 'enable' : 'disable') + ' icon-' + name"></div>
+    <div v-else-if="name === ''" :class="'icon icon-' + (enable ? 'enable' : 'disable')"></div>
 </template>
 
-<style>
+<style scoped>
 .icon {
     padding: 4px;
 }
@@ -483,18 +491,23 @@ const props = defineProps({
 }
 
 .icon-enable path {
-    fill: var(--icon);
+    fill: var(--color);
 }
 
 .icon-enable ellipse {
-    stroke: var(--icon);
+    stroke: var(--color);
 }
 
 .icon-disable path {
-    fill: var(--icon-disable);
+    fill: var(--disable);
 }
 
 .icon-disable ellipse {
-    stroke: var(--icon-disable);
+    stroke: var(--disable);
+}
+
+.image img {
+    display: block;
+    width: 64px;
 }
 </style>

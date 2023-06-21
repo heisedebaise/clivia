@@ -1,78 +1,37 @@
-import { nextTick } from 'vue';
-import { store } from '../store';
-import { findEventId } from "./event";
-import { isEmpty } from "./line";
+import { nextTick } from "vue";
+import { store } from "../store";
+import { trigger, findEventId } from "./event";
+import { findLine, isEmpty } from "./line";
 
 const data = {
     cursor: [0, 0, 0, 0],
     select: [],
 };
 
-const focus = (index, e) => {
-    if (e) {
-        store.focus = findEventId(e);
-        window.toolbar();
-    }
+const focus = (event) => {
+    let id = findEventId(event);
+    if (id === null)
+        return;
 
-    let line = null;
-    if (index || index === 0)
-        line = store.lines[index];
+    let line = findLine(id);
+    if (line === null)
+        return;
 
-    if (line && isEmpty(line.texts)) {
-        store.placeholder = line.id;
-        setCursor(line.id, [0, 0, 0, 0]);
-    } else {
-        if (line)
-            store.placeholder = '';
-        nextTick(getCursorSync);
+    if (isEmpty(line.texts))
+        setCursor(id, [0, 0, 0, 0]);
+    else {
+        store.focus = id;
+        trigger('focus');
     }
 };
-
-const focusLast = () => {
-    document.querySelector('#' + store.lines[store.lines.length - 1].id).focus();
-};
-
-const getFocusId = () => store.focus;
 
 const getCursor = () => data.cursor;
-
-const getCursorSync = () => {
-    let selection = getSelection();
-    if (selection.rangeCount === 0)
-        return null;
-
-    let range = selection.getRangeAt(0);
-    if (range.startContainer.id && range.startContainer.id.indexOf('id') === 0) {
-        let offset = range.startContainer.innerText.length;
-        data.cursor = [0, offset, 0, offset];
-    } else {
-        data.cursor = [
-            getIndex(range.startContainer),
-            range.startOffset,
-            getIndex(range.endContainer),
-            range.endOffset
-        ];
-    }
-    for (let select of data.select)
-        select(!range.collapsed);
-
-    return data.cursor;
-};
-
-const getCursorSingle = (line) => {
-    let cursor = getCursor();
-    let position = 0;
-    for (let i = 0; i < cursor[0]; i++)
-        position += line.texts[i].text.length;
-
-    return position + cursor[1];
-};
 
 const setCursor = (id, cursor) => {
     nextTick(() => {
         if (id) {
             store.focus = id;
-            window.toolbar();
+            trigger('focus');
         }
         else
             id = store.focus;
@@ -81,7 +40,7 @@ const setCursor = (id, cursor) => {
             return;
 
         if (!cursor)
-            cursor = getCursor();
+            cursor = data.cursor;
         if (cursor[0] >= node.children.length)
             cursor[0] = node.children.length - 1;
         if (cursor[2] >= node.children.length)
@@ -109,35 +68,60 @@ const setCursor = (id, cursor) => {
     });
 };
 
-const setCursorSingle = (line, position) => {
+const getCursorSync = () => {
+    let selection = getSelection();
+    if (selection.rangeCount === 0)
+        return null;
+
+    let range = selection.getRangeAt(0);
+    if (range.startContainer.id && range.startContainer.id.indexOf('id') === 0) {
+        let offset = range.startContainer.innerText.length;
+        data.cursor = [0, offset, 0, offset];
+    } else {
+        data.cursor = [
+            getIndex(range.startContainer),
+            range.startOffset,
+            getIndex(range.endContainer),
+            range.endOffset
+        ];
+    }
+    for (let select of data.select)
+        select(!range.collapsed);
+
+    return data.cursor;
+};
+
+const getIndex = (container) => parseInt(container.nodeName === '#text' ? container.parentNode.dataset.index : container.dataset.index);
+
+const getCursorSingle = (line) => {
+    let cursor = data.cursor;
+    let position = 0;
+    for (let i = 0; i < cursor[0]; i++)
+        position += line.texts[i].text.length;
+
+    return position + cursor[1];
+};
+
+const setCursorSingle = (line, cursor) => {
     for (let i = 0; i < line.texts.length; i++) {
-        if (position <= line.texts[i].text.length) {
-            setCursor(line.id, [i, position, i, position]);
+        if (cursor <= line.texts[i].text.length) {
+            setCursor(line.id, [i, cursor, i, cursor]);
 
             return;
         }
 
-        position -= line.texts[i].text.length;
+        cursor -= line.texts[i].text.length;
     }
     let container = line.texts.length - 1;
     let offset = line.texts[container].text.length;
     setCursor(line.id, [container, offset, container, offset]);
 };
 
-const getIndex = (container) => parseInt(container.nodeName === '#text' ? container.parentNode.dataset.index : container.dataset.index);
-
-const bindSelect = (func) => {
-    data.select.push(func);
-}
-
 export {
     focus,
-    focusLast,
-    getFocusId,
     getCursor,
+    setCursor,
     getCursorSync,
     getCursorSingle,
-    setCursor,
     setCursorSingle,
-    bindSelect,
 };
