@@ -24,6 +24,8 @@ const messages = {
         'tag.divider.sub': 'Visually divide blocks.',
         'image.upload': 'Click to upload picture',
         'image.uploading': 'uploading',
+        'operate.forground': 'Forground color',
+        'operate.background': 'Background color',
         'operate.jump-to': 'Jump to',
         'operate.move.up': 'Move up one line',
         'operate.move.down': 'Move one line down',

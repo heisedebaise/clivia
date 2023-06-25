@@ -20,6 +20,7 @@ const focus = (event) => {
     if (isEmpty(line.texts))
         setCursor(id, [0, 0, 0, 0]);
     else {
+        getCursorSync();
         store.focus = id;
         trigger('focus');
     }

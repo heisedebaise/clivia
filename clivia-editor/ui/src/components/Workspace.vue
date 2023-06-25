@@ -1,19 +1,97 @@
 <script setup>
-import { ref, provide } from 'vue';
+import { ref, provide, onMounted, onUnmounted } from 'vue';
+import { service } from '../http';
+import { store } from '../store';
 import { trigger } from './event';
+import { historyPut } from './history';
+import { setCursor } from './cursor';
 import Operate from './Operate.vue';
 import Line from './Line.vue';
+import Annotation from './Annotation.vue';
+
+const props = defineProps({
+    param: Object
+});
 
 const workspace = ref(null);
 provide('workspace', workspace);
-const operate = ref(null);
+const param = {
+    sync: 0,
+};
+const timer = {
+    interval: 0,
+    running: false,
+    time: 0,
+};
+
+const move = (event) => {
+    trigger('move', event);
+};
+
+const drop = (event) => {
+    trigger('drop', event);
+};
+
+onMounted(() => {
+    if (store.lines.length === 0)
+        return;
+
+    param.listener = props.param.listener;
+    param.key = props.param.key || '';
+    store.focus = store.lines[0].id;
+    setCursor(store.focus, [0, 0, 0, 0]);
+
+    for (let line of store.lines)
+        if (line.time > timer.time)
+            timer.time = line.time;
+    historyPut();
+    timer.interval = setInterval(() => window.put(false), 1000);
+});
+
+window.put = (always) => {
+    if (timer.running && !always && timer.time < now() - 5000)
+        return;
+
+    timer.running = true;
+    let id = [];
+    let array = [];
+    let time = 0;
+    for (let line of store.lines) {
+        id.push(line.id);
+        if (line.time && line.time > timer.time) {
+            array.push(line);
+            if (line.time > time)
+                time = line.time;
+        }
+    }
+    if (!always && array.length === 0) {
+        timer.running = false;
+
+        return;
+    }
+
+    historyPut();
+    param.id = id.join(',');
+    param.lines = JSON.stringify(array);
+    service('/editor/put', param, data => {
+        timer.running = false;
+        param.sync = data.sync;
+        timer.time = time;
+    });
+};
+
+onUnmounted(() => {
+    if (timer.interval > 0)
+        clearInterval(timer.interval);
+});
 </script>
 
 <template>
-    <div ref="workspace" class="workspace" @mousemove="operate.move" @touchmove="operate.move" @mouseup="operate.done"
-        @touchend="operate.done" @scroll="trigger('scroll')">
+    <div ref="workspace" class="workspace" @mousemove="move" @touchmove="move" @mouseup="drop" @touchend="drop"
+        @scroll="trigger('scroll')">
         <Line />
-        <Operate ref="operate" />
+        <Operate />
+        <Annotation />
     </div>
 </template>
 

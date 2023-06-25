@@ -6,4 +6,7 @@
   --disable: #ccc;
   --mask-bg: rgba(0, 0, 0, 0.45);
   --placeholder: rgba(55, 53, 47, 0.5);
+  --draging: #ccc;
+  --draging-bg: rgba(200, 200, 200, 0.25);
+  --shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
 }

@@ -1,0 +1,111 @@
+.bold {
+    font-weight: bold;
+}
+
+.italic {
+    font-style: italic;
+}
+
+.underline {
+    text-decoration: underline;
+}
+
+.linethrough {
+    text-decoration: line-through;
+}
+
+.forground-default {
+    color: var(--color);
+}
+
+.forground-gray {
+    color: gray;
+}
+
+.forground-brown {
+    color: brown;
+}
+
+.forground-orange {
+    color: orange;
+}
+
+.forground-yellow {
+    color: yellow;
+}
+
+.forground-green {
+    color: green;
+}
+
+.forground-blue {
+    color: blue;
+}
+
+.forground-purple {
+    color: purple;
+}
+
+.forground-pink {
+    color: pink;
+}
+
+.forground-red {
+    color: red;
+}
+
+.background-default {
+    background-color: var(--background);
+}
+
+.background-gray {
+    background-color: gray;
+}
+
+.background-brown {
+    background-color: brown;
+}
+
+.background-orange {
+    background-color: orange;
+}
+
+.background-yellow {
+    background-color: yellow;
+}
+
+.background-green {
+    background-color: green;
+}
+
+.background-blue {
+    background-color: blue;
+}
+
+.background-purple {
+    background-color: purple;
+}
+
+.background-pink {
+    background-color: pink;
+}
+
+.background-red {
+    background-color: red;
+}
+
+.lines-horizontal .divider {
+    padding: 0.5rem 0;
+}
+
+.lines-horizontal .divider div {
+    border-top: 1px solid var(--border);
+}
+
+.lines-vertical .divider {
+    padding: 0 0.5rem;
+}
+
+.lines-vertical .divider div {
+    border-right: 1px solid var(--border);
+}

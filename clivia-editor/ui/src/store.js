@@ -2,6 +2,6 @@ import { reactive } from "vue";
 
 export const store = reactive({
     lines: [],
-    vertical: true,
+    vertical: false,
     focus: '',
 });
