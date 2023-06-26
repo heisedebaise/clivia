@@ -63,8 +63,8 @@
     outline: none;
 }
 
-.console-form-agreement label,
-.console-form-toolbar label {
+.console-form-agreement .ant-form-item-label>label,
+.console-form-toolbar .ant-form-item-label>label {
     display: none;
 }
 

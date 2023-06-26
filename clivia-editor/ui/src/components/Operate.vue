@@ -1,6 +1,7 @@
 <script setup>
 import { ref, inject, onMounted, nextTick } from 'vue';
 import { store } from '../store';
+import { service } from '../http';
 import { now } from './time';
 import { message } from './locale';
 import { listen, trigger } from './event';
@@ -35,6 +36,7 @@ const data = ref({
         underline: true,
         linethrough: true,
         annotation: false,
+        ai: false,
         top: false,
         up: false,
         down: false,
@@ -264,6 +266,11 @@ const changeTag = (tag) => {
     trigger('annotation');
 };
 
+const ai = (type) => {
+    trigger('ai', { type });
+    data.value.state = '';
+};
+
 const top = () => {
     let index = findIndex(store.focus);
     if (index <= 0)
@@ -364,6 +371,10 @@ onMounted(() => {
     listen('scroll', focus);
     listen('move', move);
     listen('drop', done);
+    service('/editor/ai', {}, data => {
+        if (data)
+            data.value.enable.ai = true;
+    });
 });
 </script>
 
@@ -452,6 +463,11 @@ onMounted(() => {
                     <Icon name="delete" :enable="data.enable.delete" />
                 </div>
             </div>
+            <div v-if="data.enable.ai" class="title">{{ message('operate.ai') }}</div>
+            <div v-if="data.enable.ai" class="line">
+                <div class="ai" @click="ai('text')">{{ message('operate.ai.text') }}</div>
+                <div class="ai" @click="ai('image')">{{ message('operate.ai.image') }}</div>
+            </div>
             <div class="title">{{ message('operate.forground') }}</div>
             <div class="colors">
                 <div v-for="index in 5" :class="'forground forground-' + colors[index - 1].toLocaleLowerCase()"
@@ -528,6 +544,17 @@ onMounted(() => {
 .title {
     padding: 4px 8px;
     cursor: default;
+    background-color: var(--hover-bg);
+}
+
+.ai {
+    border: 1px solid var(--border);
+    padding: 4px 8px;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.ai:hover {
     background-color: var(--hover-bg);
 }
 

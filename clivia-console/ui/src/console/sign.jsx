@@ -1,5 +1,5 @@
 import React from 'react';
-import { Spin, Dropdown, Menu, Avatar } from 'antd';
+import { Spin, Dropdown, Avatar } from 'antd';
 import { LockOutlined, UserOutlined, LogoutOutlined } from '@ant-design/icons';
 import { post, url, loader } from '../http';
 import './sign.css';
@@ -26,26 +26,11 @@ class Sign extends React.Component {
 
     render = () => {
         let nick = this.props.user.nick || 'Clivia UI';
-        let menu = <Menu>
-            <Menu.Item onClick={this.sign}>
-                <UserOutlined />
-                <span>个人信息</span>
-            </Menu.Item>
-            <Menu.Item onClick={this.password}>
-                <LockOutlined />
-                <span>修改密码</span>
-            </Menu.Item>
-            <Menu.Divider />
-            <Menu.Item onClick={this.signOut}>
-                <LogoutOutlined />
-                <span>退出</span>
-            </Menu.Item>
-        </Menu>;
 
         return (
             <div className="console-sign">
                 <div className="console-sign-loading"><Spin spinning={this.state.loading} /></div>
-                <Dropdown menu={menu}>
+                <Dropdown menu={{ items: this.items() }}>
                     <div className="console-sign-avatar">
                         {this.props.user.avatar ? <Avatar src={url(this.props.user.avatar)} /> : <Avatar>{nick.substring(0, 1)}</Avatar>}
                         <span>{nick}</span>
@@ -54,6 +39,20 @@ class Sign extends React.Component {
             </div>
         );
     }
+
+    items = () => [{
+        key: '1',
+        icon: <UserOutlined />,
+        label: <div onClick={this.sign}>个人信息</div>,
+    }, {
+        key: '2',
+        icon: <LockOutlined />,
+        label: <div onClick={this.password}>修改密码</div>,
+    }, {
+        key: '3',
+        icon: <LogoutOutlined />,
+        label: <div onClick={this.signOut}>退出</div>,
+    }];
 }
 
 export default Sign;

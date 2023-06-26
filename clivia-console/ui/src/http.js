@@ -15,7 +15,7 @@ const service = (uri, body) => post(uri, body).then(json => {
         return json.data;
     }
 
-    message.warn('[' + json.code + ']' + json.message);
+    message.warning('[' + json.code + ']' + json.message);
 
     return null;
 });
@@ -36,7 +36,7 @@ const post = (uri, body) => fetch(root + uri, {
 
     if (response.ok) return response.json();
 
-    message.warn('[' + response.status + ']' + response.statusText);
+    message.warning('[' + response.status + ']' + response.statusText);
 
     return null;
 });
@@ -63,13 +63,13 @@ const upload = (name, file) => {
                 if (json.success)
                     return json;
 
-                message.warn(json.message);
+                message.warning(json.message);
 
                 return null;
             });
         }
 
-        message.warn('[' + response.status + ']' + response.statusText);
+        message.warning('[' + response.status + ']' + response.statusText);
 
         return null;
     });

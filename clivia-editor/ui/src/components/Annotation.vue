@@ -48,10 +48,9 @@ const ok = () => {
     if (isEmpty(texts[1]))
         return;
 
-    for (let text of texts[1]) {
-        text.annotation = data.value.annotation;
+    texts[1][0].annotation = data.value.annotation;
+    for (let text of texts[1])
         texts[0].push(text);
-    }
     for (let text of texts[2])
         texts[0].push(text);
     line.texts = texts[0];
@@ -119,7 +118,7 @@ onMounted(() => {
             </div>
             <div class="button">
                 <div @click="ok">{{ message('annotation.ok') }}</div>
-                <div v-if="data.reset" @click="remove">{{ message('annotation.remove') }}</div>
+                <div v-if="data.reset" class="remove" @click="remove">{{ message('annotation.remove') }}</div>
             </div>
         </div>
     </div>
@@ -167,6 +166,7 @@ onMounted(() => {
     display: flex;
     align-items: center;
     justify-content: center;
+    border-top: 1px solid var(--border);
 }
 
 .button div {
@@ -178,5 +178,9 @@ onMounted(() => {
 
 .button div:hover {
     background-color: var(--hover-bg);
+}
+
+.remove {
+    border-left: 1px solid var(--border);
 }
 </style>
