@@ -5,6 +5,7 @@ import { service, url } from '../http';
 import { listen, trigger } from './event';
 import { newText, newImage } from './tag';
 import { message } from './locale';
+import { findIndex } from './line';
 
 const data = ref({
     type: '',
@@ -53,12 +54,16 @@ const image = (event) => {
 };
 
 const show = (event) => {
-    data.value.type = event.type;
+    data.value = {
+        type: event.type,
+        reply: [],
+        empty: '',
+    };
+    nextTick(() => description.value.focus());
 };
 
 onMounted(() => {
     listen('ai', show);
-    // nextTick(() => description.value.focus());
 });
 </script>
 

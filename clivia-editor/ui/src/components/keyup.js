@@ -14,7 +14,7 @@ const keyup = (event) => {
     let line = findLine(findEventId(event));
     if (isComposition()) {
         if (event.code === 'Slash')
-            trigger('slash', event);
+            trigger('slash');
 
         return;
     }
@@ -55,6 +55,8 @@ const keyup = (event) => {
     line.time = now();
     setCursor(line.id, cursor);
     trigger('annotation');
+    if (event.code === 'Slash')
+        trigger('slash');
 };
 
 export {

@@ -1,7 +1,8 @@
 <script setup>
 import { ref, provide, onMounted, onUnmounted } from 'vue';
-import { service } from '../http';
 import { store } from '../store';
+import { service } from '../http';
+import { now } from './time';
 import { trigger } from './event';
 import { historyPut } from './history';
 import { setCursor } from './cursor';

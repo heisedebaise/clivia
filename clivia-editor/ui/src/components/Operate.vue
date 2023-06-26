@@ -20,6 +20,7 @@ const data = ref({
         style: {},
         icon: 'more',
     },
+    slash: false,
     operates: {},
     enable: {
         undo: false,
@@ -62,20 +63,26 @@ const start = (event) => {
 const done = (event) => {
     if (data.value.state === 'start') {
         data.value.state = 'operates';
-        nextTick(() => operates(event));
+        data.value.slash = false;
+        nextTick(operates);
     } else if (data.value.state === 'drag') {
         data.value.state = 'drop';
         drop(event);
     }
 };
 
-const operates = (event) => {
-    data.value.enable.undo = historyEnable(true);
-    data.value.enable.redo = historyEnable(false);
-    let cursor = getCursor();
-    let range = cursor[0] != cursor[2] || cursor[1] != cursor[3];
-    data.value.enable.annotation = range;
+const operates = () => {
+    data.value.enable.undo = !data.value.slash && historyEnable(true);
+    data.value.enable.redo = !data.value.slash && historyEnable(false);
     let index = findIndex(store.focus);
+    let text = store.lines[index].texts && store.lines[index].texts.length > 0;
+    data.value.enable.bold = text;
+    data.value.enable.italic = text;
+    data.value.enable.underline = text;
+    data.value.enable.linethrough = text;
+    let cursor = getCursor();
+    let range = text && (cursor[0] != cursor[2] || cursor[1] != cursor[3]);
+    data.value.enable.annotation = range;
     data.value.enable.top = index > 0;
     data.value.enable.up = index > 0;
     data.value.enable.down = index < store.lines.length - 1;
@@ -94,16 +101,17 @@ const operates = (event) => {
     }
     data.value.headers = headers;
 
+    let more = document.querySelector('.more');
     let operates = document.querySelector('.operates');
     if (store.vertical) {
-        let left = event.x - operates.offsetWidth - 22;
+        let left = more.offsetLeft - operates.offsetWidth;
         if (left < 0)
-            left = event.x + 22;
+            left = more.offsetLeft + more.offsetWidth;
         data.value.operates = { left: left + 'px', top: '10px' };
     } else {
-        let top = event.y - operates.offsetHeight - 22;
+        let top = more.offsetTop - operates.offsetHeight;
         if (top < 0)
-            top = event.y + 22;
+            top = more.offsetTop + more.offsetHeight;
         data.value.operates = { left: '10px', top: top + 'px' };
     }
 };
@@ -218,16 +226,19 @@ const redo = () => {
 };
 
 const image = () => {
+    removeSlash();
     newImage();
     data.value.state = '';
 };
 
 const divider = () => {
+    removeSlash();
     newDivider();
     data.value.state = '';
 };
 
 const direction = () => {
+    removeSlash();
     store.vertical = !store.vertical;
     data.value.state = '';
     nextTick(() => {
@@ -238,6 +249,7 @@ const direction = () => {
 };
 
 const setStyle = (style) => {
+    removeSlash();
     setStyleName(style);
     data.value.state = '';
 };
@@ -247,6 +259,7 @@ const setAnnotation = () => {
     if (cursor[0] === cursor[2] && cursor[1] === cursor[3])
         return;
 
+    removeSlash();
     setCursor(store.focus, cursor);
     trigger('setAnnotation');
     data.value.state = '';
@@ -257,6 +270,7 @@ const changeTag = (tag) => {
     if (!line)
         return;
 
+    removeSlash();
     line.tag = tag;
     if ((tag === 'h1' || tag === 'h2' || tag === 'h3' || tag === 'p') && !line.texts)
         line.texts = [{ text: '' }];
@@ -267,6 +281,7 @@ const changeTag = (tag) => {
 };
 
 const ai = (type) => {
+    removeSlash();
     trigger('ai', { type });
     data.value.state = '';
 };
@@ -276,6 +291,7 @@ const top = () => {
     if (index <= 0)
         return;
 
+    removeSlash();
     let line = store.lines[index];
     store.lines.splice(index, 1);
     store.lines.splice(0, 0, line);
@@ -290,6 +306,7 @@ const up = () => {
     if (index <= 0)
         return;
 
+    removeSlash();
     let line = store.lines[index];
     store.lines[index] = store.lines[index - 1];
     store.lines[index - 1] = line;
@@ -304,6 +321,7 @@ const down = () => {
     if (index >= store.lines.length - 1)
         return;
 
+    removeSlash();
     let line = store.lines[index];
     store.lines[index] = store.lines[index + 1];
     store.lines[index + 1] = line;
@@ -318,6 +336,7 @@ const bottom = () => {
     if (index >= store.lines.length - 1)
         return;
 
+    removeSlash();
     let line = store.lines[index];
     store.lines.splice(index, 1);
     store.lines.push(line);
@@ -344,16 +363,19 @@ const remove = () => {
 };
 
 const forground = (index) => {
+    removeSlash();
     setStyleName('forground-' + colors[index].toLocaleLowerCase());
     data.value.state = '';
 };
 
 const background = (index) => {
+    removeSlash();
     setStyleName('background-' + colors[index].toLocaleLowerCase());
     data.value.state = '';
 };
 
 const jumpTo = (id) => {
+    removeSlash();
     let node = document.querySelector('#' + id);
     if (node) {
         if (store.vertical)
@@ -366,13 +388,30 @@ const jumpTo = (id) => {
     data.value.state = '';
 };
 
+const slash = () => {
+    data.value.state = 'operates';
+    data.value.slash = true;
+    nextTick(operates);
+};
+
+const removeSlash = () => {
+    if (!data.value.slash)
+        return;
+
+    let line = findLine(store.focus);
+    let cursor = getCursor();
+    let text = line.texts[cursor[0]].text;
+    line.texts[cursor[0]].text = text.substring(0, cursor[1] - 1) + text.substring(cursor[1]);
+};
+
 onMounted(() => {
     listen('focus', focus);
     listen('scroll', focus);
     listen('move', move);
     listen('drop', done);
-    service('/editor/ai', {}, data => {
-        if (data)
+    listen('slash', slash);
+    service('/editor/ai', {}, d => {
+        if (d)
             data.value.enable.ai = true;
     });
 });
