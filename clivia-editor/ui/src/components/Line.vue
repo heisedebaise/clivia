@@ -1,11 +1,16 @@
 <script setup>
+import { ref } from 'vue';
 import { store } from '../store';
+import { url } from '../http';
 import { message } from './locale';
 import { isEmpty } from './line';
 import { focus } from './cursor';
 import { compositionStart, compositionEnd } from './composition';
 import { keydown } from './keydown';
 import { keyup } from './keyup';
+import { selectImage, uploadImage, imageName } from './image';
+
+const imageUploader = ref(null);
 
 const compositionend = (event) => {
     compositionEnd(event);
@@ -58,7 +63,7 @@ const innerText = (line, text) => {
                 <span v-for="(text, index) in line.texts" :class="className(line, text)" :data-index="index">{{
                     innerText(line, text) }}</span>
             </p>
-            <div v-else-if="line.tag === 'image'" :id="line.id" class="image">
+            <div v-else-if="line.tag === 'image'" :id="line.id" class="image" @click="focus">
                 <div v-if="line.uploading" class="uploading">{{ line.uploading }}</div>
                 <div v-else-if="line.path" class="view">
                     <img :src="url(line.path)" draggable="false" />
@@ -72,6 +77,7 @@ const innerText = (line, text) => {
             </div>
         </div>
     </div>
+    <input ref="imageUploader" class="image-uploader" type="file" accept="image/*" multiple @change="uploadImage" />
 </template>
 
 <style scoped>
@@ -111,5 +117,22 @@ const innerText = (line, text) => {
 
 .placeholder {
     color: var(--placeholder);
+}
+
+.image .uploading,
+.image .select {
+    line-height: 250%;
+    text-align: center;
+    background-color: var(--image-select-bg);
+}
+
+.image .select:hover {
+    background-color: var(--image-select-hover-bg);
+    cursor: pointer;
+}
+
+.image-uploader {
+    position: absolute;
+    top: -100vh;
 }
 </style>

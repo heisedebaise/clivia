@@ -70,6 +70,9 @@ const done = (event) => {
 const operates = (event) => {
     data.value.enable.undo = historyEnable(true);
     data.value.enable.redo = historyEnable(false);
+    let cursor = getCursor();
+    let range = cursor[0] != cursor[2] || cursor[1] != cursor[3];
+    data.value.enable.annotation = range;
     let index = findIndex(store.focus);
     data.value.enable.top = index > 0;
     data.value.enable.up = index > 0;
@@ -222,11 +225,6 @@ const divider = () => {
     data.value.state = '';
 };
 
-const setStyle = (style) => {
-    setStyleName(style);
-    data.value.state = '';
-};
-
 const direction = () => {
     store.vertical = !store.vertical;
     data.value.state = '';
@@ -235,6 +233,21 @@ const direction = () => {
         setCursor(store.focus, getCursor());
     });
     trigger('annotation');
+};
+
+const setStyle = (style) => {
+    setStyleName(style);
+    data.value.state = '';
+};
+
+const setAnnotation = () => {
+    let cursor = getCursor();
+    if (cursor[0] === cursor[2] && cursor[1] === cursor[3])
+        return;
+
+    setCursor(store.focus, cursor);
+    trigger('setAnnotation');
+    data.value.state = '';
 };
 
 const changeTag = (tag) => {
@@ -398,7 +411,7 @@ onMounted(() => {
                 <div :class="'operate' + (data.enable.linethrough ? ' enable' : '')" @click="setStyle('linethrough')">
                     <Icon name="linethrough" :enable="data.enable.linethrough" />
                 </div>
-                <div :class="'operate' + (data.enable.annotation ? ' enable' : '')">
+                <div :class="'operate' + (data.enable.annotation ? ' enable' : '')" @click="setAnnotation">
                     <Icon name="annotation" :enable="data.enable.annotation" />
                 </div>
                 <div :class="'operate' + (data.enable.quote ? ' enable' : '')">

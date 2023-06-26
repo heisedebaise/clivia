@@ -1,8 +1,9 @@
+import { nextTick } from "vue";
 import { store } from "../store";
 import { now } from "./time";
+import { message } from './locale';
 import { trigger } from "./event";
-import { findIndex } from "./line";
-import { nextTick } from "vue";
+import { findIndex, isEmpty } from "./line";
 
 const newText = (tag, text) => {
     return {

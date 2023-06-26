@@ -94,6 +94,30 @@
     background-color: red;
 }
 
+.line .image .view {
+    display: inline-block;
+}
+
+.line .image img {
+    display: block;
+}
+
+.lines-horizontal .line .image img {
+    max-width: 100%;
+}
+
+.lines-vertical .line .image img {
+    max-height: 100%;
+}
+
+.line .image .view .name {
+    border: none;
+    outline: none;
+    background-color: var(--image-name-bg);
+    text-align: center;
+    line-height: 200%;
+}
+
 .lines-horizontal .divider {
     padding: 0.5rem 0;
 }
@@ -108,4 +132,23 @@
 
 .lines-vertical .divider div {
     border-right: 1px solid var(--border);
+}
+
+.line .annotation {
+    background-color: var(--hover-bg);
+}
+
+.annotation-horizontal {
+    position: absolute;
+    transform: translateY(-100%);
+    color: var(--annotation);
+    font-size: 0.5rem;
+}
+
+.annotation-vertical {
+    position: absolute;
+    transform: translateX(1rem);
+    color: var(--annotation);
+    writing-mode: vertical-rl;
+    font-size: 0.5rem;
 }

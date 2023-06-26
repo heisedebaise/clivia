@@ -9,4 +9,7 @@
   --draging: #ccc;
   --draging-bg: rgba(200, 200, 200, 0.25);
   --shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+  --image-name-bg: #888;
+  --image-select-bg: #f0f0f0;
+  --image-select-hover-bg: #ccc;
 }

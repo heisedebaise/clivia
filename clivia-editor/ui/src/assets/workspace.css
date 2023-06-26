@@ -1,0 +1,5 @@
+.draging img {
+    opacity: 0.25;
+    max-width: 200px;
+    max-height: 200px;
+}

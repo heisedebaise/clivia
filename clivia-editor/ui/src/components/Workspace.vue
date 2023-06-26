@@ -40,6 +40,7 @@ onMounted(() => {
     param.key = props.param.key || '';
     store.focus = store.lines[0].id;
     setCursor(store.focus, [0, 0, 0, 0]);
+    trigger('annotation');
 
     for (let line of store.lines)
         if (line.time > timer.time)
@@ -96,6 +97,8 @@ onUnmounted(() => {
 </template>
 
 <style scoped>
+@import '@/assets/workspace.css';
+
 .workspace {
     width: 100vw;
     height: 100vh;
