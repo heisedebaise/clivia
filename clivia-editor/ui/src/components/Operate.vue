@@ -237,6 +237,12 @@ const divider = () => {
     data.value.state = '';
 };
 
+const search = () => {
+    removeSlash();
+    data.value.state = '';
+    trigger('search');
+};
+
 const direction = () => {
     removeSlash();
     store.vertical = !store.vertical;
@@ -441,7 +447,7 @@ onMounted(() => {
                 <div :class="'operate' + (data.enable.divider ? ' enable' : '')" @click="divider">
                     <Icon name="divider" :enable="data.enable.divider" />
                 </div>
-                <div :class="'operate' + (data.enable.search ? ' enable' : '')">
+                <div :class="'operate' + (data.enable.search ? ' enable' : '')" @click="search">
                     <Icon name="search" :enable="data.enable.search" />
                 </div>
                 <div :class="'operate' + (data.enable.direction ? ' enable' : '')" @click="direction">

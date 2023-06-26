@@ -9,6 +9,7 @@ import { setCursor } from './cursor';
 import Operate from './Operate.vue';
 import Line from './Line.vue';
 import Annotation from './Annotation.vue';
+import Search from './Search.vue';
 import Ai from './Ai.vue';
 
 const props = defineProps({
@@ -95,6 +96,7 @@ onUnmounted(() => {
         <Line />
         <Operate />
         <Annotation />
+        <Search />
         <Ai />
     </div>
 </template>
