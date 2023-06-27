@@ -3,9 +3,10 @@ import { ref, provide, onMounted, onUnmounted } from 'vue';
 import { store } from '../store';
 import { service } from '../http';
 import { now } from './time';
-import { trigger } from './event';
+import { listen, trigger } from './event';
 import { historyPut } from './history';
 import { setCursor } from './cursor';
+import { findByXy, findLine } from './line';
 import Operate from './Operate.vue';
 import Line from './Line.vue';
 import Annotation from './Annotation.vue';
@@ -36,15 +37,25 @@ const drop = (event) => {
 };
 
 const click = (event) => {
-    if (store.vertical) {
-        if (event.y < 32) {
-            console.log(event.x);
-        }
-    } else {
-        if (event.x < 32) {
-            console.log(event.y);
-        }
-    }
+    let id = findByXy(workspace.value, event.x, event.y);
+    if (id === null)
+        return;
+
+    if (store.selects.length === 0)
+        store.selects = [id, id];
+    else
+        store.selects[1] = id;
+    let range = document.createRange();
+    range.setStartBefore(document.querySelector('#' + store.selects[0]).children[0]);
+    let end = document.querySelector('#' + store.selects[1]).children;
+    range.setEndAfter(end[end.length - 1]);
+    let selection = getSelection();
+    selection.removeAllRanges();
+    selection.addRange(range);
+};
+
+const focus = () => {
+    store.selects = [];
 };
 
 const scroll = () => {
@@ -66,6 +77,7 @@ onMounted(() => {
             timer.time = line.time;
     historyPut();
     timer.interval = setInterval(() => window.put(false), 1000);
+    listen('focus', focus);
 });
 
 window.put = (always) => {
