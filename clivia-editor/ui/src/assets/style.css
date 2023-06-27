@@ -152,3 +152,7 @@
     writing-mode: vertical-rl;
     font-size: 0.5rem;
 }
+
+.find {
+    color: var(--find);
+}
