@@ -35,6 +35,22 @@ const drop = (event) => {
     trigger('drop', event);
 };
 
+const click = (event) => {
+    if (store.vertical) {
+        if (event.y < 32) {
+            console.log(event.x);
+        }
+    } else {
+        if (event.x < 32) {
+            console.log(event.y);
+        }
+    }
+};
+
+const scroll = () => {
+    trigger('scroll');
+};
+
 onMounted(() => {
     if (store.lines.length === 0)
         return;
@@ -92,10 +108,10 @@ onUnmounted(() => {
 
 <template>
     <div ref="workspace" class="workspace" @mousemove="move" @touchmove="move" @mouseup="drop" @touchend="drop"
-        @scroll="trigger('scroll')">
+        @click.self="click" @scroll="scroll">
         <Line />
-        <Operate />
         <Annotation />
+        <Operate />
         <Search />
         <Ai />
     </div>

@@ -16,6 +16,26 @@ const findIndex = (id) => {
     return 0;
 };
 
+const findByXy = (workspace, x, y) => {
+    if (store.vertical) {
+        for (let line of store.lines) {
+            let node = document.querySelector('#' + line.id).parentElement;
+            let left = node.offsetLeft - workspace.scrollLeft;
+            if (x >= left && x < left + node.offsetWidth)
+                return line.id;
+        }
+    } else {
+        for (let line of store.lines) {
+            let node = document.querySelector('#' + line.id).parentElement;
+            let top = node.offsetTop - workspace.scrollTop;
+            if (y >= top && y < top + node.offsetHeight)
+                return line.id;
+        }
+    }
+
+    return null;
+};
+
 const splitTexts = (texts, cursor) => {
     if (isEmpty(texts))
         return [[{ text: '' }], [{ text: '' }], [{ text: '' }]];
@@ -105,6 +125,7 @@ const isEmpty = (texts) => {
 export {
     findLine,
     findIndex,
+    findByXy,
     splitTexts,
     mergeTexts,
     isEmpty,

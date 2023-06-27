@@ -106,6 +106,7 @@ const annotation = () => {
 onMounted(() => {
     listen('setAnnotation', set);
     listen('annotation', annotation);
+    listen('scroll', annotation);
 });
 </script>
 

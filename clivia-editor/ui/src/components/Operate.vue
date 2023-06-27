@@ -5,7 +5,7 @@ import { service } from '../http';
 import { now } from './time';
 import { message } from './locale';
 import { listen, trigger } from './event';
-import { findIndex, findLine } from './line';
+import { findIndex, findLine, findByXy } from './line';
 import { newText, newImage, newDivider } from './tag';
 import { getCursor, setCursor } from './cursor';
 import { setStyleName } from './style';
@@ -145,26 +145,14 @@ const move = (event) => {
 };
 
 const findDrag = (event) => {
-    data.value.draging.id = '';
-    data.value.draging.last = false;
-    if (store.vertical) {
-        for (let line of store.lines) {
-            data.value.draging.id = line.id;
-            let node = document.querySelector('#' + line.id).parentElement;
-            let left = node.offsetLeft - workspace.value.scrollLeft;
-            if (event.x >= left && event.x < left + node.offsetWidth)
-                return;
-        }
+    let id = findByXy(workspace.value, event.x, event.y);
+    if (id === null) {
+        data.value.draging.id = store.lines[store.lines.length - 1].id;
+        data.value.draging.last = true;
     } else {
-        for (let line of store.lines) {
-            data.value.draging.id = line.id;
-            let node = document.querySelector('#' + line.id).parentElement;
-            let top = node.offsetTop - workspace.value.scrollTop;
-            if (event.y >= top && event.y < top + node.offsetHeight)
-                return;
-        }
+        data.value.draging.id = id;
+        data.value.draging.last = false;
     }
-    data.value.draging.last = true;
 };
 
 const drop = (event) => {
