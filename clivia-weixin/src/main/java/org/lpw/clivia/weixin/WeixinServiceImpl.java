@@ -636,8 +636,11 @@ public class WeixinServiceImpl implements WeixinService, ContextRefreshedListene
         map.put("spbill_create_ip", header.getIp());
         map.put("notify_url", url);
         map.put("trade_type", type);
-        if (type.equals("JSAPI"))
+        if (type.equals("JSAPI")) {
+            if (validator.isEmpty(openId))
+                openId = infoService.findUserOpenId(key, user);
             map.put("openid", infoService.findOpenId(weixin.getAppId(), openId));
+        }
         map.put("sign", sign(map, weixin.getMchKey()));
 
         StringBuilder xml = new StringBuilder("<xml>");

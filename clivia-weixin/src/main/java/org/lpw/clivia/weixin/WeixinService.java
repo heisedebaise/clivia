@@ -216,7 +216,7 @@ public interface WeixinService {
      *
      * @param key     引用key。
      * @param user    用户ID。
-     * @param openId  微信OpenID。
+     * @param openId  微信OpenID，为空则自动获取用户对应的Open ID。
      * @param subject 订单名称。
      * @param amount  支付金额，单位：分。
      * @param billNo  单据号。
