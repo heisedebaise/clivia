@@ -4,5 +4,5 @@ export const store = reactive({
     lines: [],
     vertical: false,
     focus: '',
-    selects: [],
+    select: {},
 });

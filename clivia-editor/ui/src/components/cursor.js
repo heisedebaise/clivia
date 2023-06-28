@@ -1,11 +1,10 @@
 import { nextTick } from "vue";
 import { store } from "../store";
 import { trigger, findEventId } from "./event";
-import { findLine, isEmpty } from "./line";
+import { findLine, findByXy, isEmpty } from "./line";
 
 const data = {
     cursor: [0, 0, 0, 0],
-    select: [],
 };
 
 const focus = (event) => {
@@ -86,8 +85,6 @@ const getCursorSync = () => {
             range.endOffset
         ];
     }
-    for (let select of data.select)
-        select(!range.collapsed);
 
     return data.cursor;
 };
@@ -118,6 +115,28 @@ const setCursorSingle = (line, cursor) => {
     setCursor(line.id, [container, offset, container, offset]);
 };
 
+const selectLine = (workspace, event) => {
+    let id = findByXy(workspace, event.x, event.y);
+    if (id === null)
+        return;
+
+    if (store.select[id])
+        delete store.select[id];
+    else
+        store.select[id] = true;
+    data.cursor[2] = data.cursor[0];
+    data.cursor[3] = data.cursor[1];
+};
+
+const getSelect = () => {
+    let lines = [];
+    for (let line of store.lines)
+        if (store.select[line.id])
+            lines.push(line);
+
+    return lines;
+};
+
 export {
     focus,
     getCursor,
@@ -125,4 +144,6 @@ export {
     getCursorSync,
     getCursorSingle,
     setCursorSingle,
+    selectLine,
+    getSelect,
 };

@@ -5,8 +5,7 @@ import { service } from '../http';
 import { now } from './time';
 import { listen, trigger } from './event';
 import { historyPut } from './history';
-import { setCursor } from './cursor';
-import { findByXy, findLine } from './line';
+import { setCursor, selectLine } from './cursor';
 import Operate from './Operate.vue';
 import Line from './Line.vue';
 import Annotation from './Annotation.vue';
@@ -28,39 +27,15 @@ const timer = {
     time: 0,
 };
 
-const move = (event) => {
-    trigger('move', event);
-};
+const move = (event) => trigger('move', event);
 
-const drop = (event) => {
-    trigger('drop', event);
-};
+const drop = (event) => trigger('drop', event);
 
-const click = (event) => {
-    let id = findByXy(workspace.value, event.x, event.y);
-    if (id === null)
-        return;
+const click = (event) => selectLine(workspace.value, event);
 
-    if (store.selects.length === 0)
-        store.selects = [id, id];
-    else
-        store.selects[1] = id;
-    let range = document.createRange();
-    range.setStartBefore(document.querySelector('#' + store.selects[0]).children[0]);
-    let end = document.querySelector('#' + store.selects[1]).children;
-    range.setEndAfter(end[end.length - 1]);
-    let selection = getSelection();
-    selection.removeAllRanges();
-    selection.addRange(range);
-};
+const focus = () => store.select = {};
 
-const focus = () => {
-    store.selects = [];
-};
-
-const scroll = () => {
-    trigger('scroll');
-};
+const scroll = () => trigger('scroll');
 
 onMounted(() => {
     if (store.lines.length === 0)

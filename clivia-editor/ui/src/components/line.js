@@ -111,7 +111,7 @@ const mergeTexts = (texts) => {
         }
     }
     for (let i = texts.length - 1; i > 0; i--) {
-        if (texts[i].style === texts[i - 1].style && texts[i].annotation === texts[i - 1].annotation) {
+        if (((!texts[i].style && !texts[i - 1].style) || texts[i].style === texts[i - 1].style) && texts[i].annotation === texts[i - 1].annotation) {
             texts[i - 1].text += texts[i].text;
             texts.splice(i, 1);
         }

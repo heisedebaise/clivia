@@ -7,7 +7,7 @@ import { message } from './locale';
 import { listen, trigger } from './event';
 import { findIndex, findLine, findByXy } from './line';
 import { newText, newImage, newDivider } from './tag';
-import { getCursor, setCursor } from './cursor';
+import { getCursor, setCursor, getSelect } from './cursor';
 import { setStyleName } from './style';
 import { historyEnable, historyBack, historyForward } from './history';
 import Icon from './Icon.vue';
@@ -76,10 +76,11 @@ const operates = () => {
     data.value.enable.redo = !data.value.slash && historyEnable(false);
     let index = findIndex(store.focus);
     let text = store.lines[index].texts && store.lines[index].texts.length > 0;
-    data.value.enable.bold = text;
-    data.value.enable.italic = text;
-    data.value.enable.underline = text;
-    data.value.enable.linethrough = text;
+    let select = Object.keys(store.select).length > 0
+    data.value.enable.bold = text || select;
+    data.value.enable.italic = text || select;
+    data.value.enable.underline = text || select;
+    data.value.enable.linethrough = text || select;
     let cursor = getCursor();
     let range = text && (cursor[0] != cursor[2] || cursor[1] != cursor[3]);
     data.value.enable.annotation = range;
@@ -341,15 +342,29 @@ const bottom = () => {
 };
 
 const remove = () => {
-    let index = findIndex(store.focus);
-    if (store.lines.length === 1)
-        store.lines.splice(index, 1, newText());
-    else
-        store.lines.splice(index, 1);
-    if (index <= store.lines.length - 1)
+    let ids = Object.keys(store.select);
+    if (ids.length > 0) {
+        let index = -1;
+        for (let id of ids) {
+            index = findIndex(id);
+            store.lines.splice(index, 1);
+        }
+        if (store.lines.length === 0)
+            store.lines.push(newText());
+        if (index >= store.lines.length)
+            index = store.lines.length - 1;
         store.focus = store.lines[index].id;
-    else
-        store.focus = store.lines[index - 1].id;
+    } else {
+        let index = findIndex(store.focus);
+        if (store.lines.length === 1)
+            store.lines.splice(index, 1, newText());
+        else
+            store.lines.splice(index, 1);
+        if (index <= store.lines.length - 1)
+            store.focus = store.lines[index].id;
+        else
+            store.focus = store.lines[index - 1].id;
+    }
     setCursor(store.focus, [0, 0, 0, 0]);
     data.value.state = '';
     trigger('annotation');

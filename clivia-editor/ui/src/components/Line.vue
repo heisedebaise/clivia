@@ -39,7 +39,7 @@ const innerText = (line, text) => {
 
 <template>
     <div :class="'lines-' + (store.vertical ? 'vertical' : 'horizontal')">
-        <div v-for="line in store.lines" class="line" :key="line.id">
+        <div v-for="line in store.lines" :class="'line' + (store.select[line.id] ? ' select' : '')" :key="line.id">
             <h1 v-if="line.tag === 'h1'" :id="line.id" contenteditable="true" @mouseup.stop="focus" @touchend.stop="focus"
                 @keydown="keydown" @keyup="keyup" @compositionstart="compositionStart" @compositionend="compositionend">
                 <span v-for="(text, index) in line.texts" :class="className(line, text)" :data-index="index">{{
@@ -101,6 +101,10 @@ const innerText = (line, text) => {
 
 .lines-vertical .line {
     padding: 0 4px;
+}
+
+.select {
+    background-color: var(--select-bg);
 }
 
 .line h1,
