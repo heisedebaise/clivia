@@ -2,6 +2,7 @@ import { store } from '../store';
 import { upload } from '../http';
 import { now } from './time';
 import { message } from './locale';
+import { trigger } from './event';
 import { findIndex } from './line';
 import { findEventId } from './event';
 import { newId } from './tag';
@@ -20,7 +21,7 @@ const uploadImage = (event) => {
             uploading: message('image.uploading'),
             time: '',
         });
-        upload('clivia.editor.image', event.target.files[i], data => {
+        upload('clivia.editor.image', event.target.files[i], null, data => {
             let name = data.fileName;
             let indexOf = name.lastIndexOf('.');
             if (indexOf > -1)
@@ -30,10 +31,35 @@ const uploadImage = (event) => {
             line.path = data.path;
             line.time = now();
             delete line.uploading;
+            trigger('annotation');
         }, progress => {
             store.lines[index + i].uploading = message('image.uploading') + ' ' + progress + '%';
         });
     }
+};
+
+const uploadImageBlob = (blob, name) => {
+    let index = findIndex(store.focus) + 1;
+    store.lines.splice(index, 0, {
+        id: newId(),
+        tag: 'image',
+        uploading: message('image.uploading'),
+        time: '',
+    });
+    upload('clivia.editor.image', blob, name, data => {
+        let name = data.fileName;
+        let indexOf = name.lastIndexOf('.');
+        if (indexOf > -1)
+            name = name.substring(0, indexOf);
+        let line = store.lines[index];
+        line.name = name;
+        line.path = data.path;
+        line.time = now();
+        delete line.uploading;
+        trigger('annotation');
+    }, progress => {
+        store.lines[index].uploading = message('image.uploading') + ' ' + progress + '%';
+    });
 };
 
 const imageName = (event) => {
@@ -45,5 +71,6 @@ const imageName = (event) => {
 export {
     selectImage,
     uploadImage,
+    uploadImageBlob,
     imageName,
 };

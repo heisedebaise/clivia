@@ -24,25 +24,39 @@ const post = (uri, body, success) => {
     });
 }
 
-const upload = (name, file, success) => {
+const upload = (name, file, fileName, success, progress) => {
+    let xhr = new XMLHttpRequest();
+    xhr.upload.addEventListener('progress', event => {
+        if (progress)
+            progress(Math.round(100 * event.loaded / event.total));
+    });
+    xhr.addEventListener('load', event => {
+        if (success)
+            success(JSON.parse(xhr.responseText));
+    });
+    xhr.open('POST', root + '/photon/ctrl-http/upload');
     let header = {};
     psid(header);
+    for (let key in header)
+        xhr.setRequestHeader(key, header[key]);
     let body = new FormData();
-    body.append(name, file);
-
-    fetch(root + '/photon/ctrl-http/upload', {
-        method: 'POST',
-        headers: header,
-        body: body
-    }).then(response => {
-        if (response.ok) {
-            response.json().then(json => {
-                if (success)
-                    success(json);
-            });
-        }
-    });
+    if (fileName)
+        body.append(name, file, fileName);
+    else
+        body.append(name, file);
+    xhr.send(body);
 }
+
+const blob = (uri, success) => {
+    let header = {};
+    psid(header);
+    fetch(root + uri, {
+        method: 'GET',
+        headers: header
+    }).then(response => {
+        response.blob().then(success);
+    });
+};
 
 const psid = (header) => {
     // localStorage.setItem('photon-session-id','1s5q29jh9oe3sqbig4j9qtijlid1ellr9qv6tsseqjpo1lws3cidhhalkqpmcv5q');
@@ -70,5 +84,6 @@ export {
     post,
     service,
     upload,
+    blob,
     url,
 }

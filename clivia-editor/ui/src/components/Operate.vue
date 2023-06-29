@@ -10,6 +10,7 @@ import { newText, newImage, newDivider } from './tag';
 import { getCursor, setCursor, getSelect } from './cursor';
 import { setStyleName } from './style';
 import { historyEnable, historyBack, historyForward } from './history';
+import { copy, paste } from './clipboard';
 import Icon from './Icon.vue';
 
 const workspace = inject('workspace');
@@ -32,6 +33,8 @@ const data = ref({
         divider: true,
         search: true,
         direction: true,
+        copy: false,
+        paste: true,
         bold: true,
         italic: true,
         underline: true,
@@ -83,6 +86,7 @@ const operates = () => {
     data.value.enable.linethrough = text || select;
     let cursor = getCursor();
     let range = text && (cursor[0] != cursor[2] || cursor[1] != cursor[3]);
+    data.value.enable.copy = select || range;
     data.value.enable.annotation = range;
     data.value.enable.top = index > 0;
     data.value.enable.up = index > 0;
@@ -115,6 +119,7 @@ const operates = () => {
             top = more.offsetTop + more.offsetHeight;
         data.value.operates = { left: '10px', top: top + 'px' };
     }
+    setCursor();
 };
 
 const drag = (event) => {
@@ -241,6 +246,21 @@ const direction = () => {
         setCursor(store.focus, getCursor());
     });
     trigger('annotation');
+};
+
+const copyTo = () => {
+    if (!data.value.enable.copy)
+        return;
+
+    removeSlash();
+    copy();
+    data.value.state = '';
+};
+
+const pasteFrom = () => {
+    removeSlash();
+    paste();
+    data.value.state = '';
 };
 
 const setStyle = (style) => {
@@ -458,6 +478,12 @@ onMounted(() => {
                 </div>
             </div>
             <div class="line">
+                <div :class="'operate' + (data.enable.copy ? ' enable' : '')" @click="copyTo">
+                    <Icon name="copy" :enable="data.enable.copy" />
+                </div>
+                <div :class="'operate' + (data.enable.paste ? ' enable' : '')" @click="pasteFrom">
+                    <Icon name="paste" :enable="data.enable.paste" />
+                </div>
                 <div :class="'operate' + (data.enable.bold ? ' enable' : '')" @click="setStyle('bold')">
                     <Icon name="bold" :enable="data.enable.bold" />
                 </div>
@@ -472,12 +498,6 @@ onMounted(() => {
                 </div>
                 <div :class="'operate' + (data.enable.annotation ? ' enable' : '')" @click="setAnnotation">
                     <Icon name="annotation" :enable="data.enable.annotation" />
-                </div>
-                <div :class="'operate' + (data.enable.quote ? ' enable' : '')">
-                    <Icon name="quote" :enable="data.enable.quote" />
-                </div>
-                <div :class="'operate' + (data.enable.backlog ? ' enable' : '')">
-                    <Icon name="backlog" :enable="data.enable.backlog" />
                 </div>
             </div>
             <div class="line">

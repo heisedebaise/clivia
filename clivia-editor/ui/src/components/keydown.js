@@ -22,8 +22,6 @@ const keydown = (event) => {
         backspace(event, index, line);
     else if (event.key === 'ArrowUp' || event.key === 'ArrowDown')
         arrow(event, index, line);
-    else if (event.ctrlKey && event.key === 'v')
-        event.preventDefault();
 };
 
 const enter = (event, index, line) => {

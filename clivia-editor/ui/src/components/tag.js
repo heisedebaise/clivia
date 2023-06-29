@@ -36,6 +36,8 @@ const newImage = (path, name) => {
     if (store.lines[store.lines.length - 1].tag === 'image')
         store.lines.push(newText());
     trigger('annotation');
+
+    return image;
 };
 
 const newDivider = () => {

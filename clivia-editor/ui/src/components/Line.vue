@@ -9,6 +9,7 @@ import { compositionStart, compositionEnd } from './composition';
 import { keydown } from './keydown';
 import { keyup } from './keyup';
 import { selectImage, uploadImage, imageName } from './image';
+import { copy, paste } from './clipboard';
 
 const imageUploader = ref(null);
 
@@ -34,11 +35,10 @@ const innerText = (line, text) => {
 
     return text.text;
 };
-
 </script>
 
 <template>
-    <div :class="'lines-' + (store.vertical ? 'vertical' : 'horizontal')">
+    <div :class="'lines-' + (store.vertical ? 'vertical' : 'horizontal')" @copy="copy" @paste="paste">
         <div v-for="line in store.lines" :class="'line' + (store.select[line.id] ? ' select' : '')" :key="line.id">
             <h1 v-if="line.tag === 'h1'" :id="line.id" contenteditable="true" @mouseup.stop="focus" @touchend.stop="focus"
                 @keydown="keydown" @keyup="keyup" @compositionstart="compositionStart" @compositionend="compositionend">
