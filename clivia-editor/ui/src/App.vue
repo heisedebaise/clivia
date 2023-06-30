@@ -5,6 +5,7 @@ import { newText } from './components/tag';
 import Workspace from './components/Workspace.vue';
 import { store } from './store';
 
+window.safari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
 const mode = ref(0);
 const param = {};
 

@@ -41,7 +41,10 @@ const enter = (event, index, line) => {
     } else if (isEmpty(texts[2])) {
         let text = newText('p');
         store.lines.splice(index + 1, 0, text);
-        setCursor(text.id, [0, 0, 0, 0]);
+        if (window.safari)
+            setTimeout(() => setCursor(text.id, [0, 0, 0, 0]), 100);
+        else
+            setCursor(text.id, [0, 0, 0, 0]);
     } else {
         let l1 = { ...line };
         l1.texts = texts[0];
