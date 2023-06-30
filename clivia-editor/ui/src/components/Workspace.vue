@@ -94,8 +94,7 @@ onUnmounted(() => {
 </script>
 
 <template>
-    <div ref="workspace" class="workspace" @mousemove="move" @touchmove="move" @mouseup="drop" @touchend="drop"
-        @click.self="click" @scroll="scroll">
+    <div ref="workspace" class="workspace" @mousemove="move" @mouseup="drop" @click.self="click" @scroll="scroll">
         <Line />
         <Annotation />
         <Operate />

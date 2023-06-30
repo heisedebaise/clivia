@@ -78,7 +78,8 @@ const operates = () => {
     data.value.enable.undo = !data.value.slash && historyEnable(true);
     data.value.enable.redo = !data.value.slash && historyEnable(false);
     let index = findIndex(store.focus);
-    let text = store.lines[index].texts && store.lines[index].texts.length > 0;
+    let line = store.lines[index];
+    let text = line.texts && line.texts.length > 0;
     let select = Object.keys(store.select).length > 0
     data.value.enable.bold = text || select;
     data.value.enable.italic = text || select;
@@ -86,7 +87,7 @@ const operates = () => {
     data.value.enable.linethrough = text || select;
     let cursor = getCursor();
     let range = text && (cursor[0] != cursor[2] || cursor[1] != cursor[3]);
-    data.value.enable.copy = select || range;
+    data.value.enable.copy = select || range || line.tag === 'image';
     data.value.enable.annotation = range;
     data.value.enable.top = index > 0;
     data.value.enable.up = index > 0;
@@ -447,8 +448,7 @@ onMounted(() => {
 </script>
 
 <template>
-    <div v-if="data.more.style.left || data.more.style.top" class="more" :style="data.more.style" @mousedown="start"
-        @touchstart="start">
+    <div v-if="data.more.style.left || data.more.style.top" class="more" :style="data.more.style" @mousedown="start">
         <Icon v-if="data.more.icon === 'drag'" name="drag" :enable="true" />
         <Icon v-else name="more" />
     </div>
