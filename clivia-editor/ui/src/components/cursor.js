@@ -126,6 +126,7 @@ const selectLine = (workspace, event) => {
         store.select[id] = true;
     data.cursor[2] = data.cursor[0];
     data.cursor[3] = data.cursor[1];
+    setCursor();
 };
 
 const getSelect = () => {

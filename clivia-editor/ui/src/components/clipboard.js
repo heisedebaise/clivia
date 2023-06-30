@@ -7,14 +7,22 @@ import { markdown } from './markdown';
 import { uploadImageBlob } from './image';
 
 const copy = (event) => {
+    console.log(event);
     if (event)
         event.preventDefault();
 
     let lines = getSelect();
     if (lines.length > 0) {
+        let texts = '';
         for (let line of lines) {
+            if (!line.texts)
+                continue;
 
+            for (let text of line.texts)
+                texts += text.text;
+            texts += '\n';
         }
+        navigator.clipboard.writeText(texts.trim());
 
         return;
     }
