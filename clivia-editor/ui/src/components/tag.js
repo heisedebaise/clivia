@@ -33,8 +33,7 @@ const newImage = (path, name) => {
         store.lines.splice(index, 1, image);
     else
         store.lines.splice(index + 1, 0, image);
-    if (store.lines[store.lines.length - 1].tag === 'image')
-        store.lines.push(newText());
+    last();
     trigger('annotation');
 
     return image;
@@ -47,8 +46,7 @@ const newDivider = () => {
         tag: 'divider',
         time: now(),
     });
-    if (store.lines[store.lines.length - 1].tag === 'divider')
-        store.lines.push(newText());
+    last();
     store.focus = id;
     nextTick(() => trigger('focus'));
     trigger('annotation');
@@ -72,9 +70,16 @@ const random = (prefix, length) => {
     return string.substring(0, length);
 };
 
+const last = () => {
+    let line = store.lines[store.lines.length - 1];
+    if (!line.texts)
+        store.lines.push(newText());
+};
+
 export {
     newText,
     newImage,
     newDivider,
     newId,
+    last,
 }

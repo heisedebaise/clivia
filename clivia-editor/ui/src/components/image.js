@@ -5,7 +5,7 @@ import { message } from './locale';
 import { trigger } from './event';
 import { findIndex } from './line';
 import { findEventId } from './event';
-import { newId } from './tag';
+import { newId, last } from './tag';
 
 const selectImage = (uploader, event) => {
     store.focus = findEventId(event);
@@ -36,6 +36,7 @@ const uploadImage = (event) => {
             store.lines[index + i].uploading = message('image.uploading') + ' ' + progress + '%';
         });
     }
+    last();
 };
 
 const uploadImageBlob = (blob, name) => {
@@ -60,6 +61,7 @@ const uploadImageBlob = (blob, name) => {
     }, progress => {
         store.lines[index].uploading = message('image.uploading') + ' ' + progress + '%';
     });
+    last();
 };
 
 const imageName = (event) => {

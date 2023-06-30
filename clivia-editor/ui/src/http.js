@@ -47,17 +47,6 @@ const upload = (name, file, fileName, success, progress) => {
     xhr.send(body);
 }
 
-const blob = (uri, success) => {
-    let header = {};
-    psid(header);
-    fetch(root + uri, {
-        method: 'GET',
-        headers: header
-    }).then(response => {
-        response.blob().then(success);
-    });
-};
-
 const psid = (header) => {
     // localStorage.setItem('photon-session-id','1s5q29jh9oe3sqbig4j9qtijlid1ellr9qv6tsseqjpo1lws3cidhhalkqpmcv5q');
     let psid = localStorage.getItem('photon-session-id');
@@ -84,6 +73,5 @@ export {
     post,
     service,
     upload,
-    blob,
     url,
 }

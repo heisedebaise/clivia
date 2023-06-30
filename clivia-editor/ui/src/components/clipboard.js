@@ -1,5 +1,4 @@
 import { store } from '../store';
-import { blob } from '../http';
 import { now } from './time';
 import { getCursor, getSelect, setCursor } from './cursor';
 import { findIndex, findLine, splitTexts, mergeTexts } from './line';
@@ -22,10 +21,15 @@ const copy = (event) => {
 
     let line = findLine(store.focus);
     if (line.tag === 'image') {
-        blob(line.path, blob => {
-            console.log(blob);
-            navigator.clipboard.write([new ClipboardItem({ [blob.type]: blob })]);
-        });
+        let image = document.querySelector('#' + line.id + ' img');
+        if (!image)
+            return;
+
+        let canvas = document.createElement('canvas');
+        canvas.width = image.width;
+        canvas.height = image.height;
+        canvas.getContext('2d').drawImage(image, 0, 0);
+        canvas.toBlob(blob => navigator.clipboard.write([new ClipboardItem({ 'image/png': blob })]), 'image/png');
 
         return;
     }
