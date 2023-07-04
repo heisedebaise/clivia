@@ -638,7 +638,7 @@ public class WeixinServiceImpl implements WeixinService, ContextRefreshedListene
         map.put("trade_type", type);
         if (type.equals("JSAPI")) {
             if (validator.isEmpty(openId))
-                openId = infoService.findUserOpenId(key, user);
+                openId = infoService.findUserOpenId(weixin.getAppId(), user);
             map.put("openid", infoService.findOpenId(weixin.getAppId(), openId));
         }
         map.put("sign", sign(map, weixin.getMchKey()));
