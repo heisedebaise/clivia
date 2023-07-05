@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 import javax.inject.Inject;
 import java.sql.Date;
 import java.util.Calendar;
+import java.util.Collections;
 
 @Service(StatModel.NAME + ".service")
 public class StatServiceImpl implements StatService, MinuteJob {
@@ -49,14 +50,13 @@ public class StatServiceImpl implements StatService, MinuteJob {
     @Override
     public JSONArray week() {
         JSONArray array = new JSONArray();
-        String[] series = new String[]{message.get(StatModel.NAME + ".count"),
-                message.get(StatModel.NAME + ".register"), message.get(StatModel.NAME + ".online")};
+        String[] series = new String[]{message.get(StatModel.NAME + ".register"), message.get(StatModel.NAME + ".online")};
         statDao.query(null, 7, 1).getList().forEach(stat -> {
             String x = dateTime.toString(stat.getDate(), "MMdd");
-            week(array, series[0], x, stat.getCount());
-            week(array, series[1], x, stat.getRegister());
-            week(array, series[2], x, stat.getOnline());
+            week(array, series[0], x, stat.getRegister());
+            week(array, series[1], x, stat.getOnline());
         });
+        Collections.reverse(array);
 
         return array;
     }

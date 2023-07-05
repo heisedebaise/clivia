@@ -16,6 +16,7 @@ import {
     Switch
 } from 'antd';
 import { MinusOutlined, PaperClipOutlined, DashOutlined } from '@ant-design/icons';
+import { Line, Column } from '@ant-design/charts';
 import { service, url } from '../http';
 import meta from './meta';
 import { toDecimal, toPercent } from './numeric';
@@ -241,11 +242,8 @@ class Grid extends React.Component {
                 else
                     option.label = d[lname];
                 options[d[vname]] = option.label;
-                if (d.select && this.form && this.form.current) {
-                    let values = this.form.current.getFieldsValue();
-                    values[prop.name] = d[vname];
-                    this.form.current.setFieldsValue(values);
-                }
+                if (d.select)
+                    this.setDselect(prop, vname, d, 0);
             }
             let dselect = this.state.dselect;
             dselect[prop.name] = options;
@@ -253,6 +251,16 @@ class Grid extends React.Component {
                 dselect: dselect
             });
         });
+    }
+
+    setDselect = (prop, vname, d, index) => {
+        if (this.form && this.form.current) {
+            let values = this.form.current.getFieldsValue();
+            values[prop.name] = d[vname];
+            this.form.current.setFieldsValue(values);
+        } else if (index < 5) {
+            setTimeout(() => this.setDselect(prop, vname, d, index + 1), 1000);
+        }
     }
 
     value = (model, name) => {
@@ -488,6 +496,7 @@ class Grid extends React.Component {
                 this.setState({
                     list: data
                 });
+                this.chart(data);
             } else {
                 let state = { list: data.list };
                 if (data.count <= data.size)
@@ -505,6 +514,7 @@ class Grid extends React.Component {
                 if (this.props.meta.info)
                     state[this.props.meta.info] = data[this.props.meta.info];
                 this.setState(state);
+                this.chart(data.list);
             }
         });
     }
@@ -540,6 +550,45 @@ class Grid extends React.Component {
         return values;
     }
 
+    chart = (list) => {
+        if (!this.props.meta.chart || !list || list.length === 0) {
+            this.setState({ chart: {} });
+
+            return;
+        }
+
+        let columns = [];
+        for (let column of meta.props(this.props.props, this.props.meta.props)) {
+            for (let name of this.props.meta.chart.y) {
+                if (column.name === name) {
+                    columns.push(column);
+
+                    break;
+                }
+
+            }
+        }
+
+        let chart = { type: this.props.meta.chart.type, data: [] };
+        for (let model of list) {
+            let x = '';
+            for (let name of this.props.meta.chart.x)
+                x += model[name];
+            if (this.props.meta.chart.eval)
+                // eslint-disable-next-line
+                eval(this.props.meta.chart.eval);
+            for (let column of columns) {
+                let y = model[column.name];
+                if (column.type === 'money')
+                    y = toDecimal(y, 2, 0);
+                chart.data.push({ x, y, series: column.label });
+            }
+        }
+        if (this.props.meta.chart.reverse)
+            chart.data.reverse();
+        this.setState({ chart });
+    }
+
     render = () => {
         let elements = [];
         if (this.props.meta.info)
@@ -547,7 +596,14 @@ class Grid extends React.Component {
                 dangerouslySetInnerHTML={{ __html: this.state[this.props.meta.info] }} />);
         if (this.search) elements.push(<Search key="search" props={this.searchProps} toolbar={this.props.meta.toolbar}
             grid={this} form={this.form} dselect={this.state.dselect} />);
-        else if (this.toolbar) elements.push(<div key="toolbar" className="console-grid-toolbar">{this.toolbar}</div>);
+        else if (this.toolbar)
+            elements.push(<div key="toolbar" className="console-grid-toolbar">{this.toolbar}</div>);
+        if (this.state.chart && this.state.chart.type) {
+            if (this.props.meta.chart.type === 'line')
+                elements.push(<div key="chart" className="console-grid-chart"><Line xField='x' yField='y' seriesField='series' height={400} data={this.state.chart.data} /></div>);
+            if (this.props.meta.chart.type === 'column')
+                elements.push(<div key="chart" className="console-grid-chart"><Column xField='x' yField='y' seriesField='series' height={400} data={this.state.chart.data} /></div>);
+        }
         elements.push(<Table key="table" columns={this.columns} dataSource={this.state.list} rowKey="id"
             pagination={this.state.pagination}
             onChange={this.load} className="console-grid" scroll={this.scroll()} />);
