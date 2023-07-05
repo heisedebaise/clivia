@@ -29,6 +29,7 @@
         <module>clivia-editor</module>
         <module>clivia-openai</module>
         <module>clivia-aliyun</module>
+        <module>clivia-mindmap</module>
         <module>clivia-user</module>
         <module>clivia-account</module>
         <module>clivia-payment</module>
