@@ -1,17 +1,37 @@
 <script setup>
-import { onMounted } from 'vue';
+import { ref, onMounted } from 'vue';
 import { store } from './store';
-import Node from './components/Node.vue';
+import { newNode } from './components/node';
+
+const main = ref({
+  id: ''
+});
 
 onMounted(() => {
-  store.nodes = {
-    idmain: {}
-  };
+  let node = newNode('');
+  node.main = true;
+  store.nodes[node.id] = node;
+  main.value.id = node.id;
 });
 </script>
 
 <template>
-  <Node id="idmain" />
+  <div v-if="main.id" class="mindmap-table">
+    <div class="mindmap-cell">
+      <Node :id="main.id" />
+    </div>
+  </div>
 </template>
 
-<style scoped></style>
+<style scoped>
+.mindmap-table {
+  display: table;
+  min-height: 100%;
+  margin: auto;
+}
+
+.mindmap-cell {
+  display: table-cell;
+  vertical-align: middle;
+}
+</style>
