@@ -7,8 +7,8 @@ yarn build
 git checkout src/http.js
 cd ../..
 
-rm -rf clivia-web/src/main/webapp/e
-cp -rf clivia-mindmap/ui/dist clivia-web/src/main/webapp/e
+rm -rf clivia-web/src/main/webapp/mm
+cp -rf clivia-mindmap/ui/dist clivia-web/src/main/webapp/mm
 
-rm -rf ~/tomcat/webapps/ROOT/e
-cp -rf clivia-mindmap/ui/dist ~/tomcat/webapps/ROOT/e
+rm -rf ~/tomcat/webapps/ROOT/mm
+cp -rf clivia-mindmap/ui/dist ~/tomcat/webapps/ROOT/mm
