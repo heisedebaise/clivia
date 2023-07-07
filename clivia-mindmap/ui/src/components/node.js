@@ -1,4 +1,6 @@
 import { store } from "../store";
+import { focus } from "./cursor";
+import { trigger } from "./event";
 
 const newNode = (parent) => {
     let node = {
@@ -29,6 +31,31 @@ const random = (prefix, length) => {
     return string.substring(0, length);
 };
 
+const removeNode = (node) => {
+    let parent = store.nodes[node.parent];
+    if (!parent)
+        return;
+
+    let index = parent.children.indexOf(node.id);
+    if (index === -1)
+        return;
+
+    parent.children.splice(index, 1);
+    focus(parent.id);
+    remove(node);
+    trigger('branch', { type: 'remove', id: parent.id });
+};
+
+const remove = (node) => {
+    delete store.nodes[node.id];
+    if (!node.children || node.children.length === 0)
+        return;
+
+    for (let child of node.children)
+        remove(store.nodes[child]);
+};
+
 export {
     newNode,
+    removeNode,
 }

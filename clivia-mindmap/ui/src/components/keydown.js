@@ -1,7 +1,9 @@
 import { store } from '../store';
 import { focus } from './cursor';
 import { isComposition } from './composition';
-import { newNode } from './node';
+import { newNode, removeNode } from './node';
+import { trigger } from './event';
+
 
 const keydown = (event) => {
     if (isComposition())
@@ -13,7 +15,7 @@ const keydown = (event) => {
 
     if (event.key === 'Enter')
         enter(event, node);
-    else if (event.key === 'Insert')
+    else if (event.key === 'Insert' || event.key === 'Tab')
         insert(event, node);
     else if (event.key === 'Backspace' || event.key === 'Delete')
         backspace(node);
@@ -39,6 +41,7 @@ const enter = (event, node) => {
     let next = newNode(node.parent);
     parent.children.splice(index + 1, 0, next.id);
     focus(next.id);
+    trigger('branch', { type: 'new', id: next.parent });
 };
 
 const insert = (event, node) => {
@@ -48,32 +51,12 @@ const insert = (event, node) => {
     let child = newNode(node.id);
     node.children.push(child.id);
     focus(child.id);
+    trigger('branch', { type: 'new', id: node.id });
 };
 
 const backspace = (node) => {
-    if (node.text.length > 0 || node.main)
-        return;
-
-    let parent = store.nodes[node.parent];
-    if (!parent)
-        return;
-
-    let index = parent.children.indexOf(node.id);
-    if (index === -1)
-        return;
-
-    parent.children.splice(index, 1);
-    focus(parent.id);
-    remove(node);
-};
-
-const remove = (node) => {
-    delete store.nodes[node.id];
-    if (!node.children || node.children.length === 0)
-        return;
-
-    for (let child of node.children)
-        remove(store.nodes[child]);
+    if (!node.main && node.text.length === 0)
+        removeNode(node);
 };
 
 const arrowUpDown = (event, node) => {

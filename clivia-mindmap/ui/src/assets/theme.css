@@ -4,4 +4,5 @@
   --border: #e5e5e5;
   --hover-bg: #e5e5e5;
   --placeholder: rgba(55, 53, 47, 0.5);
+  --branch: var(--border);
 }
