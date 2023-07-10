@@ -3,13 +3,19 @@ import { message } from './locale';
 import { now } from './time';
 import { findEventId, trigger } from './event';
 import { findLine, isEmpty, mergeTexts } from './line';
-import { getCursorSync, setCursor } from './cursor';
+import { getCursorSync, setCursor, selectAll } from './cursor';
 import { isComposition } from './composition';
 import { markdown } from './markdown';
 
 const keyup = (event) => {
-    if (event.key === 'ArrowUp' || event.key === 'ArrowDown')
+    if (event.key === 'ArrowUp' || event.key === 'ArrowDown' || event.key === 'Control')
         return;
+
+    if (event.ctrlKey && event.key === 'a') {
+        selectAll();
+
+        return;
+    }
 
     let line = findLine(findEventId(event));
     if (isComposition()) {

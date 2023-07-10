@@ -1,4 +1,5 @@
 import { store } from "../store";
+import { now } from './time';
 
 const findLine = (id) => {
     for (let line of store.lines)
@@ -122,6 +123,34 @@ const isEmpty = (texts) => {
     return texts && (texts.length === 0 || (texts.length === 1 && texts[0].text.length === 0));
 };
 
+const changeTag = (tag) => {
+    let line = findLine(store.focus);
+    if (!line)
+        return false;
+
+    if (tag === 'ol-ul') {
+        if (store.lines.length <= 1)
+            tag = 'ol';
+        else {
+            let index = findIndex(line.id);
+            if (index > 0)
+                tag = store.lines[index - 1].tag;
+        }
+    }
+
+    line.tag = tag;
+    if ((tag === 'h1' || tag === 'h2' || tag === 'h3' || tag === 'p' || tag === 'ul' || tag === 'ol') && !line.texts)
+        line.texts = [{ text: '' }];
+    if (tag === 'ul' || tag === 'ol') {
+        line.depth = (line.depth || 0) + 1;
+    } else {
+        delete line.depth;
+    }
+    line.time = now();
+
+    return true;
+};
+
 export {
     findLine,
     findIndex,
@@ -129,4 +158,5 @@ export {
     splitTexts,
     mergeTexts,
     isEmpty,
+    changeTag,
 };

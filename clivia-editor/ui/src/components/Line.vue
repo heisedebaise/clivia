@@ -63,6 +63,20 @@ const innerText = (line, text) => {
                 <span v-for="(text, index) in line.texts" :class="className(line, text)" :data-index="index">{{
                     innerText(line, text) }}</span>
             </p>
+            <ol v-else-if="line.tag === 'ol'">
+                <li :id="line.id" contenteditable="true" @mouseup.stop="focus" @touchend.stop="focus" @keydown="keydown"
+                    @keyup="keyup" @compositionstart="compositionStart" @compositionend="compositionend">
+                    <span v-for="(text, index) in line.texts" :class="className(line, text)" :data-index="index">{{
+                        innerText(line, text) }}</span>
+                </li>
+            </ol>
+            <ul v-else-if="line.tag === 'ul'">
+                <li :id="line.id" contenteditable="true" @mouseup.stop="focus" @touchend.stop="focus" @keydown="keydown"
+                    @keyup="keyup" @compositionstart="compositionStart" @compositionend="compositionend">
+                    <span v-for="(text, index) in line.texts" :class="className(line, text)" :data-index="index">{{
+                        innerText(line, text) }}</span>
+                </li>
+            </ul>
             <div v-else-if="line.tag === 'image'" :id="line.id" class="image" @click="focus">
                 <div v-if="line.uploading" class="uploading">{{ line.uploading }}</div>
                 <div v-else-if="line.path" class="view">
@@ -110,7 +124,8 @@ const innerText = (line, text) => {
 .line h1,
 .line h2,
 .line h3,
-.line p {
+.line p,
+.line li {
     border: none;
     outline: none;
     margin: 0;

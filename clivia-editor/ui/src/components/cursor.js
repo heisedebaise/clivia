@@ -129,6 +129,11 @@ const selectLine = (workspace, event) => {
     setCursor();
 };
 
+const selectAll = () => {
+    for (let line of store.lines)
+        store.select[line.id] = true;
+};
+
 const getSelect = () => {
     let lines = [];
     for (let line of store.lines)
@@ -146,5 +151,6 @@ export {
     getCursorSingle,
     setCursorSingle,
     selectLine,
+    selectAll,
     getSelect,
 };

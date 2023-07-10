@@ -94,6 +94,12 @@
     background-color: red;
 }
 
+.line ol,
+.line ul {
+    margin: 0;
+    padding: 0 0 0 1rem;
+}
+
 .line .image .view {
     display: inline-block;
 }

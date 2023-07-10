@@ -5,9 +5,9 @@ import { service } from '../http';
 import { now } from './time';
 import { message } from './locale';
 import { listen, trigger } from './event';
-import { findIndex, findLine, findByXy } from './line';
+import { findIndex, findLine, findByXy, changeTag } from './line';
 import { newText, newImage, newDivider } from './tag';
-import { getCursor, setCursor, getSelect } from './cursor';
+import { getCursor, setCursor, selectAll } from './cursor';
 import { setStyleName } from './style';
 import { historyEnable, historyBack, historyForward } from './history';
 import { copy, paste } from './clipboard';
@@ -33,6 +33,7 @@ const data = ref({
         divider: true,
         search: true,
         direction: true,
+        selectAll: true,
         copy: false,
         paste: true,
         bold: true,
@@ -40,6 +41,12 @@ const data = ref({
         underline: true,
         linethrough: true,
         annotation: false,
+        h1: true,
+        h2: true,
+        h3: true,
+        p: true,
+        ol: true,
+        ul: true,
         ai: false,
         top: false,
         up: false,
@@ -249,6 +256,12 @@ const direction = () => {
     trigger('annotation');
 };
 
+const select = () => {
+    removeSlash();
+    selectAll();
+    data.value.state = '';
+};
+
 const copyTo = () => {
     if (!data.value.enable.copy)
         return;
@@ -281,16 +294,11 @@ const setAnnotation = () => {
     data.value.state = '';
 };
 
-const changeTag = (tag) => {
-    let line = findLine(store.focus);
-    if (!line)
+const change = (tag) => {
+    if (!changeTag(tag))
         return;
 
     removeSlash();
-    line.tag = tag;
-    if ((tag === 'h1' || tag === 'h2' || tag === 'h3' || tag === 'p') && !line.texts)
-        line.texts = [{ text: '' }];
-    line.time = now();
     setCursor(store.focus, getCursor());
     data.value.state = '';
     trigger('annotation');
@@ -478,6 +486,9 @@ onMounted(() => {
                 </div>
             </div>
             <div class="line">
+                <div :class="'operate' + (data.enable.selectAll ? ' enable' : '')" @click="select">
+                    <div>A</div>
+                </div>
                 <div :class="'operate' + (data.enable.copy ? ' enable' : '')" @click="copyTo">
                     <Icon name="copy" :enable="data.enable.copy" />
                 </div>
@@ -501,17 +512,23 @@ onMounted(() => {
                 </div>
             </div>
             <div class="line">
-                <div :class="'operate' + (data.enable.h1 ? ' enable' : '')" @click="changeTag('h1')">
+                <div :class="'operate' + (data.enable.h1 ? ' enable' : '')" @click="change('h1')">
                     <Icon name="h1" :enable="data.enable.h1" />
                 </div>
-                <div :class="'operate' + (data.enable.h2 ? ' enable' : '')" @click="changeTag('h2')">
+                <div :class="'operate' + (data.enable.h2 ? ' enable' : '')" @click="change('h2')">
                     <Icon name="h2" :enable="data.enable.h2" />
                 </div>
-                <div :class="'operate' + (data.enable.h3 ? ' enable' : '')" @click="changeTag('h3')">
+                <div :class="'operate' + (data.enable.h3 ? ' enable' : '')" @click="change('h3')">
                     <Icon name="h3" :enable="data.enable.h3" />
                 </div>
-                <div :class="'operate' + (data.enable.p ? ' enable' : '')" @click="changeTag('p')">
+                <div :class="'operate' + (data.enable.p ? ' enable' : '')" @click="change('p')">
                     <Icon name="p" :enable="data.enable.p" />
+                </div>
+                <div :class="'operate' + (data.enable.ol ? ' enable' : '')" @click="change('ol')">
+                    <div>OL</div>
+                </div>
+                <div :class="'operate' + (data.enable.ul ? ' enable' : '')" @click="change('ul')">
+                    <div>UL</div>
                 </div>
             </div>
             <div class="line">
