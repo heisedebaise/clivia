@@ -3,7 +3,8 @@ import { store } from "../store";
 import { now } from "./time";
 import { message } from './locale';
 import { trigger } from "./event";
-import { findIndex, isEmpty } from "./line";
+import { findLine, findIndex, isEmpty } from "./line";
+import { setCursor } from "./cursor";
 
 const newText = (tag, text) => {
     return {
@@ -52,6 +53,62 @@ const newDivider = () => {
     trigger('annotation');
 };
 
+const changeTag = (tag) => {
+    let line = findLine(store.focus);
+    if (!line)
+        return false;
+
+    let index = findIndex(line.id);
+    if (tag === 'ol-ul') {
+        if (store.lines.length > 1)
+            tag = store.lines[index === 0 ? 1 : (index - 1)].tag;
+        if (tag != 'ol' && tag != 'ul')
+            tag = 'ol';
+    }
+
+    line.tag = tag;
+    if ((tag === 'h1' || tag === 'h2' || tag === 'h3' || tag === 'p' || tag === 'ul' || tag === 'ol') && !line.texts)
+        line.texts = [{ text: '' }];
+    if (tag === 'ul' || tag === 'ol') {
+        line.depth = (line.depth || 0) + 1;
+    }
+    line.time = now();
+    setCursor();
+
+    return true;
+};
+
+const olTypes = [['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z'],
+['i', 'ii', 'iii', 'iv', 'v', 'vi', 'vii', 'viii', 'ix', 'x']];
+const ulTypes = ['disc', 'circle', 'square'];
+
+const resetList = () => {
+    let decimal = [];
+    for (let line of store.lines) {
+        if (line.tag === 'ol' || line.tag === 'ul') {
+            let style = 'margin-left:' + line.depth + 'rem;';
+            let depth = line.depth - 1;
+            let d = depth % 3;
+            if (line.tag === 'ul')
+                style += 'list-style-type:' + ulTypes[d];
+            else {
+                decimal[depth] = (decimal[depth] || 0) + 1;
+                let type = decimal[depth];
+                if (d > 0) {
+                    let types = olTypes[d - 1];
+                    type = types[(decimal[depth] - 1) % types.length];
+                }
+                style += 'list-style-type:\'' + type + '. \'';
+            }
+            line.listStyle = style;
+        } else {
+            decimal = [];
+            delete line.depth;
+            delete line.listStyle;
+        }
+    }
+};
+
 const newId = () => {
     for (let i = 0; i < 1024; i++) {
         let id = random('id', 16);
@@ -80,6 +137,8 @@ export {
     newText,
     newImage,
     newDivider,
+    changeTag,
+    resetList,
     newId,
     last,
 }

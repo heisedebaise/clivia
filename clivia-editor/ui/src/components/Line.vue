@@ -63,20 +63,12 @@ const innerText = (line, text) => {
                 <span v-for="(text, index) in line.texts" :class="className(line, text)" :data-index="index">{{
                     innerText(line, text) }}</span>
             </p>
-            <ol v-else-if="line.tag === 'ol'">
-                <li :id="line.id" contenteditable="true" @mouseup.stop="focus" @touchend.stop="focus" @keydown="keydown"
-                    @keyup="keyup" @compositionstart="compositionStart" @compositionend="compositionend">
-                    <span v-for="(text, index) in line.texts" :class="className(line, text)" :data-index="index">{{
-                        innerText(line, text) }}</span>
-                </li>
-            </ol>
-            <ul v-else-if="line.tag === 'ul'">
-                <li :id="line.id" contenteditable="true" @mouseup.stop="focus" @touchend.stop="focus" @keydown="keydown"
-                    @keyup="keyup" @compositionstart="compositionStart" @compositionend="compositionend">
-                    <span v-for="(text, index) in line.texts" :class="className(line, text)" :data-index="index">{{
-                        innerText(line, text) }}</span>
-                </li>
-            </ul>
+            <div v-else-if="line.tag === 'ol' || line.tag === 'ul'" :id="line.id" class="list" :style="line.listStyle"
+                contenteditable="true" @mouseup.stop="focus" @touchend.stop="focus" @keydown="keydown" @keyup="keyup"
+                @compositionstart="compositionStart" @compositionend="compositionend">
+                <span v-for="(text, index) in line.texts" :class="className(line, text)" :data-index="index">{{
+                    innerText(line, text) }}</span>
+            </div>
             <div v-else-if="line.tag === 'image'" :id="line.id" class="image" @click="focus">
                 <div v-if="line.uploading" class="uploading">{{ line.uploading }}</div>
                 <div v-else-if="line.path" class="view">
@@ -125,13 +117,18 @@ const innerText = (line, text) => {
 .line h2,
 .line h3,
 .line p,
-.line li {
+.line .list {
     border: none;
     outline: none;
     margin: 0;
     padding: 0;
     line-height: 32px;
     min-height: 32px;
+}
+
+.line .list {
+    display: list-item;
+    list-style-position: outside;
 }
 
 .placeholder {

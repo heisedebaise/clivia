@@ -3,7 +3,7 @@ import { now } from './time';
 import { findEventId } from "./event";
 import { getCursor, setCursor, getCursorSingle, setCursorSingle } from "./cursor";
 import { findIndex, splitTexts, isEmpty } from "./line";
-import { newText, newId } from "./tag";
+import { newText, changeTag, newId } from "./tag";
 import { isComposition } from "./composition";
 
 const keydown = (event) => {
@@ -22,6 +22,8 @@ const keydown = (event) => {
         backspace(event, index, line);
     else if (event.key === 'ArrowUp' || event.key === 'ArrowDown')
         arrow(event, index, line);
+    else if (event.key === "Tab")
+        tab(event);
     else if (event.ctrlKey && event.key === 'a')
         event.preventDefault();
 };
@@ -88,6 +90,11 @@ const arrow = (event, index, line) => {
         i = -1;
     if (i != 0)
         setCursorSingle(store.lines[index + i], getCursorSingle(line));
+};
+
+const tab = (event) => {
+    event.preventDefault();
+    changeTag('ol-ul');
 };
 
 export {

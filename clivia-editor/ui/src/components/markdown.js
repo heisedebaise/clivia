@@ -7,6 +7,10 @@ const prefix = {
     '#': 'h1',
     '##': 'h2',
     '###': 'h3',
+    '1.': 'ol',
+    '-': 'ul',
+    '*': 'ul',
+    '+': 'ul',
 };
 const pair = {
     ' * ': 'italic',
@@ -24,7 +28,7 @@ const divider = {
 
 const markdown = (line) => {
     if (isEmpty(line.texts))
-        return;
+        return false;
 
     for (let key in prefix) {
         let text = line.texts[0].text;
@@ -34,7 +38,7 @@ const markdown = (line) => {
             trigger('annotation');
             setCursor(line.id, [0, 0, 0, 0]);
 
-            return;
+            return true;
         }
     }
 
@@ -73,7 +77,7 @@ const markdown = (line) => {
             }
             style(line, range, pair[key]);
 
-            return;
+            return true;
         }
     }
 
@@ -81,7 +85,11 @@ const markdown = (line) => {
         line.tag = 'divider';
         trigger('annotation');
         delete line.texts;
+
+        return true;
     }
+
+    return false;
 };
 
 const space = (code) => {

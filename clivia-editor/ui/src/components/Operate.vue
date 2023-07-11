@@ -5,8 +5,8 @@ import { service } from '../http';
 import { now } from './time';
 import { message } from './locale';
 import { listen, trigger } from './event';
-import { findIndex, findLine, findByXy, changeTag } from './line';
-import { newText, newImage, newDivider } from './tag';
+import { findIndex, findLine, findByXy } from './line';
+import { newText, newImage, newDivider, changeTag, resetList } from './tag';
 import { getCursor, setCursor, selectAll } from './cursor';
 import { setStyleName } from './style';
 import { historyEnable, historyBack, historyForward } from './history';
@@ -194,6 +194,7 @@ const drop = (event) => {
     }
     data.value.draging = {};
     setCursor(store.focus, [0, 0, 0, 0]);
+    resetList();
     trigger('annotation');
     window.put(true);
 };
@@ -214,6 +215,7 @@ const undo = () => {
         return;
 
     historyBack();
+    resetList();
     trigger('annotation');
     data.value.state = '';
 };
@@ -223,6 +225,7 @@ const redo = () => {
         return;
 
     historyForward();
+    resetList();
     trigger('annotation');
     data.value.state = '';
 };
@@ -230,12 +233,16 @@ const redo = () => {
 const image = () => {
     removeSlash();
     newImage();
+    resetList();
+    trigger('annotation');
     data.value.state = '';
 };
 
 const divider = () => {
     removeSlash();
     newDivider();
+    resetList();
+    trigger('annotation');
     data.value.state = '';
 };
 
@@ -274,6 +281,8 @@ const copyTo = () => {
 const pasteFrom = () => {
     removeSlash();
     paste();
+    resetList();
+    trigger('annotation');
     data.value.state = '';
 };
 
@@ -290,7 +299,8 @@ const setAnnotation = () => {
 
     removeSlash();
     setCursor(store.focus, cursor);
-    trigger('setAnnotation');
+    resetList();
+    trigger('annotation');
     data.value.state = '';
 };
 
@@ -300,8 +310,9 @@ const change = (tag) => {
 
     removeSlash();
     setCursor(store.focus, getCursor());
-    data.value.state = '';
+    resetList();
     trigger('annotation');
+    data.value.state = '';
 };
 
 const ai = (type) => {
@@ -320,8 +331,9 @@ const top = () => {
     store.lines.splice(index, 1);
     store.lines.splice(0, 0, line);
     setCursor(store.focus, getCursor());
-    data.value.state = '';
+    resetList();
     trigger('annotation');
+    data.value.state = '';
     window.put(true);
 };
 
@@ -335,8 +347,9 @@ const up = () => {
     store.lines[index] = store.lines[index - 1];
     store.lines[index - 1] = line;
     setCursor(store.focus, getCursor());
-    data.value.state = '';
+    resetList();
     trigger('annotation');
+    data.value.state = '';
     window.put(true);
 };
 
@@ -350,8 +363,9 @@ const down = () => {
     store.lines[index] = store.lines[index + 1];
     store.lines[index + 1] = line;
     setCursor(store.focus, getCursor());
-    data.value.state = '';
+    resetList();
     trigger('annotation');
+    data.value.state = '';
     window.put(true);
 };
 
@@ -365,8 +379,9 @@ const bottom = () => {
     store.lines.splice(index, 1);
     store.lines.push(line);
     setCursor(store.focus, getCursor());
-    data.value.state = '';
+    resetList();
     trigger('annotation');
+    data.value.state = '';
     window.put(true);
 };
 
@@ -395,8 +410,9 @@ const remove = () => {
             store.focus = store.lines[index - 1].id;
     }
     setCursor(store.focus, [0, 0, 0, 0]);
-    data.value.state = '';
+    resetList();
     trigger('annotation');
+    data.value.state = '';
     window.put(true);
 };
 

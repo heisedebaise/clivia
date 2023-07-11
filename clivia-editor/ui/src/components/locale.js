@@ -4,6 +4,8 @@ const messages = {
         'placeholder.h2': 'Heading 2',
         'placeholder.h3': 'Heading 3',
         'placeholder.p': "Type '/' for commands",
+        'placeholder.ol': "Type '/' for commands",
+        'placeholder.ul': "Type '/' for commands",
         'placeholder.img': 'Add images',
         'placeholder.annotation': 'Please enter a label',
         'tag.h1': 'Heading 1',

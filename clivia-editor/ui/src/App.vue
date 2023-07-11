@@ -1,9 +1,9 @@
 <script setup>
 import { ref, onMounted } from 'vue';
-import { service } from './http';
-import { newText } from './components/tag';
-import Workspace from './components/Workspace.vue';
 import { store } from './store';
+import { service } from './http';
+import { newText, resetList } from './components/tag';
+import Workspace from './components/Workspace.vue';
 
 window.safari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
 const mode = ref(0);
@@ -28,6 +28,7 @@ onMounted(() => {
       if (line.tag === 'text')
         line.tag = 'p';
     store.lines = data;
+    resetList();
     mode.value = param.readonly === 'true' ? 2 : 1;
   });
 });

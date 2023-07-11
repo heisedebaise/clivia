@@ -6,10 +6,15 @@ import { findLine, isEmpty, mergeTexts } from './line';
 import { getCursorSync, setCursor, selectAll } from './cursor';
 import { isComposition } from './composition';
 import { markdown } from './markdown';
+import { resetList } from './tag';
 
 const keyup = (event) => {
-    if (event.key === 'ArrowUp' || event.key === 'ArrowDown' || event.key === 'Control')
+    if (event.key === 'ArrowUp' || event.key === 'ArrowDown' || event.key === 'Control' || event.key === 'Tab') {
+        if (event.key === 'Tab')
+            resetList();
+
         return;
+    }
 
     if (event.ctrlKey && event.key === 'a') {
         selectAll();
@@ -57,9 +62,10 @@ const keyup = (event) => {
         } else
             mergeTexts(line.texts);
     }
-    markdown(line);
+    if (!markdown(line))
+        setCursor(line.id, cursor);
     line.time = now();
-    setCursor(line.id, cursor);
+    resetList();
     trigger('annotation');
     if (event.code === 'Slash')
         trigger('slash');
