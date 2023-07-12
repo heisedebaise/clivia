@@ -55,7 +55,25 @@ const remove = (node) => {
         remove(store.nodes[child]);
 };
 
+const setIndex = (id) => setNodeIndex(store.nodes[id]);
+
+const setNodeIndex = (node) => {
+    if (!node || !node.children || node.children.length === 0)
+        return;
+
+    for (let i = 0; i < node.children.length; i++) {
+        let child = store.nodes[node.children[i]];
+        if (!child)
+            continue;
+
+        let index = i + 1;
+        child.index = node.main ? index : (node.index + '-' + index);
+        setNodeIndex(child);
+    }
+};
+
 export {
     newNode,
     removeNode,
+    setIndex,
 }

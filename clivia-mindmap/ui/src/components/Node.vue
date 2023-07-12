@@ -25,6 +25,12 @@ const isMain = () => {
     return node && node.main;
 }
 
+const index = () => {
+    let node = store.nodes[props.id];
+
+    return node ? (node.index || '') : '';
+};
+
 const style = () => {
     let node = store.nodes[props.id];
 
@@ -112,10 +118,15 @@ onMounted(() => {
 <template>
     <div class="node">
         <div v-if="!isMain()" class="remove" @click="remove">-</div>
-        <div :id="id" :class="style()" :contenteditable="id === store.focus" @click="focus(id)"
-            @compositionstart="compositionStart" @compositionend="compositionend" @keydown="keydown" @keyup="keyup">{{
-                text() }}</div>
-        <div class="plus" @click="plus">+</div>
+        <div :id="id" class="content" @click="focus(id)">
+            <div v-if="!isMain()" class="index">{{ index() }}</div>
+            <div :class="style()" :contenteditable="id === store.focus" @compositionstart="compositionStart"
+                @compositionend="compositionend" @keydown="keydown" @keyup="keyup">{{ text() }}</div>
+        </div>
+        <div class="plus-forward">
+            <div class="plus" @click="plus">+</div>
+            <div class="forward" @click="forward">></div>
+        </div>
         <div v-if="hasChild()" class="children">
             <svg xmlns="http://www.w3.org/2000/svg" version="1.1" :width="branch.width + 'px'"
                 :height="branch.height + 'px'">
@@ -136,28 +147,41 @@ onMounted(() => {
     align-items: center;
 }
 
-.text,
-.placeholder {
+.content {
+    display: flex;
+    align-items: stretch;
     border: 1px solid var(--border);
     border-radius: 4px;
     background-color: var(--background);
-    padding: 0 8px;
-    line-height: 2rem;
-    outline: none;
     margin: 4px;
+}
+
+.index,
+.text,
+.placeholder {
+    line-height: 2rem;
+    padding: 0 8px;
     white-space: nowrap;
+    outline: none;
+}
+
+.index {
+    border-right: 1px solid var(--border);
+    cursor: default;
 }
 
 .text {
     color: var(--color);
 }
 
+.index,
 .placeholder {
     color: var(--placeholder);
 }
 
 .remove,
-.plus {
+.plus,
+.forward {
     width: 1rem;
     line-height: 1rem;
     font-size: 1rem;
@@ -168,7 +192,8 @@ onMounted(() => {
     cursor: pointer;
 }
 
-.plus:hover {
+.plus:hover,
+.forward:hover {
     border: 1px solid var(--color);
     color: var(--color);
 }
@@ -180,6 +205,6 @@ onMounted(() => {
 
 .branch {
     stroke: var(--branch);
-    stroke-width: 0.5px;
+    stroke-width: 1px;
 }
 </style>

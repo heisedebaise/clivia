@@ -12,7 +12,7 @@ const keyup = () => {
         return;
 
     let cursor = getCursor();
-    node.text = document.querySelector('#' + store.focus).innerText;
+    node.text = document.querySelector('#' + store.focus).lastChild.innerText;
     node.time = now();
     setCursor(null, cursor);
 };

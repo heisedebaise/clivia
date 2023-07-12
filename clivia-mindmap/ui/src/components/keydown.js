@@ -1,7 +1,7 @@
 import { store } from '../store';
 import { focus } from './cursor';
 import { isComposition } from './composition';
-import { newNode, removeNode } from './node';
+import { newNode, removeNode, setIndex } from './node';
 import { trigger } from './event';
 
 
@@ -40,6 +40,7 @@ const enter = (event, node) => {
 
     let next = newNode(node.parent);
     parent.children.splice(index + 1, 0, next.id);
+    setIndex(node.parent);
     focus(next.id);
     trigger('branch', { type: 'new', id: next.parent });
 };
@@ -50,6 +51,7 @@ const insert = (event, node) => {
         node.children = [];
     let child = newNode(node.id);
     node.children.push(child.id);
+    setIndex(node.id);
     focus(child.id);
     trigger('branch', { type: 'new', id: node.id });
 };

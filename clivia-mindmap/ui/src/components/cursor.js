@@ -7,7 +7,7 @@ const data = {
 
 const focus = (id) => {
     store.focus = id;
-    nextTick(() => document.querySelector('#' + id).focus());
+    nextTick(() => document.querySelector('#' + id).lastChild.focus());
 };
 
 const getCursor = () => {
@@ -22,7 +22,7 @@ const getCursor = () => {
 };
 
 const setCursor = (id, cursor) => {
-    let node = document.querySelector('#' + (id || store.focus));
+    let node = document.querySelector('#' + (id || store.focus)).lastChild;
     if (!node || !node.childNodes || node.childNodes.length === 0)
         return;
 
