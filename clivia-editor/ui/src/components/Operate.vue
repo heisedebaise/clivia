@@ -305,7 +305,7 @@ const setAnnotation = () => {
 };
 
 const change = (tag) => {
-    if (!changeTag(tag))
+    if (!changeTag(tag, 0))
         return;
 
     removeSlash();

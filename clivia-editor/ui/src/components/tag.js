@@ -4,7 +4,7 @@ import { now } from "./time";
 import { message } from './locale';
 import { trigger } from "./event";
 import { findLine, findIndex, isEmpty } from "./line";
-import { setCursor } from "./cursor";
+import { setCursor, getSelect } from "./cursor";
 
 const newText = (tag, text) => {
     return {
@@ -53,8 +53,24 @@ const newDivider = () => {
     trigger('annotation');
 };
 
-const changeTag = (tag) => {
-    let line = findLine(store.focus);
+const changeTag = (tag, depth) => {
+    let lines = getSelect();
+    if (lines.length > 0) {
+        for (let line of lines)
+            changeLineTag(line, tag, depth);
+
+        return true;
+    }
+
+    if (!changeLineTag(findLine(store.focus), tag, depth))
+        return false;
+
+    setCursor();
+
+    return true;
+};
+
+const changeLineTag = (line, tag, depth) => {
     if (!line)
         return false;
 
@@ -70,16 +86,19 @@ const changeTag = (tag) => {
     if ((tag === 'h1' || tag === 'h2' || tag === 'h3' || tag === 'p' || tag === 'ul' || tag === 'ol') && !line.texts)
         line.texts = [{ text: '' }];
     if (tag === 'ul' || tag === 'ol') {
-        line.depth = (line.depth || 0) + 1;
+        line.depth = (line.depth || 0) + depth;
+        if (line.depth === 0)
+            line.depth = 1;
     }
     line.time = now();
-    setCursor();
 
     return true;
 };
 
-const olTypes = [['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z'],
-['i', 'ii', 'iii', 'iv', 'v', 'vi', 'vii', 'viii', 'ix', 'x']];
+const olTypes = [
+    ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z'],
+    ['i', 'ii', 'iii', 'iv', 'v', 'vi', 'vii', 'viii', 'ix', 'x', 'xi', 'xii', 'xiii', 'xiv', 'xv', 'xvi', 'xvii', 'xvii', 'xix', 'xx']
+];
 const ulTypes = ['disc', 'circle', 'square'];
 
 const resetList = () => {

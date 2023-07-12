@@ -43,7 +43,10 @@ const enter = (event, index, line) => {
         store.lines.splice(index, 0, l);
         setCursor(line.id, [0, 0, 0, 0]);
     } else if (isEmpty(texts[2])) {
-        let text = newText('p');
+        let list = line.tag === 'ol' || line.tag === 'ul';
+        let text = newText(list ? line.tag : 'p');
+        if (list)
+            text.depth = line.depth;
         store.lines.splice(index + 1, 0, text);
         if (window.safari)
             setTimeout(() => setCursor(text.id, [0, 0, 0, 0]), 100);
@@ -62,6 +65,16 @@ const enter = (event, index, line) => {
 };
 
 const backspace = (event, index, line) => {
+    if ((line.tag === 'ol' || line.tag === 'ul') && getCursor().join('') === '0000') {
+        event.preventDefault();
+        if (line.depth <= 1)
+            changeTag('p');
+        else
+            line.depth--;
+
+        return;
+    }
+
     if (line.texts.length === 1 && line.texts[0].text.length <= 1) {
         event.preventDefault();
         if (line.texts[0].text.length === 1) {
@@ -94,7 +107,7 @@ const arrow = (event, index, line) => {
 
 const tab = (event) => {
     event.preventDefault();
-    changeTag('ol-ul');
+    changeTag('ol-ul', 1);
 };
 
 export {

@@ -7,7 +7,6 @@ import { markdown } from './markdown';
 import { uploadImageBlob } from './image';
 
 const copy = (event) => {
-    console.log(event);
     if (event)
         event.preventDefault();
 
