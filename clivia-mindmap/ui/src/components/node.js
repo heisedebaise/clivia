@@ -41,8 +41,9 @@ const removeNode = (node) => {
         return;
 
     parent.children.splice(index, 1);
-    focus(parent.id);
+    focus(parent.children.length > 0 ? parent.children[parent.children.length - 1] : parent.id);
     remove(node);
+    setIndex(parent.id);
     trigger('branch', { type: 'remove', id: parent.id });
 };
 
@@ -67,7 +68,7 @@ const setNodeIndex = (node) => {
             continue;
 
         let index = i + 1;
-        child.index = node.main ? index : (node.index + '-' + index);
+        child.index = node.main ? ('' + index) : (node.index + '-' + index);
         setNodeIndex(child);
     }
 };

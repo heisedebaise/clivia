@@ -1,5 +1,5 @@
 <script setup>
-import { ref, onMounted, nextTick, triggerRef } from 'vue';
+import { ref, onMounted, nextTick } from 'vue';
 import { store } from '../store';
 import { message } from './locale';
 import { focus } from './cursor';
@@ -8,6 +8,7 @@ import { keydown } from './keydown';
 import { keyup } from './keyup';
 import { listen, trigger } from './event';
 import { newNode, removeNode } from './node';
+import Icon from './Icon.vue';
 
 const props = defineProps({
     id: String
@@ -92,16 +93,9 @@ const draw = (event) => {
         trigger('branch', { type: event.type, id: node.parent });
 };
 
-const remove = () => removeNode(store.nodes[props.id]);
-
-const plus = () => {
-    let node = store.nodes[props.id];
-    if (!node.children)
-        node.children = [];
-    let child = newNode(node.id);
-    node.children.push(child.id);
-    focus(child.id);
-    draw({ type: 'new', id: node.id });
+const operate = (event) => {
+    focus(props.id);
+    trigger('operate', event);
 };
 
 const compositionend = () => {
@@ -117,15 +111,13 @@ onMounted(() => {
 
 <template>
     <div class="node">
-        <div v-if="!isMain()" class="remove" @click="remove">-</div>
         <div :id="id" class="content" @click="focus(id)">
             <div v-if="!isMain()" class="index">{{ index() }}</div>
             <div :class="style()" :contenteditable="id === store.focus" @compositionstart="compositionStart"
                 @compositionend="compositionend" @keydown="keydown" @keyup="keyup">{{ text() }}</div>
         </div>
-        <div class="plus-forward">
-            <div class="plus" @click="plus">+</div>
-            <div class="forward" @click="forward">></div>
+        <div class="operate" @click="operate">
+            <Icon name="more" :enable="false" />
         </div>
         <div v-if="hasChild()" class="children">
             <svg xmlns="http://www.w3.org/2000/svg" version="1.1" :width="branch.width + 'px'"
@@ -153,7 +145,7 @@ onMounted(() => {
     border: 1px solid var(--border);
     border-radius: 4px;
     background-color: var(--background);
-    margin: 4px;
+    margin: 4px 4px 4px 0;
 }
 
 .index,
@@ -179,25 +171,6 @@ onMounted(() => {
     color: var(--placeholder);
 }
 
-.remove,
-.plus,
-.forward {
-    width: 1rem;
-    line-height: 1rem;
-    font-size: 1rem;
-    border: 1px solid var(--border);
-    border-radius: 16px;
-    text-align: center;
-    color: var(--border);
-    cursor: pointer;
-}
-
-.plus:hover,
-.forward:hover {
-    border: 1px solid var(--color);
-    color: var(--color);
-}
-
 .children {
     display: flex;
     align-items: stretch;
@@ -206,5 +179,10 @@ onMounted(() => {
 .branch {
     stroke: var(--branch);
     stroke-width: 1px;
+}
+
+.operate:hover {
+    background-color: var(--hover-bg);
+    border-radius: 4px;
 }
 </style>

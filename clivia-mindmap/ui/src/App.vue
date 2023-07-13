@@ -2,6 +2,8 @@
 import { ref, onMounted } from 'vue';
 import { store } from './store';
 import { newNode } from './components/node';
+import Link from './components/link.vue';
+import Operate from './components/Operate.vue';
 
 const main = ref({
   id: ''
@@ -16,11 +18,13 @@ onMounted(() => {
 </script>
 
 <template>
+  <Link />
   <div v-if="main.id" class="mindmap-table">
     <div class="mindmap-cell">
       <Node :id="main.id" />
     </div>
   </div>
+  <Operate />
 </template>
 
 <style scoped>

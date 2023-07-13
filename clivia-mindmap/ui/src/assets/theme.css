@@ -3,6 +3,10 @@
   --color: #212121;
   --border: #e5e5e5;
   --hover-bg: #e5e5e5;
+  --title-bg: var(--hover-bg);
+  --disable: #ccc;
   --placeholder: rgba(55, 53, 47, 0.5);
+  --shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
   --branch: var(--border);
+  --link: var(--border);
 }

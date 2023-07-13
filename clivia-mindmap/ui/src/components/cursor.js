@@ -6,8 +6,9 @@ const data = {
 };
 
 const focus = (id) => {
-    store.focus = id;
-    nextTick(() => document.querySelector('#' + id).lastChild.focus());
+    if (id)
+        store.focus = id;
+    nextTick(() => document.querySelector('#' + store.focus).lastChild.focus());
 };
 
 const getCursor = () => {
