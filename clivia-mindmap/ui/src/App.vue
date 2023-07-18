@@ -12,6 +12,7 @@ const main = ref({
 onMounted(() => {
   let node = newNode('');
   node.main = true;
+  node.index = '0';
   store.nodes[node.id] = node;
   main.value.id = node.id;
 });

@@ -5,8 +5,9 @@ import { trigger } from "./event";
 const newNode = (parent) => {
     let node = {
         id: newId(),
-        parent: parent,
+        parent: parent || '',
         text: '',
+        children: [],
     };
     store.nodes[node.id] = node;
 

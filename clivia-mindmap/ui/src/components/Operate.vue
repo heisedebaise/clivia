@@ -13,7 +13,10 @@ const data = ref({
     main: false,
     link: false,
     linkTo: false,
-    linkIndex: '',
+    up: false,
+    down: false,
+    moveTo: false,
+    index: '',
 });
 
 const show = (event) => {
@@ -23,12 +26,25 @@ const show = (event) => {
             return;
 
         let node = store.node();
-        data.value = {
+        let d = {
             show: true,
             style: 'left:' + operate.offsetLeft + 'px;top:' + (operate.offsetTop + operate.offsetHeight) + 'px',
             main: node.main,
             link: node.link,
         };
+
+        if (!node.main) {
+            let parent = store.nodes[node.parent];
+            if (parent) {
+                let index = parent.children.indexOf(node.id);
+                if (index > 0)
+                    d.up = true;
+                if (index < parent.children.length - 1)
+                    d.down = true;
+            }
+        }
+
+        data.value = d
     });
 };
 
@@ -63,14 +79,14 @@ const insert = () => {
 const link = () => {
     data.value.show = false;
     data.value.linkTo = true;
-    data.value.linkIndex = '';
+    data.value.index = '';
 };
 
 const linkTo = () => {
     let node = store.node();
     if (node) {
         for (let id in store.nodes) {
-            if (store.nodes[id].index === data.value.linkIndex) {
+            if (store.nodes[id].index === data.value.index) {
                 node.link = id;
                 trigger('link');
 
@@ -86,6 +102,88 @@ const unlink = () => {
     if (node) {
         delete node.link;
         trigger('link');
+    }
+    hide();
+};
+
+const up = () => {
+    let node = store.node();
+    if (node && node.parent) {
+        let parent = store.nodes[node.parent];
+        if (parent) {
+            let index = parent.children.indexOf(node.id);
+            if (index > 0) {
+                let children = parent.children.join(',').split(',');
+                children[index] = children[index - 1];
+                children[index - 1] = node.id;
+                parent.children = children;
+                setIndex(parent.id);
+                nextTick(() => {
+                    trigger('branch', { type: 'move', id: parent.id });
+                    trigger('link');
+                });
+            }
+        }
+    }
+    hide();
+};
+
+const down = () => {
+    let node = store.node();
+    if (node && node.parent) {
+        let parent = store.nodes[node.parent];
+        if (parent) {
+            let index = parent.children.indexOf(node.id);
+            if (index < parent.children.length - 1) {
+                let children = parent.children.join(',').split(',');
+                children[index] = children[index + 1];
+                children[index + 1] = node.id;
+                parent.children = children;
+                setIndex(parent.id);
+                nextTick(() => {
+                    trigger('branch', { type: 'move', id: parent.id });
+                    trigger('link');
+                });
+            }
+        }
+    }
+    hide();
+};
+
+const move = () => {
+    data.value.show = false;
+    data.value.moveTo = true;
+    data.value.index = '';
+};
+
+const moveTo = () => {
+    let node = store.node();
+    if (node) {
+        for (let id in store.nodes) {
+            let target = store.nodes[id];
+            if (target.index === data.value.index) {
+                let parent = store.nodes[node.parent];
+                if (parent && parent.children && parent.children.length > 0) {
+                    let index = parent.children.indexOf(node.id);
+                    if (index > -1) {
+                        parent.children.splice(index, 1);
+                        setIndex(parent.id);
+                        nextTick(() => trigger('branch', { type: 'move', id: parent.id }));
+                    }
+                }
+                let children = target.children || [];
+                children.push(node.id);
+                target.children = children;
+                node.parent = target.id;
+                setIndex(id);
+                nextTick(() => {
+                    trigger('branch', { type: 'move', id: id });
+                    trigger('link');
+                });
+
+                break;
+            }
+        }
     }
     hide();
 };
@@ -121,6 +219,18 @@ onMounted(() => {
                 <Icon name="link" :enable="true" />
                 <div>{{ message('operate.link') }}</div>
             </div>
+            <div v-if="data.up" class="operate" @click="up">
+                <Icon name="up" :enable="true" />
+                <div>{{ message('operate.move.up') }}</div>
+            </div>
+            <div v-if="data.down" class="operate" @click="down">
+                <Icon name="down" :enable="true" />
+                <div>{{ message('operate.move.down') }}</div>
+            </div>
+            <div v-if="!data.main" class="operate" @click="move">
+                <Icon name="link" :enable="true" />
+                <div>{{ message('operate.move.to') }}</div>
+            </div>
             <div v-if="!data.main" class="operate" @click="remove">
                 <Icon name="delete" :enable="true" />
                 <div>{{ message('operate.remove') }}</div>
@@ -131,9 +241,18 @@ onMounted(() => {
         <div class="link-to" :style="data.style">
             <div class="title">{{ message('operate.link') }}</div>
             <div class="input">
-                <input v-model="data.linkIndex" :placeholder="message('operate.link.placeholder')" />
+                <input v-model="data.index" :placeholder="message('operate.link.placeholder')" />
             </div>
             <div class="button" @click="linkTo">{{ message('operate.link.ok') }}</div>
+        </div>
+    </div>
+    <div v-if="data.moveTo" class="mask" @click.self="hide">
+        <div class="move-to" :style="data.style">
+            <div class="title">{{ message('operate.move.to') }}</div>
+            <div class="input">
+                <input v-model="data.index" :placeholder="message('operate.move.placeholder')" />
+            </div>
+            <div class="button" @click="moveTo">{{ message('operate.move.ok') }}</div>
         </div>
     </div>
 </template>
@@ -148,7 +267,8 @@ onMounted(() => {
 }
 
 .operates,
-.link-to {
+.link-to,
+.move-to {
     position: fixed;
     background-color: var(--background);
     border: 1px solid var(--border);

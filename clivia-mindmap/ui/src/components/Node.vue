@@ -1,5 +1,5 @@
 <script setup>
-import { ref, onMounted, nextTick } from 'vue';
+import { ref, watch, onMounted, nextTick } from 'vue';
 import { store } from '../store';
 import { message } from './locale';
 import { focus } from './cursor';
@@ -7,7 +7,6 @@ import { compositionStart, compositionEnd } from './composition';
 import { keydown } from './keydown';
 import { keyup } from './keyup';
 import { listen, trigger } from './event';
-import { newNode, removeNode } from './node';
 import Icon from './Icon.vue';
 
 const props = defineProps({
@@ -19,12 +18,6 @@ const branch = ref({
     height: 0,
     lines: [],
 });
-
-const isMain = () => {
-    let node = store.nodes[props.id];
-
-    return node && node.main;
-}
 
 const index = () => {
     let node = store.nodes[props.id];
@@ -56,20 +49,24 @@ const hasChild = () => {
 };
 
 const draw = (event) => {
-    if (event.id != props.id || !hasChild())
+    if (event.id != props.id)
         return;
 
-    if (event.type === 'remove')
-        branch.value.height = 0;
-
     nextTick(() => {
-        let node = document.querySelector('#' + props.id).parentNode;
-        let height = node.offsetHeight;
+        let node = store.nodes[props.id];
+        if (!node || !node.children || node.children.length === 0)
+            return;
+
+        if (event.type === 'move' || event.type === 'remove')
+            branch.value.height = 0;
+
+        let parent = document.querySelector('#' + props.id).parentNode;
+        let height = parent.offsetHeight;
         branch.value.height = height;
 
         let ys = [];
-        let top = node.offsetTop;
-        for (let id of store.nodes[props.id].children) {
+        let top = parent.offsetTop;
+        for (let id of node.children) {
             let child = document.querySelector('#' + id);
             if (child)
                 ys.push(child.offsetTop + (child.offsetHeight >> 1) - top);
@@ -86,11 +83,14 @@ const draw = (event) => {
                 lines.push({ x1: x, y1: y, x2: branch.value.width, y2: y });
         }
         branch.value.lines = lines;
-    });
 
-    let node = store.nodes[props.id];
-    if (!node.main && node.parent)
-        trigger('branch', { type: event.type, id: node.parent });
+        if (event.type === 'move') {
+            if (node.children && node.children.length > 0)
+                for (let child of node.children)
+                    trigger('branch', { type: event.type, id: child });
+        } else if (!node.main && node.parent)
+            trigger('branch', { type: event.type, id: node.parent });
+    });
 };
 
 const operate = (event) => {
@@ -106,13 +106,14 @@ const compositionend = () => {
 onMounted(() => {
     draw({ id: props.id });
     listen('branch', draw);
+    // watch(store.nodes[props.id].children, () => draw({ id: props.id }));
 });
 </script>
 
 <template>
     <div class="node">
         <div :id="id" class="content" @click="focus(id)">
-            <div v-if="!isMain()" class="index">{{ index() }}</div>
+            <div class="index">{{ index() }}</div>
             <div :class="style()" :contenteditable="id === store.focus" @compositionstart="compositionStart"
                 @compositionend="compositionend" @keydown="keydown" @keyup="keyup">{{ text() }}</div>
         </div>
