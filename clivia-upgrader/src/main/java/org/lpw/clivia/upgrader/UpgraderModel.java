@@ -26,6 +26,8 @@ public class UpgraderModel extends ModelSupport {
     private String windows; // Windows升级URL
     private String macos; // MacOS升级URL
     private String linux; // Linux升级URL
+    private String mobile; // 移动端升级URL
+    private String desktop; // 桌面端升级URL
     private String file; // 升级包
 
     @Jsonable
@@ -116,6 +118,26 @@ public class UpgraderModel extends ModelSupport {
 
     public void setLinux(String linux) {
         this.linux = linux;
+    }
+
+    @Jsonable
+    @Column(name = "c_mobile")
+    public String getMobile() {
+        return mobile;
+    }
+
+    public void setMobile(String mobile) {
+        this.mobile = mobile;
+    }
+
+    @Jsonable
+    @Column(name = "c_desktop")
+    public String getDesktop() {
+        return desktop;
+    }
+
+    public void setDesktop(String desktop) {
+        this.desktop = desktop;
     }
 
     @Jsonable

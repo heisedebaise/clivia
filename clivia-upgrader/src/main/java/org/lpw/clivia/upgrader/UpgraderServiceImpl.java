@@ -66,6 +66,8 @@ public class UpgraderServiceImpl implements UpgraderService, MinuteJob {
                 case "windows", "2" -> upgrader.getWindows();
                 case "macos", "3" -> upgrader.getMacos();
                 case "linux", "4" -> upgrader.getLinux();
+                case "mobile" -> upgrader.getMobile();
+                case "desktop" -> upgrader.getDesktop();
                 default -> "";
             };
             if (validator.isEmpty(url))
@@ -100,16 +102,21 @@ public class UpgraderServiceImpl implements UpgraderService, MinuteJob {
             for (int i = 0; i < size; i++) {
                 JSONObject object = array.getJSONObject(i);
                 String name = object.getString("name");
+                String uri = object.getString("uri");
                 if (validator.isEmpty(upgrader.getAndroid()) && (name.contains("android") || name.endsWith(".apk")))
-                    upgrader.setAndroid(object.getString("uri"));
-                if (validator.isEmpty(upgrader.getIos()) && (name.contains("ios") || name.endsWith(".ipa")))
-                    upgrader.setIos(object.getString("uri"));
-                if (validator.isEmpty(upgrader.getWindows()) && (name.contains("windows") || name.endsWith(".exe")))
-                    upgrader.setWindows(object.getString("uri"));
-                if (validator.isEmpty(upgrader.getMacos()) && name.contains("macos"))
-                    upgrader.setMacos(object.getString("uri"));
-                if (validator.isEmpty(upgrader.getLinux()) && name.contains("linux"))
-                    upgrader.setLinux(object.getString("uri"));
+                    upgrader.setAndroid(uri);
+                else if (validator.isEmpty(upgrader.getIos()) && (name.contains("ios") || name.endsWith(".ipa")))
+                    upgrader.setIos(uri);
+                else if (validator.isEmpty(upgrader.getWindows()) && (name.contains("windows") || name.endsWith(".exe")))
+                    upgrader.setWindows(uri);
+                else if (validator.isEmpty(upgrader.getMacos()) && name.contains("macos"))
+                    upgrader.setMacos(uri);
+                else if (validator.isEmpty(upgrader.getLinux()) && name.contains("linux"))
+                    upgrader.setLinux(uri);
+                else if (validator.isEmpty(upgrader.getMobile()) && name.contains("mobile"))
+                    upgrader.setMobile(uri);
+                else if (validator.isEmpty(upgrader.getDesktop()) && name.contains("desktop"))
+                    upgrader.setDesktop(uri);
             }
         }
         upgraderDao.save(upgrader);
