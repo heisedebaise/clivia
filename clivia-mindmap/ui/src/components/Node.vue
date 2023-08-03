@@ -52,13 +52,11 @@ const draw = (event) => {
     if (event.id != props.id)
         return;
 
+    branch.value.height = 0;
     nextTick(() => {
         let node = store.nodes[props.id];
         if (!node || !node.children || node.children.length === 0)
             return;
-
-        if (event.type === 'move' || event.type === 'remove')
-            branch.value.height = 0;
 
         let parent = document.querySelector('#' + props.id).parentNode;
         let height = parent.offsetHeight;
@@ -83,13 +81,6 @@ const draw = (event) => {
                 lines.push({ x1: x, y1: y, x2: branch.value.width, y2: y });
         }
         branch.value.lines = lines;
-
-        if (event.type === 'move') {
-            if (node.children && node.children.length > 0)
-                for (let child of node.children)
-                    trigger('branch', { type: event.type, id: child });
-        } else if (!node.main && node.parent)
-            trigger('branch', { type: event.type, id: node.parent });
     });
 };
 
@@ -106,7 +97,6 @@ const compositionend = () => {
 onMounted(() => {
     draw({ id: props.id });
     listen('branch', draw);
-    // watch(store.nodes[props.id].children, () => draw({ id: props.id }));
 });
 </script>
 

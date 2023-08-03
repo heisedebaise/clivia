@@ -1,3 +1,4 @@
+import { nextTick } from "vue";
 import { store } from "../store";
 import { focus } from "./cursor";
 import { trigger } from "./event";
@@ -45,7 +46,7 @@ const removeNode = (node) => {
     focus(parent.children.length > 0 ? parent.children[parent.children.length - 1] : parent.id);
     remove(node);
     setIndex(parent.id);
-    trigger('branch', { type: 'remove', id: parent.id });
+    branch();
 };
 
 const remove = (node) => {
@@ -74,8 +75,34 @@ const setNodeIndex = (node) => {
     }
 };
 
+const branch = () => {
+    let ids = [];
+    branches(ids, store.main);
+    draw(ids);
+};
+
+const branches = (ids, id) => {
+    let node = store.nodes[id];
+    if (!node || !node.children || node.children.length === 0)
+        return;
+
+    ids.push(id);
+    for (let child of node.children)
+        branches(ids, child);
+};
+
+const draw = (ids) => {
+    let id = ids.pop();
+    if (!id)
+        return;
+
+    trigger('branch', { id });
+    nextTick(() => draw(ids));
+};
+
 export {
     newNode,
     removeNode,
     setIndex,
+    branch,
 }

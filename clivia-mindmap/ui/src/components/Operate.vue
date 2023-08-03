@@ -4,7 +4,7 @@ import { store } from '../store';
 import { listen, trigger } from './event';
 import { message } from './locale';
 import { focus } from './cursor';
-import { newNode, removeNode, setIndex } from './node';
+import { newNode, removeNode, setIndex, branch } from './node';
 import Icon from './Icon.vue';
 
 const data = ref({
@@ -71,7 +71,7 @@ const insert = () => {
     node.children.push(child.id);
     focus(child.id);
     setIndex(node.id);
-    trigger('branch', { type: 'new', id: node.id });
+    branch();
     trigger('link');
     hide();
 };
@@ -119,7 +119,7 @@ const up = () => {
                 parent.children = children;
                 setIndex(parent.id);
                 nextTick(() => {
-                    trigger('branch', { type: 'move', id: parent.id });
+                    branch();
                     trigger('link');
                 });
             }
@@ -141,7 +141,7 @@ const down = () => {
                 parent.children = children;
                 setIndex(parent.id);
                 nextTick(() => {
-                    trigger('branch', { type: 'move', id: parent.id });
+                    branch();
                     trigger('link');
                 });
             }
@@ -168,7 +168,7 @@ const moveTo = () => {
                     if (index > -1) {
                         parent.children.splice(index, 1);
                         setIndex(parent.id);
-                        nextTick(() => trigger('branch', { type: 'move', id: parent.id }));
+                        branch();
                     }
                 }
                 let children = target.children || [];
@@ -177,7 +177,7 @@ const moveTo = () => {
                 node.parent = target.id;
                 setIndex(id);
                 nextTick(() => {
-                    trigger('branch', { type: 'move', id: id });
+                    branch();
                     trigger('link');
                 });
 
