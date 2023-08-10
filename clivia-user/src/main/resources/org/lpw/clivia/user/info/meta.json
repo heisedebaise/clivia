@@ -1,0 +1,47 @@
+{
+    "key": "clivia.user.info",
+    "uri": "/user/info/",
+    "props": [
+        {
+            "name": "user"
+        },
+        {
+            "name": "name"
+        },
+        {
+            "name": "value"
+        },
+        {
+            "name": "time"
+        }
+    ],
+    "create": {
+        "type": "form",
+        "toolbar": [
+            {
+                "type": "save",
+                "success": "query"
+            }
+        ]
+    },
+    "modify": {
+        "type": "form",
+        "toolbar": [
+            {
+                "type": "save",
+                "success": "query"
+            }
+        ]
+    },
+    "user": {
+        "type": "grid",
+        "search": [
+            {
+                "name": "user"
+            },
+            {
+                "name": "name"
+            }
+        ]
+    }
+}

@@ -6,8 +6,7 @@ import java.sql.Timestamp;
 import java.util.Set;
 
 interface UserDao {
-    PageList<UserModel> query(Set<String> ids, String idcard, String name, String nick, String mobile, String email, String weixin, String qq,
-                              String code, int minGrade, int maxGrade, int state, String register, String from, int pageSize, int pageNum);
+    PageList<UserModel> query(Set<String> ids, int minGrade, int maxGrade, int state, String register, int pageSize, int pageNum);
 
     PageList<UserModel> query(String inviter, int pageSize, int pageNum);
 
@@ -18,8 +17,6 @@ interface UserDao {
     UserModel findById(String id);
 
     UserModel findByCode(String code);
-
-    UserModel findByMobile(String mobile);
 
     Set<String> ids(String idcard, String name, String nick, String mobile, String email, String weixin, String qq);
 

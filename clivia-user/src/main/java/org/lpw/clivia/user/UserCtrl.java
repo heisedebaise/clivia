@@ -100,25 +100,6 @@ public class UserCtrl {
         return "";
     }
 
-    @Execute(name = "modify", permit = Permit.sign, validates = {
-            @Validate(validator = Validators.MAX_LENGTH, number = {100}, parameter = "idcard", failureCode = 7),
-            @Validate(validator = Validators.MAX_LENGTH, number = {100}, parameter = "name", failureCode = 8),
-            @Validate(validator = Validators.MAX_LENGTH, number = {100}, parameter = "nick", failureCode = 9),
-            @Validate(validator = Validators.MOBILE, emptyable = true, parameter = "mobile", failureCode = 10),
-            @Validate(validator = Validators.EMAIL, emptyable = true, parameter = "email", failureCode = 11),
-            @Validate(validator = Validators.MAX_LENGTH, number = {100}, parameter = "email", failureCode = 12),
-            @Validate(validator = Validators.MAX_LENGTH, number = {100}, parameter = "weixin", failureCode = 33),
-            @Validate(validator = Validators.MAX_LENGTH, number = {100}, parameter = "qq", failureCode = 34),
-            @Validate(validator = Validators.BETWEEN, number = {0, 2}, parameter = "gender", failureCode = 13),
-            @Validate(validator = Validators.MAX_LENGTH, number = {200}, parameter = "avatar", failureCode = 32),
-            @Validate(validator = Validators.MAX_LENGTH, number = {100}, parameter = "signature", failureCode = 36),
-            @Validate(validator = UserService.VALIDATOR_SIGN)})
-    public Object modify() {
-        userService.modify(request.setToModel(UserModel.class));
-
-        return sign();
-    }
-
     @Execute(name = "password", permit = Permit.sign, validates = {
             @Validate(validator = Validators.NOT_EMPTY, parameter = "new", failureCode = 14, failureArgKeys = {UserModel.NAME + ".password.new"}),
             @Validate(validator = Validators.NOT_EQUALS, parameters = {"old", "new"}, failureCode = 15, failureArgKeys = {UserModel.NAME + ".password.new", UserModel.NAME + ".password.old"}),
@@ -188,11 +169,10 @@ public class UserCtrl {
             @Validate(validator = Validators.EMAIL, emptyable = true, parameter = "email", failureCode = 11),
             @Validate(validator = Validators.SIGN)})
     public Object query() {
-        return userService.query(request.get("uid"), request.get("idcard"), request.get("name"),
+        return userService.query(request.get("uid"), request.get("code"), request.get("idcard"), request.get("name"),
                 request.get("nick"), request.get("mobile"), request.get("email"), request.get("weixin"),
-                request.get("qq"), request.get("code"), request.getAsInt("minGrade", -1),
-                request.getAsInt("maxGrade", -1), request.getAsInt("state", -1),
-                request.get("register"), request.get("from"));
+                request.get("qq"), request.getAsInt("minGrade", -1), request.getAsInt("maxGrade", -1),
+                request.getAsInt("state", -1), request.get("register"), request.get("from"));
     }
 
     @Execute(name = "new", validates = {

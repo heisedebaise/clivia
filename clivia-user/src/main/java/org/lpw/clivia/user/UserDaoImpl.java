@@ -29,23 +29,13 @@ class UserDaoImpl implements UserDao {
     private DaoHelper daoHelper;
 
     @Override
-    public PageList<UserModel> query(Set<String> ids, String idcard, String name, String nick, String mobile, String email, String weixin, String qq,
-                                     String code, int minGrade, int maxGrade, int state, String register, String from, int pageSize, int pageNum) {
+    public PageList<UserModel> query(Set<String> ids, int minGrade, int maxGrade, int state, String register, int pageSize, int pageNum) {
         return daoHelper.newQueryBuilder()
-                .where("c_code", DaoOperation.Equals, code)
                 .in("c_id", ids)
-                .where("c_mobile", DaoOperation.Equals, mobile)
-                .where("c_idcard", DaoOperation.Equals, idcard)
-                .where("c_weixin", DaoOperation.Equals, weixin)
-                .where("c_qq", DaoOperation.Equals, qq)
-                .like(null, "c_name", name)
-                .like(null, "c_nick", nick)
-                .like(null, "c_email", email)
                 .where("c_grade", DaoOperation.GreaterEquals, minGrade)
                 .where("c_grade", DaoOperation.LessEquals, maxGrade)
                 .where("c_state", DaoOperation.Equals, state)
                 .between("c_register", ColumnType.Timestamp, register)
-                .where("c_from", DaoOperation.Equals, from)
                 .where("c_state", DaoOperation.LessEquals, 1)
                 .order("c_register desc")
                 .query(UserModel.class, pageSize, pageNum);
@@ -74,11 +64,6 @@ class UserDaoImpl implements UserDao {
     @Override
     public UserModel findByCode(String code) {
         return liteOrm.findOne(new LiteQuery(UserModel.class).where("c_code=?"), new Object[]{code});
-    }
-
-    @Override
-    public UserModel findByMobile(String mobile) {
-        return liteOrm.findOne(new LiteQuery(UserModel.class).where("c_mobile=?"), new Object[]{mobile});
     }
 
     @Override

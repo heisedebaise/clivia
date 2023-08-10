@@ -153,13 +153,6 @@ public interface UserService {
     void signOut(String sid);
 
     /**
-     * 修改当前用户信息。
-     *
-     * @param user 用户信息。
-     */
-    void modify(UserModel user);
-
-    /**
      * 修改密码。
      *
      * @param oldPassword 旧密码。
@@ -270,14 +263,6 @@ public interface UserService {
     JSONObject find(String idUidCode);
 
     /**
-     * 根据手机号获取用户信息。
-     *
-     * @param mobile 手机号。
-     * @return 用户信息；如果不存在则返回null。
-     */
-    UserModel findByMobile(String mobile);
-
-    /**
      * 填充数据。
      *
      * @param array 数组数组。
@@ -290,6 +275,7 @@ public interface UserService {
      * 检索用户信息集。
      *
      * @param uid      UID。
+     * @param code     唯一编码；为空则表示所有。
      * @param idcard   身份证号；为空则表示所有。
      * @param name     姓名；为空则表示所有。
      * @param nick     昵称；为空则表示所有。
@@ -297,7 +283,6 @@ public interface UserService {
      * @param email    Email地址；为空则表示所有。
      * @param weixin   微信号；为空则表示所有。
      * @param qq       QQ号；为空则表示所有。
-     * @param code     唯一编码；为空则表示所有。
      * @param minGrade 最小等级，-1表示不限制。
      * @param maxGrade 最大等级，-1表示不限制。
      * @param state    状态：-1-所有；0-正常；1-禁用。
@@ -305,9 +290,16 @@ public interface UserService {
      * @param from     来源。
      * @return 用户信息集。
      */
-    JSONObject query(String uid, String idcard, String name, String nick, String mobile, String email,
-                     String weixin, String qq, String code, int minGrade, int maxGrade, int state, String register,
+    JSONObject query(String uid, String code, String idcard, String name, String nick, String mobile, String email,
+                     String weixin, String qq, int minGrade, int maxGrade, int state, String register,
                      String from);
+
+    /**
+     * 获取所有用户。
+     *
+     * @return 用户信息集合。
+     */
+    List<UserModel> query();
 
     /**
      * 获取指定等级用户集。
@@ -320,7 +312,8 @@ public interface UserService {
     /**
      * 检索用户ID集。
      *
-     * @param uid    UID。
+     * @param uid    UID；为空则表示所有。
+     * @param code   唯一编码；为空则表示所有。
      * @param idcard 身份证号；为空则表示所有。
      * @param name   姓名；为空则表示所有。
      * @param nick   昵称；为空则表示所有。
@@ -328,11 +321,11 @@ public interface UserService {
      * @param email  Email地址；为空则表示所有。
      * @param weixin 微信号；为空则表示所有。
      * @param qq     QQ号；为空则表示所有。
-     * @param code   唯一编码；为空则表示所有。
+     * @param from   来源；为空则表示所有。
      * @return 用户ID集。
      */
-    Set<String> ids(String uid, String idcard, String name, String nick, String mobile, String email,
-                    String weixin, String qq, String code);
+    Set<String> ids(String uid, String code, String idcard, String name, String nick, String mobile, String email,
+                    String weixin, String qq, String from);
 
     /**
      * 获取推荐用户集。
@@ -358,22 +351,6 @@ public interface UserService {
      * @return 新密码。
      */
     String resetPassword(String id);
-
-    /**
-     * 更新用户信息。
-     *
-     * @param id     ID值。
-     * @param idcard 身份证号。
-     * @param name   姓名。
-     * @param nick   昵称。
-     * @param mobile 手机号。
-     * @param email  Email地址。
-     * @param weixin 微信号。
-     * @param qq     QQ号。
-     * @param gender 性别：0-未知；1-男；2-女。
-     */
-    void info(String id, String idcard, String name, String nick, String mobile, String email, String weixin,
-              String qq, String signature, int gender);
 
     /**
      * 设置用户等级。

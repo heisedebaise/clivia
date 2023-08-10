@@ -8,6 +8,7 @@ import org.lpw.clivia.user.auth.AuthModel;
 import org.lpw.clivia.user.auth.AuthService;
 import org.lpw.clivia.user.crosier.CrosierService;
 import org.lpw.clivia.user.illegal.IllegalService;
+import org.lpw.clivia.user.info.InfoService;
 import org.lpw.clivia.user.invitecode.InvitecodeService;
 import org.lpw.clivia.user.inviter.InviterService;
 import org.lpw.clivia.user.online.OnlineModel;
@@ -21,18 +22,13 @@ import org.lpw.photon.ctrl.context.Response;
 import org.lpw.photon.ctrl.context.Session;
 import org.lpw.photon.dao.model.ModelHelper;
 import org.lpw.photon.dao.orm.PageList;
-import org.lpw.photon.util.DateTime;
-import org.lpw.photon.util.Generator;
-import org.lpw.photon.util.Logger;
-import org.lpw.photon.util.Validator;
+import org.lpw.photon.util.*;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import javax.inject.Inject;
 import java.sql.Date;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 
 @Service(UserModel.NAME + ".service")
 public class UserServiceImpl implements UserService, ContextRefreshedListener {
@@ -52,6 +48,8 @@ public class UserServiceImpl implements UserService, ContextRefreshedListener {
     private Generator generator;
     @Inject
     private DateTime dateTime;
+    @Inject
+    private Numeric numeric;
     @Inject
     private Logger logger;
     @Inject
@@ -80,6 +78,8 @@ public class UserServiceImpl implements UserService, ContextRefreshedListener {
     private PasswordService passwordService;
     @Inject
     private IllegalService illegalService;
+    @Inject
+    private InfoService infoService;
     @Inject
     private Optional<Set<UserListener>> listeners;
     @Inject
@@ -115,36 +115,28 @@ public class UserServiceImpl implements UserService, ContextRefreshedListener {
         if (user.getRegister() == null)
             user.setRegister(dateTime.now());
         setCode(user);
-        String mobile = types.getMobile(type, uid, password);
-        if (!validator.isEmpty(mobile) && validator.isMobile(mobile)) {
-            if (validator.isEmpty(user.getMobile()))
-                user.setMobile(mobile);
-        } else
-            mobile = null;
-        String email = types.getEmail(type, uid, password);
-        if (!validator.isEmpty(email) && validator.isEmail(email)) {
-            if (validator.isEmpty(user.getEmail()))
-                user.setEmail(email);
-        } else
-            email = null;
-        String avatar = types.getAvatar(type, uid, password);
-        if (validator.isEmpty(user.getAvatar()))
-            user.setAvatar(avatar);
-        String nick = types.getNick(type, uid, password);
-        if (!validator.isEmpty(nick))
-            user.setNick(nick);
-        if (validator.isEmpty(user.getNick()) && type.equals(Types.Self))
-            user.setNick(uid);
         setInviter(user, inviter);
         user.setGrade(crosierService.signUpGrade(grade));
         user.setState(1);
-        if (validator.isEmpty(user.getFrom()))
-            user.setFrom(types.getFrom(type, uid, password));
         userDao.save(user);
+        invitecodeService.use(user.getId(), invitecode);
+
+        String mobile = types.getMobile(type, uid, password);
+        infoService.save(user.getId(), "mobile", mobile);
+        String email = types.getEmail(type, uid, password);
+        infoService.save(user.getId(), "email", email);
+        String avatar = types.getAvatar(type, uid, password);
+        infoService.save(user.getId(), "avatar", avatar);
+        String nick = types.getNick(type, uid, password);
+        infoService.save(user.getId(), "nick", nick);
+        if (type.equals(Types.Self))
+            infoService.save(user.getId(), "nick", uid);
+        infoService.save(user.getId(), "from", types.getFrom(type, uid, password));
+
         for (String ruid : types.getUid(type, uid, password))
             if (authService.findByUid(ruid) == null)
                 authService.create(user.getId(), ruid, type, mobile, email, nick, avatar);
-        invitecodeService.use(user.getId(), invitecode);
+
         UserModel model = user;
         listeners.ifPresent(set -> set.forEach(listener -> listener.userSignUp(model)));
         clearCache(user);
@@ -276,11 +268,6 @@ public class UserServiceImpl implements UserService, ContextRefreshedListener {
     }
 
     @Override
-    public void modify(UserModel user) {
-        session.set(SESSION, save(fromSession().getId(), user, false));
-    }
-
-    @Override
     public boolean password(String oldPassword, String newPassword) {
         UserModel user = fromSession();
         if (!validator.isEmpty(user.getPassword()) && !user.getPassword().equals(password(oldPassword)))
@@ -311,8 +298,7 @@ public class UserServiceImpl implements UserService, ContextRefreshedListener {
         if (user == null)
             return;
 
-        user.setMobile(mobile);
-        modify(user);
+        infoService.save("mobile", mobile);
     }
 
     @Override
@@ -433,11 +419,6 @@ public class UserServiceImpl implements UserService, ContextRefreshedListener {
     }
 
     @Override
-    public UserModel findByMobile(String mobile) {
-        return userDao.findByMobile(mobile);
-    }
-
-    @Override
     public JSONArray fill(JSONArray array, String[] names) {
         for (int i = 0, size = array.size(); i < size; i++) {
             JSONObject object = array.getJSONObject(i);
@@ -457,6 +438,7 @@ public class UserServiceImpl implements UserService, ContextRefreshedListener {
                 return new JSONObject();
 
             JSONObject object = modelHelper.toJson(model);
+            object.putAll(infoService.get(id));
             object.put("auth", authService.query(model.getId()));
 
             return object;
@@ -464,11 +446,20 @@ public class UserServiceImpl implements UserService, ContextRefreshedListener {
     }
 
     @Override
-    public JSONObject query(String uid, String idcard, String name, String nick, String mobile, String email,
-                            String weixin, String qq, String code, int minGrade, int maxGrade, int state, String register,
+    public JSONObject query(String uid, String code, String idcard, String name, String nick, String mobile, String email,
+                            String weixin, String qq, int minGrade, int maxGrade, int state, String register,
                             String from) {
-        return userDao.query(authService.users(uid), idcard, name, nick, mobile, email, weixin, qq, code, minGrade,
-                maxGrade, state, register, from, pagination.getPageSize(20), pagination.getPageNum()).toJson();
+        Set<String> ids = ids(uid, code, idcard, name, nick, mobile, email, weixin, qq, from);
+        if (ids != null && ids.isEmpty())
+            ids.add("");
+
+        return userDao.query(authService.users(uid), minGrade, maxGrade, state, register,
+                pagination.getPageSize(20), pagination.getPageNum()).toJson(user -> getJson(user.getId(), user));
+    }
+
+    @Override
+    public List<UserModel> query() {
+        return userDao.query().getList();
     }
 
     @Override
@@ -477,25 +468,60 @@ public class UserServiceImpl implements UserService, ContextRefreshedListener {
     }
 
     @Override
-    public Set<String> ids(String uid, String idcard, String name, String nick, String mobile, String email, String weixin, String qq, String code) {
-        if (!validator.isEmpty(uid))
-            return authService.users(uid);
+    public Set<String> ids(String uid, String code, String idcard, String name, String nick, String mobile, String email, String weixin, String qq, String from) {
+        Set<String> set = null;
+        if (!validator.isEmpty(uid)) {
+            Set<String> s = authService.users(uid);
+            if (s.isEmpty())
+                return s;
 
-        if (!validator.isEmpty(code)) {
-            UserModel user = userDao.findByCode(code);
-
-            return Set.of(user == null ? code : user.getId());
+            set = s;
         }
 
-        if (validator.isEmpty(idcard) && validator.isEmpty(name) && validator.isEmpty(nick) && validator.isEmpty(mobile)
-                && validator.isEmpty(email) && validator.isEmpty(weixin) && validator.isEmpty(qq))
-            return null;
+        if (!validator.isEmpty(code)) {
+            UserModel user = findByCode(code);
+            if (user == null)
+                return new HashSet<>();
 
-        Set<String> ids = userDao.ids(idcard, name, nick, mobile, email, weixin, qq);
-        if (ids.isEmpty())
-            ids.add("");
+            if (set == null)
+                set = Set.of(user.getId());
+            else {
+                set.retainAll(Set.of(user.getId()));
+                if (set.isEmpty())
+                    return set;
+            }
+        }
 
-        return ids;
+        Map<String, String> map = new HashMap<>();
+        if (!validator.isEmpty(idcard))
+            map.put("idcard", idcard);
+        if (!validator.isEmpty(name))
+            map.put("name", name);
+        if (!validator.isEmpty(nick))
+            map.put("nick", nick);
+        if (!validator.isEmpty(mobile))
+            map.put("mobile", mobile);
+        if (!validator.isEmpty(email))
+            map.put("email", email);
+        if (!validator.isEmpty(weixin))
+            map.put("weixin", weixin);
+        if (!validator.isEmpty(qq))
+            map.put("qq", qq);
+        if (!validator.isEmpty(from))
+            map.put("from", from);
+        if (map.isEmpty())
+            return set;
+
+        Set<String> s = infoService.users(map);
+        if (s == null)
+            return set;
+
+        if (set == null || s.isEmpty())
+            return s;
+
+        set.retainAll(s);
+
+        return set;
     }
 
     @Override
@@ -505,29 +531,10 @@ public class UserServiceImpl implements UserService, ContextRefreshedListener {
 
     @Override
     public void update(UserModel user) {
-        save(user.getId(), user, true);
-    }
-
-    private UserModel save(String id, UserModel user, boolean manage) {
-        UserModel model = findById(id);
-        model.setIdcard(user.getIdcard());
-        model.setName(user.getName());
-        model.setMobile(user.getMobile());
-        model.setEmail(user.getEmail());
-        model.setWeixin(user.getWeixin());
-        model.setQq(user.getQq());
-        model.setNick(user.getNick());
-        model.setAvatar(user.getAvatar());
-        model.setSignature(user.getSignature());
-        model.setGender(user.getGender());
-        model.setBirthday(user.getBirthday());
-        if (manage) {
-            model.setGrade(user.getGrade());
-            model.setState(user.getState());
-        }
+        UserModel model = findById(user.getId());
+        model.setGrade(user.getGrade());
+        model.setState(user.getState());
         save(model);
-
-        return model;
     }
 
     @Override
@@ -538,30 +545,6 @@ public class UserServiceImpl implements UserService, ContextRefreshedListener {
         save(user);
 
         return password;
-    }
-
-    @Override
-    public void info(String id, String idcard, String name, String nick, String mobile, String email, String weixin, String qq, String signature, int gender) {
-        UserModel user = findById(id);
-        if (!validator.isEmpty(idcard))
-            user.setIdcard(idcard);
-        if (!validator.isEmpty(name))
-            user.setName(name);
-        if (!validator.isEmpty(mobile))
-            user.setMobile(mobile);
-        if (!validator.isEmpty(email))
-            user.setEmail(email);
-        if (!validator.isEmpty(weixin))
-            user.setWeixin(weixin);
-        if (!validator.isEmpty(qq))
-            user.setQq(qq);
-        if (!validator.isEmpty(nick))
-            user.setNick(nick);
-        if (!validator.isEmpty(signature))
-            user.setSignature(signature);
-        if (gender > 0)
-            user.setGender(gender);
-        save(user);
     }
 
     @Override
@@ -623,25 +606,6 @@ public class UserServiceImpl implements UserService, ContextRefreshedListener {
                             int state) {
         UserModel user = new UserModel();
         user.setPassword(password(password));
-        user.setIdcard(idcard);
-        user.setName(name);
-        user.setNick(validator.isEmpty(nick) ? uid : nick);
-        if (validator.isEmpty(mobile)) {
-            if (validator.isMobile(uid))
-                user.setMobile(uid);
-        } else
-            user.setMobile(mobile);
-        if (validator.isEmpty(email)) {
-            if (validator.isEmail(uid))
-                user.setEmail(uid);
-        } else {
-            user.setEmail(email);
-        }
-        user.setWeixin(weixin);
-        user.setQq(qq);
-        user.setAvatar(avatar);
-        user.setGender(gender);
-        user.setBirthday(birthday);
         setCode(user);
         user.setInviter(validator.isEmpty(inviter) ? id() : inviter);
         user.setRegister(dateTime.now());
@@ -649,6 +613,25 @@ public class UserServiceImpl implements UserService, ContextRefreshedListener {
         user.setState(state);
         userDao.save(user);
         authService.create(user.getId(), uid, Types.Self, mobile, email, nick, avatar);
+
+        String id = user.getId();
+        infoService.save(id, "idcard", idcard);
+        infoService.save(id, "name", name);
+        infoService.save(id, "nick", nick);
+        infoService.save(id, "mobile", mobile);
+        if (validator.isMobile(uid))
+            infoService.save(id, "mobile", uid);
+        infoService.save(id, "email", email);
+        if (validator.isEmail(uid))
+            infoService.save(id, "email", uid);
+        infoService.save(id, "weixin", weixin);
+        infoService.save(id, "qq", qq);
+        infoService.save(id, "avatar", avatar);
+        if (gender > 0)
+            infoService.save(id, "gender", numeric.toString(gender));
+        if (birthday != null)
+            infoService.save(id, "birthday", dateTime.toString(birthday));
+
         listeners.ifPresent(set -> set.forEach(listener -> listener.userSignUp(user)));
 
         return user;
@@ -682,6 +665,7 @@ public class UserServiceImpl implements UserService, ContextRefreshedListener {
 
         userDao.delete(user.getId());
         authService.delete(user.getId());
+        infoService.delete(user.getId());
         onlineService.signOutUser(user.getId());
         clearCache(user);
         listeners.ifPresent(set -> set.forEach(listener -> listener.userDelete(user)));
