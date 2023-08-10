@@ -25,12 +25,12 @@ public class InfoCtrl {
         return infoService.user();
     }
 
-    @Execute(name = "find", permit = Permit.sign, validates = {
+    @Execute(name = "get", permit = Permit.sign, validates = {
             @Validate(validator = Validators.NOT_EMPTY, parameter = "name", failureCode = 3),
             @Validate(validator = UserService.VALIDATOR_SIGN)
     })
-    public Object find() {
-        return infoService.find(request.get("name"));
+    public Object get() {
+        return infoService.get(request.get("user"), request.get("name"));
     }
 
     @Execute(name = "save", permit = Permit.sign, validates = {

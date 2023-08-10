@@ -51,8 +51,8 @@ public class InfoServiceImpl implements InfoService, ContextRefreshedListener {
     }
 
     @Override
-    public JSONObject find(String name) {
-        InfoModel info = infoDao.find(userService.id(), name);
+    public JSONObject get(String user, String name) {
+        InfoModel info = infoDao.find(user, name);
 
         return info == null ? new JSONObject() : modelHelper.toJson(info);
     }
@@ -106,11 +106,18 @@ public class InfoServiceImpl implements InfoService, ContextRefreshedListener {
         info.setValue(value);
         info.setTime(dateTime.now());
         infoDao.save(info);
+        clearCache(user);
     }
 
     @Override
     public void delete(String user) {
         infoDao.delete(user);
+        clearCache(user);
+    }
+
+    private void clearCache(String user) {
+        cache.remove(InfoModel.NAME + ":" + user);
+        userService.clearCache(user);
     }
 
     @Override

@@ -10,7 +10,7 @@ public interface InfoService {
 
     JSONObject get(String user);
 
-    JSONObject find(String name);
+    JSONObject get(String user, String name);
 
     Set<String> users(Map<String, String> map);
 
