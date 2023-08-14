@@ -52,7 +52,7 @@ public class InfoServiceImpl implements InfoService, ContextRefreshedListener {
 
     @Override
     public JSONObject get(String user, String name) {
-        InfoModel info = infoDao.find(user, name);
+        InfoModel info = infoDao.find(validator.isId(user) ? user : userService.id(), name);
 
         return info == null ? new JSONObject() : modelHelper.toJson(info);
     }
