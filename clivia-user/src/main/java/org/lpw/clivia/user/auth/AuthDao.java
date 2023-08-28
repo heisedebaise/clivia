@@ -9,6 +9,8 @@ interface AuthDao {
 
     AuthModel findByUid(String uid);
 
+    AuthModel find(String user, String type);
+
     void save(AuthModel auth);
 
     void delete(AuthModel auth);

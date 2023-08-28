@@ -439,7 +439,7 @@ public class UserServiceImpl implements UserService, ContextRefreshedListener {
 
             JSONObject object = modelHelper.toJson(model);
             object.putAll(infoService.get(id));
-            object.put("auth", authService.query(model.getId()));
+            object.put("uid", authService.uid(model.getId()));
 
             return object;
         }, false);

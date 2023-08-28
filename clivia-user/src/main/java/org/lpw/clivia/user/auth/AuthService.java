@@ -42,6 +42,13 @@ public interface AuthService {
     Set<String> users(String uid);
 
     /**
+     * 获得用户UID。
+     * @param user 用户ID。
+     * @return 用户UID。
+     */
+    String uid(String user);
+
+    /**
      * 创建新认证。
      *
      * @param userId 用户ID。

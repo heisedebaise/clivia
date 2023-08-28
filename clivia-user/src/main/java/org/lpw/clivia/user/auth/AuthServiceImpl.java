@@ -2,6 +2,7 @@ package org.lpw.clivia.user.auth;
 
 import com.alibaba.fastjson.JSONArray;
 import org.lpw.clivia.user.UserService;
+import org.lpw.clivia.user.type.Types;
 import org.lpw.photon.dao.model.ModelHelper;
 import org.lpw.photon.util.DateTime;
 import org.lpw.photon.util.Validator;
@@ -41,6 +42,13 @@ public class AuthServiceImpl implements AuthService {
         authDao.search(uid).getList().forEach(auth -> set.add(auth.getUser()));
 
         return set;
+    }
+
+    @Override
+    public String uid(String user) {
+        AuthModel auth = authDao.find(user, Types.Self);
+
+        return auth == null ? "" : auth.getUid();
     }
 
     @Override
