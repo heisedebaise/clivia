@@ -11,4 +11,8 @@ body {
   width: 100%;
   height: 100%;
   overflow: auto;
+  background-color: var(--background);
+  background-image: linear-gradient(var(--background) 10px, transparent 0), linear-gradient(90deg, var(--background-dot) 1px, transparent 0);
+  background-size: 11px 11px;
+  background-position: center center;
 }
