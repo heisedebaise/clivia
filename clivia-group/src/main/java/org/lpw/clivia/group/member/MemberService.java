@@ -1,5 +1,7 @@
 package org.lpw.clivia.group.member;
 
+import com.alibaba.fastjson.JSONObject;
+
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -24,7 +26,7 @@ public interface MemberService {
 
     String groups(String user);
 
-    String friends();
+    JSONObject friends();
 
     void create(String group, Set<String> users, int type, String owner);
 

@@ -1,5 +1,6 @@
 package org.lpw.clivia.group.member;
 
+import com.alibaba.fastjson.JSONObject;
 import org.lpw.clivia.user.UserService;
 import org.lpw.photon.util.DateTime;
 import org.springframework.stereotype.Service;
@@ -80,13 +81,11 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
-    public String friends() {
-        Set<String> set = new HashSet<>();
-        groups(userService.id(), 0).forEach(group -> list(group).forEach(member -> set.add(member.getUser())));
-        StringBuilder sb = new StringBuilder();
-        set.forEach(user -> sb.append(',').append(user));
+    public JSONObject friends() {
+        JSONObject object = new JSONObject();
+        groups(userService.id(), 0).forEach(group -> list(group).forEach(member -> object.put(member.getUser(), group)));
 
-        return sb.isEmpty() ? "" : sb.substring(1);
+        return object;
     }
 
     @Override
