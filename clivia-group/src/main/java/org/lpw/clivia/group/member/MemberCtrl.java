@@ -23,6 +23,13 @@ public class MemberCtrl {
         return memberService.groups(request.get("user"));
     }
 
+    @Execute(name = "friends", permit = Permit.sign, validates = {
+            @Validate(validator = UserService.VALIDATOR_SIGN)
+    })
+    public Object friends() {
+        return memberService.friends();
+    }
+
     @Execute(name = "memo", permit = Permit.sign, validates = {
             @Validate(validator = Validators.ID, parameter = "id", failureCode = 101),
             @Validate(validator = Validators.ID, parameter = "group", failureCode = 102),

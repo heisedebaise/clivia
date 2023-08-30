@@ -76,7 +76,17 @@ public class MemberServiceImpl implements MemberService {
         StringBuilder sb = new StringBuilder();
         memberDao.query(user, -1).getList().forEach(member -> sb.append(',').append(member.getGroup()));
 
-        return sb.length() == 0 ? "" : sb.substring(1);
+        return sb.isEmpty() ? "" : sb.substring(1);
+    }
+
+    @Override
+    public String friends() {
+        Set<String> set = new HashSet<>();
+        groups(userService.id(), 0).forEach(group -> list(group).forEach(member -> set.add(member.getUser())));
+        StringBuilder sb = new StringBuilder();
+        set.forEach(user -> sb.append(',').append(user));
+
+        return sb.isEmpty() ? "" : sb.substring(1);
     }
 
     @Override

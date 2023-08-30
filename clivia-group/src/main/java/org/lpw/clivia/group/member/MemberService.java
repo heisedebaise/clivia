@@ -24,6 +24,8 @@ public interface MemberService {
 
     String groups(String user);
 
+    String friends();
+
     void create(String group, Set<String> users, int type, String owner);
 
     int modify(String group, Set<String> users, int state);

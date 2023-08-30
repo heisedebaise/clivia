@@ -29,7 +29,7 @@ class AuthDaoImpl implements AuthDao {
 
     @Override
     public AuthModel find(String user, String type) {
-        return liteOrm.findOne(new LiteQuery(AuthModel.class).where("c_user=? and c_type=?"), new Object[]{user, type});
+        return liteOrm.findOne(new LiteQuery(AuthModel.class).where("c_user=? and c_type=?").order("c_time desc"), new Object[]{user, type});
     }
 
     @Override
