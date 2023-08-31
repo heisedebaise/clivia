@@ -83,7 +83,9 @@ public class MemberServiceImpl implements MemberService {
     @Override
     public JSONObject friends() {
         JSONObject object = new JSONObject();
-        groups(userService.id(), 0).forEach(group -> list(group).forEach(member -> object.put(member.getUser(), group)));
+        String user = userService.id();
+        groups(user, 0).forEach(group -> list(group).forEach(member -> object.put(member.getUser(), group)));
+        object.put(user, self(user));
 
         return object;
     }
