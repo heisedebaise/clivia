@@ -29,8 +29,7 @@ public class GroupCtrl {
 
     @Execute(name = "get", permit = Permit.sign, validates = {
             @Validate(validator = Validators.ID, parameter = "id", failureCode = 1),
-            @Validate(validator = UserService.VALIDATOR_SIGN),
-            @Validate(validator = GroupService.VALIDATOR_EXISTS, parameter = "id", failureCode = 2)
+            @Validate(validator = UserService.VALIDATOR_SIGN)
     })
     public Object get() {
         return groupService.get(request.get("id"), request.getAsBoolean("manage"));

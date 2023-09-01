@@ -44,6 +44,9 @@ public class GroupServiceImpl implements GroupService, UserListener {
     @Override
     public JSONObject get(String id, boolean manage) {
         GroupModel group = groupDao.findById(id);
+        if (group == null)
+            return new JSONObject();
+
         JSONObject object = modelHelper.toJson(group);
         members(object, id, group, userService.id(), manage);
 
@@ -271,9 +274,9 @@ public class GroupServiceImpl implements GroupService, UserListener {
                 if (user != null && !validator.isEmpty(user.getNick()))
                     sb.append(',').append(user.getNick());
             }
-            name = sb.length() == 0 ? "" : sb.substring(1);
-            if (name.length() > 64)
-                name = name.substring(0, 64);
+            name = sb.isEmpty() ? "" : sb.substring(1);
+            if (name.length() > 16)
+                name = name.substring(0, 13) + "...";
         }
 
         GroupModel group = new GroupModel();
