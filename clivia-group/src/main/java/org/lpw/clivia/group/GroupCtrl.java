@@ -45,6 +45,11 @@ public class GroupCtrl {
         return groupService.friends();
     }
 
+    @Execute(name = "groups", permit = Permit.sign, validates = {@Validate(validator = UserService.VALIDATOR_SIGN)})
+    public Object groups() {
+        return groupService.groups();
+    }
+
     @Execute(name = "find", permit = Permit.sign, validates = {@Validate(validator = UserService.VALIDATOR_SIGN)})
     public Object find() {
         return groupService.find(request.get("idUidCode"));

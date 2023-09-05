@@ -145,6 +145,18 @@ public class GroupServiceImpl implements GroupService, UserListener {
         return object;
     }
 
+    @Override
+    public JSONObject groups() {
+        String user = userService.id();
+        Map<String, JSONArray> map = new HashMap<>();
+        groupDao.query(memberService.groups(user, 1)).getList()
+                .forEach(group -> map.computeIfAbsent(label(group.getName()), k -> new JSONArray()).add(modelHelper.toJson(group)));
+        JSONObject object = new JSONObject();
+        object.putAll(map);
+
+        return object;
+    }
+
     private String label(String string) {
         if (validator.isEmpty(string))
             return "#";

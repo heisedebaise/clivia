@@ -11,6 +11,8 @@ public interface GroupService {
 
     JSONObject friends();
 
+    JSONObject groups();
+
     JSONObject find(String idUidCode);
 
     String name(String id, String user);
