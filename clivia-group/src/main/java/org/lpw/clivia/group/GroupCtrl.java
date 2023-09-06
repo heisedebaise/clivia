@@ -42,7 +42,7 @@ public class GroupCtrl {
 
     @Execute(name = "friends", permit = Permit.sign, validates = {@Validate(validator = UserService.VALIDATOR_SIGN)})
     public Object friends() {
-        return groupService.friends();
+        return groupService.friends(request.getAsBoolean("blacklist"));
     }
 
     @Execute(name = "groups", permit = Permit.sign, validates = {@Validate(validator = UserService.VALIDATOR_SIGN)})

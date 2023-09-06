@@ -91,11 +91,11 @@ public class GroupServiceImpl implements GroupService, UserListener {
     }
 
     @Override
-    public JSONObject friends() {
+    public JSONObject friends(boolean blacklist) {
         String user = userService.id();
         Map<String, JSONArray> map = new HashMap<>();
         for (GroupModel group : groupDao.query(memberService.groups(user, 0)).getList()) {
-            JSONObject friend = friend(user, group);
+            JSONObject friend = friend(user, group, blacklist);
             if (friend == null)
                 continue;
 
@@ -107,7 +107,7 @@ public class GroupServiceImpl implements GroupService, UserListener {
         return object;
     }
 
-    private JSONObject friend(String user, GroupModel group) {
+    private JSONObject friend(String user, GroupModel group, boolean blacklist) {
         List<MemberModel> members = memberService.list(group.getId());
         if (members.isEmpty())
             return null;
@@ -115,12 +115,12 @@ public class GroupServiceImpl implements GroupService, UserListener {
         if (members.size() == 1) {
             MemberModel member = members.get(0);
 
-            return member.getUser().equals(user) ? member(member) : null;
+            return !blacklist && member.getUser().equals(user) ? member(member) : null;
         }
 
         for (MemberModel member : members)
             if (!member.getUser().equals(user))
-                return member.getState() == 0 || member.getState() == 1 ? member(member) : null;
+                return (!blacklist && member.getState() <= 1) || (blacklist && member.getState() == 2) ? member(member) : null;
 
         return null;
     }

@@ -9,7 +9,7 @@ public interface GroupService {
 
     JSONObject members(String id);
 
-    JSONObject friends();
+    JSONObject friends(boolean blacklist);
 
     JSONObject groups();
 

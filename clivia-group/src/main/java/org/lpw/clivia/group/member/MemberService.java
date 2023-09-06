@@ -36,6 +36,8 @@ public interface MemberService {
 
     void memo(String id, String memo);
 
+    void blacklist(String id);
+
     int state(String id, int state);
 
     void bans(String group, int ban);

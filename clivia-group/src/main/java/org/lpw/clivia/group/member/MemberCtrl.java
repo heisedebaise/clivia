@@ -41,4 +41,16 @@ public class MemberCtrl {
 
         return "";
     }
+
+    @Execute(name = "blacklist", permit = Permit.sign, validates = {
+            @Validate(validator = Validators.ID, parameter = "id", failureCode = 101),
+            @Validate(validator = Validators.ID, parameter = "group", failureCode = 102),
+            @Validate(validator = UserService.VALIDATOR_SIGN),
+            @Validate(validator = MemberService.VALIDATOR_EXISTS, parameter = "id", failureCode = 103),
+            @Validate(validator = MemberService.VALIDATOR_IN_GROUP, parameter = "group", failureCode = 104)})
+    public Object blacklist() {
+        memberService.blacklist(request.get("id"));
+
+        return "";
+    }
 }

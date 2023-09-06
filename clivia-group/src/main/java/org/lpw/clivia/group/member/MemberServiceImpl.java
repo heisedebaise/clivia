@@ -139,6 +139,13 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
+    public void blacklist(String id) {
+        MemberModel member = memberDao.findById(id);
+        member.setState(2);
+        memberDao.save(member);
+    }
+
+    @Override
     public int state(String id, int state) {
         MemberModel member = memberDao.findById(id);
         if (member == null)
