@@ -63,6 +63,8 @@ public class GroupServiceImpl implements GroupService, UserListener {
 
     private void members(JSONObject object, String id, GroupModel group, String user, boolean manage) {
         JSONArray members = new JSONArray();
+        JSONArray avatars = new JSONArray();
+        JSONArray nicks = new JSONArray();
         memberService.list(id).forEach(member -> {
             if (!manage && member.getState() > 1)
                 return;
@@ -79,15 +81,21 @@ public class GroupServiceImpl implements GroupService, UserListener {
             if (m == null)
                 return;
 
+            String avatar = m.getString("avatar");
+            String nick = m.getString("nick");
             if (group != null && group.getType() == 0) {
                 if (members.isEmpty() || !m.getString("user").equals(user)) {
-                    object.put("avatar", m.getString("avatar"));
-                    object.put("name", m.getString("nick"));
+                    object.put("avatar", avatar);
+                    object.put("name", nick);
                 }
             }
             members.add(m);
+            avatars.add(avatar);
+            nicks.add(nick);
         });
         object.put("members", members);
+        object.put("avatars", avatars);
+        object.put("nicks", nicks);
     }
 
     @Override
@@ -150,7 +158,7 @@ public class GroupServiceImpl implements GroupService, UserListener {
         String user = userService.id();
         Map<String, JSONArray> map = new HashMap<>();
         groupDao.query(memberService.groups(user, 1)).getList()
-                .forEach(group -> map.computeIfAbsent(label(group.getName()), k -> new JSONArray()).add(modelHelper.toJson(group)));
+                .forEach(group -> map.computeIfAbsent(label(group.getName()), k -> new JSONArray()).add(get(group.getId(), false)));
         JSONObject object = new JSONObject();
         object.putAll(map);
 
