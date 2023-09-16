@@ -538,6 +538,23 @@ public class UserServiceImpl implements UserService, ContextRefreshedListener {
     }
 
     @Override
+    public void modify(UserModel user) {
+        String id = id();
+        infoService.save(id, "idcard", user.getIdcard());
+        infoService.save(id, "name", user.getName());
+        infoService.save(id, "nick", user.getNick());
+        infoService.save(id, "mobile", user.getMobile());
+        infoService.save(id, "email", user.getEmail());
+        infoService.save(id, "weixin", user.getWeixin());
+        infoService.save(id, "qq", user.getQq());
+        infoService.save(id, "avatar", user.getAvatar());
+        if (user.getGender() > 0)
+            infoService.save(id, "gender", numeric.toString(user.getGender()));
+        if (user.getBirthday() != null)
+            infoService.save(id, "birthday", dateTime.toString(user.getBirthday()));
+    }
+
+    @Override
     public String resetPassword(String id) {
         String password = generator.random(8);
         UserModel user = findById(id);

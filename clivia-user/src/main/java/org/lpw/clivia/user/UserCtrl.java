@@ -223,6 +223,15 @@ public class UserCtrl {
         return "";
     }
 
+    @Execute(name = "modify", permit = Permit.sign, validates = {
+            @Validate(validator = UserService.VALIDATOR_SIGN)
+    })
+    public Object modify() {
+        userService.modify(request.setToModel(UserModel.class));
+
+        return "";
+    }
+
     @Execute(name = "reset-password", validates = {
             @Validate(validator = Validators.ID, parameter = "id", failureCode = 22),
             @Validate(validator = Validators.SIGN),

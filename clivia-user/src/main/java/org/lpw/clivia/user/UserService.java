@@ -344,6 +344,8 @@ public interface UserService {
      */
     void update(UserModel user);
 
+    void modify(UserModel user);
+
     /**
      * 重置密码。
      *
