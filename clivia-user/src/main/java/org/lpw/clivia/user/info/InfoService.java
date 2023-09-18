@@ -18,5 +18,7 @@ public interface InfoService {
 
     void save(String user, String name, String value);
 
+    void save(Map<String, String> map);
+
     void delete(String user);
 }

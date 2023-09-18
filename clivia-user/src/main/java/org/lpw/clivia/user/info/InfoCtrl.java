@@ -49,7 +49,7 @@ public class InfoCtrl {
             @Validate(validator = UserService.VALIDATOR_SIGN)
     })
     public Object saves() {
-        request.getMap().forEach(infoService::save);
+        infoService.save(request.getMap());
 
         return "";
     }

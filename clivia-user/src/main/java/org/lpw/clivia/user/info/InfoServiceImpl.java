@@ -84,7 +84,7 @@ public class InfoServiceImpl implements InfoService, ContextRefreshedListener {
     @Override
     public void save(String name, String value) {
         String user = userService.id();
-        save(infoDao.find(user, name), user, name, value);
+        save(infoDao.find(user, name), user, name, value, true);
     }
 
     @Override
@@ -94,10 +94,17 @@ public class InfoServiceImpl implements InfoService, ContextRefreshedListener {
 
         InfoModel info = infoDao.find(user, name);
         if (info == null || validator.isEmpty(info.getValue()))
-            save(info, user, name, value);
+            save(info, user, name, value, true);
     }
 
-    private void save(InfoModel info, String user, String name, String value) {
+    @Override
+    public void save(Map<String, String> map) {
+        String user = userService.id();
+        map.forEach((name, value) -> save(infoDao.find(user, name), user, name, value, false));
+        clearCache(user);
+    }
+
+    private void save(InfoModel info, String user, String name, String value, boolean clear) {
         if (info == null) {
             info = new InfoModel();
             info.setUser(user);
@@ -106,7 +113,8 @@ public class InfoServiceImpl implements InfoService, ContextRefreshedListener {
         info.setValue(value);
         info.setTime(dateTime.now());
         infoDao.save(info);
-        clearCache(user);
+        if (clear)
+            clearCache(user);
     }
 
     @Override
